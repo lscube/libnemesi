@@ -23,7 +23,7 @@ clean:
 distclean: clean
 maintainer-clean: clean
 
-NEMESI_DOCS_DIR = $(datadir)/doc/nemesi
+NEMESI_DOCS_DIR = $(DESTDIR)@nemesi_docsdir@
 
 install-data-local:
 	

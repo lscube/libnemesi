@@ -65,7 +65,10 @@ $(OBJECTS): libtool
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
+NEMESI_BIN=@nemesi_bin@
+NEMESI_GUI=@nemesi_gui@
+
 install-exec-local:
-	@cd $(exec_prefix)/bin; \
-	ln -s nemesi gnemesi; \
+	@cd $(DESTDIR)$(exec_prefix)/bin; \
+	ln -s $(NEMESI_BIN) $(NEMESI_GUI); \
 	cd -

@@ -27,14 +27,17 @@ libegui_la_LDFLAGS = -static
 libegui_la_LIBADD = @PACKAGE_LIBS@
 # nemesi_gui_LDADD = @PACKAGE_LIBS@
 
+NEMESI_THROBBERDIR=$(DESTDIR)@nemesi_throbberdir@
+NEMESI_PIXMAPDIR=$(DESTDIR)@nemesi_pixmapdir@
+
 install-data-local:
-	$(INSTALL) -m 755 -d $(nemesi_throbberdir)
-	$(INSTALL_DATA) $(THROBBER_DIR)/*.png $(nemesi_throbberdir)
-	$(INSTALL) -m 755 -d $(nemesi_pixmapdir)
-	$(INSTALL_DATA) $(PIXMAP_DIR)/*.png $(nemesi_pixmapdir)
+	$(INSTALL) -m 755 -d $(NEMESI_THROBBERDIR)
+	$(INSTALL_DATA) $(THROBBER_DIR)/*.png $(NEMESI_THROBBERDIR)
+	$(INSTALL) -m 755 -d $(NEMESI_PIXMAPDIR)
+	$(INSTALL_DATA) $(PIXMAP_DIR)/*.png $(NEMESI_PIXMAPDIR)
 
 uninstall-local:
-	rm -rf $(nemesi_throbberdir)
-	rm -rf $(nemesi_pixmapdir)
+	rm -rf $(NEMESI_THROBBERDIR)
+	rm -rf $(NEMESI_PIXMAPDIR)
 		
 

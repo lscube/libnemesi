@@ -1,6 +1,6 @@
 Summary: A NEtwork MEdia Streamer
 Name: nemesi
-Version: 0.3.0
+Version: 0.3.1
 Release: 0
 Copyright: GPL
 Group: Applications/Internet
@@ -34,29 +34,12 @@ page (http://streaming.polito.it) for further information.
 %setup -q -n %{name}-%{version}
 
 %build
-./configure --enable-optimize=full --prefix=/usr
+./configure --enable-optimize=full --prefix=%{_prefix} --mandir=%{_mandir}
 make
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}%{_bindir}
-install -m 755 src/%{name} %{buildroot}%{_bindir}
-cd %{buildroot}%{_bindir}
-ln -s %{name} g%{name}
-cd -
-mkdir -p %{buildroot}%{_libdir}/%{name}/plugins
-install -m 755 plugins/plugins/*.so %{buildroot}%{_libdir}/%{name}/plugins
-install -m 755 plugins/plugins/*.la %{buildroot}%{_libdir}/%{name}/plugins
-install -m 755 plugins/plugins/*.a %{buildroot}%{_libdir}/%{name}/plugins
-
-mkdir -p %{buildroot}%{_mandir}/man1
-install -m 755 docs/%{name}.1 %{buildroot}%{_mandir}/man1
-
-mkdir -p %{buildroot}%{_libdir}/%{name}/throbber
-install -m 644 egui/throbber/*.png %{buildroot}%{_libdir}/%{name}/throbber
-
-mkdir -p %{buildroot}%{_libdir}/%{name}/pixmaps
-install -m 644 egui/pixmaps/*.png %{buildroot}%{_libdir}/%{name}/pixmaps
+make DESTDIR=%{buildroot} install
 
 #%clean
 #rm -rf %{buildroot}
@@ -65,7 +48,7 @@ install -m 644 egui/pixmaps/*.png %{buildroot}%{_libdir}/%{name}/pixmaps
 %defattr(-,root,root)
 %{_bindir}/%{name}
 %{_bindir}/g%{name}
-%{_mandir}/man1/%{name}.1*
+%{_mandir}/man1/*
 
 %{_libdir}/%{name}/plugins/libffmp3.*
 %{_libdir}/%{name}/plugins/gsm_amr_float.*

@@ -1,13 +1,15 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(wsocket/server_connect.c)
+AC_INIT(nemesi, 0.3.1)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(nemesi, 0.3.0)
+AM_INIT_AUTOMAKE($PACKAGE_NAME, $PACKAGE_VERSION)
 
 AC_PREFIX_PROGRAM(nemesi)
 
 test "$prefix" = . || test "$prefix" = NONE && prefix=/usr/local
 test "$exec_prefix" = NONE && exec_prefix=$prefix
+test "x$sysconfdir" = 'x${prefix}/etc' && sysconfdir="/etc"
+test "x$localstatedir" = 'x${prefix}/var' && localstatedir="/var"
 
 AM_CONFIG_HEADER(config.h)
 
@@ -211,7 +213,15 @@ AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
 AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
 AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
 
-nemesi_libdir="$prefix"/lib/nemesi
+nemesi_bin=$PACKAGE_NAME
+AC_SUBST(nemesi_bin)
+nemesi_gui=g$nemesi_bin
+AC_SUBST(nemesi_gui)
+
+nemesi_docsdir=$datadir/doc/$PACKAGE_NAME-$PACKAGE_VERSION
+AC_SUBST(nemesi_docsdir)
+
+nemesi_libdir="$prefix"/lib/$PACKAGE_NAME
 AC_SUBST(nemesi_libdir)
 nemesi_plugindir="$nemesi_libdir"/plugins
 AC_SUBST(nemesi_plugindir)
@@ -263,7 +273,7 @@ AC_OUTPUT
 AC_MSG_NOTICE([config files successfully generated!
  
 NeMeSI Install prefix .......... : $prefix
-NeMeSI Binary path ............. : $exec_prefix/bin/nemesi
+NeMeSI Binary path ............. : $exec_prefix/bin/$nemesi_bin
 NeMeSI Plugins dir ............. : $nemesi_plugindir
 NeMeSI Throbbers dir ........... : $nemesi_throbberdir
 NeMeSI Pixmaps dir ............. : $nemesi_pixmapdir
@@ -274,7 +284,7 @@ LibSDL support enabled ......... : $NEMESI_HAVE_SDL
 LibAVCodec support enabled ..... : $NEMESI_HAVE_AVC
 
 GUI support enabled ............ : $NEMESI_HAVE_GTK
-NeMeSI GUI Binary path ......... : $exec_prefix/bin/gnemesi
+NeMeSI GUI Binary path ......... : $exec_prefix/bin/$nemesi_gui
 
 
  'make' will now compile NeMeSI and 'su -c make install' will install it.
