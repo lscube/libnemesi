@@ -34,9 +34,12 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 {
 	char *urlname = ui_hints->url; // NULL;
 	char optstr[256];
+	// select vars
+	struct timeval seleep;
+	fd_set rdset;
+	int maxfd;
 
 #ifdef USE_UIPRINTF
-	fd_set rdset;
 	int n;
 
 	/*
@@ -69,31 +72,41 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 	while (1) {
 		if(rtsp_ctrl->busy)
 			throbber(rtsp_ctrl);
-		fprintf(stderr, "[ %s ] => ", statustostr(rtsp_ctrl->status));
+		fprintf(stderr, "\r[ %s ] => ", statustostr(rtsp_ctrl->status));
 
-#ifdef USE_UIPRINTF
 		FD_ZERO(&rdset);
-		FD_SET(UIINPUT_FILENO, &rdset);
 		FD_SET(STDIN_FILENO, &rdset);
+		maxfd = STDIN_FILENO;
+#ifdef USE_UIPRINTF
+		FD_SET(UIINPUT_FILENO, &rdset);
+		maxfd = max(maxfd, UIINPUT_FILENO);
+#endif // USE_UIPRINTF
+
+		seleep.tv_sec = 1;
+		seleep.tv_usec = 0;
 		
-		select(UIINPUT_FILENO+1, &rdset, NULL, NULL, NULL);
+		select(maxfd+1, &rdset, NULL, NULL, &seleep);
+#ifdef USE_UIPRINTF
 		if(FD_ISSET(UIINPUT_FILENO, &rdset)){
 			fprintf(stderr, "\r"); // TODO Da ottimizzare
 			// while((n=read(UIINPUT_FILENO, optstr, 1)) > 0)
 			if((n=read(UIINPUT_FILENO, optstr, 256)) > 0)
 				write(STDERR_FILENO, optstr, n);
 		}
-		if(FD_ISSET(STDIN_FILENO, &rdset)){
+#else // USE_UIPRINTF
+		if(FD_ISSET(STDIN_FILENO, &rdset)) {
+		/*
 			scanf("%s", optstr);
 			if (parse_prompt(rtsp_ctrl, optstr) > 0)
 				return 0;
 		}
-#else // USE_UIPRINTF
+		*/
 		// scanf("%s", optstr);
 		fgets(optstr, sizeof(optstr)-1, stdin);
 		optstr[strlen(optstr)-1] = '\0';
 		if ( strlen(optstr) && (parse_prompt(rtsp_ctrl, optstr) > 0) )
 			return 0;
+		}
 #endif // USE_UIPRINTF
 	}
 

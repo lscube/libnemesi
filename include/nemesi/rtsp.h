@@ -67,14 +67,18 @@
 /*! Versione del protocollo implementato. */
 #define RTSP_VER  "RTSP/1.0"
 
-/*! Numero totale dei comandi riconosciuti. */
+/*! 
+ * Total number of recognized commands.
+ * "NONE" is a special command, just for internal purpouses
+ * and not considered elsewhere.
+ */
 #define COMMAND_NUM 5
-/*! Numero totale degli stati implementati. */
+/*! Total number of implemented states. */
 #define STATE_NUM 4
 
 /*! \enum Definition for possible states in RTSP state-machine
  */
-enum states { INIT, READY, PLAYING, RECORDING } status;
+enum states { INIT, READY, PLAYING, RECORDING };
 
 /*!
  * \brief Struttura per la comunicazione dei comandi tra la ui e il modulo
@@ -93,7 +97,7 @@ enum states { INIT, READY, PLAYING, RECORDING } status;
 struct command {
 		/*! \enum opcodes enum che codifica i vari comandi disponibili
 		 * all'utente. */
-	enum opcodes { OPEN, PLAY, PAUSE, STOP, CLOSE } opcode;	/*!< codice del
+	enum opcodes { OPEN, PLAY, PAUSE, STOP, CLOSE, NONE } opcode;	/*!< codice del
 								  comando
 								  inserito
 								  dall'utente.

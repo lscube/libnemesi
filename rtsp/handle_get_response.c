@@ -91,7 +91,7 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 		tkn[strlen(tkn)]='\n'; /* rimetto a posto il \n modificato dalla strtok */
 	// if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn, description_format) ) {
 	if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn) ) {
-		rtsp_th->busy=0;	
+		// rtsp_th->busy=0;	
 		return 1;
 	}
 	remove_pkt(rtsp_th);

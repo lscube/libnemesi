@@ -94,6 +94,7 @@ void *rtsp(void *rtsp_thread)
 				nmsprintf(1, "Error handling user command.\n\n");
 				rtsp_th->busy = 0;
 			}
+			rtsp_th->comm->opcode = NONE;
 			pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 		}
 	}

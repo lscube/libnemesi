@@ -45,8 +45,11 @@ int handle_rtsp_pkt(struct RTSP_Thread *rtsp_th)
 		printf("\nunexpected RTSP packet arrived\n");
 		return 1;
 	}
+	/*
 	if (state_machine[rtsp_th->status] (rtsp_th, opcode))
 		return 1;
+	*/
+	return state_machine[rtsp_th->status] (rtsp_th, opcode);
 
 	return 0;
 }

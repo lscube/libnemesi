@@ -89,7 +89,8 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 	(rtsp_th->in_buffer).size = 0;
 	(rtsp_th->in_buffer).data = NULL;
 	rtsp_th->rtsp_queue = NULL;
-	rtsp_th->busy=0;
+	if (rtsp_th->comm->opcode == NONE)
+		rtsp_th->busy=0;
 #endif
 
 	return 0;
