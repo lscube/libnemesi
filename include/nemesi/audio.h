@@ -34,6 +34,7 @@
 #include <pthread.h>
 
 // #include <stdarg.h>
+#include <config.h>
 #include <nemesi/types.h>
 #include <nemesi/comm.h>
 #include <nemesi/audio_format.h>
@@ -44,7 +45,11 @@
 #define FREQ 44100
 #define CHANNELS 2
 #define BYTES_X_SAMPLE 2
+#ifndef WORDS_BIGENDIAN
 #define FORMAT AFMT_S16_LE
+#else
+#define FORMAT AFMT_S16_BE
+#endif
 
 typedef struct {
 	// True (1) if initialized
