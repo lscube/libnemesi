@@ -36,14 +36,14 @@ void dec_clean(void *args)
 	// kill Video Thread
 	video_th_stop(outc->video);
 	// Uninit Output modules
-	if ( (outc->audio) && (outc->audio->init) ) {
-		outc->audio->functions->pause();
-		outc->audio->functions->reset();
-	}
 	if ( (outc->video) && (outc->video->init) ) {
 		// outc->video->functions->uninit();
 		outc->video->functions->reset();
 		outc->video->init = 0;
+	}
+	if ( (outc->audio) && (outc->audio->init) ) {
+		outc->audio->functions->pause();
+		outc->audio->functions->reset();
 	}
 	if (outc->diskwriter)
 		close_files(outc->diskwriter->fd); 

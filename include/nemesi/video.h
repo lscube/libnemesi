@@ -56,9 +56,9 @@ typedef struct {
 } NMSVideo;
 
 NMSVideo *video_preinit(char *, uint32);
-int video_th_start(NMSVideo *);
-int video_th_stop(NMSVideo *);
-void *video_th(void *);
+// int video_th_start(NMSVideo *);
+// int video_th_stop(NMSVideo *);
+// void *video_th(void *);
 
 #endif // __VIDEO_H
 

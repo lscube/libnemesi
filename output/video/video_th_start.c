@@ -30,9 +30,11 @@
 #include <pthread.h>
 
 #include <nemesi/comm.h>
-#include <nemesi/video.h>
+// #include <nemesi/video.h>
+#include <nemesi/output.h>
 
-int video_th_start(NMSVideo *vc)
+// int video_th_start(NMSVideo *vc)
+int video_th_start(NMSOutput *outc)
 {
 	pthread_attr_t vth_attr;
 	int n;
@@ -47,7 +49,7 @@ int video_th_start(NMSVideo *vc)
 	}
 
 	/* Create Video Thread */
-	if ((n = pthread_create(&(vc->tid), &vth_attr, &video_th, (void *)vc)) > 0) {
+	if ((n = pthread_create(&(outc->video->tid), &vth_attr, &video_th, (void *)outc)) > 0) {
 		return nmserror("Cannot create Video Thread: %s", strerror(n));
 	}
 

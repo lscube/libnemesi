@@ -42,10 +42,12 @@
 #define DEF_FPS 25.0 // must be float
 // #define MAX_AV_THRES 100
 
-void *video_th(void *vc)
+void *video_th(void *outc)
 {
-	NMSVideo *videoc = (NMSVideo *)vc;
-	NMSVFunctions *funcs = videoc->functions;
+	NMSVideo *videoc = ((NMSOutput *)outc)->video;
+	NMSAudio *audioc = ((NMSOutput *)outc)->audio;
+	NMSVFunctions *vfuncs = videoc->functions;
+	NMSAFunctions *afuncs = audioc->functions;
 	struct timeval tvsleep, tvstart, tvstop;
 	float fps=DEF_FPS;
 	double last_pts = 0, next_pts = 0;
@@ -78,15 +80,15 @@ void *video_th(void *vc)
 			select(0, NULL, NULL, NULL, &tvstop);
 		} else
 			nmsprintf(3, "didn't sleep\n");
-		funcs->update_screen(&next_pts);
+		vfuncs->update_screen(&next_pts);
 		nmsprintf(3, "next presentation timestamp is: %3.2f\n", next_pts);
 		gettimeofday(&tvstop, NULL);
 		if ( !next_pts )
 			next_pts = last_pts + 1000/fps;
 		nmsprintf(1, "Elapsed: V: %3.2fms", last_pts);
 #ifdef AV_SYNC
-		if (nmsoutc->audio && nmsoutc->audio->init)
-			nmsoutc->audio->functions->control(ACTRL_GET_ELAPTM, &audio_elapsed);
+		if (audioc && audioc->init)
+			afuncs->control(ACTRL_GET_ELAPTM, &audio_elapsed);
 		if ( audio_elapsed ) {
 			nmsprintf(1, "\tA: %3.2fms\tsync A-V: %3.2fms   ", audio_elapsed, next_pts-audio_elapsed);
 			if ( next_pts < audio_elapsed )

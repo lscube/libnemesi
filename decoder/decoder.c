@@ -154,11 +154,8 @@ void *decoder(void *args)
 									}
 								}
 								// VIDEO
-								if((nmsoutc->video->init) && (!nmsoutc->video->tid)) {
-									video_th_start(nmsoutc->video);
-									// buffering_audio = 0;
-									// nmsoutc->audio->functions->resume();
-								}
+								if((nmsoutc->video->init) && (!nmsoutc->video->tid))
+									video_th_start(nmsoutc);
 							}
 							/* XXX: not supported any more
 							     else if ( !strcmp(output_pref, "diskdecoded") ) {

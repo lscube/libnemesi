@@ -206,6 +206,11 @@ static uint32 preinit(const char *arg, uint32 buff_ms)
 
 	priv->sysbuff_ms = buff_ms;
 
+#ifdef SDLENV
+	if (arg)
+		setenv("SDL_VIDEODRIVER", arg, 1);
+#endif // SDLENV
+
 	subsystem_init = SDL_WasInit(SDL_INIT_EVERYTHING);
 
 	if (!(subsystem_init & SDL_INIT_VIDEO))
@@ -213,19 +218,16 @@ static uint32 preinit(const char *arg, uint32 buff_ms)
 	if (!(subsystem_init & SDL_INIT_TIMER))
 		flags |= SDL_INIT_TIMER;
 
-#ifdef SDLENV
-	if (arg)
-		setenv("SDL_VIDEODRIVER", arg, 1);
-#endif // SDLENV
-
 	if (!flags) {
 		nmsprintf(2, "SDL Video already initialized\n");
 	} else {
 		nmsprintf(1, "Initializing SDL Video output\n");
 		if (subsystem_init) {
+			nmsprintf(0, "subsystem flags:%d\n", flags);
 			if (SDL_InitSubSystem(flags))
 				return nmserror("Could not initialize SDL Video");
 		} else {
+			nmsprintf(0, "system\n");
 			flags |= SDL_INIT_NOPARACHUTE;
 			if (SDL_Init(flags))
 				return nmserror("Could not initialize SDL Video");
@@ -495,7 +497,10 @@ static void close(void)
 static void reset(void)
 {
 	close();
-	SDL_InitSubSystem(SDL_INIT_VIDEO);
+	// preinit(NULL, sdl_priv.sysbuff_ms);
+	// if (sdl_init())
+		// return 1;
+	// SDL_Init(SDL_INIT_VIDEO);
 }
 
 static void uninit(void)

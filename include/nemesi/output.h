@@ -34,7 +34,7 @@
 #include <nemesi/diskwriter.h>
 #include <nemesi/types.h>
 
-#ifndef NMS_GLOBAL_OUTPUT
+#ifndef NMS_GLOBAL_OUTPUT // declared just one time
 #define OUTPUT_EXTERN extern
 #else
 #define OUTPUT_EXTERN
@@ -51,6 +51,10 @@ typedef struct {
 } NMSOutput;
 
 OUTPUT_EXTERN NMSOutput *nmsoutc;
+
+int video_th_start(NMSOutput *);
+int video_th_stop(NMSVideo *);
+void *video_th(void *);
 
 #undef NMS_GLOBAL_OUTPUT
 #undef OUTPUT_EXTERN

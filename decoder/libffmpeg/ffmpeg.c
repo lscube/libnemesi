@@ -90,7 +90,6 @@ int decode(char *data, int len, NMSOutput *outc)
 	while ( decd_len < (len - 4) ) {
 		
 		size= avcodec_decode_video(ff->context, ff->frame, &(ff->got_frame), (uint8_t *)(data + 4 /*+ len_tmp*/), (int)(len - 4/* - len_tmp*/));
-
 		
 		if (size < 0) {
                 	fprintf(stderr, "Error while decoding with libavcodec\n");
@@ -109,7 +108,15 @@ int decode(char *data, int len, NMSOutput *outc)
 				vc->init = 1;
 			}
 			// XXX; setto questa variabile temporanea
-			elapsed += 40;
+			if (ff->frame->pts)
+				elapsed = (double)ff->frame->pts/1000.0;
+			else if (ff->frame->display_picture_number)
+				elapsed = (double)ff->frame->display_picture_number * 1000.0 / vc->fps;
+			else if (ff->context->frame_number)
+				elapsed =  (double)ff->context->frame_number * 1000.0 / vc->fps;
+			else
+				elapsed += 1000.0/vc->fps;
+
 			if (!funcs->get_picture(ff->context->width, ff->context->height, &pict)) {
 				img_convert((AVPicture *)pict_pt, PIX_FMT_YUV420P, (AVPicture *)ff->frame, ff->context->pix_fmt, \
 					ff->context->width, ff->context->height);
