@@ -32,6 +32,7 @@
 #include <nemesi/video.h>
 #include <nemesi/audio.h>
 #include <nemesi/diskwriter.h>
+#include <nemesi/types.h>
 
 #ifndef NMS_GLOBAL_OUTPUT
 #define OUTPUT_EXTERN extern
@@ -39,7 +40,11 @@
 #define OUTPUT_EXTERN
 #endif
 
+#define DEF_SYSBUFF_MS 500
+
 typedef struct {
+	double elapsed;
+	uint32 sysbuff_ms;
 	NMSAudio *audio;
 	NMSVideo *video;
 	NMSDiskWriter *diskwriter;

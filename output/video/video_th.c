@@ -26,15 +26,21 @@
  *  
  * */
 
+#define AV_SYNC
+// #undef AV_SYNC
+
 #include <sys/select.h>
 #include <sys/time.h>
 
-#include <nemesi/video.h>
+// #include <nemesi/video.h>
+#include <nemesi/output.h>
 #include <nemesi/comm.h>
 #include <nemesi/utils.h>
+#include <nemesi/types.h>
 
 #define SLEEP_MS 40
 #define DEF_FPS 25.0 // must be float
+#define MAX_AV_THRES 100
 
 void *video_th(void *vc)
 {
@@ -42,6 +48,10 @@ void *video_th(void *vc)
 	NMSVFunctions *funcs = videoc->functions;
 	struct timeval tvsleep, tvstart, tvstop;
 	float fps=DEF_FPS;
+	double last_pts = 0, next_pts = 0;
+#ifdef AV_SYNC
+	double audio_elapsed=0;
+#endif // AV_SYNC
 
 	// pthread cancel attributes
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -63,10 +73,47 @@ void *video_th(void *vc)
 
 	for (;;) {
 		timeval_add(&tvstart, &tvstart, &tvsleep);
-		timeval_subtract(&tvstop, &tvstart, &tvstop);
-		select(0, NULL, NULL, NULL, &tvstop);
-		funcs->update_screen();
+		if ( !timeval_subtract(&tvstop, &tvstart, &tvstop) && (tvstop.tv_usec > 10000) ) {
+			nmsprintf(3, "sleep for: %ld %ld\n", tvstop.tv_sec, tvstop.tv_usec);
+			select(0, NULL, NULL, NULL, &tvstop);
+		} else
+			nmsprintf(3, "didn't sleep\n");
+		funcs->update_screen(&next_pts);
+		nmsprintf(3, "next presentation timestamp is: %3.2f\n", next_pts);
 		gettimeofday(&tvstop, NULL);
+#ifdef AV_SYNC
+		if (nmsoutc->audio && nmsoutc->audio->init)
+			nmsoutc->audio->functions->control(ACTRL_GET_ELAPTM, &audio_elapsed);
+		if (audio_elapsed)
+			nmsprintf(3, "Audio elapsed time: %3.2fms\t", audio_elapsed);
+#endif // AV_SYNC
+		nmsprintf(3, "Video elapsed time: %3.2fms\n", last_pts);
+		if ( !next_pts )
+			next_pts = last_pts + 1000/fps;
+#ifdef AV_SYNC
+#if 1
+		if ( audio_elapsed ) {
+			if ( next_pts < audio_elapsed )
+				tvsleep.tv_usec = 9999; // < 10000, do not sleep
+			else if ( next_pts - audio_elapsed > MAX_AV_THRES ) {
+				tvsleep.tv_sec = 0;
+				tvsleep.tv_usec = ( next_pts + MAX_AV_THRES ) * 1000;
+			} else {
+				tvsleep.tv_sec = (next_pts - audio_elapsed) / 1000;
+				tvsleep.tv_usec = (next_pts - audio_elapsed - tvsleep.tv_sec * 1000 ) * 1000;
+			}
+		} else
+#endif
+#endif // AV_SYNC
+			tvsleep.tv_usec = ( next_pts - last_pts ) * 1000;
+		/*
+		else {
+			tvsleep.tv_sec = 1/fps;
+			tvsleep.tv_usec = (long)(1000000/fps) % 1000000;
+			nmsprintf(3, "\n\tnextp_pts = 0\n");
+		}
+		*/
+		last_pts = next_pts;
 	}
 
 	// pthread_cleanup_pop(1);

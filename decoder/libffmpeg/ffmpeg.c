@@ -58,6 +58,8 @@ int decode(char *data, int len, NMSOutput *outc)
 	NMSPicture *pict_pt = &pict;
 	int decd_len=0, size;
 	static FFMpegDec *ff=NULL;
+	// XXX: variabile temporanea temporanea temporanea
+	static double elapsed = 0;
 
 	if ( (!ff) && (!(ff=init_ffmpeg())) )
 		return 1;
@@ -109,7 +111,9 @@ int decode(char *data, int len, NMSOutput *outc)
 			funcs->get_picture(ff->context->width, ff->context->height, &pict);
 			img_convert((AVPicture *)pict_pt, PIX_FMT_YUV420P, (AVPicture *)ff->frame, ff->context->pix_fmt, \
 					ff->context->width, ff->context->height);
-			funcs->draw_picture(&pict);
+			// XXX; setto questa variabile temporanea
+			elapsed += 40;
+			funcs->draw_picture(&pict, elapsed);
 			// funcs->update_screen();
 			//got_picture--;
 		}

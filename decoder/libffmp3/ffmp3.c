@@ -88,7 +88,7 @@ int decode(char *data, int len, NMSOutput *outc)
 			// audio_data=(*ab_get)((uint32)out_size);
 			audio_data=funcs->get_buff((uint32)out_size);
 			memcpy(audio_data, out, out_size);
-			funcs->play_buff(audio_data, (uint32)out_size);
+			funcs->play_buff(audio_data, (uint32)out_size, outc->elapsed);
 		}
 	}
 

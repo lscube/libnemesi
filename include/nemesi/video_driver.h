@@ -42,8 +42,8 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width,
 static void *config(uint32 width, uint32 height, char *title, uint32 format);
 */
 static uint32 get_picture(int w, int h, NMSPicture *pict);
-static uint32 draw_picture(NMSPicture *pict);
-static uint32 update_screen(void);
+static uint32 draw_picture(NMSPicture *pict, double pts);
+static uint32 update_screen(double *next_pts);
 static void reset(void);
 static void uninit(void);
 

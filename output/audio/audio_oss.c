@@ -55,6 +55,11 @@ static struct oss_priv_s {
 	int audiofd;
 	char *audiodev;
 	NMSAudioBuffer *audio_buffer;
+	int capabilities;
+	uint32 freq;
+	uint8 channels;
+	uint32 format;
+	double last_pts;
 } oss_priv;
 
 static uint32 oss_init(const char *arg)
@@ -79,7 +84,7 @@ static uint32 oss_init(const char *arg)
 	return 0;
 }
 
-static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, const char *arg)
+static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, uint32 flags, const char *arg)
 {
 	int req_format;
 	int result;
@@ -89,12 +94,16 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 		return 1;
 	
 	// Audio Buffer initialization
-	if ( (oss_priv.audio_buffer=ab_init(AUDIO_BUFF_SIZE)) == NULL )
+	if (!buff_ms)
+		buff_ms = AUDIO_BUFF_SIZE;
+	if ( (oss_priv.audio_buffer=ab_init(buff_ms)) == NULL )
 		return nmserror("[OSS] Failed while initializing Audio Buffer");
 
 	nmsprintf(3, "[OSS] Requested Rate is: %d\n", rate);
 	nmsprintf(3, "[OSS] Requested Channel number is: %d\n", channels);
 	nmsprintf(3, "[OSS] Requested Format is: %d\n", format);
+
+	ioctl(oss_priv.audiofd, SNDCTL_DSP_GETCAPS, &oss_priv.capabilities);
 	// TODO; init card
 	req_format=0x7FFF000D;
 	// req_format=0x7FFF000A;
@@ -104,8 +113,7 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 		return nmserror("[OSS] Could not get hw buffer parameters");;
 	nmsprintf(2, "\nFrag: %d\nFrag total: %d\nFrag Size: %d\n", info.fragments, info.fragstotal, info.fragsize);
 
-	ioctl(oss_priv.audiofd, SNDCTL_DSP_GETCAPS, &req_format);
-	if (req_format & DSP_CAP_TRIGGER) {
+	if (oss_priv.capabilities & DSP_CAP_TRIGGER) {
 		req_format= ~PCM_ENABLE_OUTPUT;
 		ioctl(oss_priv.audiofd, SNDCTL_DSP_SETTRIGGER, &req_format);
 	}
@@ -113,26 +121,24 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 	// Setup format
 	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_GETFMTS, &req_format)) == -1 )
 		nmsprintf(2, "Could not get formats supported\n");
-
 	if (req_format & format) {
-		req_format = format;
-		if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_SETFMT, &req_format)) == -1 ) {
+		oss_priv.format = format;
+		if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_SETFMT, &oss_priv.format)) == -1 ) {
 			return nmserror("OSS: Could not set format");
 		}
 	} else
-		return nmserror("OSS: Format %s non supported: exiting...", audio_format_name(req_format));
+		return nmserror("OSS: Format %s non supported: exiting...", audio_format_name(oss_priv.format));
 
 	// set channels
-	req_format = channels;
-	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_CHANNELS, &req_format)) == -1 )
+	oss_priv.channels = channels;
+	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_CHANNELS, &oss_priv.channels)) == -1 )
 		return nmserror("OSS: Could not set number of channels\n");
-		
-	nmsprintf(2, "Channels: %d\n", req_format);
-	req_format = rate;
-	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_SPEED, &req_format)) == -1 )
+	nmsprintf(2, "Channels: %d\n", oss_priv.channels);
+
+	oss_priv.freq = rate;
+	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_SPEED, &oss_priv.freq)) == -1 )
 		return nmserror("Could not set rate");
-	
-	nmsprintf(2, "Sample rate: %d\n", req_format);
+	nmsprintf(2, "Sample rate: %d\n", oss_priv.freq);
 
 	return 0;
 }
@@ -140,12 +146,37 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 static uint32 control(uint32 cmd, void *arg)
 {
 	audio_buf_info info;
+	int bytes_x_sample = 2;
+	int bytes;
 
 	switch(cmd) {
 		case ACTRL_GET_SYSBUF:
 			ioctl(oss_priv.audiofd, SNDCTL_DSP_GETOSPACE, &info);
 			*((float *)arg) = (1.0-((float)info.bytes/(float)(info.fragsize*info.fragstotal)));
-			return 0;
+			break;
+		case ACTRL_GET_ELAPTM:
+			switch (oss_priv.format) {
+				case AFMT_U8:
+				case AFMT_S8:
+					bytes_x_sample = 1;
+					break;
+				case AFMT_S16_LE:
+				case AFMT_S16_BE:
+				case AFMT_U16_LE:
+				case AFMT_U16_BE:
+					bytes_x_sample = 2;
+					break;
+			}
+#ifdef SNDCTL_DSP_GETODELAY
+			if (ioctl(oss_priv.audiofd, SNDCTL_DSP_GETODELAY, &bytes) == -1) { // XXX: try using GETODELAY
+#endif
+				if (ioctl(oss_priv.audiofd, SNDCTL_DSP_GETOSPACE, &info) == -1) // XXX: try using GETOSPACE
+					return -1;
+				bytes = info.fragsize*info.fragstotal - info.bytes;
+#ifdef SNDCTL_DSP_GETODELAY
+			}
+#endif
+			*((double *)arg) = oss_priv.last_pts - ( (double)( bytes + oss_priv.audio_buffer->len) * 1000.0 ) / (double)(oss_priv.freq * oss_priv.channels * bytes_x_sample);
 			break;
 		default:
 			return -1;
@@ -160,7 +191,7 @@ static uint8 *get_buff(uint32 len)
 	return ab_get(len);
 }
 
-static uint32 play_buff(uint8 *data, uint32 len)
+static uint32 play_buff(uint8 *data, uint32 len, double pts)
 {
 	NMSAudioBuffer *audio_buffer = oss_priv.audio_buffer;
 	int audiofd = oss_priv.audiofd;
@@ -187,6 +218,8 @@ static uint32 play_buff(uint8 *data, uint32 len)
 		pthread_cond_signal(&(audio_buffer->cond_full));
 	}
 	pthread_mutex_unlock(&(audio_buffer->syn));
+	
+	oss_priv.last_pts = max(oss_priv.last_pts, pts);
 
 	return 0;
 }

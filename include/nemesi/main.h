@@ -44,6 +44,7 @@ typedef struct {
 	char *audio;
 	char *video;
 	char *diskwriter;
+	unsigned int sysbuff_ms;
 } NMSOutputHints;
 
 struct RTSP_args {

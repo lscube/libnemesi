@@ -54,8 +54,8 @@ typedef struct {
 } NMSAudio;
 
 /* Audio Buffer defines */
-#define SECONDS 1
-#define AUDIO_BUFF_SIZE (unsigned long)(FREQ*SECONDS*CHANNELS*BYTES_X_SAMPLE)
+#define MSECONDS 500
+#define AUDIO_BUFF_SIZE (unsigned long)((FREQ*MSECONDS*CHANNELS*BYTES_X_SAMPLE)/1000)
 #define AUDIO_SYS_BUFF 0.5 /* Buffer first fill percentage */
 #define MIN_AUDIO_SYS_BUFF 0.2 /* min buffer percentage to request fast cycles */
 #define MAX_AUDIO_SYS_BUFF 0.9 /* max buffer percentage */
@@ -77,6 +77,6 @@ uint8 *ab_get(uint32, ...);
 void ab_uninit(NMSAudioBuffer *);
 /* end of Audio Buffer defines */
 
-NMSAudio *audio_init(char *);
+NMSAudio *audio_init(char *, uint32);
 
 #endif

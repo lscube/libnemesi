@@ -97,11 +97,13 @@ NMS_LIB_VIDEO(sdl);
 #define RGB 1
 #define BGR 2
 
-#define VBUFFER_SIZE 3
+// #define VBUFFER_SIZE 3
+#define VBUFFER_SIZE 25
 
 struct sdl_vbuffer {
 	SDL_Overlay *overlay[VBUFFER_SIZE];
 	SDL_Surface *surface[VBUFFER_SIZE];
+	double pic_pts[VBUFFER_SIZE];
 	int readpos;
 	int writepos;
 	int size;
@@ -141,6 +143,7 @@ static struct sdl_vbuffer *new_vbuffer()
 	for (i=0;i<VBUFFER_SIZE;i++) {
 		vbuffer->overlay[i] = NULL;
 		vbuffer->surface[i] = NULL;
+		vbuffer->pic_pts[i] = 0;
 	}
 	vbuffer->readpos = vbuffer->writepos = vbuffer->size = 0;
 	
@@ -313,8 +316,14 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 	SDL_Overlay *bmp = vbuffer->overlay[vbuffer->writepos];
 
 	SDL_LockMutex(vbuffer->syn);
-	while(vbuffer->size == VBUFFER_SIZE)
+	while(vbuffer->size == VBUFFER_SIZE) {
 		SDL_CondWait(vbuffer->cond_full, vbuffer->syn);
+		/*
+		vbuffer->readpos++;
+		vbuffer->readpos %= VBUFFER_SIZE;
+		vbuffer->size--;
+		*/
+	}
 	SDL_UnlockMutex(vbuffer->syn);
 
 	MUTEX_LOCK(priv->syn, 1);
@@ -367,13 +376,14 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 	return 0;
 }
 
-static uint32 draw_picture(NMSPicture *pict)
+static uint32 draw_picture(NMSPicture *pict, double pts)
 {
 	struct sdl_vbuffer *vbuffer = sdl_priv.vbuffer;
 	// SDL_Overlay *bmp = sdl_priv.overlay;
-	SDL_Overlay *bmp = vbuffer->overlay[vbuffer->writepos++];
+	SDL_Overlay *bmp = vbuffer->overlay[vbuffer->writepos];
 
 	SDL_OVR_UNLOCK(bmp);
+	vbuffer->pic_pts[vbuffer->writepos++] = pts;
 	vbuffer->writepos %= VBUFFER_SIZE;
 	SDL_LockMutex(vbuffer->syn);
 	vbuffer->size++;
@@ -382,7 +392,8 @@ static uint32 draw_picture(NMSPicture *pict)
 	return 0;
 }
 
-static uint32 update_screen(void)
+// static uint32 update_screen(void)
+static uint32 update_screen(double *next_pts)
 {
 	struct sdl_priv_s *priv = &sdl_priv;
 	struct sdl_vbuffer *vbuffer = priv->vbuffer;
@@ -391,7 +402,8 @@ static uint32 update_screen(void)
 	if (!vbuffer)
 		return 1;
 
-	if (vbuffer->size < (VBUFFER_SIZE / 2) + 1) // no frame to show
+	// if (vbuffer->size < (VBUFFER_SIZE / 2) + 1) // no frame to show
+	if (!vbuffer->size) // no available frames in buffer
 		return 0;
 	MUTEX_LOCK(priv->syn, 1);
 
@@ -411,6 +423,13 @@ static uint32 update_screen(void)
 		SDL_CondSignal(vbuffer->cond_full);
 	vbuffer->size--;
 	SDL_UnlockMutex(vbuffer->syn);
+	
+	if (next_pts) {
+		if (vbuffer->size)
+			*next_pts = vbuffer->pic_pts[vbuffer->readpos];
+		else
+			*next_pts = 0;
+	}
 
 	MUTEX_UNLOCK(priv->syn, 1);
 	

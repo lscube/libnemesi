@@ -39,7 +39,7 @@
 /*!
   Init audio
   */
-NMSAudio *audio_init(char *drv_hint)
+NMSAudio *audio_init(char *drv_hint, uint32 sysbuff_ms)
 {
 	NMSAudio *ac;
 	// NMSAFunctions *funcs;
@@ -52,7 +52,7 @@ NMSAudio *audio_init(char *drv_hint)
 	ac->init = 0;
 
 	// Audio Output Driver selection
-	if ( !(ac->functions = init_best_audio_out(drv_hint)) )
+	if ( !(ac->functions = init_best_audio_out(drv_hint, sysbuff_ms)) )
 		return NULL;
 	else
 		ac->init = 1;

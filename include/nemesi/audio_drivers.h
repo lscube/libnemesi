@@ -35,6 +35,7 @@
 #include <nemesi/types.h>
 
 #define ACTRL_GET_SYSBUF 0
+#define ACTRL_GET_ELAPTM 1
 
 typedef struct {
         /* driver name */
@@ -57,7 +58,7 @@ typedef struct {
 	 * 	format:
          * returns : zero on successful initialization, non-zero on error.
          */
-        uint32 (*init)(uint32 rate, uint8 channels, uint32 format, uint32 flags, const char *arg);
+        uint32 (*init)(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, uint32 flags, const char *arg);
 	/*
 	 * Control interface
 	 * params:
@@ -80,7 +81,7 @@ typedef struct {
 	 *	len: length of buffer
 	 * retuns 1 on error, 0 otherwise
 	 */
-	uint32 (*play_buff)(uint8 *data, uint32 len);
+	uint32 (*play_buff)(uint8 *data, uint32 len, double pts);
         /*
          * Pauses the driver
          */
@@ -107,7 +108,7 @@ extern NMSAFunctions nms_audio_sdl;
 #endif
 
 void list_audio_out(void);
-NMSAFunctions *init_best_audio_out(char *);
+NMSAFunctions *init_best_audio_out(char *, uint32);
 /*
 char *ao_format_name(int format);
 int ao_init(void);

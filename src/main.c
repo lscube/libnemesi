@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	struct RTSP_args *rtsp_args;
 	pthread_t rtsp_tid;
 	pthread_attr_t rtsp_attr;
-	NMSOutputHints hints = {NULL, NULL, NULL};
+	NMSOutputHints hints = {NULL, NULL, NULL, DEF_SYSBUFF_MS};
 	int n;
 	void *ret;
 	

@@ -41,10 +41,13 @@ int output_init(NMSOutputHints *hints)
 	if (!(nmsoutc = malloc(sizeof(NMSOutput))))
 		nmserror("Could not alloc output struct");
 
+	nmsoutc->elapsed=0;
+	nmsoutc->sysbuff_ms = hints ? hints->sysbuff_ms : DEF_SYSBUFF_MS;
+
 	nmsprintf(1, SEPARATOR);
 	// AUDIO MODULE INIT
 	// if ((nmsoutc->audio=audio_init("sdl")) == NULL) {
-	if ((nmsoutc->audio=audio_init(hints ? hints->audio : NULL)) == NULL) {
+	if ((nmsoutc->audio=audio_init(hints ? hints->audio : NULL, nmsoutc->sysbuff_ms)) == NULL) {
 		nmserror("Audio module not available");
 		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
 		// rem_avail_pref("output card");

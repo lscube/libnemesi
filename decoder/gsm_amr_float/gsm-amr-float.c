@@ -166,7 +166,7 @@ int decode(char *data, int len, NMSOutput *outc)
 				adjust40 = 0;
 			}
 		}
-		funcs->play_buff(outbuff, req_len);
+		funcs->play_buff(outbuff, req_len, outc->elapsed);
 /*		if (write(audio_fd, outbuff, L_FRAME * sizeof(short) * ELEVEN + L_FRAME * sizeof(short) / 40) != (L_FRAME * sizeof(short) * ELEVEN) + L_FRAME * sizeof(short) / 40)
 			fprintf(stderr, "\nerror writing output file: %s\n", strerror(errno));
 */

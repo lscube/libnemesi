@@ -54,6 +54,7 @@ NMS_LIB_AUDIO(sdl);
 static struct sdl_priv_s {
 	SDL_AudioSpec aspec;
 	NMSAudioBuffer *audio_buffer;
+	double last_pts;
 } sdl_priv;
 
 #ifdef SDLENV
@@ -139,15 +140,17 @@ static uint32 sdl_init(const char *arg)
 	return 0;
 }
 
-static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, const char *arg)
+static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, uint32 flags, const char *arg)
 {
 	SDL_AudioSpec requested_fmt;
 
 	sdl_init(arg);
 
+	if (!buff_ms)
+		buff_ms = AUDIO_BUFF_SIZE;
 	if (sdl_priv.audio_buffer)
 		free(sdl_priv.audio_buffer);
-	if ( (sdl_priv.audio_buffer=ab_init(AUDIO_BUFF_SIZE)) == NULL )
+	if ( (sdl_priv.audio_buffer=ab_init(buff_ms)) == NULL )
 		return nmserror("Failed while initializing Audio Buffer\n");
 
 	switch(format) {
@@ -194,10 +197,27 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 
 static uint32 control(uint32 cmd, void *arg)
 {
+	int bytes_x_sample = 2;
 	switch(cmd) {
 		case ACTRL_GET_SYSBUF:
 			*((float *)arg) = (float)(sdl_priv.audio_buffer->len)/(float)AUDIO_BUFF_SIZE;
 			return 0;
+			break;
+		case ACTRL_GET_ELAPTM:
+			switch (sdl_priv.aspec.format) {
+				case AUDIO_S16LSB:
+				case AUDIO_S16MSB:
+				case AUDIO_U16LSB:
+				case AUDIO_U16MSB:
+					bytes_x_sample = 2;
+					break;
+				case AUDIO_U8:
+				case AUDIO_S8:
+					bytes_x_sample = 1;
+					break;
+			}
+			*((double *)arg) = sdl_priv.last_pts - ((double)(sdl_priv.audio_buffer->len + sdl_priv.aspec.size) * 1000.0 ) / (double)(sdl_priv.aspec.freq * \
+					sdl_priv.aspec.channels * bytes_x_sample);
 			break;
 		default:
 			return -1;
@@ -213,8 +233,10 @@ static uint8 *get_buff(uint32 len)
 	return ab_get(len);
 }
 
-static uint32 play_buff(uint8 *data, uint32 len)
+static uint32 play_buff(uint8 *data, uint32 len, double pts)
 {
+	sdl_priv.last_pts = max(sdl_priv.last_pts, pts);
+	
 	return 0;
 }
 

@@ -75,7 +75,7 @@ int decode(char *data, int len, NMSOutput *outc)
 			adjust40=0;
 		}
 	}
-	funcs->play_buff(outbuff, req_len);
+	funcs->play_buff(outbuff, req_len, outc->elapsed);
 /*
 	if ( write(audio_fd, (char *)outbuff, len*ELEVEN+len/40) == -1 ){
 		fprintf(stderr,"\n\n\nCould not write on Audio Board\n\n\n");

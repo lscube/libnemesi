@@ -85,12 +85,12 @@ typedef struct {
 	 *    pict: picture to draw. // XXX: For now we don't need it, but in future... (?)
 	 * retuns 1 on error, 0 otherwise
 	 */
-	uint32 (*draw_picture)(NMSPicture *pict);
+	uint32 (*draw_picture)(NMSPicture *pict, double pts);
 
         /*
          * Display a new RGB/BGR frame of the video to the screen.
          */
-        uint32 (*update_screen)(void);
+        uint32 (*update_screen)(double *next_pts);
 	/*
 	 * Closes window and reset video buffer
 	 */

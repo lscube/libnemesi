@@ -139,20 +139,24 @@ void *decoder(void *args)
 						else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
+								nmsoutc->elapsed = ts_elapsed * 1000;
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
 								nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
 
 								// AUDIO
 								if(buffering_audio) {
-									if (audio_sysbuff > AUDIO_SYS_BUFF /*0.99*/ ) {
+									if (audio_sysbuff > /*0.1*/ AUDIO_SYS_BUFF /*0.99*/ ) {
 										buffering_audio = 0;
 										// start playing audio
 										nmsoutc->audio->functions->resume();
 									}
 								}
 								// VIDEO
-								if((nmsoutc->video->init) && (!nmsoutc->video->tid))
+								if((nmsoutc->video->init) && (!nmsoutc->video->tid)) {
 									video_th_start(nmsoutc->video);
+									// buffering_audio = 0;
+									// nmsoutc->audio->functions->resume();
+								}
 							}
 							/* XXX: not supported any more
 							     else if ( !strcmp(output_pref, "diskdecoded") ) {
@@ -163,7 +167,7 @@ void *decoder(void *args)
 							} */
 						}
 /**/
-				 		nmsprintf(1, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
+				 		nmsprintf(2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, len);
 /**/				
 						bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
@@ -243,7 +247,7 @@ void *decoder(void *args)
 			select(0, NULL, NULL, NULL, &tvsleep);
 /**/
 			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
-	 		nmsprintf(1, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - no pkt   ",\
+	 		nmsprintf(2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - no pkt   ",\
 					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0);
 			len = 0;
 /**/				
