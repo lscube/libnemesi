@@ -51,22 +51,11 @@ NMSAudio *audio_init(const char *drv_hint)
 
 	ac->init = 0;
 
-#if 1
 	// Audio Output Driver selection
-	if ( !(ac->functions = init_best_audio_out("sdl")) )
+	if ( !(ac->functions = init_best_audio_out(drv_hint)) )
 		return NULL;
 	else
 		ac->init = 1;
-#else
-	ac->functions = &nms_audio_oss;
-	// ac->functions = &nms_audio_sdl; // XXX: very very temporanea
-
-	// TODO: parse drv hint for subdriver
-
-	// audio init
-	if ( !(ac->init = !ac->functions->init(FREQ, CHANNELS, FORMAT, 0, NULL)) )
-		return NULL;
-#endif
 	
 	nmsprintf(1, "Audio driver: %s\n", ac->functions->info->name);
 

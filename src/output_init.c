@@ -42,7 +42,7 @@ int output_init(void)
 
 	nmsprintf(1, SEPARATOR);
 	// AUDIO MODULE INIT
-	if ((nmsoutc->audio=audio_init("sdl")) == NULL) {
+	if ((nmsoutc->audio=audio_init("oss")) == NULL) {
 		nmserror("Audio module not available");
 		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
 		// rem_avail_pref("output card");

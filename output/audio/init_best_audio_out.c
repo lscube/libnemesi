@@ -28,9 +28,9 @@
 
 #include <string.h>
 
-#include <nemesi/comm.h>
 #include <nemesi/audio.h>
-#include <nemesi/audio_drivers.h>
+// #include <nemesi/audio_drivers.h>
+#include <nemesi/comm.h>
 
 NMSAFunctions *init_best_audio_out(const char *drv)
 {

@@ -41,15 +41,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_SDL
-
-#include <SDL.h>
-
-#define SAMPLES 2048
-/* #define SAMPLES 512 */
-
-#endif
-
 #define FREQ 44100
 #define CHANNELS 2
 #define BYTES_X_SAMPLE 2

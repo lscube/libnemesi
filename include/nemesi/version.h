@@ -34,7 +34,7 @@
 #ifndef VERSION
 #define VERSION "0.1.2"
 #endif
-#define VERSION_NAME "mu-fl1"
+#define VERSION_NAME "barbarians"
 #define PROG_NAME "NeMeSI"
 #define PROG_DESCR "NEtwork MEdia Streamer I"
 
