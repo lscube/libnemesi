@@ -1,6 +1,6 @@
 Summary: A NEtwork MEdia Streamer
 Name: nemesi
-Version: 0.2.0
+Version: 0.2.1
 Release: 0
 Copyright: GPL
 Group: Applications/Internet

@@ -1,5 +1,5 @@
 /* * 
- *  ./E-gui/nemesi/init_main.c: $Revision: 1.1 $ -- $Date: 2002/10/29 12:43:16 $
+ *  ./E-gui/nemesi/init_main.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:05 $
  *  
  *  This file is part of NeMeSI
  *

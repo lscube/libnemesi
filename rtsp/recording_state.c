@@ -1,5 +1,5 @@
 /* * 
- *  ./rtsp/recording_state.c: $Revision: 1.1 $ -- $Date: 2002/10/29 12:43:20 $
+ *  ./rtsp/recording_state.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:14 $
  *  
  *  This file is part of NeMeSI
  *
