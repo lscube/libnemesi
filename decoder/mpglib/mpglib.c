@@ -39,12 +39,22 @@ int decode(char *data, int len, uint8 * (*ab_get) (uint32))
 	}
 
 	ret = decodeMP3(mp, data + 4, len - 4, out, BUFFER, &size);
+#if 0
 	while (ret == MP3_OK) {
 /*		write(audio_fd, out, size); */
 		audio_data = (*ab_get) ((uint32) size);
 		memcpy(audio_data, out, size);
 		ret = decodeMP3(mp, NULL, 0, out, BUFFER, &size);
 	}
+#else
+	if (ret == MP3_OK) {
+		audio_data = (*ab_get) ((uint32) size);
+		memcpy(audio_data, out, size);
+	}
+	else {
+		fprintf(stderr, "\ndecoded %d bytes with %d status\n", size, ret);
+	}
+#endif
 
 	return 0;
 }

@@ -112,7 +112,8 @@ mpglib_la_SOURCES = mpglib.c\
 		layer2.c \
 		layer3.c \
 		tabinit.c \
-		interface.c
+		interface.c \
+		VbrTag.c
 
 
 noinst_HEADERS = common.h \
@@ -126,7 +127,8 @@ noinst_HEADERS = common.h \
 		layer3.h \
 		mpg123.h \
 		mpglib.h \
-		tabinit.h
+		tabinit.h \
+		VbrTag.h
 
 
 mpglib_la_LDFLAGS = -module -avoid-version 
@@ -142,7 +144,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 mpglib_la_DEPENDENCIES =
 am_mpglib_la_OBJECTS = mpglib.lo common.lo dct64_i386.lo decode_i386.lo \
-	layer1.lo layer2.lo layer3.lo tabinit.lo interface.lo
+	layer1.lo layer2.lo layer3.lo tabinit.lo interface.lo VbrTag.lo
 mpglib_la_OBJECTS = $(am_mpglib_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -152,7 +154,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/common.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/VbrTag.Plo ./$(DEPDIR)/common.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/dct64_i386.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/decode_i386.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/interface.Plo ./$(DEPDIR)/layer1.Plo \
@@ -219,6 +221,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VbrTag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dct64_i386.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/decode_i386.Plo@am__quote@

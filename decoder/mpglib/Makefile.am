@@ -12,7 +12,8 @@ mpglib_la_SOURCES = mpglib.c\
 		layer2.c \
 		layer3.c \
 		tabinit.c \
-		interface.c
+		interface.c \
+		VbrTag.c
 
 noinst_HEADERS = common.h \
 		dct64_i386.h \
@@ -25,7 +26,8 @@ noinst_HEADERS = common.h \
 		layer3.h \
 		mpg123.h \
 		mpglib.h \
-		tabinit.h
+		tabinit.h \
+		VbrTag.h
 
 mpglib_la_LDFLAGS = -module -avoid-version 
 #mpglib_la_LIBADD = -lm libmpglib.la # @LIBLTDL@
