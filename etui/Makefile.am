@@ -4,6 +4,8 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libetui.la
 libetui_la_SOURCES =	ui.c \
 			parse_cl.c \
+			parse_main_cl.c \
+			parse_ui_cl.c \
 			parse_prompt.c \
 			seturlname.c \
 			throbber.c \

@@ -48,8 +48,11 @@ int main(int argc, char *argv[])
 	
 	// extern int (*decoders[])(char *, int, uint8 *(*)());
 
-	// fprintf(stderr, "\nWelcome! This is %s - %s -- version %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
-	nmsprintf(0, "\nWelcome! This is %s - %s -- version %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+	// nmsprintf(0, "\nWelcome! This is %s - %s -- version %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+	header();
+
+	if ( (n=parse_main_cl(argc, argv)) )
+		exit((n<0) ? 1 : 0);
 
 	memset(decoders, 0, 128*sizeof(int (*)()));
 

@@ -35,17 +35,13 @@ int parse_cl(int argc, char **argv, char **urlname)
 
 	skip = 0;
 	opterr = 0;
-	while (((ch = getopt(argc, argv, CL_OPTIONS)) != -1))
+	while (((ch = getopt(argc, argv, CL_MAIN_OPTIONS)) != -1))
 		switch (ch) {
 		case 'h':	/* help */
-			printf("\n%s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
-			printf("Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME);
-			printf("\n");
-			printf("\t-h\tdisplay this help and exit\n");
-			printf("\t-v\tdisplay version information and exit\n\n");
+			usage();
 			skip = 1;
 			break;
-		case 'v':	/* version */
+		case 'V':	/* version */
 			printf("\n%s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 			printf("Copyleft 2001 - mancho@cclinf.polito.it\n");
 			printf("              - shawill@cclinf.polito.it\n\n");
@@ -71,11 +67,14 @@ int parse_cl(int argc, char **argv, char **urlname)
 				printf("\t-v\tdisplay version information and exit\n\n");
 			}
 			return 1;
-		} else if (!skip) {
+		} else if (!skip)
+			if ( !(*urlname = strdup(argv[optind])) )
+				return 1;
+		/* { // C'abbiamo la 'strdup' e la usiamo, no?
 			if ((*urlname = (char *) malloc(sizeof(char) * (strlen(argv[optind]) + 1))) == NULL)
 				return 1;
 			strcpy(*urlname, argv[optind]);
-		}
+		} */
 	}
 	return 0;
 }

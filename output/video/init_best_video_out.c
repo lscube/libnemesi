@@ -26,28 +26,3 @@
  *  
  * */
 
-#include <gnome.h>
-
-#include <ourhdr.h>
-#include <nemesi/utils.h>
-
-void txtprintf(gpointer text_area)
-{
-	int n;
-	char optstr;
-	static int line_begin=0;
-	
-	while((n=read(UIINPUT_FILENO, &optstr, 1)) > 0) {
-		if (optstr == '\r')
-			/*
-			gtk_text_set_point((GtkText *) text_area, line_begin);
-			*/
-			gtk_text_backward_delete((GtkText *) text_area,\
-					gtk_text_get_point((GtkText *) text_area)-line_begin);
-		else {
-			if (optstr == '\n')
-				line_begin=gtk_text_get_point((GtkText *) text_area);
-			gtk_text_insert((GtkText *) text_area, NULL, NULL, NULL, &optstr, n);
-		}
-	}
-}

@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <config.h>
 #include <nemesi/comm.h>
 
 /*!  \brief print function.
@@ -62,11 +63,13 @@ int nmsprintf(int verbosity, const char *fmt, ...)
 	va_list args;
 
 	if ( fmt == NULL ) {
-		if (verbosity > MAX_VERBOSITY)
-			verbose_nemesi = MAX_VERBOSITY;
-		else
-			verbose_nemesi = verbosity;
-		return 0;
+		if (verbosity >= 0) {
+			if (verbosity > MAX_VERBOSITY)
+				verbose_nemesi = MAX_VERBOSITY;
+			else
+				verbose_nemesi = verbosity;
+		}
+		return verbose_nemesi;
 	}
 
 	if (verbosity < 0) {

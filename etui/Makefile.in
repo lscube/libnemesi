@@ -160,6 +160,8 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libetui.la
 libetui_la_SOURCES = ui.c \
 			parse_cl.c \
+			parse_main_cl.c \
+			parse_ui_cl.c \
 			parse_prompt.c \
 			seturlname.c \
 			throbber.c \
@@ -180,9 +182,10 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libetui_la_LIBADD =
-am_libetui_la_OBJECTS = ui.lo parse_cl.lo parse_prompt.lo seturlname.lo \
-	throbber.lo send_open.lo send_play.lo send_pause.lo \
-	send_close.lo get_infos.lo
+am_libetui_la_OBJECTS = ui.lo parse_cl.lo parse_main_cl.lo \
+	parse_ui_cl.lo parse_prompt.lo seturlname.lo throbber.lo \
+	send_open.lo send_play.lo send_pause.lo send_close.lo \
+	get_infos.lo
 libetui_la_OBJECTS = $(am_libetui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -190,7 +193,9 @@ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/get_infos.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/parse_cl.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/parse_main_cl.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/parse_prompt.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/parse_ui_cl.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/send_close.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/send_open.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/send_pause.Plo \
@@ -237,7 +242,9 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get_infos.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_cl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_main_cl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_prompt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_ui_cl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/send_close.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/send_open.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/send_pause.Plo@am__quote@

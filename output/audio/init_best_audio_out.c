@@ -26,15 +26,36 @@
  *  
  * */
 
-#include <gnome.h>
+#include <string.h>
 
-#include <ourhdr.h>
+#include <nemesi/comm.h>
+#include <nemesi/audio.h>
+#include <nemesi/audio_drivers.h>
 
-GtkWidget *get_egui(GtkWidget *egui)
+NMSAFunctions *init_best_audio_out(const char *drv)
 {
-	static GtkWidget *widg;
+	int i=0;
+	// XXX: vettore temporaneamente dichiarato qui
+	NMSAFunctions* audio_out_drivers[]= {
+		&nms_audio_oss,
+#if HAVE_SDL
+		&nms_audio_sdl,
+#endif
+		NULL
+	};
 
-	if (egui != NULL)
-		widg=egui;
-	return widg;
+	while (audio_out_drivers[i] && strcmp(drv, audio_out_drivers[i]->info->short_name))
+		i++;
+	if (!audio_out_drivers[i]) {
+		nmserror("Could not find audio driver %s", drv);
+		return NULL;
+	}
+
+	nmsprintf(3, "Found driver %s (i=%d)\n", audio_out_drivers[i]->info->name, i);
+	if (audio_out_drivers[i]->init(FREQ, CHANNELS, FORMAT, 0, NULL)) {
+		nmserror("Could not initialize driver %s", drv);
+		return NULL;
+	}
+
+	return audio_out_drivers[i];
 }

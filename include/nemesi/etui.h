@@ -42,10 +42,35 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 
-#define CL_OPTIONS "hv"		/* help, version */
+#define header()	nmsprintf(1, "\n%s - %s -- release %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+
+#define usage()	{ \
+			nmsprintf(1, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
+			nmsprintf(1, "\n"); \
+			nmsprintf(1, "\t-h|--help\tdisplay this help and exit\n"); \
+			nmsprintf(1, "\t-V|--version\tdisplay version information and exit\n"); \
+			nmsprintf(1, "\t-v [n]\t\tset verbose level to 'n'. Without 'n' the level will be incremented.\n\n"); \
+		}
+
+#define version() { \
+			nmsprintf(0, "Copyleft 2001 - giampaolo.mancini@polito.it\n"); \
+			nmsprintf(0, "              - francesco.varano@polito.it\n"); \
+			nmsprintf(0, "              - marco.penno@polito.it\n\n"); \
+		  }
+
+#define CL_MAIN_OPTIONS	"hv::V"		/* help, verbosity, version */
+#define CL_MAIN_LONG_OPTIONS	{"version", 0, 0, 'V'}, \
+				{"help", 0, 0, 'h'}, \
+				{"ao", 1, 0, 1}
+#define CL_UI_OPTIONS	""
+
+#define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS
+#define CL_LONG_OPTIONS CL_MAIN_LONG_OPTIONS
 
 int ui(struct RTSP_args *, int, char **);
 int parse_cl(int, char **, char **);
+int parse_main_cl(int, char **);
+int parse_ui_cl(int, char **, char **);
 int parse_prompt(struct RTSP_args *, char *);
 int seturlname(struct RTSP_args *, char *);
 int throbber(struct RTSP_Thread *);

@@ -42,7 +42,7 @@
 NMSAudio *audio_init(const char *drv_hint)
 {
 	NMSAudio *ac;
-	NMSAFunctions *funcs;
+	// NMSAFunctions *funcs;
 
 	if ((ac=malloc(sizeof(NMSAudio))) == NULL) {
 		nmserror("Could not alloc audio structure");
@@ -51,18 +51,24 @@ NMSAudio *audio_init(const char *drv_hint)
 
 	ac->init = 0;
 
+#if 1
 	// Audio Output Driver selection
-	// ac->functions = &nms_audio_oss;
-	ac->functions = &nms_audio_sdl; // XXX: very very temporanea
-	funcs = ac->functions;
+	if ( !(ac->functions = init_best_audio_out("sdl")) )
+		return NULL;
+	else
+		ac->init = 1;
+#else
+	ac->functions = &nms_audio_oss;
+	// ac->functions = &nms_audio_sdl; // XXX: very very temporanea
 
 	// TODO: parse drv hint for subdriver
 
 	// audio init
-	if ( !(ac->init = !funcs->init(FREQ, CHANNELS, FORMAT, 0, NULL)) )
+	if ( !(ac->init = !ac->functions->init(FREQ, CHANNELS, FORMAT, 0, NULL)) )
 		return NULL;
+#endif
 	
-	nmsprintf(1, "Audio driver: %s\n", funcs->info->name);
+	nmsprintf(1, "Audio driver: %s\n", ac->functions->info->name);
 
 	return ac;
 }

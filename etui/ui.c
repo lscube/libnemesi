@@ -50,7 +50,7 @@ int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 #endif // USE_UIPRINTF
 	memset(optstr, '\0', 256);
 
-	if (parse_cl(argc, argv, &urlname) > 0)
+	if (parse_ui_cl(argc, argv, &urlname) > 0)
 		return 1;
 	if (urlname != NULL) {
 		fprintf(stderr, "Connect: Please wait, opening \"%s\"", urlname);

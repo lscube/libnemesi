@@ -104,6 +104,7 @@ extern NMSAFunctions nms_audio_oss;
 extern NMSAFunctions nms_audio_sdl;
 #endif
 
+NMSAFunctions *init_best_audio_out(const char *);
 /*
 char *ao_format_name(int format);
 int ao_init(void);
