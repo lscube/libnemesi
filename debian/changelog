@@ -1,0 +1,7 @@
+nemesi (0.5.0-1) unstable; urgency=low
+
+  * Initial Release.
+  * Adjusted the docs/Makefile.am to fix problems with man-to-html rendering.
+
+ -- OMSP Team <streaming@multiemeda.polito.it>  Wed,  2 Feb 2005 15:45:53 +0100
+
