@@ -35,7 +35,7 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 	char *urlname = ui_hints->url; // NULL;
 	char optstr[256];
 	// select vars
-	struct timeval seleep;
+	// struct timeval seleep;
 	fd_set rdset;
 	int maxfd;
 
@@ -82,10 +82,13 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 		maxfd = max(maxfd, UIINPUT_FILENO);
 #endif // USE_UIPRINTF
 
+		/*
 		seleep.tv_sec = 1;
 		seleep.tv_usec = 0;
 		
 		select(maxfd+1, &rdset, NULL, NULL, &seleep);
+		*/
+		select(maxfd+1, &rdset, NULL, NULL, NULL);
 #ifdef USE_UIPRINTF
 		if(FD_ISSET(UIINPUT_FILENO, &rdset)){
 			fprintf(stderr, "\r"); // TODO Da ottimizzare

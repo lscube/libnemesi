@@ -161,6 +161,7 @@ typedef struct rtcp_sdes rtcp_sdes_t;
 void *rtcp(void *);
 int rtcp_thread_create(struct RTP_Session *rtp_sess);
 void rtcp_clean(void *);
+void rtcp_clean_events(void *);
 
 int rtcp_recv(struct RTP_Session *);
 int rtcp_hdr_val_chk(rtcp_pkt *, int);

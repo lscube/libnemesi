@@ -48,11 +48,16 @@ int seturlname(struct RTSP_Thread *rtsp_th, char *urlname)
 	strcpy(rtsp_th->urlname, "rtsp://");
 	strcat(rtsp_th->urlname, server);
 	strcat(rtsp_th->urlname, path);
+#if 0 // port is already an allocated space => we use this without duplicating string;
 	if ((rtsp_th->server_port = (char *) malloc(sizeof(char) * (strlen(port) + 1))) == NULL)
 		return 1;
 	strcpy(rtsp_th->server_port, port);
+#endif
+	rtsp_th->server_port = port;
 
-
+	// free no more useful memory
+	free(server);
+	free(path);
 
 	return 0;
 }

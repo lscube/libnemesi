@@ -44,7 +44,9 @@ struct RTSP_Ctrl *init_rtsp(void)
 	pthread_mutexattr_t mutex_attr;
 	int n;
 
-	if ( !(rtsp_th = (struct RTSP_Thread *) malloc(sizeof(struct RTSP_Thread))) )
+	// if ( !(rtsp_th = (struct RTSP_Thread *) malloc(sizeof(struct RTSP_Thread))) )
+	// We use calloc so that we are not in need to initialize to zero below
+	if ( !(rtsp_th = (struct RTSP_Thread *) calloc(1, sizeof(struct RTSP_Thread))) )
 		return NULL;
 
 	if (pipe(rtsp_th->pipefd) < 0)
@@ -52,9 +54,11 @@ struct RTSP_Ctrl *init_rtsp(void)
 
 	if ((n = pthread_mutexattr_init(&mutex_attr)) > 0)
 		return NULL;
+#if 0
 #ifdef	_POSIX_THREAD_PROCESS_SHARED
 	if ((n = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
 		return NULL;
+#endif
 #endif
 	if ((n = pthread_mutex_init(&(rtsp_th->comm_mutex), &mutex_attr)) > 0)
 		return NULL;
@@ -64,14 +68,16 @@ struct RTSP_Ctrl *init_rtsp(void)
 
 	rtsp_th->fd = -1;
 	rtsp_th->status = INIT;
+#if 0 // we do not need to initilize to zero because of calloc usage
 	rtsp_th->descr_fmt = 0;
-	memset(rtsp_th->waiting_for, '\0', strlen(rtsp_th->waiting_for));
+	memset(rtsp_th->waiting_for, '\0', sizeof(rtsp_th->waiting_for));
 	rtsp_th->busy=0;
 	rtsp_th->urlname = NULL;
 	(rtsp_th->in_buffer).size = 0;
 	(rtsp_th->in_buffer).first_pkt_size = 0;
 	(rtsp_th->in_buffer).data = NULL;
 	rtsp_th->rtsp_queue = NULL;
+#endif
 
 	cmd[0] = open_cmd;
 	cmd[1] = play_cmd;

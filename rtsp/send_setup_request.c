@@ -33,7 +33,7 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 {
 
 	char b[256];
-	char *options;
+	char *options = NULL;
 	struct RTSP_Session *rtsp_sess;
 	struct RTSP_Medium *rtsp_med;
 	struct sockaddr rtpaddr, rtcpaddr;
@@ -85,6 +85,8 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	}
 
 	sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE, rtsp_sess->CSeq);
+
+	free(options);
 
 	return 0;
 }

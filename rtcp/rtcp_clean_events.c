@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,26 +26,19 @@
  *  
  * */
 
-#include <pthread.h>
+// #include <stdio.h>
+#include <nemesi/rtcp.h>
 
-#include <nemesi/video.h>
-#include <nemesi/comm.h>
-
-int video_th_stop(NMSVideo *vc)
+void rtcp_clean_events(void *events)
 {
-	void *ret;
+	struct RTCP_Event *event=*(struct RTCP_Event **)events;
+	struct RTCP_Event *free_event;
 
-	if (vc && vc->tid) {
-		nmsprintf(2, "Sending cancel signal to Video Thread (ID: %d)\n", vc->tid);
-		if (pthread_cancel(vc->tid) != 0)
-			nmsprintf(3, "Error while sending cancelation to Video Thread.\n");
-		else
-			pthread_join(vc->tid, (void **)&ret);
-		if ( ret != PTHREAD_CANCELED )
-			nmsprintf(3, "Warning! Video Thread joined, but  not canceled!\n");
-		vc->tid = 0;
+	while (event) {
+		// fprintf(stderr, "\n\n\nfreeing rtcp event\n\n\n");
+		free_event = event;
+		event = event->next;
+		free(free_event);
 	}
-
-	return 0;
 }
 

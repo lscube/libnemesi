@@ -37,13 +37,14 @@
 
 #include <config.h>
 
+#include <nemesi/utils.h>
+
 int load_plugins(void)
 {
 	int pt;
 	lt_dlhandle module = NULL;
 	char *path, *ch;
 	char *str=NULL;
-	const char *error=NULL;
 	int (*get_plugin_pt) (void) = NULL;
 
 	DIR *plug_dir;
@@ -70,9 +71,12 @@ int load_plugins(void)
 		} else {
 			if(lt_dlsetsearchpath(NEMESI_PLUGIN_DIR_DEFAULT))
 				return 1;
+			/* use strdup
 			if ((path = (char *) malloc((strlen(NEMESI_PLUGIN_DIR_DEFAULT) + 1) * sizeof(char))) == NULL)
 				return nmserror("Cannot allocate memory");
 			strcpy(path, NEMESI_PLUGIN_DIR_DEFAULT);
+			*/
+			path = strdup(NEMESI_PLUGIN_DIR_DEFAULT);
 			nmsprintf(1,"NEMESI_PLUGIN_DIR: %s\n", path);
 		}
 	} else
@@ -100,8 +104,11 @@ int load_plugins(void)
 		
 		if (plugins == NULL){
 			plugins=(struct plugin *)malloc(sizeof(struct plugin));
+			/* use strdup
 			plugins->path=(char *)malloc(sizeof(char)*(strlen(str)+1));
 			strcpy(plugins->path,str);
+			*/
+			plugins->path = strdup(str);
 			plugins->next=NULL;
 		}
 
@@ -109,35 +116,29 @@ int load_plugins(void)
 	
 		if (pp->next == NULL && strcmp(pp->path, str)){
 			pp->next=(struct plugin *)malloc(sizeof(struct plugin));
+			/* use strdup
 			pp->next->path=(char *)malloc(sizeof(char)*(strlen(str)+1));
 			strcpy(pp->next->path,str);
+			*/
+			pp->next->path = strdup(str);
 			pp->next->next=NULL;
 		}
 	}
-	for (pp=plugins; pp != NULL ; pp=pp->next){
+	for (pp=plugins; pp != NULL ; pp=pp->next) {
 		/* Load the module. */
 		module = lt_dlopenext(pp->path);
 
 		/* Find the entry point. */
 		if (module) {
 			nmsprintf(1, "Loading Plugin %s: ", pp->path);
-			get_plugin_pt = (int (*)()) lt_dlsym(module, "get_plugin_pt");
-
-			/* In principle, run might legitimately be NULL, so
-			   I don't use `run == NULL' as an error indicator
-			   in general. */
-#if 0
-			if ((error=lt_dlerror()) != NULL) {
+			if (!(get_plugin_pt = (int (*)()) lt_dlsym(module, "get_plugin_pt"))) {
 				lt_dlclose(module);
 				module = NULL;
-				nmsprintf(1,"lt_dsym() failed on get_plugin_pt: %s\n", error);
+				nmsprintf(1,"lt_dsym() failed on get_plugin_pt: %s\n", lt_dlerror());
 				continue;
 			}
-#endif
 		} else {
-			if ((error=lt_dlerror()) != NULL) {
-				nmserror("lt_dlopenext() failed on plugin %s: %s", pp->path, error);
-			}
+			nmserror("lt_dlopenext() failed on plugin %s: %s", pp->path, lt_dlerror());
 			continue;
 		}
 
@@ -152,15 +153,12 @@ int load_plugins(void)
 				nmsprintf(2, "WARNING! Plugin for RTP Payload Type %d already loaded: skipping...\n", pt);
 				continue;
 			}
-			decoders[pt] = (int (*)()) lt_dlsym(module, "decode");
-#if 0
-			if (lt_dlerror() != NULL) {
+			if (!(decoders[pt] = (int (*)()) lt_dlsym(module, "decode"))) {
 				lt_dlclose(module);
 				module = NULL;
 				decoders[pt]=NULL;
-				nmserror("lt_dsym() failed on decode");
+				nmserror("lt_dsym() failed on decode: %s\n", lt_dlerror());
 			}
-#endif
 			if (!rtp_pt_defs[pt].rate)
 				rtp_pt_defs[pt].rate=RTP_DEF_CLK_RATE;
 			if (!rtp_pt_defs[pt].channels)
@@ -176,6 +174,7 @@ int load_plugins(void)
 		pp=ppp;
 	}
 	free(str);
+	closedir(plug_dir);
 	if (getenv(NEMESI_PLUGIN_DIR_ENV) == NULL)
 		free(path);
 	return 0;

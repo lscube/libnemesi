@@ -32,7 +32,7 @@ int set_stm_src(struct RTP_Session *rtp_sess, struct Stream_Source **stm_src, ui
 {
 	char port[256];
 	
-	memset(port, 0, strlen(port));
+	memset(port, 0, sizeof(port));
 	
 	if(((*stm_src)=(struct Stream_Source *)malloc(sizeof(struct Stream_Source))) == NULL)
 		return -nmserror("Cannot allocate memory");

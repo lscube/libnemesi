@@ -28,7 +28,8 @@ libutils_la_SOURCES =	urltokenize.c \
 
 libutils_la_LDFLAGS = -static
 
-libplugins_la_SOURCES = load_plugins.c
+libplugins_la_SOURCES = load_plugins.c \
+			unload_plugins.c
 
 libplugins_la_LDFLAGS = -static
 

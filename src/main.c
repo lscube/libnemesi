@@ -103,6 +103,8 @@ int main(int argc, char *argv[])
 	if (output_hints.diskwriter)
 		free(output_hints.diskwriter);
 
+	unload_plugins();
+
 	nmsprintf(1, "\nBye bye!\n\n");
 
 	exit(0);

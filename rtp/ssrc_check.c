@@ -36,7 +36,8 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 	char port[256];
 	uint8 local_collision;
 	
-	memset(port, 0, strlen(port));
+	// memset(port, 0, strlen(port));
+	memset(port, 0, sizeof(port));
 
 	local_collision = (rtp_sess->local_ssrc == ssrc);
 	pthread_mutex_lock(&rtp_sess->syn);	

@@ -60,13 +60,9 @@ void rtp_clean(void *args)
 			csrc=csrc->next;
 			for(i=0; i<9; i++)
 				free( ((char **)(&(psrc->ssrc_sdes)))[i] );
-#if 0
 			free(psrc);
-#endif
 		}
-#if 0
 		bpkill(&(rtp_sess->bp));
-#endif
 
 		free((rtp_sess->transport).spec);
 

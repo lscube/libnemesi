@@ -51,9 +51,11 @@ NMSAudioBuffer *ab_init(uint32 buff_size)
 	// nutex initialization
 	if (pthread_mutexattr_init(&mutex_attr) > 0)
 		return NULL;
+#if 0
 #ifdef	_POSIX_THREAD_PROCESS_SHARED
 	if (pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED) > 0)
 		return NULL;
+#endif
 #endif
 	if (pthread_mutex_init(&(buff->syn), &mutex_attr) > 0)
 		return NULL;

@@ -27,12 +27,13 @@
  * */
 
 #include <nemesi/rtsp.h>
+#include <nemesi/utils.h>
 
 int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 {
 	char buff[256];
 
-	memset(buff, 0, 256);
+	memset(buff, 0, sizeof(buff));
 	
 	strcpy(buff, rtp_sess->transport.spec);
 	*(buff+strlen(buff))=';';
@@ -66,12 +67,17 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 		sprintf(buff+strlen(buff), "ssrc=%u;", rtp_sess->transport.ssrc);
 	
 	/* eliminiamo l'ultimo ; */
+	/* drop last ';' */
 	*(buff+strlen(buff)-1)='\0';
 
+#if 0 // we use strdup instead;
 	if ((*str=(char *)malloc(sizeof(char)*(strlen(buff)+1))) == NULL)
 		return nmserror("set_transport_str: Cannot allocate memory!");
 
 	strcpy(*str, buff);
+#endif
+	if (!(*str=strdup(buff)))
+		return nmserror("set_transport_str: Could not duplicate string!");
 
 	return 0;
 }

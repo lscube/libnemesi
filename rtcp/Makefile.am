@@ -21,7 +21,8 @@ librtcp_la_SOURCES =	rtcp_clean.c \
 			send_rtcp_rr.c \
 			build_rtcp_rr.c \
 			build_rtcp_sdes.c \
-			send_rtcp_bye.c
+			send_rtcp_bye.c \
+			rtcp_clean_events.c
 
 librtcp_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

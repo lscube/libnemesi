@@ -32,15 +32,19 @@ int urltokenize(char *urlname, char **host, char **port, char **path)
 {
 	char *token, *tokenda;
 
+	// initialization
+	if (port)
+		*port = NULL;
+	if (host)
+		*host = NULL;
+
 	if ((tokenda = (char *) malloc(sizeof(char) * (strlen(urlname) + 1))) == NULL)
 		return 1;
 	strcpy(tokenda, urlname);
 	if ((token = strstr(tokenda, "://")) != NULL) {
 		token = strtok(tokenda, ":");
 		if (port != NULL) {
-			if ((*port = (char *) malloc(sizeof(char) * (strlen(token) + 1))) == NULL)
-				return 1;
-			strcpy(*port, token);
+			*port = strdup(token);
 		}
 		token += strlen(token) + 3;	/* skip *:// */
 	} else
@@ -48,30 +52,24 @@ int urltokenize(char *urlname, char **host, char **port, char **path)
 	if (strstr(token, ":") != NULL) {
 		token = strtok(token, ":");
 		if (host != NULL) {
-			if ((*host = (char *) malloc(sizeof(char) * (strlen(token) + 1))) == NULL)
-				return 1;
-			strcpy(*host, token);
+			*host = strdup(token);
 		}
 		token = strtok(NULL, "/");
 		if (port != NULL) {
-			if ((*port = (char *) malloc(sizeof(char) * (strlen(token) + 1))) == NULL)
-				return 1;
-			strcpy(*port, token);
+			free(*port);
+			*port = strdup(token);
 		}
 	} else {
 		token = strtok(token, "/");
 		if (host != NULL) {
-			if ((*host = (char *) malloc(sizeof(char) * (strlen(token) + 1))) == NULL)
-				return 1;
-			strcpy(*host, token);
+			free(*host);
+			*host = strdup(token);
 		}
 	}
 	token += strlen(token);
 	*(token) = '/';
 	if (path != NULL) {
-		if ((*path = (char *) malloc(sizeof(char) * (strlen(token) + 1))) == NULL)
-			return 1;
-		strcpy(*path, token);
+			*path = strdup(token);
 	}
 
 	free(tokenda);

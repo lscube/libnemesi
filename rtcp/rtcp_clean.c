@@ -30,7 +30,7 @@
 
 void rtcp_clean(void *args)
 {
-	struct RTP_Session *rtp_sess_head=((struct RTP_Session *)args);
+	struct RTP_Session *rtp_sess_head=(*(struct RTP_Session **)args);
 	struct RTP_Session *rtp_sess;
 	struct Stream_Source *stm_src;
 

@@ -60,5 +60,6 @@ typedef struct {
 int output_init(NMSOutputHints *);
 int output_uninit(void);
 int load_plugins(void);
+void unload_plugins(void);
 
 #endif

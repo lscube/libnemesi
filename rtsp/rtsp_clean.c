@@ -45,4 +45,7 @@ void rtsp_clean(void *rtsp_thread)
 	while((n=read(UIINPUT_FILENO, optstr, 1)) > 0)
 		write(STDERR_FILENO, optstr, n);
 #endif // USE_UIPRINTF
+
+	close(rtsp_th->pipefd[0]);
+	close(rtsp_th->pipefd[1]);
 }

@@ -49,6 +49,7 @@ int open_cmd(struct RTSP_Thread *rtsp_th, ...)
 		rtsp_th->fd=-1;
 		return nmserror("Cannot connect to the server");
 	}
+	free(server);
 	if (send_get_request(rtsp_th))
 		return 1;
 

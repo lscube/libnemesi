@@ -42,7 +42,8 @@ void *rtcp(void *args)
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 /* 	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
-	pthread_cleanup_push(rtcp_clean, (void *)rtp_sess_head);
+	pthread_cleanup_push(rtcp_clean, (void *)&rtp_sess_head);
+	pthread_cleanup_push(rtcp_clean_events, (void *)&head);
 
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next){
 		t=rtcp_interval(rtp_sess->sess_stats.members, \
@@ -91,5 +92,6 @@ void *rtcp(void *args)
 			}
 	}
 	
+	pthread_cleanup_pop(1);
 	pthread_cleanup_pop(1);
 }
