@@ -32,7 +32,7 @@
 #include <nemesi/video.h>
 #include <nemesi/comm.h>
 
-#define SLEEP_MS 40
+#define SLEEP_MS 30
 
 void *video_th(void *vc)
 {
@@ -45,10 +45,10 @@ void *video_th(void *vc)
 	// set cancel function
 	// pthread_cleanup_push(video_close, (void *)vc);
 
-	tvsleep.tv_sec = SLEEP_MS / 1000;
-	tvsleep.tv_usec = (SLEEP_MS % 1000) * 1000;
 
 	for (;;) {
+		tvsleep.tv_sec = SLEEP_MS / 1000;
+		tvsleep.tv_usec = (SLEEP_MS % 1000) * 1000;
 		select(0, NULL, NULL, NULL, &tvsleep);
 		funcs->update_screen();
 		// uiprintf("\nUpdate screen!!!\n");

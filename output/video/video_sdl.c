@@ -281,7 +281,7 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 			pict->linesize[2] = bmp->pitches[2];
 			break;
 		default:
-			return uierror("SDL: unsupported format in alloc_picture");
+			return uierror("SDL: unsupported format in get_picture");
 			break;
 	}
 	SDL_OVR_LOCK(bmp, 1);

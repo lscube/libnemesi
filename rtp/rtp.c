@@ -42,6 +42,7 @@ void *rtp(void *args)
 	
 	fd_set readset;
 	// char first=1;
+	char buffering=1;
 	
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		bpinit(&(rtp_sess->bp));
@@ -94,10 +95,13 @@ void *rtp(void *args)
 					pthread_mutex_unlock(&(dec_args->syn));
 				}
 				*/
-				if (rtp_sess->bp.flcount > BP_SLOT_NUM/2) {
-					pthread_mutex_unlock(&(dec_args->syn));
-				} else {
-					uiprintf("\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
+				if (buffering) {
+					if (rtp_sess->bp.flcount > BP_SLOT_NUM/2) {
+						pthread_mutex_unlock(&(dec_args->syn));
+						buffering=0;
+					} else {
+						uiprintf("\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
+					}
 				}
 				if(rtp_recv(rtp_sess)){
 					/* Waiting 20 msec for decoder ready */
