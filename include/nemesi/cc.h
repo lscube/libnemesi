@@ -29,21 +29,19 @@
 #ifndef _LIB_CC_STREAMING
 #define _LIB_CC_STREAMING
 
+#include <nemesi/types.h>
+
+/*! If CC_GLOBAL_DATA is defined, we initialize global data containing the
+ * licenses
+ */
+#ifndef CC_GLOBAL_DATA // set just one time in cc_parse_urilicense.c
+#define CC_EXTERN extern
+#else // CC_GLOBAL_DATA
+#define CC_EXTERN
+#endif // CC_GLOBAL_DATA
+
+// address without "http://" prefix
 #define BASE_URI_LICENSE "creativecommons.org/licenses/"
-
-//! definition of available choices for CC licenses
-#define CC_PERMISSIONS { \
-			{ "Attribution", "by", "The licensor permits others to copy, distribute, display, and perform the work. In return, licensees must give the original author credit." } \
-			{ "NonCommercial", "nc", "The licensor permits others to copy, distribute, display, and perform the work. In return, licensees may not use the work for commercial purposes -- unless they get the licensor's permission." } \
-			{ "NoDerivative", "nd", "The licensor permits others to copy, distribute, display and perform only unaltered copies of the work -- not derivative works based on it." } \
-			{ "ShareAlike", "sa", "The licensor permits others to distribute derivative works only under a license identical to the one that governs the licensor's work." } \
-			{ "PubblicDomain", "publicdomain", "Public domain dedication" } \
-		    }
-
-
-#define CC_NAME 0
-#define CC_SHORT_NAME 1
-#define CC_DESCR 2
 
 /*!
  * \brief License condition
@@ -52,16 +50,64 @@
  * */
 typedef struct {
 	char *name;
-	char *sh_name/*[3]*/;
+	char *urltkn/*[3]*/;
 	char *descr;
 } CCPermission;
 
+CC_EXTERN CCPermission cc_by
+#ifdef CC_GLOBAL_DATA
+= { "Attribution", "by", "The licensor permits others to copy, distribute, display, and perform the work. In return, licensees must give the original author credit." }
+#endif // CC_GOBAL_DATA
+;
+
+CC_EXTERN CCPermission cc_nc
+#ifdef CC_GLOBAL_DATA
+= { "NonCommercial", "nc", "The licensor permits others to copy, distribute, display, and perform the work. In return, licensees may not use the work for commercial purposes -- unless they get the licensor's permission." }
+#endif // CC_GOBAL_DATA
+;
+
+CC_EXTERN CCPermission cc_nd
+#ifdef CC_GLOBAL_DATA
+= { "NoDerivative", "nd", "The licensor permits others to copy, distribute, display and perform only unaltered copies of the work -- not derivative works based on it." }
+#endif // CC_GOBAL_DATA
+;
+
+CC_EXTERN CCPermission cc_sa
+#ifdef CC_GLOBAL_DATA
+= { "ShareAlike", "sa", "The licensor permits others to distribute derivative works only under a license identical to the one that governs the licensor's work." }
+#endif // CC_GOBAL_DATA
+;
+
+typedef struct {
+	char *name;
+	char *urlstr/*[3]*/;
+	char *descr;
+	char int_code;
+} CCSpecLicense;
+
+/*! definition of internal identification code for special licenses
+ *
+ * Warning: this code MUST fit 4 bits, so the max is 15, and MUST be >0
+ * ( 0<ID<16 )
+ */
+#define CC_PD 1
+
+CC_EXTERN CCSpecLicense cc_spec_licenses[]
+#ifdef CC_GLOBAL_DATA
+= {
+	{ "PubblicDomain", "publicdomain", "Public domain dedication", CC_PD },
+	{ "Pubic", "pubic", "Publc main dication", CC_PD }
+}
+#endif // CC_GLOBAL_DATA
+;
+
 typedef struct _ccpermsmask {
-	char by:1;
-	char nc:1;
-	char nd:1;
-	char sa:1;
-	char publicdomain:1;
+	uint8 by:1;
+	uint8 nc:1;
+	uint8 nd:1;
+	uint8 sa:1;
+	// special license ID
+	uint8 spec_license:4;
 } CCPermsMask;
 
 #if 0
@@ -101,6 +147,9 @@ int issdplicense(char *sdp_a);
 CCLicense *cc_newlicense(void);
 int cc_set_sdplicense(CCLicense *, char *);
 int cc_parse_urilicense(char *, CCPermsMask *);
+
+#undef CC_EXTERN
+#undef CC_GLOBAL_DATA
 
 #endif // _LIB_CC_STREAMING
 
