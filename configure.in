@@ -175,6 +175,8 @@ AC_SUBST(nemesi_plugindir)
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
 AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
 
+dnl		decoder/mp3/Makefile \
+
 AC_OUTPUT([\
 		Makefile \
 		bufferpool/Makefile \
@@ -189,7 +191,6 @@ AC_OUTPUT([\
 		decoder/Makefile \
 		decoder/L16_8k_m/Makefile \
 		decoder/gsm_amr_float/Makefile \
-		decoder/mp3/Makefile \
 		decoder/mpglib/Makefile \
 		md5/Makefile \
 		plugins/Makefile \

@@ -1,5 +1,5 @@
 /* * 
- *  ./src/load_plugins.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:14 $
+ *  ./src/load_plugins.c: $Revision: 1.3 $ -- $Date: 2002/11/08 15:44:15 $
  *  
  *  This file is part of NeMeSI
  *
@@ -132,12 +132,14 @@ int load_plugins(void)
 			/* In principle, run might legitimately be NULL, so
 			   I don't use `run == NULL' as an error indicator
 			   in general. */
-			if (lt_dlerror() != NULL) {
+#if 0
+			if ((error=lt_dlerror()) != NULL) {
 				lt_dlclose(module);
 				module = NULL;
-				uiprintf("lt_dsym() failed on get_plugin_pt\n");
+				uiprintf("lt_dsym() failed on get_plugin_pt: %s\n", error);
 				continue;
 			}
+#endif
 		} else {
 			if ((error=lt_dlerror()) != NULL) {
 				uiprintf("lt_dlopenext() failed on plugin %s: %s\n", pp->path, error);
@@ -157,6 +159,7 @@ int load_plugins(void)
 				continue;
 			}
 			decoders[pt] = (int (*)()) lt_dlsym(module, "decode");
+#if 0
 			if (lt_dlerror() != NULL) {
 				lt_dlclose(module);
 				module = NULL;
@@ -164,6 +167,7 @@ int load_plugins(void)
 				uiprintf("lt_dsym() failed on decode\n");
 				return 1;
 			}
+#endif
 			if (!rtp_pt_defs[pt].rate)
 				rtp_pt_defs[pt].rate=RTP_DEF_CLK_RATE;
 			if (!rtp_pt_defs[pt].channels)
@@ -171,14 +175,6 @@ int load_plugins(void)
 			uiprintf("Ok! Loaded plugin for RTP Payload Type %d.\n", pt);
 		}
 	}
-	/*
-	for (pp=plugins; pp != NULL ; pp=pp->next){
-		free(pp->path);
-		ppp=pp->next;
-		free(pp);
-		pp=ppp;
-	}
-	*/
 	pp=plugins;
 	while(pp) {
 		ppp=pp->next;

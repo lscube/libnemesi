@@ -1,4 +1,4 @@
-SUBDIRS = L16_8k_m gsm_amr_float mp3 mpglib # mp3stub
+SUBDIRS = L16_8k_m gsm_amr_float mpglib # mp3  mp3stub
 
 nemesiincludedir = $(top_srcdir)/include
 

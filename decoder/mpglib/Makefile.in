@@ -102,50 +102,32 @@ install_sh = @install_sh@
 nemesi_plugindir = @nemesi_plugindir@
 nemesiincludedir = $(top_srcdir)/include
 
-
-#noinst_LTLIBRARIES = libmpglib.la
-
-#libmpglib_la_SOURCES = 	common.c \
-#			dct64_i386.c \
-#			decode_i386.c \
-#			layer1.c \
-#			layer2.c \
-#			layer3.c \
-#			tabinit.c \
-#			interface.c \
-#			decode_i386.h \
-#			huffman.h \
-#			interface.h \
-#			l2tables.h \
-#			layer1.h \
-#			layer2.h \
-#			layer3.h \
-#			mpg123.h \
-#			mpglib.h \
-#			tabinit.h
-
-#libmpglib_la_LDFLAGS = -static
 lib_LTLIBRARIES = mpglib.la
 
 mpglib_la_SOURCES = mpglib.c\
-			common.c \
-			dct64_i386.c \
-			decode_i386.c \
-			layer1.c \
-			layer2.c \
-			layer3.c \
-			tabinit.c \
-			interface.c \
-			decode_i386.h \
-			huffman.h \
-			interface.h \
-			l2tables.h \
-			layer1.h \
-			layer2.h \
-			layer3.h \
-			mpg123.h \
-			mpglib.h \
-			tabinit.h
+		common.c \
+		dct64_i386.c \
+		decode_i386.c \
+		layer1.c \
+		layer2.c \
+		layer3.c \
+		tabinit.c \
+		interface.c
+
+
+noinst_HEADERS = common.h \
+		dct64_i386.h \
+		decode_i386.h \
+		huffman.h \
+		interface.h \
+		l2tables.h \
+		layer1.h \
+		layer2.h \
+		layer3.h \
+		mpg123.h \
+		mpglib.h \
+		tabinit.h
+
 
 mpglib_la_LDFLAGS = -module -avoid-version 
 #mpglib_la_LIBADD = -lm libmpglib.la # @LIBLTDL@
@@ -185,7 +167,10 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 DIST_SOURCES = $(mpglib_la_SOURCES)
-DIST_COMMON = README Makefile.am Makefile.in TODO depcomp
+HEADERS = $(noinst_HEADERS)
+
+DIST_COMMON = README $(noinst_HEADERS) Makefile.am Makefile.in TODO \
+	depcomp
 SOURCES = $(mpglib_la_SOURCES)
 
 all: all-am
@@ -339,7 +324,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 
 installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
