@@ -54,7 +54,7 @@
 #ifndef ENABLE_DEBUG
 #define DEFAULT_VERBOSITY 1
 #else // ENABLE_DEBUG => debug enabled
-#define DEFAULT_VERBOSITY 3
+#define DEFAULT_VERBOSITY 2
 #endif // ENABLE_DEBUG
 int nmsprintf(int verbosity, const char *fmt, ...)
 {
