@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: video_preinit.c 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,32 +26,41 @@
  *  
  * */
 
-#include <nemesi/utils.h>
+#include <stdlib.h>
+#include <string.h>
 
-char *strstrcase(char *haystack, const char *needle)
+#include <nemesi/video.h>
+
+//! with this define we declare global variables contained in video_drivers.h
+#define VCT_GLOBAL_VIDEO_DRIVERS
+#include <nemesi/video_drivers.h>
+
+#include <config.h>
+#include <nemesi/comm.h>
+
+/*!
+  Init video
+  */
+NMSVideo *video_preinit(char *drv_hint)
 {
-	char *str1, *str2;
-	char *ret;
-	unsigned int i;
+	NMSVideo *vc;
+	NMSVFunctions *funcs;
 
-	if ((str1=strdup(haystack)) == NULL)
+	if ((vc=malloc(sizeof(NMSVideo))) == NULL) {
+		uierror("Could not alloc video structure");
 		return NULL;
+	}
 
-	if ((str2=strdup(needle)) == NULL)
+	// Video Output Driver selection
+	vc->functions = &nms_video_sdl; // XXX: very very temporanea
+	funcs = vc->functions;
+
+	// video init
+	if (funcs->preinit(NULL))
 		return NULL;
+	
+	uiprintf("Video driver: %s\n", funcs->info->name);
 
-	for (i = 0; i < strlen(str1); i++)
-		str1[i] = tolower(str1[i]);
-
-	for (i = 0; i < strlen(str2); i++)
-		str2[i] = tolower(str2[i]);
-
-	if ((ret = strstr(str1, str2)) != NULL)
-		ret = haystack + (ret - str1);
-
-	free(str1);
-	free(str2);
-
-	return ret;
-
+	return vc;
 }
+

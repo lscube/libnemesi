@@ -46,6 +46,11 @@ COMM_EXTERN int uipipe[2];
 #define BLANK_LINE "                                                                                \n"
 /***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
 
+/* Separators */
+#define SEPARATOR "\n<------------------------------------------------------------->\n\n"
+#define BEGIN_SEP "\n<--------------\n"
+#define END_SEP "\n-------------->\n\n"
+
 int uiprintf(const char *fmt, ...);
 int uierror(const char *fmt, ...);
 

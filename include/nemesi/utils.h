@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -47,6 +48,9 @@
 int urltokenize(char *, char **, char **, char **);
 char *strstrcase(char *, const char *);
 int strncmpcase(const char *, const char *, size_t);
+#if !HAVE_STRDUP
+char *strdup(const char *s);
+#endif /* !HAVE_STRDUP */
 char *statustostr(int);
 uint32 random32(int);
 int timeval_subtract(struct timeval *, const struct timeval *, const struct timeval *);

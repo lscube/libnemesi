@@ -159,6 +159,7 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libutils.la libplugins.la
 
 libutils_la_SOURCES = urltokenize.c \
+			strdup.c \
 			strstrcase.c \
 			strncmpcase.c \
 			uiprintf.c \
@@ -186,7 +187,8 @@ bin_PROGRAMS = nemesi
 
 nemesi_SOURCES = main.c \
 			init_rtsp_args.c \
-			output_init.c
+			output_init.c \
+			output_uninit.c
 
 
 nemesi_LDADD = @DLOPEN@ \
@@ -218,17 +220,17 @@ libplugins_la_DEPENDENCIES =
 am_libplugins_la_OBJECTS = load_plugins.lo
 libplugins_la_OBJECTS = $(am_libplugins_la_OBJECTS)
 libutils_la_LIBADD =
-am_libutils_la_OBJECTS = urltokenize.lo strstrcase.lo strncmpcase.lo \
-	uiprintf.lo statustostr.lo random32.lo timeval_subtract.lo \
-	timeval_add.lo edit_pref.lo edit_avail_pref.lo \
-	add_avail_pref.lo rem_avail_pref.lo list_prefs.lo get_pref.lo \
-	uierror.lo
+am_libutils_la_OBJECTS = urltokenize.lo strdup.lo strstrcase.lo \
+	strncmpcase.lo uiprintf.lo statustostr.lo random32.lo \
+	timeval_subtract.lo timeval_add.lo edit_pref.lo \
+	edit_avail_pref.lo add_avail_pref.lo rem_avail_pref.lo \
+	list_prefs.lo get_pref.lo uierror.lo
 libutils_la_OBJECTS = $(am_libutils_la_OBJECTS)
 bin_PROGRAMS = nemesi$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_nemesi_OBJECTS = main.$(OBJEXT) init_rtsp_args.$(OBJEXT) \
-	output_init.$(OBJEXT)
+	output_init.$(OBJEXT) output_uninit.$(OBJEXT)
 nemesi_OBJECTS = $(am_nemesi_OBJECTS)
 nemesi_DEPENDENCIES = $(top_srcdir)/rtsp/librtsp.la \
 	$(top_srcdir)/rtcp/librtcp.la $(top_srcdir)/rtp/librtp.la \
@@ -252,9 +254,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/init_rtsp_args.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/list_prefs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/load_plugins.Plo ./$(DEPDIR)/main.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/output_init.Po ./$(DEPDIR)/random32.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/output_init.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/output_uninit.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/random32.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/rem_avail_pref.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/statustostr.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/statustostr.Plo ./$(DEPDIR)/strdup.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/strncmpcase.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/strstrcase.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/timeval_add.Plo \
@@ -343,9 +347,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load_plugins.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/output_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/output_uninit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rem_avail_pref.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statustostr.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strdup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strncmpcase.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strstrcase.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeval_add.Plo@am__quote@

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: audio_sdl.c 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,85 +26,67 @@
  *  
  * */
 
-#ifndef __AUDIO_H
-#define __AUDIO_H
-
 #include <stdlib.h>
-#include <sys/time.h>
-#include <pthread.h>
-
-#include <stdarg.h>
-#include <nemesi/types.h>
-#include <nemesi/comm.h>
-
-#include <config.h>
-
-#ifndef GLOBAL_AUDIO_BUFFER
-#define AUDIO_EXTERN extern
-#else
-#define AUDIO_EXTERN
-#endif
-
-#ifdef HAVE_SDL
-
 #include <SDL.h>
 
-#define SAMPLES 2048
-/* #define SAMPLES 512 */
+#include <nemesi/comm.h>
+#include <nemesi/audio_drivers.h>
+#include <nemesi/audio_driver.h>
 
-#endif
+static NMSADrvInfo info = {
+	"SDL Library audio driver",
+	"sdl",
+	"Open Media Streaming Project Team",
+	""
+};
+
+NMS_LIB_AUDIO(sdl);
+
+#define SAMPLES 2048
 
 #define FREQ 44100
 #define CHANNELS 2
 #define BYTES_X_SAMPLE 2
 
 /* Audio Buffer defines */
-#define SECONDS 1
+#define SECONDS 0.5
 #define AUDIO_BUFF_SIZE (unsigned long)(FREQ*SECONDS*CHANNELS*BYTES_X_SAMPLE)
 #define AUDIO_SYS_BUFF 0.5 /* Buffer first fill percentage */
 #define MIN_AUDIO_SYS_BUFF 0.2 /* min buffer percentage to request fast cycles */
 #define MAX_AUDIO_SYS_BUFF 0.9 /* max buffer percentage */
 
-struct audio_buff {
-/*	uint8 *audio_data; */
-	uint8 audio_data[AUDIO_BUFF_SIZE];
-	uint32 read_pos;
-	uint32 write_pos;
-	uint32 valid_data;
-	uint32 len;
-#ifndef HAVE_SDL
-	int audio_fd;
-#endif
-	pthread_mutex_t syn;
-};
+static uint32 preinit(const char *arg)
+{
+	return 0;
+}
 
-AUDIO_EXTERN struct audio_buff *global_audio_buffer;
+static uint32 config(int rate, int channels, int format, int flags)
+{
+	return 0;
+}
 
-struct audio_buff *ab_init(void);
-uint8 *ab_get(uint32, ...);
-/* end of Audio Buffer defines */
+static uint8 *get_buff(uint32 len)
+{
+	return NULL;
+}
 
-int audio_init(void);
+static uint32 play_buff(uint8 *data, uint32 len)
+{
+	return 0;
+}
 
-#ifdef HAVE_SDL
-SDL_AudioSpec *init_SDL(struct audio_buff *);
-void SDL_mixaudio(void *, Uint8 *, int);
-#else
-int set_audiodev(void);
-int oss_play(void);
-void enable_output(int);
-#endif
+static void pause(void)
+{
+	return;
+}
 
-int get_sys_buff(void);
-float sys_buff_size(float *);
+static void resume(void)
+{
+	return;
+}
 
-int audio_play();
-int audio_pause();
+static void uninit(void)
+{
+	return;
+}
 
-int empty_audio_buffer(void);
-int audio_close(void);
-
-#undef GLOBAL_AUDIO_BUFFER
-#undef AUDIO_EXTERN
-
-#endif

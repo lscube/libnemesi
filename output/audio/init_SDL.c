@@ -62,7 +62,7 @@ SDL_AudioSpec *init_SDL(struct audio_buff *audio_buffer)
 	uiprintf("FREQ: requested %d -> obtained %d\n", requested_fmt.freq, obtained_fmt->freq);
 	uiprintf("FORMAT: requested %u -> obtained %u\n", requested_fmt.format, obtained_fmt->format);
 	uiprintf("CHANNELS: requested %hu -> obtained %hu\n", requested_fmt.channels, obtained_fmt->channels);
-	uiprintf("SAMPLE: requested %hu -> obtained %hu\n\n", requested_fmt.samples, obtained_fmt->samples);
+	uiprintf("SAMPLE: requested %hu -> obtained %hu\n", requested_fmt.samples, obtained_fmt->samples);
 	return obtained_fmt;
 }
 

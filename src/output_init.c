@@ -27,17 +27,51 @@
  * */
 
 #include <stdlib.h>
+
+//! with this define we declare global variables contained in video.h
+#define NMS_GLOBAL_OUTPUT
 #include <nemesi/output.h>
+
+#include <nemesi/preferences.h>
 #include <nemesi/comm.h>
 
-int output_init(NMSOutput **output)
+int output_init(void)
 {
-	if (!(*output = malloc(sizeof(NMSOutput))))
-		return uierror("Could not alloc output struct");
+	// Warning: We cannot yet use uiprintf and uierror functions
 
-	// (*output)->f_type = NO_OUT;
-	(*output)->audio = NULL;
-	(*output)->video = NULL;
+	if (!(nmsoutc = malloc(sizeof(NMSOutput)))) {
+		uierror("Could not alloc output struct");
+		return 1;
+	}
+
+	uiprintf(SEPARATOR);
+	// AUDIO MODULE INIT
+	nmsoutc->audio = NULL;
+	if ( audio_init() ) {
+		fprintf(stderr, "Audio module not available: setting \"output\" to \"diskdecoded\"\n");
+		rem_avail_pref("output card");
+		edit_pref("output diskdecoded");
+	}
+
+	uiprintf(SEPARATOR);
+	// VIDEO MODULE INIT
+	if ((nmsoutc->video=video_preinit("sdl")) == NULL) {
+		// TODO: rimuovere il video dalle availabilities
+		return 1;
+	}
+
+	uiprintf(SEPARATOR);
+	// DISKWRITER MODULE INIT
+	if ( diskwriter_init() ) {
+		fprintf(stderr, "Disk Writer module not available\n");
+		rem_avail_pref("output diskraw");
+		rem_avail_pref("output diskdecoded");
+		if ( strcmp("card", get_pref("output")) ) {
+			fprintf(stderr, "\nNo output device available\n Cannot continue.\n");
+			return 1;
+		}
+	}
+	uiprintf(SEPARATOR);
 
 	return 0;
 }

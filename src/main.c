@@ -38,10 +38,6 @@
 #define GLOBAL_PREFERENCES
 #include <nemesi/preferences.h>
 
-#include <nemesi/output.h>
-#include <nemesi/audio.h>
-#include <nemesi/diskwriter.h>
-
 int main(int argc, char *argv[])
 {
 	struct RTSP_args *rtsp_args;
@@ -51,7 +47,6 @@ int main(int argc, char *argv[])
 	void *ret;
 	
 	extern int (*decoders[])(char *, int, uint8 *(*)());
-	NMSOutput *output; // XXX temporanea
 
 	memset(decoders, 0, 128*sizeof(int (*)()));
 
@@ -71,24 +66,8 @@ int main(int argc, char *argv[])
 	}
 
 	// output initialization
-	if (output_init(&output)) {
+	if (output_init()) {
 		fprintf(stderr, "Error initialazing output module\n");
-	}
-
-	if ( audio_init() ) {
-		fprintf(stderr, "Audio module not available: setting \"output\" to \"diskdecoded\"\n");
-		rem_avail_pref("output card");
-		edit_pref("output diskdecoded");
-	}
-
-	if ( diskwriter_init() ) {
-		fprintf(stderr, "Disk Writer module not available\n");
-		rem_avail_pref("output diskraw");
-		rem_avail_pref("output diskdecoded");
-		if ( strcmp("card", get_pref("output")) ) {
-			fprintf(stderr, "\nNo output device available\n Cannot continue.\n");
-			exit(1);
-		}
 	}
 
 	// Creation of RTSP Thread
@@ -120,8 +99,8 @@ int main(int argc, char *argv[])
 	} else
 		fprintf(stderr, "Cannot send cancel signal to RTSP Thread\n");
 
-	audio_close();
-	diskwriter_close();
+	output_uninit();
+
 	fprintf(stderr, "\nBye bye!\n\n");
 
 	exit(0);

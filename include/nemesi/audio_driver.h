@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: audio_driver.h 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -24,34 +24,36 @@
  *  along with NeMeSI; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
+ *  This file is largely and freely inspired by audio_out_internal.h from MPlayer project.
+ *  
  * */
+ 
+#ifndef __AUDIO_DRIVER_H
+#define __AUDIO_DRIVER_H
 
-#include <nemesi/utils.h>
+#include <nemesi/types.h>
 
-char *strstrcase(char *haystack, const char *needle)
-{
-	char *str1, *str2;
-	char *ret;
-	unsigned int i;
+static uint32 preinit(const char *arg);
+static uint32 config(int rate,int channels,int format,int flags);
+// TODO function "control" for volume
+// static int control(int cmd, void *arg);
+static uint8 *get_buff(uint32 len);
+static uint32 play_buff(uint8 *data, uint32 len);
+static void pause(void);
+static void resume(void);
+static void uninit(void);
 
-	if ((str1=strdup(haystack)) == NULL)
-		return NULL;
-
-	if ((str2=strdup(needle)) == NULL)
-		return NULL;
-
-	for (i = 0; i < strlen(str1); i++)
-		str1[i] = tolower(str1[i]);
-
-	for (i = 0; i < strlen(str2); i++)
-		str2[i] = tolower(str2[i]);
-
-	if ((ret = strstr(str1, str2)) != NULL)
-		ret = haystack + (ret - str1);
-
-	free(str1);
-	free(str2);
-
-	return ret;
-
+#define NMS_LIB_AUDIO(x) NMSAFunctions nms_audio_##x =\
+{\
+	&info, \
+	preinit, \
+	config, \
+	get_buff, \
+	play_buff, \
+	pause, \
+	resume, \
+	uninit \
 }
+
+#endif // __AUDIO_DRIVER_H
+

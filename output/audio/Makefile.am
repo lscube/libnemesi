@@ -14,6 +14,7 @@ libaudio_la_SOURCES =	set_audiodev.c \
 			audio_init.c \
 			audio_pause.c \
 			audio_play.c \
+			audio_sdl.c \
 			audio_close.c
 
 libaudio_la_LDFLAGS = -static

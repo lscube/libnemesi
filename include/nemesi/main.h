@@ -38,6 +38,7 @@
 #include <pthread.h>
 #include <nemesi/version.h>
 #include <nemesi/rtsp.h>
+#include <nemesi/output.h>
 
 struct RTSP_args {
 	int pipefd[2];
@@ -47,6 +48,8 @@ struct RTSP_args {
 };
 
 int init_rtsp_args(struct RTSP_args **);
+int output_init(void);
+int output_uninit(void);
 int load_plugins(void);
 
 #endif

@@ -35,27 +35,23 @@ int strncmpcase(const char *s1, const char *s2, size_t n)
 	int res;
 	unsigned int i;
 
-	if ((str1 = (char *) malloc(sizeof(char) * (strlen(s1) + 1))) == NULL) {
-			uiprintf("Cannot allocate memory\n");
-		exit(1);
-	}
-	strcpy(str1, s1);
+	if ((str1=strdup(s1)) == NULL)
+		return 1;
+
+	if ((str2=strdup(s2)) == NULL)
+		return 1;
 
 	for (i = 0; i < strlen(str1); i++)
-		if (isupper(str1[i]))
-			str1[i] = tolower(str1[i]);
-
-	if ((str2 = (char *) malloc(sizeof(char) * (strlen(s2) + 1))) == NULL) {
-		uiprintf("Cannot allocate memory\n");
-		exit(1);
-	}
-	strcpy(str2, s2);
+		str1[i] = tolower(str1[i]);
 
 	for (i = 0; i < strlen(str2); i++)
-		if (isupper(str2[i]))
-			str2[i] = tolower(str2[i]);
+		str2[i] = tolower(str2[i]);
+
 	res = strncmp(str1, str2, n);
+
 	free(str1);
 	free(str2);
+
 	return res;
 }
+

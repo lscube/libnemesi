@@ -30,6 +30,14 @@
 #define __NEMESI_OUTPUT_H
 
 #include <nemesi/video.h>
+#include <nemesi/audio.h>
+#include <nemesi/diskwriter.h>
+
+#ifndef NMS_GLOBAL_OUTPUT
+#define OUTPUT_EXTERN extern
+#else
+#define OUTPUT_EXTERN
+#endif
 
 typedef struct {
 	// NMSAudio *audio;
@@ -37,7 +45,10 @@ typedef struct {
 	NMSVideo *video;
 } NMSOutput;
 
-int output_init(NMSOutput **);
+OUTPUT_EXTERN NMSOutput *nmsoutc;
+
+#undef NMS_GLOBAL_OUTPUT
+#undef OUTPUT_EXTERN
 
 #endif // __NEMESI_OUTPUT_H
 

@@ -1,5 +1,5 @@
 /* * 
- *  $Id: video_drivers.h 48 2003-11-10 16:01:50Z mancho $
+ *  $Id: audio_drivers.h 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -24,23 +24,21 @@
  *  along with NeMeSI; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
- *  This file is largely and freely inspired by video_out.h from MPlayer project.
+ *  This file is largely and freely inspired by audio_out.h from MPlayer project.
  *  
  * */
 
-#ifndef __VIDEO_DRIVERS_H
-#define __VIDEO_DRIVERS_H
+#ifndef __AUDIO_DRIVERS_H
+#define __AUDIO_DRIVERS_H
 
-#ifndef NMS_GLOBAL_VIDEO_DRIVERS
-#define VDRV_EXTERN extern
+#ifndef NMS_GLOBAL_AUDIO_DRIVERS
+#define ADRV_EXTERN extern
 #else // NMS_GLOBAL_VIDEO_DRIVERS
-#define VDRV_EXTERN
+#define ADRV_EXTERN
 #endif // NMS_GLOBAL_VIDEO_DRIVERS
 
 #include <config.h>
 #include <nemesi/types.h>
-#include <nemesi/img_format.h>
-#include <nemesi/video_img.h>
 
 typedef struct {
         /* driver name */
@@ -51,75 +49,72 @@ typedef struct {
         const char *author;
         /* any additional comments */
         const char *comment;
-} NMSVDrvInfo;
+} NMSADrvInfo;
 
 typedef struct {
-	NMSVDrvInfo *info;
+	NMSADrvInfo *info;
 	/*
 	 * Preinitializes driver (real INITIALIZATION)
-	 *   arg - currently it's vo_subdevice
 	 *   returns: zero on successful initialization, non-zero on error.
 	 */
 	uint32 (*preinit)(const char *arg);
         /*
-         * Initialize (means CONFIGURE) the display driver.
+         * Initialize (means CONFIGURE) the audio driver.
 	 * params:
-         *   width,height: image source size
-	 *   d_width,d_height: size of the requested window size, just a hint
-	 *   fullscreen: flag, 0=windowd 1=fullscreen, just a hint
-	 *   title: window title, if available
-	 *   format: fourcc of pixel format
+         * 	rate:
+	 * 	channels: number of channels
+	 * 	format:
          * returns : zero on successful initialization, non-zero on error.
          */
-        uint32 (*config)(uint32 width, uint32 height, uint32 d_width,
-			 uint32 d_height, uint8 fullscreen, char *title,
-			 uint32 format);
+        uint32 (*config)(uint32 rate,uint8 channels,uint32 format,uint32 flags);
 	/*
-	 * allocs a new picture.
+	 * allocs buffer for new decoded data.
 	 * params:
-	 *	w: width of requested picture
-	 *	h: height of requested picture
-	 *	pict: the pointer to a NMSPicture struct that will contain data allocated.
-	 * returns 1 on error, 0 otherwise
+	 *	len: length of requested buffer
+	 * returns pointer to new buffer
 	 */
-	uint32 (*get_picture)(int w, int h, NMSPicture *pict);
+	uint8 *(*get_buff)(uint32 len);
 	/*
-	 * This function must be called by decoder after the whole picture has
-	 * been written on the allocated NMSPicture, in order to unlock
-	 * previously locked data by "get_picture".
+	 * This function must be called by decoder after the decoded data has
+	 * been written on the allocated buffer
 	 * params:
-	 *    pict: picture to draw. // XXX: For now we don't need it, but in future... (?)
+	 * 	data: buffer to play.
+	 *	len: length of buffer
 	 * retuns 1 on error, 0 otherwise
 	 */
-	uint32 (*draw_picture)(NMSPicture *pict);
+	uint32 (*play_buff)(uint8 *data, uint32 len);
 
         /*
-         * Display a new RGB/BGR frame of the video to the screen.
+         * Pauses the driver
          */
-        uint32 (*update_screen)(void);
+        void (*pause)(void);
+        /*
+         * Resume playing
+         */
+        void (*resume)(void);
         /*
          * Closes driver. Should restore the original state of the system.
          */
         void (*uninit)(void);
-} NMSVFunctions;
+} NMSAFunctions;
 
 #if HAVE_SDL
-VDRV_EXTERN NMSVFunctions nms_video_sdl;
+ADRV_EXTERN NMSAFunctions nms_audio_sdl;
 #endif
 
 /*
-char *vo_format_name(int format);
-int vo_init(void);
+char *ao_format_name(int format);
+int ao_init(void);
 
-vo_functions_t* init_best_video_out(char** vo_list);
-void list_video_out();
+ao_functions_t* init_best_audio_out(char** ao_list);
+void list_audio_out();
 
 // NULL terminated array of all drivers
-extern vo_functions_t* video_out_drivers[];
+extern ao_functions_t* audio_out_drivers[];
  */
 
-#undef NMS_GLOBAL_VIDEO_DRIVERS
-#undef VDRV_EXTERN
+#undef NMS_GLOBAL_AUDIO_DRIVERS
+#undef ADRV_EXTERN
 
-#endif // __VIDEO_DRIVERS_H
+#endif // __AUDIO_DRIVERS_H
 

@@ -1,25 +1,30 @@
 nemesiincludedir =	$(includedir)/nemesi
-noinst_HEADERS	= 	bufferpool.h \
+noinst_HEADERS	=	audio_driver.h \
+			audio_drivers.h
+			audio.h \
+			bufferpool.h \
+			comm.h \
+			decoder.h \
+			diskwriter.h \
 			etui.h \
+			img_format.h \
 			main.h \
+			md5global.h \
+			md5.h \
 			methods.h \
+			output.h \
+			preferences.h \
+			rtcp.h \
 			rtp.h \
 			rtpptdefs.h \
-			rtcp.h \
 			rtsp.h \
-			version.h \
-			wsocket.h \
-			utils.h \
-			comm.h \
-			md5.h \
-			md5global.h \
 			types.h \
-			preferences.h \
-			diskwriter.h \
-			audio.h \
-			img_format.h \
-			output.h \
+			utils.h \
+			version.h \
 			video_driver.h \
 			video_drivers.h \
-			video_img.h
+			video.h \
+			video_img.h \
+			wsocket.h
+
 INCLUDES = $(top_srcdir)

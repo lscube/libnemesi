@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: output_uninit.c 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,32 +26,17 @@
  *  
  * */
 
-#include <nemesi/utils.h>
+#include <stdlib.h>
+#include <nemesi/output.h>
 
-char *strstrcase(char *haystack, const char *needle)
+int output_uninit(void)
 {
-	char *str1, *str2;
-	char *ret;
-	unsigned int i;
+	audio_close();
+	diskwriter_close();
 
-	if ((str1=strdup(haystack)) == NULL)
-		return NULL;
-
-	if ((str2=strdup(needle)) == NULL)
-		return NULL;
-
-	for (i = 0; i < strlen(str1); i++)
-		str1[i] = tolower(str1[i]);
-
-	for (i = 0; i < strlen(str2); i++)
-		str2[i] = tolower(str2[i]);
-
-	if ((ret = strstr(str1, str2)) != NULL)
-		ret = haystack + (ret - str1);
-
-	free(str1);
-	free(str2);
-
-	return ret;
-
+	// free the global output contex
+	free(nmsoutc);
+	
+	return 0;
 }
+

@@ -81,7 +81,7 @@
 static NMSVDrvInfo info = {
 	"SDL YUV/RGB/BGR renderer (SDL v1.2.5)",
 	"sdl",
-	"Francesco Varano <francesco.varano@polito.it>",
+	"Open Media Streaming Project Team",
 	""
 };
 

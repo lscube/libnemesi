@@ -3,6 +3,7 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libutils.la libplugins.la
 
 libutils_la_SOURCES =	urltokenize.c \
+			strdup.c \
 			strstrcase.c \
 			strncmpcase.c \
 			uiprintf.c \
@@ -29,7 +30,8 @@ bin_PROGRAMS = nemesi
 
 nemesi_SOURCES =	main.c \
 			init_rtsp_args.c \
-			output_init.c
+			output_init.c \
+			output_uninit.c
 
 
 nemesi_LDADD =	@DLOPEN@ \

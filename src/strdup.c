@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: dummy.h 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,32 +26,24 @@
  *  
  * */
 
+#include <config.h>
+
+#if !HAVE_STRDUP
 #include <nemesi/utils.h>
 
-char *strstrcase(char *haystack, const char *needle)
+char *strdup(const char *s)
 {
-	char *str1, *str2;
-	char *ret;
-	unsigned int i;
+	char *dup;
 
-	if ((str1=strdup(haystack)) == NULL)
+	if ((dup = (char *) malloc(sizeof(char) * (strlen(s) + 1))) == NULL) {
+		perror("strdup");
 		return NULL;
+	}
+	strcpy(dup, s);
 
-	if ((str2=strdup(needle)) == NULL)
-		return NULL;
-
-	for (i = 0; i < strlen(str1); i++)
-		str1[i] = tolower(str1[i]);
-
-	for (i = 0; i < strlen(str2); i++)
-		str2[i] = tolower(str2[i]);
-
-	if ((ret = strstr(str1, str2)) != NULL)
-		ret = haystack + (ret - str1);
-
-	free(str1);
-	free(str2);
-
-	return ret;
-
+	return dup;
 }
+#else
+char *strdup(const char *s);
+#endif /* !HAVE_STRDUP */
+

@@ -37,12 +37,6 @@
 #include <nemesi/video_img.h>
 #include <nemesi/video_drivers.h>
 
-#ifndef NMS_GLOBAL_VIDEO
-#define VIDEO_EXTERN extern
-#else
-#define VIDEO_EXTERN
-#endif
-
 typedef struct {
 	//! thread id
 	pthread_t tid;
@@ -51,16 +45,7 @@ typedef struct {
 	// void *functions;
 } NMSVideo;
 
-/*
-VIDEO_EXTERN NMSVideoThread nms_vthread
-#ifdef NMS_GLOBAL_VIDEO
-	= { 0, NULL }
-#endif
-;
-*/
-
-#undef NMS_GLOBAL_VIDEO
-#undef VIDEO_EXTERN
+NMSVideo *video_preinit(char *);
 
 #endif // __VIDEO_H
 
