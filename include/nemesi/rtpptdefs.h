@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/rtpptdefs.h: $Revision: 1.4 $ -- $Date: 2003/01/16 15:47:57 $
+ *  ./include/nemesi/rtpptdefs.h: $Revision: 1.5 $ -- $Date: 2003/07/08 12:30:24 $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,7 +33,7 @@
 
 #include <nemesi/types.h>
 
-#ifdef GLOBAL_RTP_DEFS
+#ifndef GLOBAL_RTP_DEFS
 #define EXTERN extern
 #else /* GLOBAL_RTP_DEFS */
 #define EXTERN
