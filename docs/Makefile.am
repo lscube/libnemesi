@@ -25,7 +25,7 @@ all:
 	if test $$? == 0 ; then \
 		echo -n "Creating HTML..."; \
 		groff -mandoc -e -t -Thtml $(man_MANS) > $(man_MANS).html; \
-		if test $? != 0 ; then \
+		if test $$? == 3 ; then \
 			echo "ERROR! groff does not support HTML output! I can't create HTML file from man page!"; \
 			rm $(man_MANS).html; \
 		fi; \
