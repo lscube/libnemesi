@@ -1,3 +1,9 @@
+nemesi (0.5.2) unstable; urgency=low
+
+  * Changes to debian packet no more needed.
+
+ -- OMSP Team <team@streaming.polito.it>  Wed, 16 Mar 2005 18:02:21 +0100
+
 nemesi (0.5.1-1) unstable; urgency=low
 
   * Changed OMSP Team's email address.

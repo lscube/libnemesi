@@ -1,3 +1,8 @@
+0.5.2
+	- New message dialogs for GUI.
+	- Improved "Open..." dialog (cache-based URL completion).
+	- Coloured CLI.
+	
 0.5.1
         - Bug fixes in exit-status routines.
 
