@@ -39,7 +39,7 @@ int close_cmd(struct RTSP_Thread *rtsp_th, ...)
 		return 1;
 	}
 	// get_curr_sess(NULL, NULL, NULL);
-	get_curr_sess(GCS_UNINIT);
+	// get_curr_sess(GCS_UNINIT); // useless
 	// get_curr_sess(rtsp_th, NULL, NULL);
 	get_curr_sess(GCS_INIT, rtsp_th);
 	if (send_teardown_request(rtsp_th))
