@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/poadd.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/poadd.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,14 +29,20 @@
 #include <nemesi/rtp.h>
 #include <nemesi/bufferpool.h>
 
-/**
-* Inserisce un elemento nel Buffer di Playout.
+/*!
+* \brief Inserisce un elemento nel Buffer di Playout.
+*
 * L'inserimento e' ordinato secondo il numero di sequenza del pacchetto RTP.
-* @param po Il Buffer Pool corrente.
-* @param index L'indice dello slot allocato dalla poget.
-* @return 0
-* @see poget
-* @see bufferpool.h
+* Si tratta di un normale inserimento in una lista doppio linkata con i
+* collegameti effettuati tramite gli indici del vettore.
+*
+* \param po Il Buffer Pool corrente.
+* \param index L'indice dello slot allocato dalla poget.
+* \param cycles I cicli del campo \c SEQ dei pacchetti RTP.
+* \return 0
+* \see bpget
+* \see podel
+* \see bufferpool.h
 * */
 int poadd(playout_buff * po, int index, uint32 cycles)
 {

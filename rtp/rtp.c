@@ -1,5 +1,5 @@
 /* * 
- *  ./rtp/rtp.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:13 $
+ *  ./rtp/rtp.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:48 $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,6 +29,9 @@
 #include <nemesi/rtp.h>
 #include <nemesi/decoder.h>
 
+#define PO_BUFF_SIZE_SEC 0
+#define PO_BUFF_SIZE_MSEC 700
+
 void *rtp(void *args)
 {
 	struct RTP_Session *rtp_sess_head=((struct RTP_Session *)args);
@@ -50,8 +53,12 @@ void *rtp(void *args)
 	dec_args->rtp_sess_head=rtp_sess_head;
 
 	/* Playout Buffer Size */
+	/*
 	dec_args->startime.tv_sec=0;
-	dec_args->startime.tv_usec=500*(1000);
+	dec_args->startime.tv_usec=700*(1000);
+	*/
+	dec_args->startime.tv_sec=PO_BUFF_SIZE_SEC;
+	dec_args->startime.tv_usec=PO_BUFF_SIZE_MSEC*(1000);
 	/* 500 msec */
 
 	pthread_mutex_init(&(dec_args->syn), NULL);

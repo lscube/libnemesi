@@ -25,9 +25,9 @@ int decode(char *data, int len, uint8 * (*ab_get) (uint32))
 {
 	static PMPSTR mp = NULL;
 
-	int size;
+	int size = 0;
 	char out[BUFFER];
-	int ret;
+	int ret = 0;
 	uint8 *audio_data;
 
 	if (!mp) {
@@ -44,7 +44,8 @@ int decode(char *data, int len, uint8 * (*ab_get) (uint32))
 /*		write(audio_fd, out, size); */
 		audio_data = (*ab_get) ((uint32) size);
 		memcpy(audio_data, out, size);
-		ret = decodeMP3(mp, NULL, 0, out, BUFFER, &size);
+		ret = decodeMP3(mp, data + 4 , 0, out, BUFFER, &size);
+		fprintf(stderr, "\rret = %d\n", ret);
 	}
 #else
 	if (ret == MP3_OK) {

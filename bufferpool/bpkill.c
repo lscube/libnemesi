@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/bpkill.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/bpkill.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,11 +28,16 @@
 
 #include <nemesi/bufferpool.h>
 
-/**
-* Libera la memoria precedentemente allocata per il Buffer Pool.
-* @param bp Il puntatore al Buffer Pool corrente.
-* @return 0
-* @see bpinit* @see bufferpool.h
+/*!
+* \brief Funzione per la chiusura della libreria Bufferpool.
+*
+* Libera la memoria precedentemente allocata per il Buffer Pool. Da questo
+* momento in poi il Bufferpool non è più accessibile.
+*
+* \param bp Il puntatore al Buffer Pool corrente.
+* \return 0
+* \see bpinit
+* \see bufferpool.h
 * */
 int bpkill(buffer_pool * bp)
 {

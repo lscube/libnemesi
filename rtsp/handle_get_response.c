@@ -1,5 +1,5 @@
 /* * 
- *  ./rtsp/handle_get_response.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:13 $
+ *  ./rtsp/handle_get_response.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:49 $
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/bpinit.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/bpinit.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,13 +28,16 @@
 
 #include <nemesi/bufferpool.h>
 
-/**
-* Inizializza il Buffer Pool.
+/*!
+* \brief Inizializza il Buffer Pool.
+*
 * Alloca la memoria per il Buffer di Playout e inizializza la Free List per la gestione interna della memoria.
 * Inizializza la variabile di accesso in Mutua Esclusione alla Free List.
-* @param bp Il puntatore al Buffer Pool corrente.
-* @return 1 in caso di errore, 0 altrimenti.
-* @see bufferpool.h
+*
+* \param bp Il puntatore al Buffer Pool corrente.
+* \return 1 in caso di errore, 0 altrimenti.
+* \see bpkill
+* \see bufferpool.h
 * */
 int bpinit(buffer_pool *bp)
 {

@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/bpget.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/bpget.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,14 +28,17 @@
 
 #include <nemesi/bufferpool.h>
 
-/**
-* Restituisce uno slot di memoria libero dal Buffer Pool.
+/*!
+* \brief Restituisce uno slot di memoria libero dal Buffer Pool.
+*
 * Prende dalla testa della Free List l'indice di uno slot libero
 * dal quale si puo' ricavare il puntatore all'area di memoria
 * da utilizzare.
-* @param bp Il puntatore al Buffer Pool corrente.
-* @return L'indice dello slot libero nel vettore del Buffer Pool.
-* @see bufferpool.h
+*
+* \param bp Il puntatore al Buffer Pool corrente.
+* \return L'indice dello slot libero nel vettore del Buffer Pool.
+* \see bprmv
+* \see bufferpool.h
 * */
 int bpget(buffer_pool * bp)
 {

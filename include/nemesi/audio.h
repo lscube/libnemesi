@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/audio.h: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:10 $
+ *  ./include/nemesi/audio.h: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -43,7 +43,8 @@
 
 #include <SDL.h>
 
-#define SAMPLES 2048
+/* #define SAMPLES 2048 */
+#define SAMPLES 512
 
 #endif
 

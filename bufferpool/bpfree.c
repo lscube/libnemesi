@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/bpfree.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/bpfree.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:46 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,15 +28,17 @@
 
 #include <nemesi/bufferpool.h>
 
-/**
-* Restituisce uno slot alla Free List.
+/*!
+* \brief Restituisce uno slot alla Free List.
+*
 * Dopo aver rimosso un elemento dal Buffer di Playout, tramite la bpdel,
 * inserisce in testa alla Free List l'indice dell'elemento liberato.
-* @param bp Il puntatore al Buffer Pool corrente.
-* @param index L'indice dello slot da liberare.
-* @return 0
-* @see bpdel
-* @see bufferpool.h
+*
+* \param bp Il puntatore al Buffer Pool corrente.
+* \param index L'indice dello slot da liberare.
+* \return 0
+* \see podel
+* \see bufferpool.h
 * */
 int bpfree(buffer_pool * bp, int index)
 {

@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/audio/audio_init.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:12 $
+ *  ./decoder/audio/audio_init.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:48 $
  *  
  *  This file is part of NeMeSI
  *
@@ -36,13 +36,13 @@ int audio_init(void)
 #endif
 	/* audio_buffer initialization */
 	if ( (audio_buffer=ab_init()) == NULL ) {
-		printf("Failed while initializing Audio Buffer\n");
+		uiprintf("Failed while initializing Audio Buffer\n");
 		return 1;
 	}
 
 #ifdef HAVE_SDL /* SDL Initialization */
 	if( (SDL_audio_fmt = init_SDL(audio_buffer)) == NULL ) {
-		printf("Cannot initialize SDL Library\n");
+		uiprintf("Cannot initialize SDL Library\n");
 		return 1;
 	}
 #else

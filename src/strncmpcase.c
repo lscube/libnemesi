@@ -1,5 +1,5 @@
 /* * 
- *  ./src/strncmpcase.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:14 $
+ *  ./src/strncmpcase.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:49 $
  *  
  *  This file is part of NeMeSI
  *

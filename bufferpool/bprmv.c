@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/bprmv.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/bprmv.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,6 +28,20 @@
 
 #include <nemesi/bufferpool.h>
 
+/*!
+ * \brief Rimuove uno slot dalla coda del Buffer di Plaout di Rete.
+ *
+ * Si occupa di chiamare la funzione \c podel per la cancellazione dell'elemento dalla coda di playout
+ * e la funzione \c bpfree per l'eliminazione dal vettore del Bufferpool.
+ *
+ * \param bp puntatore al vettore del Buffer Pool corrente
+ * \param po puntatore alla lista del Buffer di Playout.
+ * \param index indice dell'elemento da rimuovere.
+ * \return 0
+ * \see podel
+ * \see bpfree
+ * \see bufferpool.h
+ * */
 int bprmv(buffer_pool *bp, playout_buff * po, int index)
 {
 	podel(po, index);

@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:08 $
+ *  ./decoder/decoder.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -112,10 +112,10 @@ void *decoder(void *args)
 								sys_buff--;
 							}
 						}
-/*
-				 		uiprintf("\rPlayout Buffer Status: %4.1f %% full - pkt data len: %d   ",\
-								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), len);
-*/				
+/**/
+				 		uiprintf("\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
+								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), sys_buff_size(NULL)*100.0, len);
+/**/				
 						bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
 					}
 				}

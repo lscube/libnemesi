@@ -1,5 +1,5 @@
 /* * 
- *  ./rtcp/send_rtcp_bye.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:13 $
+ *  ./rtcp/send_rtcp_bye.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:48 $
  *  
  *  This file is part of NeMeSI
  *

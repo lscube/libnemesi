@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/podel.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/podel.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,11 +28,22 @@
 
 #include <nemesi/bufferpool.h>
 
-/**
-* Rimuove un elemento dal Buffer di Playout.
-* @param po Il puntatore al Buffer Pool corrente.
-* @param index L'indice dell'elemento da rimuovere.
-* @see pofree
+/*!
+* \brief Rimuove un elemento dal Buffer di Playout.
+*
+* La funzione gestisce solo la rimozione dal vettore del Buffer di Playout, ma
+* non si occupa di reinserire l'elemento liberato nella free list.  Questa
+* azione compete al Buffer Pool e non al Buffer di Playout, quindi dovrà essere
+* effettuata tramite la funzione <tt>\ref bpfree</tt>.  La \c podel non sarà
+* mai chiamata direttamente all'interno di \em NeMeSI, ma solo attraverso la
+* <tt>\ref bprmv</tt>.
+*
+* \param po Il puntatore al Buffer di Playout corrente.
+* \param index L'indice dell'elemento da rimuovere.
+* \return 0
+* \see bpfree
+* \see bprmv
+* \see bufferpool.h
 * */
 int podel(playout_buff * po, int index)
 {

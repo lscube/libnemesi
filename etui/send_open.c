@@ -1,5 +1,5 @@
 /* * 
- *  ./etui/send_open.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:10 $
+ *  ./etui/send_open.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *

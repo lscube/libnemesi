@@ -1,5 +1,5 @@
 /* * 
- *  ./bufferpool/poinit.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:06 $
+ *  ./bufferpool/poinit.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,6 +28,16 @@
 
 #include <nemesi/bufferpool.h>
 
+/*!
+ * \brief Inizializza il Buffer di Playout.
+ *
+ * \param po Il puntatore al Buffer di Playout.
+ * \param bp Il puntatore il Buffer Pool.
+ * \return 0
+ * \see poadd
+ * \see podel
+ * \see bufferpool.h
+ * */
 int poinit(playout_buff *po, buffer_pool *bp)
 {
 	po->bufferpool=&(bp->bufferpool);
