@@ -274,12 +274,12 @@ static void uninit(void)
 	NMSAudioBuffer *ab = sdl_priv.audio_buffer;
 
 	SDL_PauseAudio(1);
+	SDL_CloseAudio();
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 	if (ab) {
 		ab_uninit(ab);
 		sdl_priv.audio_buffer = NULL;
 	}
-	SDL_CloseAudio();
-	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 
 	nmsprintf(1, "SDL Audio closed\n");
 

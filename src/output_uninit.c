@@ -32,15 +32,15 @@
 int output_uninit(void)
 {
 
-	if ( (nmsoutc->audio) && (nmsoutc->audio->init) ) {
-		nmsoutc->audio->functions->uninit();
-		nmsoutc->audio->init = 0;
-		free(nmsoutc->audio);
-	}
 	if ( (nmsoutc->video) && (nmsoutc->video->init) ) {
 		nmsoutc->video->functions->uninit();
 		nmsoutc->video->init = 0;
 		free(nmsoutc->video);
+	}
+	if ( (nmsoutc->audio) && (nmsoutc->audio->init) ) {
+		nmsoutc->audio->functions->uninit();
+		nmsoutc->audio->init = 0;
+		free(nmsoutc->audio);
 	}
 	if ( (nmsoutc->diskwriter) )
 		diskwriter_close(nmsoutc->diskwriter);
