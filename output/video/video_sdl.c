@@ -101,13 +101,12 @@ NMS_LIB_VIDEO(sdl);
 #define VBUFFER_SIZE 25
 
 struct sdl_vbuffer {
-	// SDL_Overlay *overlay[VBUFFER_SIZE];
 	SDL_Overlay **overlay;
-	SDL_Surface *surface[VBUFFER_SIZE];
-	double pic_pts[VBUFFER_SIZE];
+	SDL_Surface **surface;
+	double *pic_pts;
 	int readpos;
 	int writepos;
-	int size;
+	uint32 size;
 	uint32 buff_size; //!< total size of allocated buffer
 	SDL_mutex *syn;
 	SDL_cond *cond_full;
@@ -116,13 +115,13 @@ struct sdl_vbuffer {
 static struct sdl_priv_s {
 	char driver[8]; //! video driver used by SDL
 	SDL_Surface *display;
-	// SDL_Overlay *overlay;
 	struct sdl_vbuffer *vbuffer;
 	int width, height;
 	int d_width, d_height;
 	uint8 mode; /* RGB or YUV? */
 	uint32 format;
 	uint32 sdlflags;
+	uint32 sysbuff_ms;
 #ifdef SDL_ENABLE_LOCKS
 	SDL_mutex *syn;
 #endif // SDL_ENABLE_LOCKS
@@ -131,7 +130,7 @@ static struct sdl_priv_s {
 //--- Video buffer ---------------//
 static struct sdl_vbuffer *new_vbuffer(uint32 size)
 {
-	int i; // index
+	uint32 i; // index
 	struct sdl_vbuffer *vbuffer;
 
 	if ((vbuffer = malloc(sizeof(struct sdl_vbuffer))) == NULL) {
@@ -142,25 +141,34 @@ static struct sdl_vbuffer *new_vbuffer(uint32 size)
 		nmserror("SDL: could not alloc memory for video buffer");
 		return NULL;
 	}
+	if ((vbuffer->surface = malloc(size * sizeof(SDL_Surface *))) == NULL) {
+		nmserror("SDL: could not alloc memory for video buffer");
+		return NULL;
+	}
+	if ((vbuffer->pic_pts = malloc(size * sizeof(double *))) == NULL) {
+		nmserror("SDL: could not alloc memory for video buffer");
+		return NULL;
+	}
 
 	vbuffer->syn = SDL_CreateMutex();
 	vbuffer->cond_full = SDL_CreateCond();
 
-	for (i=0;i<VBUFFER_SIZE;i++) {
+	for (i=0;i<size;i++) {
 		vbuffer->overlay[i] = NULL;
 		vbuffer->surface[i] = NULL;
 		vbuffer->pic_pts[i] = 0;
 	}
 	vbuffer->readpos = vbuffer->writepos = vbuffer->size = 0;
+	vbuffer->buff_size = size;
 	
 	return vbuffer;
 }
 
 static void free_vbuffer(struct sdl_vbuffer *vbuffer)
 {
-	int i; // index
+	uint32 i; // index
 
-	for(i=0;i<VBUFFER_SIZE;i++) {
+	for(i=0;i<vbuffer->buff_size;i++) {
 		if (vbuffer->overlay[i]) {
 			SDL_FreeYUVOverlay(vbuffer->overlay[i]);
 			vbuffer->overlay[i] = NULL;
@@ -180,7 +188,7 @@ static void free_vbuffer(struct sdl_vbuffer *vbuffer)
 }
 //--- Video buffer ---------------//
 
-static uint32 preinit(const char *arg)
+static uint32 preinit(const char *arg, uint32 buff_ms)
 {
 	struct sdl_priv_s *priv = &sdl_priv;
 	Uint32 subsystem_init;
@@ -195,6 +203,8 @@ static uint32 preinit(const char *arg)
 #ifdef SDL_ENABLE_LOCKS
 	priv->syn = SDL_CreateMutex();
 #endif // SDL_ENABLE_LOCKS
+
+	priv->sysbuff_ms = buff_ms;
 
 	subsystem_init = SDL_WasInit(SDL_INIT_EVERYTHING);
 
@@ -231,11 +241,12 @@ static uint32 preinit(const char *arg)
 	return 0;
 }
 
-static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_height, \
+static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_height, uint32 fps, \
 	       uint8 fullscreen, char *title, uint32 format) 
 {
 	SDL_Surface *newsurface;
 	struct sdl_priv_s *priv = &sdl_priv;
+	uint32 buff_size;
 
 	uint32 flags=0;
 
@@ -290,9 +301,15 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 		d_height = height;
 	}
 
+	// video buffer initialization
+	if (!priv->sysbuff_ms || !fps )
+		buff_size = VBUFFER_SIZE;
+	else
+		buff_size = ( fps * priv->sysbuff_ms + 500 ) / 1000;
 	if (priv->vbuffer)
 		free_vbuffer(priv->vbuffer);
-	priv->vbuffer = new_vbuffer(VBUFFER_SIZE);
+	priv->vbuffer = new_vbuffer(buff_size);
+	nmsprintf(3, "Video system buffer: %u\n", buff_size);
 
 	if (!(newsurface = SDL_SetVideoMode(width, height, 0, flags))) {
 		return nmserror("SDL_SetVideoMode failed: %s", SDL_GetError());
@@ -318,9 +335,12 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 static uint32 control(uint32 cmd, void *arg, ...)
 {
 	switch(cmd) {
-		case VCTRL_GET_SYSBUFF:
-			// *((float *)arg) = (float)()
-			return 0;
+		case VCTRL_GET_SYSBUF:
+			if (sdl_priv.vbuffer)
+				*((float *)arg) = (float)(sdl_priv.vbuffer->size)/(float)(sdl_priv.vbuffer->buff_size);
+			else
+				*((float *)arg) = 0;
+			return 1;
 			break;
 		default:
 			return -1;
@@ -337,17 +357,17 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 
 #if 0
 	SDL_LockMutex(vbuffer->syn);
-	while(vbuffer->size == VBUFFER_SIZE) {
+	while(vbuffer->size == vbuffer->buff_size) {
 		SDL_CondWait(vbuffer->cond_full, vbuffer->syn);
 		/*
 		vbuffer->readpos++;
-		vbuffer->readpos %= VBUFFER_SIZE;
+		vbuffer->readpos %= vbuffer->buff_size;
 		vbuffer->size--;
 		*/
 	}
 	SDL_UnlockMutex(vbuffer->syn);
 #else
-	if (vbuffer->size == VBUFFER_SIZE)
+	if (vbuffer->size == vbuffer->buff_size)
 		return 1;
 #endif
 
@@ -409,7 +429,7 @@ static uint32 draw_picture(NMSPicture *pict, double pts)
 
 	SDL_OVR_UNLOCK(bmp);
 	vbuffer->pic_pts[vbuffer->writepos++] = pts;
-	vbuffer->writepos %= VBUFFER_SIZE;
+	vbuffer->writepos %= vbuffer->buff_size;
 	SDL_LockMutex(vbuffer->syn);
 	vbuffer->size++;
 	SDL_UnlockMutex(vbuffer->syn);
@@ -427,7 +447,7 @@ static uint32 update_screen(double *next_pts)
 	if (!vbuffer)
 		return 1;
 
-	// if (vbuffer->size < (VBUFFER_SIZE / 2) + 1) // no frame to show
+	// if (vbuffer->size < (vbuffer->buff_size / 2) + 1) // no frame to show
 	if (!vbuffer->size) { // no available frames in buffer
 		if (next_pts)
 			*next_pts = 0;
@@ -445,9 +465,9 @@ static uint32 update_screen(double *next_pts)
 	SDL_DisplayYUVOverlay(bmp, &(sdl_priv.display->clip_rect));
 	SDL_SRF_UNLOCK(priv->display);
 
-	vbuffer->readpos %= VBUFFER_SIZE;
+	vbuffer->readpos %= vbuffer->buff_size;
 	SDL_LockMutex(vbuffer->syn);
-	if(vbuffer->size == VBUFFER_SIZE)
+	if(vbuffer->size == vbuffer->buff_size)
 		SDL_CondSignal(vbuffer->cond_full);
 	vbuffer->size--;
 	SDL_UnlockMutex(vbuffer->syn);

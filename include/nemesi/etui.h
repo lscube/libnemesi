@@ -49,8 +49,9 @@
 			nmsprintf(1, "\n"); \
 			nmsprintf(1, "\t-h|--help\t\tdisplay this help and exit\n"); \
 			nmsprintf(1, "\t-V|--version\t\tdisplay version information and exit\n"); \
-			nmsprintf(1, "\t-v [n]\t\t\tset verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
+			nmsprintf(1, "\t-v|--verbose [n]\tset verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
 			nmsprintf(1, "\n   Output options:\n"); \
+			nmsprintf(1, "\t--sysbuff <msec>\tsystem cache of decoded milliseconds\n"); \
 			nmsprintf(1, "\t--ao <drv[:dev]>\tselect audio output driver (--ao help for a list)\n"); \
 			nmsprintf(1, "\t--vo <drv[:opt]>\tselect video output driver (--vo help for a list)\n"); \
 			nmsprintf(1, "\n"); \
@@ -65,8 +66,10 @@
 #define CL_MAIN_OPTIONS	"hv::V"		/* help, verbosity, version */
 #define CL_MAIN_LONG_OPTIONS	{"version", 0, NULL, 'V'}, \
 				{"help", 0, NULL, 'h'}, \
+				{"verbose", 2, NULL, 'v'}, \
 				{"ao", 1, NULL, 1}, \
-				{"vo", 1, NULL, 2}
+				{"vo", 1, NULL, 2}, \
+				{"sysbuff", 1, NULL, 3}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS

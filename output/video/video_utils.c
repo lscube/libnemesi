@@ -58,7 +58,7 @@ void list_video_out(void)
 /*!
  * params drv coma separated list of device drivers in the form <driver:option>
  */
-NMSVFunctions *init_best_video_out(char *drv)
+NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
 {
 	int i;
 	char *device, *sub_device = NULL;
@@ -71,7 +71,7 @@ NMSVFunctions *init_best_video_out(char *drv)
 				nmserror("Could not find video driver %s", device);
 			else {
 				nmsprintf(3, "Found video output driver %s\n", video_out_drivers[i]->info->name);
-				if (!video_out_drivers[i]->preinit(sub_device)) {
+				if (!video_out_drivers[i]->preinit(sub_device, sysbuff_ms)) {
 					return video_out_drivers[i];
 				}
 			}
@@ -82,7 +82,7 @@ NMSVFunctions *init_best_video_out(char *drv)
 		nmsprintf(2, "Falling Back to drivers not hinted\n");
 	}
 	for (i=0; video_out_drivers[i]; i++) {
-		if (!video_out_drivers[i]->preinit(NULL))
+		if (!video_out_drivers[i]->preinit(NULL, sysbuff_ms))
 			return video_out_drivers[i];
 	}
 

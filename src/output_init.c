@@ -42,7 +42,7 @@ int output_init(NMSOutputHints *hints)
 		nmserror("Could not alloc output struct");
 
 	nmsoutc->elapsed=0;
-	nmsoutc->sysbuff_ms = hints ? hints->sysbuff_ms : DEF_SYSBUFF_MS;
+	nmsoutc->sysbuff_ms = (hints && hints->sysbuff_ms) ? hints->sysbuff_ms : DEF_SYSBUFF_MS;
 
 	nmsprintf(1, SEPARATOR);
 	// AUDIO MODULE INIT
@@ -56,7 +56,7 @@ int output_init(NMSOutputHints *hints)
 
 	nmsprintf(1, SEPARATOR);
 	// VIDEO MODULE INIT
-	if ((nmsoutc->video=video_preinit(hints ? hints->video : NULL)) == NULL) {
+	if ((nmsoutc->video=video_preinit(hints ? hints->video : NULL, nmsoutc->sysbuff_ms)) == NULL) {
 		if (!nmsoutc->audio) {
 			nmserror("Video module not available: setting \"output\" to \"null\"");
 			rem_avail_pref("output card");

@@ -103,7 +103,7 @@ int decode(char *data, int len, NMSOutput *outc)
 				vc->width = ff->context->width;
 				vc->height = ff->context->height;
 				vc->fps = ff->context->frame_rate;
-				if (funcs->config(vc->width, vc->height, vc->width, vc->height, \
+				if (funcs->config(vc->width, vc->height, vc->width, vc->height, vc->fps, \
 							0, "NeMeSI (SDL)", vc->format))
 					return 1;
 				vc->init = 1;

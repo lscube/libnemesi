@@ -66,7 +66,7 @@ int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
 				if (*optarg == 'v') {
 					for(i=0;optarg[i]=='v'; i++);
 					if (optarg[i]!='\0') {
-						nmserror("Invalid argument to verbose\n");
+						nmserror("Invalid argument to \"%s\" option\n", long_options[option_index].name);
 						usage = 1;
 						ret = -1;
 					}
@@ -74,12 +74,15 @@ int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
 				} else if ( (isdigit(*optarg)) ) {
 					v = strtol(optarg, &v_err, 10);
 					if ( (*v_err) ) {
-						nmserror("Invalid argument to \"verbose\" option 1\n");
+						nmserror("Invalid argument to \"%s\" option\n", long_options[option_index].name);
 						usage = 1;
 						ret = -1;
 					}
-				} else
-					return -nmserror("Invalid argument to \"verbose\" option 2\n");
+				} else {
+					nmserror("Invalid argument to \"%s\" option\n", long_options[option_index].name);
+					usage = 1;
+					ret = -1;
+				}
 			} else if ( (optind<argc) ) {
 				i = strtol(argv[optind], &v_err, 10);
 				if ( !(*v_err) ) {
@@ -106,6 +109,16 @@ int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
 				ret = 1;
 			} else
 				hints->video = strdup(optarg);
+			break;
+		case 3: // system buffer msec selection
+			hints->sysbuff_ms = strtol(optarg, &v_err, 10);
+			if ( *v_err ) {
+				if ( (*v_err == '.') || (*v_err == ',') )
+					nmserror("Argument to \"%s\" option must be an integer number of milliseconds", long_options[option_index].name);
+				nmserror("Invalid argument to \"%s\" option", long_options[option_index].name);
+				usage = 1;
+				ret = -1;
+			}
 			break;
 		case ':':
 			nmserror("Missing argument for option \"%s\"\n", argv[optind-1]);

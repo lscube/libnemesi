@@ -64,6 +64,7 @@ void *decoder(void *args)
 #endif // TS_SCHEDULE
 	char buffering_audio=1;
 	float audio_sysbuff;
+	float video_sysbuff;
 	struct Stream_Source *stm_src;
 	rtp_pkt *pkt;
 	int len=0;
@@ -142,6 +143,7 @@ void *decoder(void *args)
 								nmsoutc->elapsed = ts_elapsed * 1000;
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
 								nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+								nmsoutc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
 
 								// AUDIO
 								if(buffering_audio) {
@@ -166,9 +168,14 @@ void *decoder(void *args)
 								global_disk_buffer->len = 0;
 							} */
 						}
-/**/
+/*
 				 		nmsprintf(2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, len);
+*/				
+/**/				
+				 		nmsprintf(2, "\rBuffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
+								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
+						nmsprintf(3, " - pkt len: %d\n", len);
 /**/				
 						bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
 

@@ -39,9 +39,6 @@
 #include <nemesi/bufferpool.h>
 #include <nemesi/types.h>
 
-#include <nemesi/audio.h>
-#include <nemesi/diskwriter.h>
-
 void *decoder(void *);
 
 int dec_create(struct Dec_args *);

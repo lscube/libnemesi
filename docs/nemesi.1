@@ -1,6 +1,6 @@
-.TH NEMESI 1 "April 28, 2002"
+.TH NeMeSI 1 "March 23, 2004"
 .SH NAME
-nemesi \- NEtwork MEdia Streamer I
+NeMeSI \- NEtwork MEdia Streamer I
 .SH SYNOPSIS
 .B nemesi 
 .RB [ " options " ]
@@ -23,6 +23,13 @@ Print version.
 .TP
 .B -v [n]
 Set verbosity level
+.SH GENERAL OUTPUT OPTIONS
+.B --sysbuff <msec>
+.RS
+Set the
+.B system buffer
+cache of decoded milliseconds.
+.RE
 .SH AUDIO OUTPUT OPTIONS
 .B --ao <driver1[:device],driver2,...,[...]>
 .RS
@@ -30,8 +37,8 @@ Specify a list of audio output drivers.
 .RE
 If the list ends with "..." then
 .B NeMeSI
-will also try the other present drivers, not listed on the command line, if no
-given driver can work.
+will also try the other installed audio drivers, not listed on the command line, if all
+the provided drivers don't work.
 .BR
 .I NOTE:
 Use --ao help to view the list of available audio drivers.
@@ -51,8 +58,8 @@ Specify a list of video output drivers.
 .RE
 If the list ends with "..." then
 .B NeMeSI
-will also try the other present drivers, not listed on the command line, if no
-given driver can work.
+will also try the other installes video drivers, not listed on the command line, if all
+the provided drivers don't work.
 .BR
 .I NOTE:
 Use --vo help to view the list of available video drivers.
@@ -77,7 +84,8 @@ technique.
 .B NeMeSI
 is the official streaming client/player of
 .B Open Media Streaming Project
-by Internet Multimedia Group at Politecnico di Torino. Please visite OMSP
+by Internet Multimedia Group at Politecnico di Torino. Please visit
+.B OMSP
 home page (http://streaming.polito.it) for further information.
 
 .SH USAGE
@@ -87,7 +95,8 @@ Normally
 is started with
 .RS
 .PP
-nemesi urlname
+nemesi
+.I urlname
 .RE
 .PP
 which runs
@@ -96,7 +105,7 @@ and even try to open the URL described in
 .IR "urlname".
 This is equivalent to running
 .B NeMeSI
-with the command line
+in the command line
 .RS
 .PP
 nemesi
@@ -110,32 +119,34 @@ prompt (see
 .B Textual User Interface
 below) when
 .B NeMeSI
-is found in the
+is in the
 .I INIT
 state.
 
-If the bootstrap phase executes whitout errors and the connection was
+If the bootstrap phase executes whitout errors and the connection is
 already established,
 .B NeMeSI
-give you the prompt in the
+provides the prompt in the
 .I READY
 state, ready to accept some command. It's a good idea to issue now a
 .BR play " (or " p ")"
 command to start the playback of the streaming session.
 
-You can pause the playback with the command
+The playback can be paused with the command
 .B zause
-or stop it (which is like a pause plus a rewind) typing
+or stopped (which is like a pause plus a rewind) typing
 .BR "stop".
-You can close the connection with the streaming server by introducing a
+The command
 .B close
-command to return to the prompt in the
+will end the connection with the streaming server and will return
+.B NeMeSI
+in the
 .I INIT
 state. A
 .B quit
-command leave
+command exits
 .B NeMeSI
-to the shell prompt.
+and returns to the shell prompt.
 
 .SS Bootstrap messages
 The messages printed at bootstrap phase show
@@ -146,12 +157,12 @@ loaded and the
 .I RTP Payload Type
 they manage
 .IP \(bu 4
-some information about the setup of the audio board
+some informations about the setup of the audio and video drivers
 .SS Textual user interface
 .B NeMeSI
 features the innovative
 .I More-Touch Electric-Textual User Interface
-for prompting and for parsing user commands. MT-ETUI accepts following commands:
+for both prompting and parsing user commands. MT-ETUI accepts following commands:
 .TP
 .BR help " or " ?
 print help
@@ -160,19 +171,19 @@ print help
 quit the program
 .TP
 .BR version
-print infos about NeMeSI
+print informations about NeMeSI
 .TP
-.BR open " urlname"
-connect to urlname
+.BR open "urlname"
+connect to the urlname
 .TP
 .BR info
 print info about the session
 .TP
 .BR play " [range]"
-start the playback. Issuing the optional
+start the playback. The optional field
 .I range
-you can choose the portion of the
-media to playback. Generic format for
+selects the start and stop time of the media to playback.
+The format for
 .I range
 option is
 .RS
@@ -180,7 +191,7 @@ option is
 hh:mm:ss-HH:MM:SS
 .RE
 .IP
-which suggests
+which instructs
 .B NeMeSI
 to start the playback of the stream at 
 .I hh 
@@ -239,11 +250,27 @@ NeMeSI documentation at Open Media Streaming Project home page
 (http://streaming.polito.it).
 .SH AUTHORS
 .IP \(bu 2
-Giampaolo "mancho" Mancini
-<manchoz@inwind.it>
+Giampaolo
+.B 'mancho'
+Mancini
+<giampaolo.mancini@polito.it>
 .IP \(bu 2
-Francesco "shawill" Varano
-<shawill@infinito.it>
-.PP
-This manual page was written by Giampaolo "mancho" Mancini <manchoz@inwind.it>.
+Francesco
+.B 'shawill'
+Varano
+<francesco.varano@polito.it>
+.IP \(bu 2
+Marco
+.B 'sbiro'
+Penno
+<marco.penno@polito.it>
+.TP
+This manual page is written and maintained by
+Giampaolo
+.B 'mancho'
+Mancini <giampaolo.mancini@polito.it>
+.br
+Francesco
+.B 'shawill'
+Varano <francesco.varano@polito.it>.
 

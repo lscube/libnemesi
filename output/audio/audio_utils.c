@@ -70,7 +70,7 @@ NMSAFunctions *init_best_audio_out(char *drv, uint32 sysbuff_ms)
 				nmserror("Could not find audio driver %s", device);
 			else {
 				nmsprintf(3, "Found audio output driver %s\n", audio_out_drivers[i]->info->name);
-				if (!audio_out_drivers[i]->init(FREQ, CHANNELS, FORMAT, AUDIO_BUFF_SIZE, 0, NULL)) {
+				if (!audio_out_drivers[i]->init(FREQ, CHANNELS, FORMAT, sysbuff_ms, 0, NULL)) {
 					return audio_out_drivers[i];
 				}
 			}
@@ -81,7 +81,7 @@ NMSAFunctions *init_best_audio_out(char *drv, uint32 sysbuff_ms)
 		nmsprintf(2, "Falling back to drivers not hinted\n");
 	}
 	for (i=0; audio_out_drivers[i]; i++) {
-		if (!audio_out_drivers[i]->init(FREQ, CHANNELS, FORMAT, AUDIO_BUFF_SIZE, 0, NULL))
+		if (!audio_out_drivers[i]->init(FREQ, CHANNELS, FORMAT, sysbuff_ms, 0, NULL))
 			return audio_out_drivers[i];
 	}
 

@@ -39,12 +39,13 @@
 #include <nemesi/version.h>
 #include <nemesi/rtsp.h>
 #include <nemesi/output.h>
+#include <nemesi/types.h>
 
 typedef struct {
 	char *audio;
 	char *video;
 	char *diskwriter;
-	unsigned int sysbuff_ms;
+	int32 sysbuff_ms;
 } NMSOutputHints;
 
 struct RTSP_args {
