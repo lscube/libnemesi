@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/rtpptdefs.h: $Revision: 1.5 $ -- $Date: 2003/07/08 12:30:24 $
+ *  ./include/nemesi/rtpptdefs.h: $Revision: 1.6 $ -- $Date: 2003/07/08 15:26:40 $
  *  
  *  This file is part of NeMeSI
  *
@@ -34,9 +34,9 @@
 #include <nemesi/types.h>
 
 #ifndef GLOBAL_RTP_DEFS
-#define EXTERN extern
+#define RTP_DEFS_EXTERN extern
 #else /* GLOBAL_RTP_DEFS */
-#define EXTERN
+#define RTP_DEFS_EXTERN
 #endif /* GLOBAL_RTP_DEFS */
 
 #define RTP_DEF_CLK_RATE 8000
@@ -62,7 +62,7 @@ extern struct rtp_pt_def rtp_pt_defs[];
 extern int (*decoders[])(char *, int, uint8 *(*)());
 */
 
-EXTERN struct rtp_pt_def rtp_pt_defs[128]
+RTP_DEFS_EXTERN struct rtp_pt_def rtp_pt_defs[128]
 #ifdef GLOBAL_RTP_DEFS
 = {
 /*   0 -   3 */	{ "PCMU", AU, 8000, 1},		{ "res", AU, 0, 0},		{ "G726-32", AU, 8000, 1},	{ "GSM", AU, 8000, 1},
@@ -101,6 +101,6 @@ EXTERN struct rtp_pt_def rtp_pt_defs[128]
 #endif /* GLOBAL_RTP_DEFS */
 ;
 
-EXTERN int (*decoders[128])(char *, int, uint8 *(*)());
+RTP_DEFS_EXTERN int (*decoders[128])(char *, int, uint8 *(*)());
 
 #endif

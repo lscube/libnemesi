@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/audio.h: $Revision: 1.5 $ -- $Date: 2003/07/02 15:12:13 $
+ *  ./include/nemesi/audio.h: $Revision: 1.6 $ -- $Date: 2003/07/08 15:26:40 $
  *  
  *  This file is part of NeMeSI
  *
@@ -40,9 +40,9 @@
 #include <config.h>
 
 #ifndef GLOBAL_AUDIO_BUFFER
-#define EXTERN extern
+#define AUDIO_EXTERN extern
 #else
-#define EXTERN
+#define AUDIO_EXTERN
 #endif
 
 #ifdef HAVE_SDL
@@ -75,7 +75,7 @@ struct audio_buff {
 	pthread_mutex_t syn;
 };
 
-EXTERN struct audio_buff *global_audio_buffer;
+AUDIO_EXTERN struct audio_buff *global_audio_buffer;
 
 struct audio_buff *ab_init(void);
 uint8 *ab_get(uint32, ...);

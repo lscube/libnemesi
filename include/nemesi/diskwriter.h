@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/diskwriter.h: $Revision: 1.3 $ -- $Date: 2003/01/22 16:17:35 $
+ *  ./include/nemesi/diskwriter.h: $Revision: 1.4 $ -- $Date: 2003/07/08 15:26:40 $
  *  
  *  This file is part of NeMeSI
  *
@@ -34,10 +34,10 @@
 
 #include <nemesi/types.h>
 
-#ifdef GLOBAL_DISK_BUFFER
-#define EXTERN extern
+#ifndef GLOBAL_DISK_BUFFER
+#define DISK_EXTERN extern
 #else
-#define EXTERN
+#define DISK_EXTERN
 #endif
 
 #define DEFAULT_FILENAME "nemesi.out"
@@ -56,7 +56,7 @@ struct disk_buff {
 	int file_fd;
 };
 
-EXTERN struct disk_buff *global_disk_buffer;
+DISK_EXTERN struct disk_buff *global_disk_buffer;
 
 struct disk_buff *db_init(void);
 uint8 *db_get(uint32, ...);
