@@ -24,10 +24,13 @@ distclean: clean
 
 
 install-data-local:
-	mkdir $(datadir)/nemesi/docs
-	$(INSTALL_DATA) $(man_MANS).ps.gz $(datadir)/nemesi/docs
-	$(INSTALL_DATA) $(man_MANS).pdf $(datadir)/nemesi/docs
-	$(INSTALL_DATA) $(man_MANS).html $(datadir)/nemesi/docs
+	
+	@if test ! -d $(datadir)/nemesi/docs; then\
+		mkdir $(datadir)/nemesi/docs;\
+	fi
+	$(INSTALL_DATA) -C $(man_MANS).ps.gz $(datadir)/nemesi/docs
+	$(INSTALL_DATA) -C $(man_MANS).pdf $(datadir)/nemesi/docs
+	$(INSTALL_DATA) -C $(man_MANS).html $(datadir)/nemesi/docs
 
 uninstall-local:
 	rm -f $(datadir)/nemesi/docs/$(man_MANS).ps.gz

@@ -1904,6 +1904,9 @@ echo X"$prefix" |
 fi
 
 
+test "$prefix" = . || test "$prefix" = NONE && prefix=/usr/local
+test "$exec_prefix" = NONE && exec_prefix=$prefix
+
 # Add the stamp file to the list of files AC keeps track of,
 # along with our hook.
 ac_config_headers="$ac_config_headers config.h"
@@ -10706,15 +10709,7 @@ else
 fi
 
 
-if test "$prefix" = NONE && test "$exec_prefix" = NONE; then
-		nemesi_prefix="/usr/local/share"
-else if test "$prefix" = NONE; then
-		nemesi_prefix="$exec_prefix"/share
-	else
-		nemesi_prefix="$prefix"/share
-	fi
-fi
-		
+nemesi_prefix="$prefix"/share
 nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
 
 

@@ -1,4 +1,4 @@
-/* $Id: interface.c,v 1.1 2002/11/07 12:13:40 mancho Exp $ */
+/* $Id: interface.c,v 1.2 2002/11/08 11:39:42 mancho Exp $ */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -11,7 +11,6 @@
 #include "interface.h"
 #include "tabinit.h"
 #include "layer3.h"
-#include "VbrTag.h"
 
 #ifdef USE_LAYER_1
 	#include "layer1.h"
@@ -207,6 +206,7 @@ void copy_mp(PMPSTR mp,int size,unsigned char *ptr)
 // bytes = number of bytes before MPEG header.  skip this many bytes
 // before starting to read
 // return value: number of bytes in VBR header, including syncword
+#if 0
 int check_vbr_header(PMPSTR mp,int bytes)
 {
   int i,pos;
@@ -248,7 +248,7 @@ int check_vbr_header(PMPSTR mp,int bytes)
   }
   return 0;
 }
-
+#endif
 
 
 
@@ -354,7 +354,7 @@ int decodeMP3( PMPSTR mp,unsigned char *in,int isize,char *out,
 	if(!mp->header_parsed) {
 
 	    if (mp->fsizeold==-1 || mp->sync_bitstream) {
-	        int vbrbytes;
+	        // int vbrbytes;
 		mp->sync_bitstream=0;
 
 	        /* This is the very first call.   sync with anything */
@@ -364,12 +364,12 @@ int decodeMP3( PMPSTR mp,unsigned char *in,int isize,char *out,
 	        /* now look for Xing VBR header */
 		if (mp->bsize >= bytes+XING_HEADER_SIZE ) {
 		    /* vbrbytes = number of bytes in entire vbr header */
-		    vbrbytes=check_vbr_header(mp,bytes);
+		    // vbrbytes=check_vbr_header(mp,bytes);
 		} else {
 		    /* not enough data to look for Xing header */
 		    return MP3_NEED_MORE;
 		}
-
+#if 0
 		if (mp->vbr_header) {
 		    /* do we have enough data to parse entire Xing header? */
 		    if (bytes+vbrbytes > mp->bsize) return MP3_NEED_MORE;
@@ -383,6 +383,7 @@ int decodeMP3( PMPSTR mp,unsigned char *in,int isize,char *out,
 		    /* just return and make user send in more data */
 		    return MP3_NEED_MORE;
 		}
+#endif 
             }else{
 	        /* match channels, samplerate, etc, when syncing */
                 bytes=sync_buffer(mp,1);

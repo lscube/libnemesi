@@ -1904,6 +1904,9 @@ echo X"$prefix" |
 fi
 
 
+test "$prefix" = . || test "$prefix" = NONE && prefix=/usr/local
+test "$exec_prefix" = NONE && exec_prefix=$prefix
+
 # Add the stamp file to the list of files AC keeps track of,
 # along with our hook.
 ac_config_headers="$ac_config_headers config.h"
@@ -4715,7 +4718,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4718 "configure"' > conftest.$ac_ext
+  echo '#line 4721 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5251,7 +5254,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:5254: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:5257: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -7044,7 +7047,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7047 "configure"
+#line 7050 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7142,7 +7145,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7145 "configure"
+#line 7148 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10706,15 +10709,7 @@ else
 fi
 
 
-if test "$prefix" = NONE && test "$exec_prefix" = NONE; then
-		nemesi_prefix="/usr/local/share"
-else if test "$prefix" = NONE; then
-		nemesi_prefix="$exec_prefix"/share
-	else
-		nemesi_prefix="$prefix"/share
-	fi
-fi
-
+nemesi_prefix="$prefix"/share
 nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
 
 

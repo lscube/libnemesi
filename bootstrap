@@ -36,7 +36,7 @@ if which autoconf >/dev/null 2>&1 ; then
 fi
 if which automake >/dev/null 2>&1 ; then
 	echo -n "Running automake..."
-	automake --gnu --add-missing --copy &
+	automake --gnu --add-missing --copy --force-missing&
 	dots $! 
 	echo " done."
 fi

@@ -102,9 +102,33 @@ install_sh = @install_sh@
 nemesi_plugindir = @nemesi_plugindir@
 nemesiincludedir = $(top_srcdir)/include
 
-noinst_LTLIBRARIES = libmpglib.la
 
-libmpglib_la_SOURCES = common.c \
+#noinst_LTLIBRARIES = libmpglib.la
+
+#libmpglib_la_SOURCES = 	common.c \
+#			dct64_i386.c \
+#			decode_i386.c \
+#			layer1.c \
+#			layer2.c \
+#			layer3.c \
+#			tabinit.c \
+#			interface.c \
+#			decode_i386.h \
+#			huffman.h \
+#			interface.h \
+#			l2tables.h \
+#			layer1.h \
+#			layer2.h \
+#			layer3.h \
+#			mpg123.h \
+#			mpglib.h \
+#			tabinit.h
+
+#libmpglib_la_LDFLAGS = -static
+lib_LTLIBRARIES = mpglib.la
+
+mpglib_la_SOURCES = mpglib.c\
+			common.c \
 			dct64_i386.c \
 			decode_i386.c \
 			layer1.c \
@@ -123,28 +147,20 @@ libmpglib_la_SOURCES = common.c \
 			mpglib.h \
 			tabinit.h
 
-
-libmpglib_la_LDFLAGS = -static
-
-lib_LTLIBRARIES = mpglib.la
-
-mpglib_la_SOURCES = mpglib.c
 mpglib_la_LDFLAGS = -module -avoid-version 
-mpglib_la_LIBADD = -lm libmpglib.la # @LIBLTDL@
+#mpglib_la_LIBADD = -lm libmpglib.la # @LIBLTDL@
+mpglib_la_LIBADD = -lm # @LIBLTDL@
 
 INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir)
 subdir = decoder/mpglib
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libmpglib_la_LIBADD =
-am_libmpglib_la_OBJECTS = common.lo dct64_i386.lo decode_i386.lo \
+mpglib_la_DEPENDENCIES =
+am_mpglib_la_OBJECTS = mpglib.lo common.lo dct64_i386.lo decode_i386.lo \
 	layer1.lo layer2.lo layer3.lo tabinit.lo interface.lo
-libmpglib_la_OBJECTS = $(am_libmpglib_la_OBJECTS)
-mpglib_la_DEPENDENCIES = libmpglib.la
-am_mpglib_la_OBJECTS = mpglib.lo
 mpglib_la_OBJECTS = $(am_mpglib_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -168,9 +184,9 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(libmpglib_la_SOURCES) $(mpglib_la_SOURCES)
+DIST_SOURCES = $(mpglib_la_SOURCES)
 DIST_COMMON = README Makefile.am Makefile.in TODO depcomp
-SOURCES = $(libmpglib_la_SOURCES) $(mpglib_la_SOURCES)
+SOURCES = $(mpglib_la_SOURCES)
 
 all: all-am
 
@@ -209,17 +225,6 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test -z "$dir" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libmpglib.la: $(libmpglib_la_OBJECTS) $(libmpglib_la_DEPENDENCIES) 
-	$(LINK)  $(libmpglib_la_LDFLAGS) $(libmpglib_la_OBJECTS) $(libmpglib_la_LIBADD) $(LIBS)
 mpglib.la: $(mpglib_la_OBJECTS) $(mpglib_la_DEPENDENCIES) 
 	$(LINK) -rpath $(libdir) $(mpglib_la_LDFLAGS) $(mpglib_la_OBJECTS) $(mpglib_la_LIBADD) $(LIBS)
 
@@ -366,7 +371,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstLTLIBRARIES mostlyclean-am
+	mostlyclean-am
 
 distclean: distclean-am
 
@@ -403,11 +408,11 @@ mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstLTLIBRARIES \
-	distclean distclean-compile distclean-depend distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am info \
-	info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
+	clean-libLTLIBRARIES clean-libtool distclean distclean-compile \
+	distclean-depend distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \

@@ -6,6 +6,9 @@ AM_INIT_AUTOMAKE(nemesi, 0.2.1)
 
 AC_PREFIX_PROGRAM(nemesi)
 
+test "$prefix" = . || test "$prefix" = NONE && prefix=/usr/local
+test "$exec_prefix" = NONE && exec_prefix=$prefix
+
 AM_CONFIG_HEADER(config.h)
 
 AC_ARG_ENABLE(debug,
@@ -165,15 +168,7 @@ AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
 AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
 AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
 
-if test "$prefix" = NONE && test "$exec_prefix" = NONE; then
-		nemesi_prefix="/usr/local/share"
-else if test "$prefix" = NONE; then
-		nemesi_prefix="$exec_prefix"/share
-	else
-		nemesi_prefix="$prefix"/share
-	fi
-fi
-		
+nemesi_prefix="$prefix"/share
 nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
 AC_SUBST(nemesi_plugindir)
 
