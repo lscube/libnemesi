@@ -1,6 +1,6 @@
 Summary: A NEtwork MEdia Streamer
 Name: nemesi
-Version: 0.2.1
+Version: 0.2.3
 Release: 0
 Copyright: GPL
 Group: Applications/Internet
@@ -31,7 +31,7 @@ page (http://streaming.polito.it) for further information.
 %setup -q -n %{name}-%{version}
 
 %build
-%configure --enable-optimize=full
+./configure --enable-optimize=full --prefix=/usr
 make
 
 %install
@@ -53,15 +53,15 @@ rm -rf %{buildroot}
 %{_bindir}/%{name}
 %{_mandir}/man1/%{name}.1*
 
-%{_datadir}/%{name}/plugins/mp3.so
+%{_datadir}/%{name}/plugins/mpglib.so
 %{_datadir}/%{name}/plugins/gsm_amr_float.so
 %{_datadir}/%{name}/plugins/L16_8k_m.so
 # %{_datadir}/%{name}/plugins/mp3stub.so
-%{_datadir}/%{name}/plugins/mp3.la
+%{_datadir}/%{name}/plugins/mpglib.la
 %{_datadir}/%{name}/plugins/gsm_amr_float.la
 %{_datadir}/%{name}/plugins/L16_8k_m.la
 # %{_datadir}/%{name}/plugins/mp3stub.la
-%{_datadir}/%{name}/plugins/mp3.a
+%{_datadir}/%{name}/plugins/mpglib.a
 %{_datadir}/%{name}/plugins/gsm_amr_float.a
 %{_datadir}/%{name}/plugins/L16_8k_m.a
 # %{_datadir}/%{name}/plugins/mp3stub.a

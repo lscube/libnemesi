@@ -69,7 +69,7 @@ m4trace:configure.in:5: -1- AC_SUBST([INSTALL_PROGRAM])
 m4trace:configure.in:5: -1- AC_SUBST([INSTALL_SCRIPT])
 m4trace:configure.in:5: -1- AC_SUBST([INSTALL_DATA])
 m4trace:configure.in:5: -1- AC_SUBST([PACKAGE], [nemesi])
-m4trace:configure.in:5: -1- AC_SUBST([VERSION], [0.2.1])
+m4trace:configure.in:5: -1- AC_SUBST([VERSION], [0.2.3])
 m4trace:configure.in:5: -1- AC_DEFINE_TRACE_LITERAL([PACKAGE])
 m4trace:configure.in:5: -1- AH_OUTPUT([PACKAGE], [/* Name of package */
 #undef PACKAGE])
