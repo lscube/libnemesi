@@ -12,23 +12,26 @@ test "$exec_prefix" = NONE && exec_prefix=$prefix
 AM_CONFIG_HEADER(config.h)
 
 AC_ARG_ENABLE(debug,
-[  --enable-debug          enable gcc dubugging flags [default=no]],,
+[  --enable-debug          enable gcc dubugging flags [[default=no]]],,
 	enable_debug="no")
 AC_ARG_ENABLE(warnings,
-[  --enable-warnings       enable/choose gcc warnings level: none, normal, pedantic [default=none]],,
+[  --enable-warnings       enable/choose gcc warnings level: none, normal, pedantic [[default=none]]],,
 	enable_warnings="none")
 AC_ARG_ENABLE(errors,
-[  --enable-errors         make gcc warnings behave like errors: none, normal, pedantic [default=none]],,
+[  --enable-errors         make gcc warnings behave like errors: none, normal, pedantic [[default=none]]],,
 	enable_errors="none")
 AC_ARG_ENABLE(optimize,
-[  --enable-optimize       enable/chose optimization level: none, poor, normal, full, super [default=normal]],,
+[  --enable-optimize       enable/chose optimization level: none, poor, normal, full, super [[default=normal]]],,
 	enable_optimize="normal")
 AC_ARG_ENABLE(sdl,
-[  --enable-sdl            enable/chose sdl as default output library [default=yes]],,
+[  --enable-sdl            enable/chose sdl as default output library [[default=yes]]],,
 	enable_sdl="yes")
 AC_ARG_ENABLE(avc,
-[  --enable-avc            enable libavcodec support [default=yes]],,
+[  --enable-avc            enable libavcodec support [[default=yes]]],,
 	enable_avc="yes")
+AC_ARG_ENABLE(gui,
+[  --enable-gui            enable GUI [[default=yes]]],,
+	enable_gui="yes")
 
 dnl Check for programs.
 AC_PROG_CC
@@ -89,39 +92,47 @@ AC_CHECK_FUNC(getaddrinfo)
 
 dnl CFLAGS=""
 
-dnl Check for SDL library
-AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/false)
+dnl Check for SDL libraryISL3880
 if test "$enable_sdl" = "yes"; then
 	AM_PATH_SDL("1.2.2",
 		AC_DEFINE([HAVE_SDL], 1, [Define if SDL library is present]) \
 		AC_SUBST(SDL_CFLAGS) \
 		AC_SUBST(SDL_LIBS) \
-		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/true)
-		NEMESI_HAVE_SDL=yes,
+		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/true) \
+		NEMESI_HAVE_SDL=yes, \
 		AC_MSG_WARN([Falling back to OSS Audio output!]))
 else
 	AC_MSG_WARN([SDL library disabled!])
+	AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/false)
+	NEMESI_HAVE_SDL=no
 fi
 
 dnl Check for GTK+ support
-pkg_modules="gtk+-2.0 >= 2.0.0"
-PKG_CHECK_MODULES(PACKAGE, [$pkg_modules], \
-	AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/true) \
-	NEMESI_HAVE_GTK=yes, \
-	AC_MSG_WARN([GUI will not be compiled!]))
+if test "$enable_gui" = "yes"; then
+	pkg_modules="gtk+-2.0 >= 2.0.0"
+	PKG_CHECK_MODULES(PACKAGE, [$pkg_modules], \
+		AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/true) \
+		NEMESI_HAVE_GTK=yes, \
+		AC_MSG_WARN([GUI will not be compiled!]))
+else
+	AC_MSG_WARN([GUI disabled!])
+	AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/false)
+	NEMESI_HAVE_GTK=no
+fi
 	
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
 
 dnl Check for FFMpeg libavcodec library
-AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false)
 if test x$enable_avc = xyes; then
 	AC_CHECK_LIB(avcodec,avcodec_open, \
 	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/true) \
-	NEMESI_HAVE_AVC=yes,
+	NEMESI_HAVE_AVC=yes, \
 	AC_MSG_WARN([libavcodec not present!]))
 else
 	AC_MSG_WARN([libavcodec disabled!])
+	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false)
+	NEMESI_HAVE_AVC=no
 fi
 
 
@@ -221,9 +232,9 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([bufferpool/Makefile])
 AC_CONFIG_FILES([etui/Makefile])
 
-if test x$NEMESI_HAVE_GTK = xyes; then
+dnl if test x$NEMESI_HAVE_GTK = xyes; then
 AC_CONFIG_FILES([egui/Makefile])
-fi
+dnl fi
 
 AC_CONFIG_FILES([rtp/Makefile])
 AC_CONFIG_FILES([rtcp/Makefile])
@@ -238,10 +249,10 @@ AC_CONFIG_FILES([decoder/Makefile])
 AC_CONFIG_FILES([decoder/L16_8k_m/Makefile])
 AC_CONFIG_FILES([decoder/gsm_amr_float/Makefile])
 
-if test x$NEMESI_HAVE_AVC = xyes; then
+dnl if test x$NEMESI_HAVE_AVC = xyes; then
 AC_CONFIG_FILES([decoder/libffmp3/Makefile])
 AC_CONFIG_FILES([decoder/libffmpeg/Makefile])
-fi
+dnl fi
 
 AC_CONFIG_FILES([md5/Makefile])
 AC_CONFIG_FILES([plugins/Makefile])

@@ -47,17 +47,19 @@
 #define usage()	{ \
 			nmsprintf(1, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
 			nmsprintf(1, "\n"); \
-			nmsprintf(1, "\t-h|--help\t\tdisplay this help and exit\n"); \
-			nmsprintf(1, "\t-V|--version\t\tdisplay version information and exit\n"); \
-			nmsprintf(1, "\t-v|--verbose [n]\tset verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
-			nmsprintf(1, "\t--nostatus\t\tDo not show buffers status and elapsed time.\n"); \
-			nmsprintf(1, "\n   Output options:\n"); \
-			nmsprintf(1, "\t--sysbuff <msec>\tsystem cache of decoded milliseconds\n"); \
-			nmsprintf(1, "\t--ao <drv[:dev]>\tselect audio output driver (--ao help for a list)\n"); \
-			nmsprintf(1, "\t--noaudio\tdo not inizialize audio output\n"); \
-			nmsprintf(1, "\t--vo <drv[:opt]>\tselect video output driver (--vo help for a list)\n"); \
-			nmsprintf(1, "\t--novideo\tdo not inizialize video output\n"); \
-			nmsprintf(1, "\t--nodisk\tdo not inizialize diskwriter output\n"); \
+			nmsprintf(1, "   -h|--help          Display this help and exit\n"); \
+			nmsprintf(1, "   -V|--version       Display version information and exit\n"); \
+			nmsprintf(1, "   -v|--verbose [n]   Set verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
+			nmsprintf(1, "   --gui              Use Graphical User Interface\n"); \
+			nmsprintf(1, "   --tui              Use Textual User Interface (e-tui)\n"); \
+			nmsprintf(1, "   --nostatus         Do not show buffers status and elapsed time.\n"); \
+			nmsprintf(1, "\n Output options:\n"); \
+			nmsprintf(1, "   --sysbuff <msec>   System cache of decoded milliseconds\n"); \
+			nmsprintf(1, "   --ao <drv[:dev]>   Select audio output driver (--ao help for a list)\n"); \
+			nmsprintf(1, "   --vo <drv[:opt]>   Select video output driver (--vo help for a list)\n"); \
+			nmsprintf(1, "   --noaudio          Do not inizialize audio output\n"); \
+			nmsprintf(1, "   --novideo          Do not inizialize video output\n"); \
+			nmsprintf(1, "   --nodisk           Do not inizialize diskwriter output\n"); \
 			nmsprintf(1, "\n"); \
 		}
 

@@ -23,6 +23,12 @@ Print version.
 .TP
 .B -v [n]
 Set verbosity level
+.TP
+.B --gui
+use Graphical User Interface.
+.TP
+.B --tui
+use Textual User Interface (e-tui)
 .SH GENERAL OUTPUT OPTIONS
 .B --sysbuff <msec>
 .RS
@@ -30,6 +36,15 @@ Set the
 .B system buffer
 cache of decoded milliseconds.
 .RE
+.TP
+.B --noaudio
+Do not inizialize audio output module
+.TP
+.B --novideo
+Do not inizialize video output module
+.TP
+.B --noaudio
+Do not inizialize diskwriter output module
 .SH AUDIO OUTPUT OPTIONS
 .B --ao <driver1[:device],driver2,...,[...]>
 .RS

@@ -1,6 +1,5 @@
 SUBDIRS = L16_8k_m gsm_amr_float
 
-# libffmp3 libffmpeg # mpglib mp3  mp3stub
 
 if NEMESI_HAVE_AVC
 SUBDIRS += libffmpeg libffmp3
