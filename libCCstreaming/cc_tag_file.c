@@ -56,6 +56,9 @@ static int cc_tagsinit(void)
 
 int cc_setag(int pt, CCLicense *license)
 {
+	if (!license)
+		return 0;
+
 	if ( (!cc_taginit) && (cc_tagsinit()) )
 		return 1;
 

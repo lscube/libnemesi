@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <nemesi/diskwriter.h>
 #include <nemesi/comm.h>
@@ -35,14 +36,22 @@
 int get_file_fd(NMSDiskWriter *dc, int pt)
 {
 	char filename[256];
+	uint32 written;
 
 	if (pt > MAX_PT)
 		return -nmserror("Payload type exeded max allowed");
 
 	if ( dc->fd[pt] < 0 ) {
-		sprintf(filename, "%s.%d", dc->basename, pt);
+		cc_getag(pt, &(dc->tag[pt]), &(dc->ext[pt]));
+		if (dc->ext[pt])
+			sprintf(filename, "%s.%d.%s", dc->basename, pt, dc->ext[pt]);
+		else
+			sprintf(filename, "%s.%d", dc->basename, pt);
 		if ( (dc->fd[pt]=creat( filename, 00644 )) < 0 )
 			nmserror("file %s in current directory cannot be created", filename);
+		if (dc->tag[pt]->hdim)
+			if ( (written=write(dc->fd[pt], dc->tag[pt]->header, dc->tag[pt]->hdim)) < dc->tag[pt]->hdim )
+				nmsprintf(2, "WARNING: only %d bytes of %d written\n", written, dc->tag[pt]->hdim);
 	}
 
 	return dc->fd[pt];
