@@ -1,18 +1,70 @@
-.TH NeMeSI 1 "March 23, 2004"
+.TH \fBNeMeSI\fP 1 "February 1, 2005" "Network Media Streamer I" "Open Media Streaming Project"
 .SH NAME
-NeMeSI \- NEtwork MEdia Streamer I
+nemesi \- standards-compliant multimedia streaming client
+.br
+gnemesi \- standards-compliant multimedia streaming client
 .SH SYNOPSIS
 .B nemesi 
 .RB [ " options " ]
 .RB [ " media URL " ]
-.SS media URL
-The URL of the multimedia file that you want enjoy.
+.br
+.B gnemesi 
+.RB [ " options " ]
+.RB [ " media URL " ]
+.TP
+.I media URL
+The RTSP URL (starting with rtsp://) of the multimedia file that you want play.
 .RS
-.I Example:
+.IR Example :
+.BR nemesi " rtsp://remotehost:port/media"
+.RE
+
+.SH DESCRIPTION
+\fBNeMeSI\fP is a streaming client that allows user to enjoy playback of
+multimedia files with low latency transport over IP-based networks. This
+software is fully compliant with  IETF's standards for real\-time streaming of
+multimedia contents over Internet.  \fBNeMeSI\fP implements RTSP \- Real\-Time
+Streaming Protocol (RFC2326) and RTP/RTCP \- Real\-Time Transport Protocol/RTP
+Control Protocol (RFC3550) supporting the RTP Profile for Audio and Video
+Conferences with Minimal Control (RFC3551).
+.br
+\fBNeMeSI\fP supports the following decoding standards:
+.sp 1
 .RS
-nemesi rtsp://remotehost:port/media
+.I Audio
+.IP
+\(bu
+MP3 (MPEG-1 Layer III) (RFC3119).
+.IP
+\(bu
+GSM-AMR (3rd generation GSM) (RFC3267).
+.RE
+.sp 1
+.RS
+.I Video
+.IP
+\(bu
+MPEG-1/2 (RFC2250).
 .RE
 .PP
+\fBNeMeSI\fP features an adaptive behaviour achieved by the innovative
+\fBDynamic CoDec Switching\fP technique.
+.PP
+\fBNeMeSI\fP is the official streaming client for the \fBOpen Media Streaming
+Project\fP (
+.UH
+http://streaming.polito.it
+) which is is a free/libre project software for the development of a platform
+for the streaming of multimedia contents. The platform is based on the full
+support of the IETF's standards for the real\-time data transport over IP. The aim
+of the project is to provide an open solution, free and interoperable along
+with the proprietary streaming applications currently dominant on the market.
+
+\fBgnemesi\fP is \fBNeMeSI\fP with a Graphical User Interface. It has the same
+options as \fBNeMeSI\fP.
+You can start \fBNeMeSI\fP with the GUI also running it
+with the \fI--gui\fP command line option.
+
 .SH GENERAL OPTIONS
 .TP
 .B -h
@@ -51,8 +103,7 @@ Do not inizialize diskwriter output module
 Specify a list of audio output drivers.
 .RE
 If the list ends with "..." then
-.B NeMeSI
-will also try the other installed audio drivers, not listed on the command line, if all
+\fBNeMeSI\fP will also try the other installed audio drivers, not listed on the command line, if all
 the provided drivers don't work.
 .BR
 .I NOTE:
@@ -72,8 +123,7 @@ Open Sound System audio driver
 Specify a list of video output drivers.
 .RE
 If the list ends with "..." then
-.B NeMeSI
-will also try the other installes video drivers, not listed on the command line, if all
+\fBNeMeSI\fP will also try the other installes video drivers, not listed on the command line, if all
 the provided drivers don't work.
 .BR
 .I NOTE:
@@ -84,97 +134,53 @@ Available video output drivers are:
 .B sdl\ \ \ \ 
 Highly platform independent SDL (Simple Directmedia Layer) library
 output driver.
-.SH DESCRIPTION
-.B NeMeSI \-\- NEtwork MEdia Streamer I
-is a streaming client that allows user to enjoy playback of multimedia files
-with low latency transport over IP-based networks. This software is fully
-compliant with all IETF's protocols for streaming data that requires real-time
-class delivery. It also includes support for MP3 and GSM-AMR encoded stream.
-
-.B NeMeSI
-features an adaptive behaviour achieved by the innovative
-.B Dynamic CoDec Switching
-technique.
-
-.B NeMeSI
-is the official streaming client/player of
-.B Open Media Streaming Project
-by Internet Multimedia Group at Politecnico di Torino. Please visit
-.B OMSP
-home page (http://streaming.polito.it) for further information.
-
 .SH USAGE
 .SS Command line invocation
-Normally
-.B NeMeSI
-is started with
+Normally \fBNeMeSI\fP is started with
 .RS
 .PP
-nemesi
-.I urlname
+.BI nemesi " urlname"
 .RE
 .PP
-which runs
-.B NeMeSi
-and even try to open the URL described in
+which runs \fBNeMeSi\fP and even try to open the URL described in
 .IR "urlname".
-This is equivalent to running
-.B NeMeSI
-in the command line
+This is equivalent to running \fBNeMeSI\fP in the command line
 .RS
 .PP
-nemesi
+.B nemesi
 .RE
 .PP
 and then issuing an open command
 .RB "(" open " or " o ")"
-at
-.I More-Touch E-Tui
-prompt (see
-.B Textual User Interface
-below) when
-.B NeMeSI
-is in the
-.I INIT
-state.
+at \fIMore-Touch E-Tui\fP prompt (see \fB Textual User Interface\fP below) when
+\fBNeMeSI\fP is in the \fIINIT\fP state.
 
-If the bootstrap phase executes whitout errors and the connection is
-already established,
-.B NeMeSI
-provides the prompt in the
-.I READY
-state, ready to accept some command. It's a good idea to issue now a
+If the bootstrap phase executes whitout errors and the connection is already
+established, \fBNeMeSI\fP provides the prompt in the \fIREADY\fP state, ready
+to accept some command. It's a good idea to issue now a
 .BR play " (or " p ")"
 command to start the playback of the streaming session.
 
-The playback can be paused with the command
-.B zause
-or stopped (which is like a pause plus a rewind) typing
-.BR "stop".
-The command
-.B close
-will end the connection with the streaming server and will return
-.B NeMeSI
-in the
-.I INIT
-state. A
-.B quit
-command exits
-.B NeMeSI
-and returns to the shell prompt.
+The playback can be paused with the command \fBzause\fP or stopped (which is
+like a pause plus a rewind) typing \fBstop\fP.
+The command \fBclose\fP will end the connection with the streaming server and
+will return \fBNeMeSI\fP in the \fIINIT\fP state. A \fBquit\fP command exits
+\fBNeMeSI\fP and returns to the shell prompt.
 
 .SS Bootstrap messages
 The messages printed at bootstrap phase show
-.IP \(bu 4
+.IP
+\(bu
 the names of the
 .I plugins
 loaded and the
 .I RTP Payload Type
 they manage
-.IP \(bu 4
+.IP
+\(bu
 some informations about the setup of the audio and video drivers
 .SS Textual user interface
-.B NeMeSI
+.B \fBNeMeSI\fP
 features the innovative
 .I More-Touch Electric-Textual User Interface
 for both prompting and parsing user commands. MT-ETUI accepts following commands:
@@ -182,16 +188,16 @@ for both prompting and parsing user commands. MT-ETUI accepts following commands
 .BR help " or " ?
 print help
 .TP
-.BR quit
+.B quit
 quit the program
 .TP
-.BR version
-print informations about NeMeSI
+.B version
+print informations about \fBNeMeSI\fP
 .TP
-.BR open "urlname"
+.BR open " urlname"
 connect to the urlname
 .TP
-.BR info
+.B info
 print info about the session
 .TP
 .BR play " [range]"
@@ -207,7 +213,7 @@ hh:mm:ss-HH:MM:SS
 .RE
 .IP
 which instructs
-.B NeMeSI
+.B \fBNeMeSI\fP
 to start the playback of the stream at 
 .I hh 
 hours, 
@@ -221,7 +227,7 @@ hours,
 minuts and
 .I SS
 seconds. Examples, showing
-.B NeMeSI
+.B \fBNeMeSI\fP
 prompt, of accepted command formats are:
 .RS
 .TP
@@ -247,45 +253,39 @@ stop the playback
 close the connection
 .TP
 Every command accepts also its first char as abbreviation (e.g. 'h' for 'help').
+
 .SH ENVIRONMENT
 .TP
 .B NEMESI_PLUGIN_DIR
 Name of the alternative plugin directory. This should be an absolute path,
-since you will probably invoke
-.B NeMeSI
-from different directories. The value of NEMESI_PLUGIN_DIR will be used 
-instead of the compiled-in default.
+since you will probably invoke \fBNeMeSI\fP from different directories. The
+value of \fINEMESI_PLUGIN_DIR\fP will be used instead of the compiled-in default.
+.TP
+.B NEMESI_THROBBER_DIR
+Name of the alternative directory for the spinning throbber in the GUI. The
+value of \fINEMESI_THROBBER_DIR\fP will be used instead of the compiled-in default.
+.TP
+.B NEMESI_PIXMAP_DIR
+Name of the alternative directory for the GUI pixmaps. The
+value of \fINEMESI_PIXMAP_DIR\fP will be used instead of the compiled-in default.
 .SH "EXIT STATUS"
 .IP 0
 No errors.
 .IP 1
 There were errors.
-.SH "SEE ALSO"
-NeMeSI documentation at Open Media Streaming Project home page
-(http://streaming.polito.it).
-.SH AUTHORS
-.IP \(bu 2
-Giampaolo
-.B 'mancho'
-Mancini
-<giampaolo.mancini@polito.it>
-.IP \(bu 2
-Francesco
-.B 'shawill'
-Varano
-<francesco.varano@polito.it>
-.IP \(bu 2
-Marco
-.B 'sbiro'
-Penno
-<marco.penno@polito.it>
-.TP
-This manual page is written and maintained by
-Giampaolo
-.B 'mancho'
-Mancini <giampaolo.mancini@polito.it>
-.br
-Francesco
-.B 'shawill'
-Varano <francesco.varano@polito.it>.
 
+.SH "SEE ALSO"
+\fBNeMeSI\fP documentation at Open Media Streaming Project home page (
+.UH
+http://streaming.polito.it
+).
+
+.SH AUTHORS
+\fBNeMeSI\fP was written by \fBOMSP Team\fP.
+.PP
+This manual page was written and maintained by \fBOMSP Team\fP <streaming@multimedia.polito.it>.
+.PP
+Please check 
+.UH
+http://streaming.polito.it/team
+for further details.

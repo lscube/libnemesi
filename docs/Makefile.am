@@ -12,7 +12,7 @@ all:
 	echo " done"; \
 	gzip -9 -f $(man_MANS).ps
 	@echo -n "Creating HTML..."; \
-	man2html $(man_MANS) | sed '1,2d' > $(man_MANS).html; \
+	groff -mandoc -e -t -Thtml $(man_MANS) > $(man_MANS).html; \
 	echo " done";
 
 clean:
@@ -25,8 +25,15 @@ maintainer-clean: clean
 
 NEMESI_DOCS_DIR = $(DESTDIR)@nemesi_docsdir@
 
-install-data-local:
+install-data-hook:
+	cd $(DESTDIR)@mandir@/man1/; \
+	ln -s $(man_MANS) g$(man_MANS); \
+	cd -
 	
+uninstall-hook:
+	rm $(DESTDIR)@mandir@/man1/g$(man_MANS)
+	
+install-data-local:
 	$(INSTALL) -m 755 -d $(NEMESI_DOCS_DIR)
 	$(INSTALL_DATA) $(man_MANS).ps.gz $(NEMESI_DOCS_DIR)
 	$(INSTALL_DATA) $(man_MANS).pdf $(NEMESI_DOCS_DIR)

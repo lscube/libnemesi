@@ -1,6 +1,6 @@
-Summary: A NEtwork MEdia Streamer
+Summary: standards-compliant multimedia streaming client
 Name: nemesi
-Version: 0.4.0
+Version: 0.5.0
 Release: 0
 Copyright: GPL
 Group: Applications/Internet
