@@ -41,14 +41,11 @@
 
 int main(int argc, char *argv[])
 {
-	struct RTSP_args *rtsp_args;
-	pthread_t rtsp_tid;
-	pthread_attr_t rtsp_attr;
+	struct RTSP_Ctrl *rtsp_ctrl;
 	NMSOutputHints output_hints = {NULL, NULL, NULL, 0};
 	NMSUiHints ui_hints = { 0, NULL };
 	NMSCLOptions cl_opt = { &output_hints, &ui_hints };
 	int n;
-	void *ret;
 	char *slash;
 	
 	// extern int (*decoders[])(char *, int, uint8 *(*)());
@@ -69,9 +66,6 @@ int main(int argc, char *argv[])
 		exit( nmserror("Cannot create UI pipe!") );
 #endif // USE_UIPRINTF
 
-	if ((n = init_rtsp_args(&rtsp_args)) > 0)
-		exit( nmserror("Cannot initialize RTSP: %s", strerror(n)) );
-
 	if ((n = load_plugins()) > 0)
 		exit( nmserror("Cannot load plugins: %s", strerror(n)) );
 
@@ -79,13 +73,8 @@ int main(int argc, char *argv[])
 	if (output_init(&output_hints))
 		exit( nmserror("Error initialazing output module") );
 
-	// Creation of RTSP Thread
-	pthread_attr_init(&rtsp_attr);
-	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		exit( nmserror("Cannot set RTSP Thread attributes!") );
-
-	if ((n = pthread_create(&rtsp_tid, NULL, &rtsp, (void *) rtsp_args)) > 0)
-		exit( nmserror("Cannot create RTSP Thread: %s", strerror(n)) );
+	if ( !(rtsp_ctrl = init_rtsp()) )
+		exit( nmserror("Cannot initialize RTSP: %s", strerror(errno)) );
 
 	// UI interface function
 	if (argv[0]) // if we are called with the initial 'g' => start gui
@@ -95,26 +84,15 @@ int main(int argc, char *argv[])
 		}
 	if (ui_hints.gui)
 #if HAVE_GUI
-		gui(rtsp_args, &ui_hints, argc, argv);
+		gui(rtsp_ctrl, &ui_hints, argc, argv);
 	else
 #else	// HAVE_GUI
 		nmserror("no GUI present: falling back to e-TUI");
 #endif	// HAVE_GUI
-		if ((n=ui(rtsp_args, &ui_hints, argc, argv)) > 0)
+		if ((n=ui(rtsp_ctrl, &ui_hints, argc, argv)) > 0)
 			exit(1);
 
-	/* THREAD CANCEL */	
-	nmsprintf(2, "Sending cancel signal to all threads\n");
-	if(rtsp_tid > 0){
-		nmsprintf(2, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_tid);
-		if (pthread_cancel(rtsp_tid) != 0)
-			nmsprintf(3, "Error while sending cancelation to RTSP Thread.\n");
-		else
-			pthread_join(rtsp_tid, (void **)&ret);
-		if ( ret != PTHREAD_CANCELED )
-			nmsprintf(3, "Warning! RTSP Thread joined, but  not canceled!\n");
-	} else
-		nmsprintf(2, "Cannot send cancel signal to RTSP Thread\n");
+	close_rtsp(rtsp_ctrl);
 
 	output_uninit();
 

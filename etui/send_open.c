@@ -28,16 +28,16 @@
 
 #include <nemesi/etui.h>
 
-int send_open(struct RTSP_args *rtsp_args, char *urlname)
+int send_open(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
 {
 
-	if (seturlname(rtsp_args, urlname) > 0)
+	if (seturlname(rtsp_ctrl, urlname) > 0)
 		return 1;
-	pthread_mutex_lock(&(rtsp_args->comm_mutex));
-		rtsp_args->comm->opcode = OPEN;
-		write(rtsp_args->pipefd[1], "o", 1);
-		rtsp_args->rtsp_th->busy=1;
-	pthread_mutex_unlock(&(rtsp_args->comm_mutex));
+	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
+		rtsp_ctrl->comm->opcode = OPEN;
+		write(rtsp_ctrl->pipefd[1], "o", 1);
+		rtsp_ctrl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
 	
 	return 0;
 }

@@ -38,7 +38,7 @@
 #define SESSION_TKN	"SESSION"
 #define RECORD_TKN	"RECORD"
 #define EXT_METHOD_TKN	"EXT-"
-#define HTTP_GET	"GET"	/*aggiunto per supportare il get http */
+#define HTTP_GET	"GET"	/*aggiunto per supportare il get http */ // not used
 
 /*  methods that have changed between drafts of the RTSP document */
 
@@ -95,5 +95,16 @@
 
 #define DESCRIPTION_SDP_FORMAT	1
 #define	DESCRIPTION_MH_FORMAT	2
+
+// Status Code Definitions
+#define RTSP_SUCCESS		200
+#define RTSP_REDIRECT		300
+#define RTSP_CLIENT_ERROR	400
+#define RTSP_SERVER_ERROR	500
+
+#define RTSP_IS_SUCCESS(x) ((x>=RTSP_SUCCESS) && (x<RTSP_REDIRECT))? 1 : 0
+#define RTSP_IS_REDIRECT(x) ((x>=RTSP_REDIRECT) && (x<RTSP_CLIENT_ERROR))? 1 : 0
+#define RTSP_IS_CLIENT_ERROR(x) ((x>=RTSP_CLIENT_ERROR) && (x<RTSP_SERVER_ERROR))? 1 : 0
+#define RTSP_IS_SERVER_ERROR(x) (x>=RTSP_SERVER_ERROR)? 1 : 0
 
 #endif

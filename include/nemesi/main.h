@@ -35,7 +35,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <pthread.h>
 #include <nemesi/version.h>
 #include <nemesi/rtsp.h>
 #include <nemesi/output.h>
@@ -58,14 +57,6 @@ typedef struct {
 	NMSUiHints *ui;
 } NMSCLOptions;
 
-struct RTSP_args {
-	int pipefd[2];
-	pthread_mutex_t comm_mutex;
-	struct command *comm;
-	struct RTSP_Thread *rtsp_th;
-};
-
-int init_rtsp_args(struct RTSP_args **);
 int output_init(NMSOutputHints *);
 int output_uninit(void);
 int load_plugins(void);

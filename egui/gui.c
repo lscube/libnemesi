@@ -21,7 +21,7 @@
 #include <nemesi/etui.h>
 #include <nemesi/comm.h>
 
-int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[])
+int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char *argv[])
 {
   GtkWidget *nemesi;
   char *path;
@@ -58,7 +58,7 @@ int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[
    */
   nemesi = create_nemesi ();
 
-  save_static_data(nemesi, rtsp_args); // must be done fist of all
+  save_static_data(nemesi, rtsp_ctrl); // must be done fist of all
 
   if (create_throbber(lookup_widget(nemesi, "hbox3")))
 	  nmserror("no throbber available");
@@ -66,8 +66,8 @@ int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[
 	update_toolbar();
 	if (ui_hints->url) {
 		nmsprintf(3, "Connect: Please wait, opening \"%s\"", ui_hints->url);
-		send_open(rtsp_args, ui_hints->url);
-		gui_throbber(&rtsp_args->rtsp_th->busy);
+		send_open(rtsp_ctrl, ui_hints->url);
+		gui_throbber(&rtsp_ctrl->busy);
 	} else
 		nmsprintf(3, "Please, enter a command or press 'h' for help\n\n");
   gtk_widget_show (nemesi);

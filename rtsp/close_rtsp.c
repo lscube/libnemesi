@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,12 +26,29 @@
  *  
  * */
 
-#ifndef __E_GUI_H
-#define __E_GUI_H
+#include <nemesi/rtsp.h>
 
-#include <nemesi/main.h>
+int close_rtsp(struct RTSP_Ctrl *rtsp_ctrl)
+{
+	void *ret=NULL;
 
-int gui(struct RTSP_Ctrl *, NMSUiHints *, int, char **);
+	/* THREAD CANCEL */	
+	nmsprintf(2, "Sending cancel signal to all threads\n");
+	if(rtsp_ctrl->rtsp_tid > 0){
+		nmsprintf(2, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_ctrl->rtsp_tid);
+		if (pthread_cancel(rtsp_ctrl->rtsp_tid) != 0)
+			nmsprintf(3, "Error while sending cancelation to RTSP Thread.\n");
+		else
+			pthread_join(rtsp_ctrl->rtsp_tid, (void **)&ret);
+		if ( ret != PTHREAD_CANCELED ) {
+			nmsprintf(3, "Warning! RTSP Thread joined, but  not canceled!\n");
+			return 1;
+		}
+	} else {
+		nmsprintf(2, "Cannot send cancel signal to RTSP Thread\n");
+		return 1;
+	}
 
-#endif // __E_GUI_H
+	return 0;
+}
 

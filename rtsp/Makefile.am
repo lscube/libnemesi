@@ -39,7 +39,8 @@ librtsp_la_SOURCES =	init_rtsp.c \
 			set_transport_str.c \
 			get_transport_str.c \
 			remove_pkt.c \
-			rtsp_clean.c
+			rtsp_clean.c \
+			close_rtsp.c
 			
 librtsp_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

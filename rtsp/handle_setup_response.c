@@ -47,7 +47,7 @@ int handle_setup_response(struct RTSP_Thread *rtsp_th)
 		rtsp_th->busy=0;
 		return 1;
 	}
-	if ( check_status(prev_tkn, rtsp_th) ){
+	if ( check_status(prev_tkn, rtsp_th) < 0 ){
 		remove_pkt(rtsp_th);
 		rtsp_th->busy=0;
 		return 1;

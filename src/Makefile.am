@@ -35,7 +35,6 @@ libplugins_la_LDFLAGS = -static
 bin_PROGRAMS = nemesi
 
 nemesi_SOURCES =	main.c \
-			init_rtsp_args.c \
 			output_init.c \
 			output_uninit.c
 

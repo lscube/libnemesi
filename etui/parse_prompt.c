@@ -30,7 +30,7 @@
 #include <nemesi/preferences.h>
 
 
-int parse_prompt(struct RTSP_args *rtsp_args, char *optstr)
+int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 {
 	char argstr[256];
 	char opt;
@@ -56,7 +56,7 @@ int parse_prompt(struct RTSP_args *rtsp_args, char *optstr)
 		printf("\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
 		break;
 	case 'q':
-		send_close(rtsp_args);
+		send_close(rtsp_ctrl);
 		return 1;
 	case 'v':
 		printf("\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
@@ -66,23 +66,23 @@ int parse_prompt(struct RTSP_args *rtsp_args, char *optstr)
 	case 'o':
 		scanf("%s%*c", argstr);
 		printf("Connect: Please wait, opening \"%s\"\n", argstr);
-		send_open(rtsp_args, argstr);
+		send_open(rtsp_ctrl, argstr);
 		break;
 	case 'i':
-		get_infos(rtsp_args);
+		get_infos(rtsp_ctrl);
 		break;
 	case 'p':
 		fgets(argstr, 256, stdin);
-		send_play(rtsp_args, argstr);
+		send_play(rtsp_ctrl, argstr);
 		break;
 	case 'z':
-		send_pause(rtsp_args, 'z');
+		send_pause(rtsp_ctrl, 'z');
 		break;
 	case 's':
-		send_pause(rtsp_args, 's');
+		send_pause(rtsp_ctrl, 's');
 		break;
 	case 'c':
-		send_close(rtsp_args);
+		send_close(rtsp_ctrl);
 		break;
 	case 'e':
 		fgets(argstr, 256, stdin);

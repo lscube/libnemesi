@@ -29,8 +29,10 @@
 #include <nemesi/etui.h>
 
 // shawill: TODO: modify for protocol abstraction
-int get_infos(struct RTSP_args *rtsp_args)
+int get_infos(struct RTSP_Ctrl *rtsp_ctrl)
 {
+	// tmp
+	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)rtsp_ctrl;
 	struct RTSP_Session *sess;
 	struct RTSP_Medium *med;
 	char **str;
@@ -58,7 +60,7 @@ int get_infos(struct RTSP_args *rtsp_args)
 		"Crypto Key"
 	};
 	
-	sess=rtsp_args->rtsp_th->rtsp_queue;
+	sess=rtsp_th->rtsp_queue;
 	
 	nmsprintf(1, BLANK_LINE);
 

@@ -28,9 +28,11 @@
 
 #include <nemesi/etui.h>
 
-int seturlname(struct RTSP_args *rtsp_args, char *urlname)
+int seturlname(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
 {
 	char *server = NULL, *port = NULL, *path = NULL;
+	// very very tmp
+	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)rtsp_ctrl;
 
 	if (urltokenize(urlname, &server, &port, &path) > 0)
 		return 1;
@@ -39,15 +41,15 @@ int seturlname(struct RTSP_args *rtsp_args, char *urlname)
 			sprintf(port, "%d", RTSP_DEFAULT_PORT);
 	}
 
-	if ((rtsp_args->rtsp_th->urlname =
+	if ((rtsp_th->urlname =
 	     (char *) malloc(sizeof(char) * (strlen("rtsp://") + strlen(server) + strlen(path) + 1))) == NULL)
 		return 1;
-	strcpy(rtsp_args->rtsp_th->urlname, "rtsp://");
-	strcat(rtsp_args->rtsp_th->urlname, server);
-	strcat(rtsp_args->rtsp_th->urlname, path);
-	if ((rtsp_args->rtsp_th->server_port = (char *) malloc(sizeof(char) * (strlen(port) + 1))) == NULL)
+	strcpy(rtsp_th->urlname, "rtsp://");
+	strcat(rtsp_th->urlname, server);
+	strcat(rtsp_th->urlname, path);
+	if ((rtsp_th->server_port = (char *) malloc(sizeof(char) * (strlen(port) + 1))) == NULL)
 		return 1;
-	strcpy(rtsp_args->rtsp_th->server_port, port);
+	strcpy(rtsp_th->server_port, port);
 
 
 

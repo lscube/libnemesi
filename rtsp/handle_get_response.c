@@ -32,9 +32,9 @@
 
 int handle_get_response(struct RTSP_Thread *rtsp_th)
 {
-	char *tkn; /* contiene una riga di descrizione */
-	char *prev_tkn;/* punta prima al token precedente per il controllo sulla fine dell'header
-			  e poi ai vari componenti della riga di comando */
+	char *tkn; /* contains an RTSP description line */
+	char *prev_tkn; /* addresses first the previous token in order to check the end of RTSP header 
+			   and then the all the components of command line */
 	int content_length;
 	char *content_base=NULL;
 
@@ -43,13 +43,13 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 		rtsp_th->busy=0;	
 		return 1;
 	}
-	if ( check_status(prev_tkn, rtsp_th) ){
+	if ( check_status(prev_tkn, rtsp_th) < 0 ){
 		remove_pkt(rtsp_th);
 		rtsp_th->busy=0;	
 		return 1;
 	}
-	/* lettura dell'header */
-	while ( ((tkn=strtok(NULL, "\n")) != NULL) && ((tkn-prev_tkn)>1) ){
+	/* state success: header parsing */
+	while ( ((tkn=strtok(NULL, "\n")) != NULL) && ((tkn-prev_tkn)>1) ) {
 		if ( ((tkn-prev_tkn)==2) && (*prev_tkn=='\r') )
 			break;
 		prev_tkn=tkn;

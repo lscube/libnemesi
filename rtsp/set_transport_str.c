@@ -69,7 +69,7 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 	*(buff+strlen(buff)-1)='\0';
 
 	if ((*str=(char *)malloc(sizeof(char)*(strlen(buff)+1))) == NULL)
-		return nmserror("Cannot allocate memory!");
+		return nmserror("set_transport_str: Cannot allocate memory!");
 
 	strcpy(*str, buff);
 

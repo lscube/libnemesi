@@ -30,7 +30,7 @@
 #include <nemesi/comm.h>
 #include <nemesi/etui.h>
 
-int ui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char **argv)
+int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 {
 	char *urlname = ui_hints->url; // NULL;
 	char optstr[256];
@@ -62,14 +62,14 @@ int ui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char **argv)
 	*/
 	if (urlname != NULL) {
 		nmsprintf(1, "Connect: Please wait, opening \"%s\"", urlname);
-		send_open(rtsp_args, urlname);
+		send_open(rtsp_ctrl, urlname);
 	} else
 		nmsprintf(1, "Please, enter a command or press 'h' for help\n\n");
 	
 	while (1) {
-		if(rtsp_args->rtsp_th->busy)
-			throbber(rtsp_args->rtsp_th);
-		fprintf(stderr, "[ %s ] => ", statustostr(rtsp_args->rtsp_th->status));
+		if(rtsp_ctrl->busy)
+			throbber(rtsp_ctrl);
+		fprintf(stderr, "[ %s ] => ", statustostr(rtsp_ctrl->status));
 
 #ifdef USE_UIPRINTF
 		FD_ZERO(&rdset);
@@ -85,12 +85,12 @@ int ui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char **argv)
 		}
 		if(FD_ISSET(STDIN_FILENO, &rdset)){
 			scanf("%s", optstr);
-			if (parse_prompt(rtsp_args, optstr) > 0)
+			if (parse_prompt(rtsp_ctrl, optstr) > 0)
 				return 0;
 		}
 #else // USE_UIPRINTF
 		scanf("%s", optstr);
-		if (parse_prompt(rtsp_args, optstr) > 0)
+		if (parse_prompt(rtsp_ctrl, optstr) > 0)
 			return 0;
 #endif // USE_UIPRINTF
 	}

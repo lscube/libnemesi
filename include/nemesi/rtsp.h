@@ -72,6 +72,10 @@
 /*! Numero totale degli stati implementati. */
 #define STATE_NUM 4
 
+/*! \enum Definition for possible states in RTSP state-machine
+ */
+enum states { INIT, READY, PLAYING, RECORDING } status;
+
 /*!
  * \brief Struttura per la comunicazione dei comandi tra la ui e il modulo
  * RTSP.
@@ -200,6 +204,17 @@ struct RTSP_buffer {
 };
 
 /*!
+ * \brief Definition of the common part for RTSP_Thread and RTSP_Ctrl structs
+ */
+#define RTSP_COMMON_IF	int pipefd[2]; \
+			pthread_mutex_t comm_mutex; \
+			struct command *comm; \
+			enum states status;	/*!< Current RTSP state-machine status */ \
+			unsigned char busy; /*!< Boolean value identifing if \
+						the rtsp module is busy waiting reply from server*/ \
+			pthread_t rtsp_tid;
+
+/*!
  * \brief Struttura al vertice della piramide del modulo RTSP.
  *
  * Questa struttura contiene i dati globali del modulo RTSP. Essi sono
@@ -214,6 +229,8 @@ struct RTSP_buffer {
  * \see buffer
  * */
 struct RTSP_Thread {
+	RTSP_COMMON_IF
+
 	int fd;		/*!< descrittore sul quale è attiva la connessione con
 			  il server, dal quale cioè, verranno letti i dati
 			  provenienti dal server */
@@ -222,17 +239,7 @@ struct RTSP_Thread {
 							  multimediale attivo:
 							  Media On Demand o
 							  Container. */
-		/*! \enum stati enum dei possibili stati della macchina a stati
-		 * RTSP. */
-	enum stati { INIT, READY, PLAYING, RECORDING } status;	/*!< Stato
-								  corrente
-								  della
-								  macchina a
-								  stati. */
 	char descr_fmt;
-	unsigned char busy;	/*!< valore booleano che indica se c'è una
-				  richiesta in sospeso per cui si stat
-				  aspettando una risposta da server. */
 	char waiting_for[64];	/*!< Stringa che contiene, eventualmente, la
 				  descrizione della risposta che si sta
 				  aspettando dal server. */
@@ -242,19 +249,26 @@ struct RTSP_Thread {
 	struct RTSP_buffer in_buffer;	/*!< Buffer di input dei dati. */
 	struct RTSP_Session *rtsp_queue;/*!< Lista delle sessioni attive. */
 };
+
+struct RTSP_Ctrl {
+	RTSP_COMMON_IF
+};
+
 /*
 int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, char *);
 */
-int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
+extern int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
 
-int (*state_machine[STATE_NUM]) (struct RTSP_Thread *, short);
+extern int (*state_machine[STATE_NUM]) (struct RTSP_Thread *, short);
 
 void *rtsp(void *);
 
-int init_rtsp(void);
+// int init_rtsp(void);
+struct RTSP_Ctrl *init_rtsp(void);
 int reinit_rtsp(struct RTSP_Thread *);
 int create_thread(struct RTSP_Thread *);
 void rtsp_clean(void *);
+int close_rtsp(struct RTSP_Ctrl *);
 
 int send_get_request(struct RTSP_Thread *);
 int send_pause_request(struct RTSP_Thread *, char *);

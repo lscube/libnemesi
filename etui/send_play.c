@@ -28,7 +28,7 @@
 
 #include <nemesi/etui.h>
 
-int send_play(struct RTSP_args *rtsp_args, char *argstr)
+int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 {
 	char *tkn;
 	char *meno;
@@ -106,17 +106,17 @@ int send_play(struct RTSP_args *rtsp_args, char *argstr)
 		}
 	}
 
-	pthread_mutex_lock(&(rtsp_args->comm_mutex));
-		rtsp_args->comm->opcode= PLAY;
+	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
+		rtsp_ctrl->comm->opcode= PLAY;
 		if (*argstr){
-			sprintf(rtsp_args->comm->arg, "%s-", start);
+			sprintf(rtsp_ctrl->comm->arg, "%s-", start);
 			if (flag)
-				sprintf(rtsp_args->comm->arg+strlen(rtsp_args->comm->arg), "%s", stop);
+				sprintf(rtsp_ctrl->comm->arg+strlen(rtsp_ctrl->comm->arg), "%s", stop);
 		} else
-			*(rtsp_args->comm->arg)='\0';
-		write(rtsp_args->pipefd[1], "p", 1);
-		rtsp_args->rtsp_th->busy=1;
-	pthread_mutex_unlock(&(rtsp_args->comm_mutex));
+			*(rtsp_ctrl->comm->arg)='\0';
+		write(rtsp_ctrl->pipefd[1], "p", 1);
+		rtsp_ctrl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
 
 	return 0;
 }

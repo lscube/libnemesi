@@ -92,15 +92,15 @@
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS
 #define CL_LONG_OPTIONS CL_MAIN_LONG_OPTIONS
 
-int ui(struct RTSP_args *, NMSUiHints *, int, char **);
+int ui(struct RTSP_Ctrl *, NMSUiHints *, int, char **);
 int parse_cl(int, char **, NMSCLOptions *);
-int parse_prompt(struct RTSP_args *, char *);
-int seturlname(struct RTSP_args *, char *);
-int throbber(struct RTSP_Thread *);
-int send_open(struct RTSP_args *, char *);
-int send_play(struct RTSP_args *, char *);
-int send_pause(struct RTSP_args *, char);
-int send_close(struct RTSP_args *);
-int get_infos(struct RTSP_args *);
+int parse_prompt(struct RTSP_Ctrl *, char *);
+int seturlname(struct RTSP_Ctrl *, char *);
+int throbber(struct RTSP_Ctrl *);
+int send_open(struct RTSP_Ctrl *, char *);
+int send_play(struct RTSP_Ctrl *, char *);
+int send_pause(struct RTSP_Ctrl *, char);
+int send_close(struct RTSP_Ctrl *);
+int get_infos(struct RTSP_Ctrl *);
 
 #endif

@@ -31,28 +31,33 @@
 #include <unistd.h>
 
 #include <nemesi/rtsp.h>
-#include <nemesi/main.h>
+#include <nemesi/version.h>
+
+int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
+int (*state_machine[STATE_NUM]) (struct RTSP_Thread *, short);
 
 /**
 * funzione che implementa il thread rtsp.
 * Si mette in attesa di comandi dalla UI e li gestisce.
 * Il funzionamento e' quello di una macchina a stati.
 * */
-void *rtsp(void *rtsp_args)
+void *rtsp(void *rtsp_thread)
 {
-	struct RTSP_Thread *rtsp_th = ((struct RTSP_args *) rtsp_args)->rtsp_th;
-	struct command *comm = ((struct RTSP_args *) rtsp_args)->comm;
-	int command_fd = ((struct RTSP_args *) rtsp_args)->pipefd[0];
+	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *) rtsp_thread;
+	struct command *comm = rtsp_th->comm;
+	int command_fd = rtsp_th->pipefd[0];
 	fd_set readset;
 	char ch[1];
 	int n;
 	
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-	pthread_cleanup_push(rtsp_clean, (void *)rtsp_args);
+	pthread_cleanup_push(rtsp_clean, rtsp_thread);
 	
+	/*
 	if (init_rtsp())
-		pthread_exit(NULL);;
+		pthread_exit(NULL);
+	*/
 
 	while (1) {
 		FD_ZERO(&readset);
@@ -83,13 +88,13 @@ void *rtsp(void *rtsp_args)
 				}
 			}
 		if (FD_ISSET(command_fd, &readset)) {
-			pthread_mutex_lock(&(((struct RTSP_args *) rtsp_args)->comm_mutex));
+			pthread_mutex_lock(&(rtsp_th->comm_mutex));
 			read(command_fd, ch, 1);
 			if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
 				nmsprintf(1, "Error handling user command.\n\n");
 				rtsp_th->busy = 0;
 			}
-			pthread_mutex_unlock(&(((struct RTSP_args *) rtsp_args)->comm_mutex));
+			pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 		}
 	}
 	

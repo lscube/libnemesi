@@ -30,7 +30,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-int throbber(struct RTSP_Thread *rtsp_th)
+int throbber(struct RTSP_Ctrl *rtsp_ctrl)
 {
 	struct timeval tv;
 	char throbber[20][13] = { "[=          ]",
@@ -61,7 +61,7 @@ int throbber(struct RTSP_Thread *rtsp_th)
 	setbuf(stdout, NULL);
 	
 	fprintf(stdout, "             ");
-	while (rtsp_th->busy) {
+	while (rtsp_ctrl->busy) {
 		tv.tv_sec=0;
 		tv.tv_usec=50000;
 		fprintf(stdout, "\b\b\b\b\b\b\b\b\b\b\b\b\b");

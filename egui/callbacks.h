@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 
 
-void save_static_data(gpointer new_nemesi, gpointer new_rtsp_args);
+void save_static_data(gpointer new_nemesi, gpointer new_rtsp_ctl);
 void update_toolbar(void);
 void view_info(GtkWidget *);
 void hide_info(void);

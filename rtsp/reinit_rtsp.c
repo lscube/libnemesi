@@ -76,16 +76,16 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 		free(psess);
 	}
 #if 1
-	free(rtsp_th->server_port);
-	free(rtsp_th->urlname);
+	// free(rtsp_th->server_port);
+	// free(rtsp_th->urlname);
 	free((rtsp_th->in_buffer).data);
 	
 	close(rtsp_th->fd);
 	rtsp_th->fd = -1;
 	rtsp_th->status = INIT;
 	memset(rtsp_th->waiting_for, '\0', strlen(rtsp_th->waiting_for));
-	rtsp_th->urlname = NULL;
-	rtsp_th->server_port = NULL;
+	// rtsp_th->urlname = NULL;
+	// rtsp_th->server_port = NULL;
 	(rtsp_th->in_buffer).size = 0;
 	(rtsp_th->in_buffer).data = NULL;
 	rtsp_th->rtsp_queue = NULL;

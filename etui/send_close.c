@@ -28,14 +28,14 @@
 
 #include <nemesi/etui.h>
 
-int send_close(struct RTSP_args *rtsp_args)
+int send_close(struct RTSP_Ctrl *rtsp_ctrl)
 {
 	
-	pthread_mutex_lock(&(rtsp_args->comm_mutex));
-		rtsp_args->comm->opcode = CLOSE;
-		write(rtsp_args->pipefd[1], "c", 1);
-		rtsp_args->rtsp_th->busy=1;
-	pthread_mutex_unlock(&(rtsp_args->comm_mutex));
+	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
+		rtsp_ctrl->comm->opcode = CLOSE;
+		write(rtsp_ctrl->pipefd[1], "c", 1);
+		rtsp_ctrl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
 
 	return 0;
 }
