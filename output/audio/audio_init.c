@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/audio/audio_init.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:48 $
+ *  ./output/audio/audio_init.c: $Revision: 1.4 $ -- $Date: 2003/01/15 11:18:00 $
  *  
  *  This file is part of NeMeSI
  *

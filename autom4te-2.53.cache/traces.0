@@ -373,7 +373,7 @@ m4trace:configure.in:175: -1- AH_OUTPUT([NEMESI_PLUGIN_DIR_DEFAULT], [/* Define 
 m4trace:configure.in:176: -1- AC_DEFINE_TRACE_LITERAL([NEMESI_PLUGIN_DIR_ENV])
 m4trace:configure.in:176: -1- AH_OUTPUT([NEMESI_PLUGIN_DIR_ENV], [/* Define the name for the ENV variable forn NeMeSI plugins dir */
 #undef NEMESI_PLUGIN_DIR_ENV])
-m4trace:configure.in:198: -1- AC_CONFIG_FILES([\
+m4trace:configure.in:199: -1- AC_CONFIG_FILES([\
 		Makefile \
 		bufferpool/Makefile \
 		etui/Makefile \
@@ -384,6 +384,7 @@ m4trace:configure.in:198: -1- AC_CONFIG_FILES([\
 		wsocket/Makefile \
 		output/Makefile \
 		output/audio/Makefile \
+		output/diskwriter/Makefile \
 		decoder/Makefile \
 		decoder/L16_8k_m/Makefile \
 		decoder/gsm_amr_float/Makefile \

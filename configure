@@ -10725,7 +10725,7 @@ _ACEOF
 
 
 
-ac_config_files="$ac_config_files Makefile bufferpool/Makefile etui/Makefile rtp/Makefile rtcp/Makefile rtsp/Makefile src/Makefile wsocket/Makefile output/Makefile output/audio/Makefile decoder/Makefile decoder/L16_8k_m/Makefile decoder/gsm_amr_float/Makefile decoder/mpglib/Makefile md5/Makefile plugins/Makefile docs/Makefile"
+ac_config_files="$ac_config_files Makefile bufferpool/Makefile etui/Makefile rtp/Makefile rtcp/Makefile rtsp/Makefile src/Makefile wsocket/Makefile output/Makefile output/audio/Makefile output/diskwriter/Makefile decoder/Makefile decoder/L16_8k_m/Makefile decoder/gsm_amr_float/Makefile decoder/mpglib/Makefile md5/Makefile plugins/Makefile docs/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -11245,6 +11245,7 @@ do
   "wsocket/Makefile" ) CONFIG_FILES="$CONFIG_FILES wsocket/Makefile" ;;
   "output/Makefile" ) CONFIG_FILES="$CONFIG_FILES output/Makefile" ;;
   "output/audio/Makefile" ) CONFIG_FILES="$CONFIG_FILES output/audio/Makefile" ;;
+  "output/diskwriter/Makefile" ) CONFIG_FILES="$CONFIG_FILES output/diskwriter/Makefile" ;;
   "decoder/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/Makefile" ;;
   "decoder/L16_8k_m/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/L16_8k_m/Makefile" ;;
   "decoder/gsm_amr_float/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/gsm_amr_float/Makefile" ;;

@@ -1,5 +1,5 @@
 /* * 
- *  ./etui/parse_prompt.c: $Revision: 1.4 $ -- $Date: 2003/01/13 16:47:27 $
+ *  ./etui/parse_prompt.c: $Revision: 1.5 $ -- $Date: 2003/01/15 11:17:59 $
  *  
  *  This file is part of NeMeSI
  *
@@ -85,7 +85,8 @@ int parse_prompt(struct RTSP_args *rtsp_args, char *optstr)
 		break;
 	case 'e':
 		fgets(argstr, 256, stdin);
-		edit_pref(rtsp_args, argstr);
+		*(argstr+strlen(argstr)-1)='\0';
+		edit_pref(argstr+1); /* c'è lo spazio all'inizio, lo togliamo */
 		break;
 	case 'l':
 		list_prefs();

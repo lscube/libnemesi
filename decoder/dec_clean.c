@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/dec_clean.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
+ *  ./decoder/dec_clean.c: $Revision: 1.4 $ -- $Date: 2003/01/15 11:17:59 $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,6 +33,9 @@ void dec_clean(void *args)
 	struct audio_buff *audio_buffer = (struct audio_buff *)args;
 
 	pthread_mutex_unlock(&(audio_buffer->syn));
+	/* chiudiamo eventualmente il file aperto per salvare lo steam invece
+	che eseguirlo */
+	close_file(); 
 	audio_pause();
 	empty_audio_buffer();
 	uiprintf("Decoder Thread R.I.P.\n");

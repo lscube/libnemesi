@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
+ *  ./decoder/decoder.c: $Revision: 1.4 $ -- $Date: 2003/01/15 11:17:59 $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,6 +28,7 @@
 
 #include <nemesi/decoder.h>
 #include <nemesi/rtpptdefs.h>
+#include <nemesi/preferences.h>
 
 #define SYS_BUFF 5 /*system buffer in num of packets*/
 #define GRAIN 20

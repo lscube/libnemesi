@@ -9,7 +9,10 @@ libutils_la_SOURCES =	urltokenize.c \
 			statustostr.c \
 			random32.c \
 			timeval_subtract.c \
-			timeval_add.c
+			timeval_add.c \
+			edit_pref.c \
+			list_prefs.c \
+			get_pref.c
 
 libutils_la_LDFLAGS = -static
 
@@ -36,7 +39,8 @@ nemesi_LDADD =	@DLOPEN@ \
 		$(top_srcdir)/src/libutils.la \
 		$(top_srcdir)/md5/libmd5.la \
 		$(top_srcdir)/src/libplugins.la \
-		$(top_srcdir)/output/audio/libaudio.la
+		$(top_srcdir)/output/audio/libaudio.la \
+		$(top_srcdir)/output/diskwriter/libdiskwriter.la
 
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
 INCLUDES += @INCLTDL@

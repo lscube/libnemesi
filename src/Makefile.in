@@ -110,7 +110,10 @@ libutils_la_SOURCES = urltokenize.c \
 			statustostr.c \
 			random32.c \
 			timeval_subtract.c \
-			timeval_add.c
+			timeval_add.c \
+			edit_pref.c \
+			list_prefs.c \
+			get_pref.c
 
 
 libutils_la_LDFLAGS = -static
@@ -138,7 +141,8 @@ nemesi_LDADD = @DLOPEN@ \
 		$(top_srcdir)/src/libutils.la \
 		$(top_srcdir)/md5/libmd5.la \
 		$(top_srcdir)/src/libplugins.la \
-		$(top_srcdir)/output/audio/libaudio.la
+		$(top_srcdir)/output/audio/libaudio.la \
+		$(top_srcdir)/output/diskwriter/libdiskwriter.la
 
 
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir) @INCLTDL@
@@ -154,7 +158,7 @@ libplugins_la_OBJECTS = $(am_libplugins_la_OBJECTS)
 libutils_la_LIBADD =
 am_libutils_la_OBJECTS = urltokenize.lo strstrcase.lo strncmpcase.lo \
 	uiprintf.lo statustostr.lo random32.lo timeval_subtract.lo \
-	timeval_add.lo
+	timeval_add.lo edit_pref.lo list_prefs.lo get_pref.lo
 libutils_la_OBJECTS = $(am_libutils_la_OBJECTS)
 bin_PROGRAMS = nemesi$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
@@ -169,7 +173,8 @@ nemesi_DEPENDENCIES = $(top_srcdir)/rtsp/librtsp.la \
 	$(top_srcdir)/wsocket/libwsocket.la \
 	$(top_srcdir)/src/libutils.la $(top_srcdir)/md5/libmd5.la \
 	$(top_srcdir)/src/libplugins.la \
-	$(top_srcdir)/output/audio/libaudio.la
+	$(top_srcdir)/output/audio/libaudio.la \
+	$(top_srcdir)/output/diskwriter/libdiskwriter.la
 nemesi_LDFLAGS =
 
 DEFS = @DEFS@
@@ -179,7 +184,10 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/init_rtsp_args.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/edit_pref.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/get_pref.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/init_rtsp_args.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/list_prefs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/load_plugins.Plo ./$(DEPDIR)/main.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/random32.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/statustostr.Plo \
@@ -263,7 +271,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edit_pref.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get_pref.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init_rtsp_args.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list_prefs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load_plugins.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random32.Plo@am__quote@

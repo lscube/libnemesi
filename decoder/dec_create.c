@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/dec_create.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
+ *  ./decoder/dec_create.c: $Revision: 1.4 $ -- $Date: 2003/01/15 11:17:59 $
  *  
  *  This file is part of NeMeSI
  *
@@ -38,7 +38,7 @@ int dec_create(struct Dec_args *dec_args)
 
 	pthread_attr_init(&dec_attr);
 	if ( pthread_attr_setdetachstate(&dec_attr, PTHREAD_CREATE_JOINABLE) != 0){
-		uiprintf("Cannot set RTP Thread attributes!\n");
+		uiprintf("Cannot set Decoder Thread attributes!\n");
 		return 1;
 	}
 /*	pthread_attr_setschedpolicy(&dec_attr, SCHED_RR);*/
@@ -48,5 +48,6 @@ int dec_create(struct Dec_args *dec_args)
 	}
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		rtp_sess->dec_tid=dec_tid;
+
 	return 0;
 }

@@ -188,6 +188,7 @@ AC_OUTPUT([\
 		wsocket/Makefile \
 		output/Makefile \
 		output/audio/Makefile \
+		output/diskwriter/Makefile \
 		decoder/Makefile \
 		decoder/L16_8k_m/Makefile \
 		decoder/gsm_amr_float/Makefile \

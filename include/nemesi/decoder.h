@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/decoder.h: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
+ *  ./include/nemesi/decoder.h: $Revision: 1.4 $ -- $Date: 2003/01/15 11:17:59 $
  *  
  *  This file is part of NeMeSI
  *
@@ -40,6 +40,7 @@
 #include <nemesi/types.h>
 
 #include <nemesi/audio.h>
+#include <nemesi/diskwriter.h>
 
 void *decoder(void *);
 

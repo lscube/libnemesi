@@ -1,5 +1,5 @@
 /* * 
- *  ./src/main.c: $Revision: 1.4 $ -- $Date: 2003/01/13 16:47:27 $
+ *  ./src/main.c: $Revision: 1.5 $ -- $Date: 2003/01/15 11:18:01 $
  *  
  *  This file is part of NeMeSI
  *
@@ -34,7 +34,7 @@
 #include <nemesi/audio.h>
 
 struct Preference preferences[] = {
-	/* output */ { "output", "card", "card/disk", "Select where the stream will be written."},
+	/* output */ { "output", "card", "card/diskraw/diskdecoded", "Select where the stream will be written."},
 	PREFS_TABLE_END
 };
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
 	pthread_attr_init(&rtsp_attr);
 	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0){
-		uiprintf("Cannot set RTP Thread attributes!\n");
+		uiprintf("Cannot set RTSP Thread attributes!\n");
 		exit(1);
 	}
 
