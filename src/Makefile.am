@@ -55,7 +55,7 @@ nemesi_LDADD +=	$(top_srcdir)/etui/libetui.la \
 		$(top_srcdir)/src/libutils.la \
 		$(top_srcdir)/md5/libmd5.la 
 
-if NEMESI_DEBUG
+if NEMESI_EFENCE
 nemesi_LDFLAGS = -lefence
 endif
 

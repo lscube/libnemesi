@@ -16,6 +16,10 @@ AM_CONFIG_HEADER(config.h)
 AC_ARG_ENABLE(debug,
 [  --enable-debug          enable gcc dubugging flags [[default=no]]],,
 	enable_debug="no")
+AC_ARG_ENABLE(efence,
+[  --enable-efence         link against Electric Fence library to debug memory usage
+                          (this will involve --enable-debug) [[default=no]]],,
+	enable_efence="no")
 AC_ARG_ENABLE(warnings,
 [  --enable-warnings       enable/choose gcc warnings level: none, normal, pedantic [[default=none]]],,
 	enable_warnings="none")
@@ -138,12 +142,21 @@ else
 	NEMESI_HAVE_AVC=no
 fi
 
+AM_CONDITIONAL(NEMESI_EFENCE, /bin/false)
+if test "$enable_efence" = "yes"; then
+	AM_CONDITIONAL(NEMESI_EFENCE, /bin/true)
+	AC_DEFINE(ENABLE_EFENCE, 1,[Debug enabled])
+	enable_debug=yes
+	efence_msg="   You chose to compile against Electric Fence lib"
+fi
 
 AM_CONDITIONAL(NEMESI_DEBUG, /bin/false)
 if test "$enable_debug" = "yes"; then
 	CFLAGS="$CFLAGS -g -ggdb"
 	AM_CONDITIONAL(NEMESI_DEBUG, /bin/true) \
 	AC_DEFINE(ENABLE_DEBUG, 1,[Debug enabled])
+	debug_msg="
+   Debuging flags enabled: welcome developer!!!"
 fi
 
 case "$enable_warnings" in
@@ -285,7 +298,8 @@ LibAVCodec support enabled ..... : $NEMESI_HAVE_AVC
 
 GUI support enabled ............ : $NEMESI_HAVE_GTK
 NeMeSI GUI Binary path ......... : $exec_prefix/bin/$nemesi_gui
-
+$debug_msg
+$efence_msg
 
  'make' will now compile NeMeSI and 'su -c make install' will install it.
  Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.

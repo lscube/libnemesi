@@ -74,7 +74,7 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	sprintf(b + strlen(b), "CSeq: %d\n", ++(rtsp_sess->CSeq));
 	sprintf(b + strlen(b), "Transport: %s\n", options);
 	
-	if (rtsp_sess->Session_ID) //Caso di controllo aggregato: é giá stato definito un numero per la sessione corrente.
+	if (rtsp_sess->Session_ID) //Caso di controllo aggregato: è già stato definito un numero per la sessione corrente.
 		sprintf(b + strlen(b), "Session: %llu\n", rtsp_sess->Session_ID);
 	
 	strcat(b, "\r\n"); 
