@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.9 $ -- $Date: 2003/02/03 15:05:38 $
+ *  ./decoder/decoder.c: $Revision: 1.10 $ -- $Date: 2003/04/14 17:26:22 $
  *  
  *  This file is part of NeMeSI
  *
@@ -55,9 +55,14 @@ void *decoder(void *args)
 	struct audio_buff *audio_buffer = global_audio_buffer;
 	char output_pref[PREF_MAX_VALUE_LEN];
 
+	/*by sbiro: abilita la cancellazione del thread corrente*/
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+	
+	/*by sbiro: rende possibile la cancellazione del thread corrente in qualunque punto della sua esecuzione*/
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 /*	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
+
+	/*by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente"*/
 	pthread_cleanup_push(dec_clean, (void *)audio_buffer);
 	
 	tvdiff.tv_sec=tvsleep.tv_sec=dec_args->startime.tv_sec;
@@ -79,7 +84,10 @@ void *decoder(void *args)
 				select_usec + body_usec, select_usec, body_usec, diff_usec, offset_usec, tvdiff.tv_usec, cycles);
 */
 		do { 
+			/*by sbiro: ciclo per ogni sessione rtp*/
 			for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
+			
+			/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
 			for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next){
 				if(stm_src->po.potail >= 0){
 
