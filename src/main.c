@@ -94,8 +94,12 @@ int main(int argc, char *argv[])
 			nmsstatusprintf(NO_STATUS, NULL);
 		}
 	if (ui_hints.gui)
+#if HAVE_GUI
 		gui(rtsp_args, &ui_hints, argc, argv);
 	else
+#else	// HAVE_GUI
+		nmserror("no GUI present: falling back to e-TUI");
+#endif	// HAVE_GUI
 		if ((n=ui(rtsp_args, &ui_hints, argc, argv)) > 0)
 			exit(1);
 

@@ -44,14 +44,19 @@
 
 #define header()	nmsprintf(1, "\n%s - %s -- release %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 
+#if HAVE_GUI
+#define ui_usage()	nmsprintf(1, "   --gui              Use Graphical User Interface\n"); \
+			nmsprintf(1, "   --tui              Use Textual User Interface (e-tui)\n");
+#else	// HAVE_GUI
+#define ui_usage()
+#endif	// HAVE_GUI
 #define usage()	{ \
 			nmsprintf(1, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
 			nmsprintf(1, "\n"); \
 			nmsprintf(1, "   -h|--help          Display this help and exit\n"); \
 			nmsprintf(1, "   -V|--version       Display version information and exit\n"); \
 			nmsprintf(1, "   -v|--verbose [n]   Set verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
-			nmsprintf(1, "   --gui              Use Graphical User Interface\n"); \
-			nmsprintf(1, "   --tui              Use Textual User Interface (e-tui)\n"); \
+			ui_usage() \
 			nmsprintf(1, "   --nostatus         Do not show buffers status and elapsed time.\n"); \
 			nmsprintf(1, "\n Output options:\n"); \
 			nmsprintf(1, "   --sysbuff <msec>   System cache of decoded milliseconds\n"); \

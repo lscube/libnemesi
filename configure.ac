@@ -111,6 +111,7 @@ dnl Check for GTK+ support
 if test "$enable_gui" = "yes"; then
 	pkg_modules="gtk+-2.0 >= 2.0.0"
 	PKG_CHECK_MODULES(PACKAGE, [$pkg_modules], \
+		AC_DEFINE([HAVE_GUI], 1, [Define if GUI is present]) \
 		AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/true) \
 		NEMESI_HAVE_GTK=yes, \
 		AC_MSG_WARN([GUI will not be compiled!]))

@@ -40,9 +40,13 @@ nemesi_LDADD =	$(top_srcdir)/rtsp/librtsp.la \
 		$(top_srcdir)/rtcp/librtcp.la \
 		$(top_srcdir)/rtp/librtp.la \
 		$(top_srcdir)/decoder/libdecoder.la \
-		$(top_srcdir)/bufferpool/libbuffpool.la \
-		$(top_srcdir)/egui/libegui.la \
-		$(top_srcdir)/etui/libetui.la \
+		$(top_srcdir)/bufferpool/libbuffpool.la
+
+if NEMESI_HAVE_GTK
+nemesi_LDADD +=	$(top_srcdir)/egui/libegui.la
+endif
+
+nemesi_LDADD +=	$(top_srcdir)/etui/libetui.la \
 		$(top_srcdir)/wsocket/libwsocket.la \
 		$(top_srcdir)/src/libplugins.la \
 		$(top_srcdir)/output/audio/libaudio.la \
