@@ -32,7 +32,7 @@
 #include <nemesi/video.h>
 #include <nemesi/comm.h>
 
-#define SLEEP_MS 30
+#define SLEEP_MS 40
 
 void *video_th(void *vc)
 {

@@ -59,7 +59,6 @@ int decode(char *data, int len, NMSOutput *outc)
 	int decd_len=0, size;
 	static FFMpegDec *ff=NULL;
 
-	//return 0;
 	if ( (!ff) && (!(ff=init_ffmpeg())) )
 		return 1;
 
@@ -95,6 +94,7 @@ int decode(char *data, int len, NMSOutput *outc)
                 	fprintf(stderr, "Error while decoding with libavcodec\n");
                 	return 1;
             	} else if (ff->got_frame){
+			// if (!vc->tid) {
 			if (!vc->tid) {
 				vc->format = IMGFMT_YV12;
 				// vc->format = IMGFMT_I420;
@@ -109,6 +109,7 @@ int decode(char *data, int len, NMSOutput *outc)
 			img_convert((AVPicture *)pict_pt, PIX_FMT_YUV420P, (AVPicture *)ff->frame, ff->context->pix_fmt, \
 					ff->context->width, ff->context->height);
 			funcs->draw_picture(&pict);
+			// funcs->update_screen();
 			//got_picture--;
 		}
 		decd_len += size;
