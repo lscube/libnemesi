@@ -87,39 +87,35 @@ typedef struct {
 
 /*! definition of internal identification code for special licenses
  *
- * Warning: this code MUST fit 4 bits, so the max is 15, and MUST be >0
- * ( 0<ID<16 )
+ * Warning: this code MUST be a power-of-2 number
+ * 0001 || 0010 || 0100 || 1000
+ *
+ * If someday we need to select more special licenses we can "upgrade" the
+ * field of bit from uint8 to uint16, or more...
  */
 #define CC_PD 1
 
 CC_EXTERN CCSpecLicense cc_spec_licenses[]
 #ifdef CC_GLOBAL_DATA
 = {
-	{ "PubblicDomain", "publicdomain", "Public domain dedication", CC_PD },
-	{ "Pubic", "pubic", "Publc main dication", CC_PD }
+	{ "PubblicDomain", "publicdomain", "Public domain dedication", CC_PD }
 }
 #endif // CC_GLOBAL_DATA
 ;
 
-typedef struct _ccpermsmask {
-	uint8 by:1;
-	uint8 nc:1;
-	uint8 nd:1;
-	uint8 sa:1;
-	// special license ID
-	uint8 spec_license:4;
-} CCPermsMask;
-
-#if 0
-/*! \brief License Conditions.
- *
- * Each CC license come with some conditions. At the moment a maximum of three
- * condition are put together to form a license (look at
- * http://creativecommons.org/licenses/), so we have space for three
- * conditions. The fields are Name, Short name and description.
+#define CC_BITMASK_T uint8
+/*
+ * If someday we need to select more special licenses we can "upgrade" the
+ * field of bit from uint8 to uint16, or more...
  */
-typedef CCPermission CCPermissions[3];
-#endif
+typedef struct _ccpermsmask {
+	CC_BITMASK_T by:1;
+	CC_BITMASK_T nc:1;
+	CC_BITMASK_T nd:1;
+	CC_BITMASK_T sa:1;
+	// special license ID
+	CC_BITMASK_T spec_license:4;
+} CCPermsMask;
 
 //! definition of couples containing name and description for each valid cc license
 #define CC_LICENSE { \
@@ -147,6 +143,7 @@ int issdplicense(char *sdp_a);
 CCLicense *cc_newlicense(void);
 int cc_set_sdplicense(CCLicense *, char *);
 int cc_parse_urilicense(char *, CCPermsMask *);
+int cc_prms_chk(CCLicense *, CCPermsMask *);
 
 #undef CC_EXTERN
 #undef CC_GLOBAL_DATA

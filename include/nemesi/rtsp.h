@@ -54,7 +54,6 @@
 
 #include <nemesi/sdp.h>
 #include <nemesi/cc.h>
-#include <nemesi/main.h>
 #include <nemesi/rtp.h>
 #include <nemesi/rtcp.h>
 #include <nemesi/wsocket.h>

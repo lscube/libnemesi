@@ -31,6 +31,7 @@
 #include <unistd.h>
 
 #include <nemesi/rtsp.h>
+#include <nemesi/main.h>
 
 /**
 * funzione che implementa il thread rtsp.
@@ -84,8 +85,10 @@ void *rtsp(void *rtsp_args)
 		if (FD_ISSET(command_fd, &readset)) {
 			pthread_mutex_lock(&(((struct RTSP_args *) rtsp_args)->comm_mutex));
 			read(command_fd, ch, 1);
-			if (cmd[comm->opcode] (rtsp_th, comm->arg)) 
+			if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
 				nmsprintf(1, "Error handling user command.\n\n");
+				rtsp_th->busy = 0;
+			}
 			pthread_mutex_unlock(&(((struct RTSP_args *) rtsp_args)->comm_mutex));
 		}
 	}

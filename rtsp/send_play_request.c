@@ -27,6 +27,8 @@
  * */
 
 #include <nemesi/rtsp.h>
+#include <nemesi/cc.h>
+#include <nemesi/ccprefs.h>
 #include <nemesi/methods.h>
 #include <nemesi/wsocket.h>
 
@@ -34,11 +36,15 @@ int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
 {
 	char b[256];
 	struct RTSP_Session *rtsp_sess;
+	CCPermsMask cc_mask;
 
 	// get_curr_sess(NULL, &rtsp_sess, NULL);
 	if (!(rtsp_sess=get_curr_sess(GCS_CUR_SESS)))
 		return 1;
 	
+	pref2ccmask(&cc_mask);
+	if ( cc_prms_chk(rtsp_sess->media_queue->medium_info->cc, &cc_mask) )
+		return 1;
 	if ( rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)
 			sprintf(b, "%s %s/%s %s\nCSeq: %d\n", PLAY_TKN, rtsp_sess->content_base, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));

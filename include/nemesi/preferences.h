@@ -38,7 +38,7 @@
 #define PREFS_EXTERN
 #endif /* GLOBAL_PREFERENCES */
 
-#define PREF_MAX_NAME_LEN 8
+#define PREF_MAX_NAME_LEN 16
 #define PREF_MAX_VALUE_LEN 64
 #define PREF_MAX_AVAIL_LEN 256
 #define PREF_MAX_DESCR_LEN 256
@@ -56,6 +56,13 @@ PREFS_EXTERN struct Preference preferences[]
 #ifdef GLOBAL_PREFERENCES
 = {
 	/* output */ { "output", "card", "card/disk", "Select where the stream will be written."},
+	/* Accept all */ {"acceptAll","yes" ,"no/yes","Accept all kind of streaming."},
+	/* Attribution */ {"attribution","no" ,"no/yes","Accept licence attribution."},
+	/* No Commercial */  {"nonCommercial", "no" ,"no/yes","Accept licence No Commercial."},
+	/* No Derivs */  {"noDerivs", "no" ,"no/yes","Accept licence No Derivs."},
+	/* Share Alike */  {"shareAlike", "no" ,"no/yes","Accept licence Share Alike."},
+	/* Public Domain */  {"publicDomain", "no" ,"no/yes","Accept licence Public Domain."},
+
 	{ PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END }
 }
 #endif /* GLOBAL_PREFERENCES */

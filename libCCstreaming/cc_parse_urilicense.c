@@ -62,7 +62,6 @@ int cc_parse_urilicense(char *uri, CCPermsMask *mask)
 	if ((tkn = strchr(permstr, '/')))
 		*tkn = '\0';
 
-	nmsprintf(3, "sizeof %d\n", sizeof(cc_spec_licenses)/sizeof(*cc_spec_licenses));
 	// Check for special licenses :TODO
 	for (i=0; i<sizeof(cc_spec_licenses)/sizeof(*cc_spec_licenses); i++) {
 		if ( !strcmpcase(permstr, cc_spec_licenses[i].urlstr)) {

@@ -39,14 +39,12 @@ int open_cmd(struct RTSP_Thread *rtsp_th, ...)
 	char *server;
 
 	if (rtsp_th->status != INIT) {
-		rtsp_th->busy=0;
 		nmsprintf(1, "Client already connected!\n");
 		return 1;
 	}
 	urltokenize(rtsp_th->urlname, &server, NULL, NULL);
 	if (server_connect(server, rtsp_th->server_port, &(rtsp_th->fd), TCP)) {
 		rtsp_th->fd=-1;
-		rtsp_th->busy=0;
 		return nmserror("Cannot connect to the server");
 	}
 	if (send_get_request(rtsp_th))

@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,26 +26,8 @@
  *  
  * */
 
-#include <nemesi/version.h>
-#include <nemesi/rtsp.h>
-#include <nemesi/methods.h>
-#include <nemesi/wsocket.h>
+#include <nemesi/preferences.h>
+#include <nemesi/cc.h>
 
-int send_get_request(struct RTSP_Thread *rtsp_th)
-{
-	char b[256];
+int pref2ccmask(CCPermsMask *);
 
-	/* save the url string for future use in setup request. */
-	sprintf(b, "%s %s %s\nCSeq: %d\n", GET_TKN, rtsp_th->urlname, RTSP_VER, 1);
-	strcat(b, "Accept: application/sdp;\n");	/* application/x-rtsp-mh\n"); */
-	sprintf(b + strlen(b), "User-Agent: %s - %s -- Release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION,
-		VERSION_NAME);
-	strcat(b, "\r\n");
-	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(1, "Cannot send DESCRIBE request...\n");
-		return 1;
-	}
-	sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
-
-	return 0;
-}

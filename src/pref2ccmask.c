@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,26 +26,29 @@
  *  
  * */
 
-#include <nemesi/version.h>
-#include <nemesi/rtsp.h>
-#include <nemesi/methods.h>
-#include <nemesi/wsocket.h>
+#include <string.h>
 
-int send_get_request(struct RTSP_Thread *rtsp_th)
+#include <nemesi/ccprefs.h>
+
+int pref2ccmask(CCPermsMask *mask)
 {
-	char b[256];
-
-	/* save the url string for future use in setup request. */
-	sprintf(b, "%s %s %s\nCSeq: %d\n", GET_TKN, rtsp_th->urlname, RTSP_VER, 1);
-	strcat(b, "Accept: application/sdp;\n");	/* application/x-rtsp-mh\n"); */
-	sprintf(b + strlen(b), "User-Agent: %s - %s -- Release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION,
-		VERSION_NAME);
-	strcat(b, "\r\n");
-	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(1, "Cannot send DESCRIBE request...\n");
-		return 1;
+	if (!strcmp(get_pref("acceptAll"),"yes"))
+		memset(mask, 0xFF, sizeof(CCPermsMask));
+	else {
+		memset(mask, 0, sizeof(CCPermsMask));
+		if (!strcmp(get_pref("attribution"), "yes"))
+			mask->by = 1;
+		if (!strcmp(get_pref("nonCommercial"), "yes"))
+			mask->nc = 1;
+		if (!strcmp(get_pref("noDerivs"), "yes"))
+			mask->nd = 1;
+		if (!strcmp(get_pref("shareAlike"), "yes"))
+			mask->sa = 1;
+		// special licenses
+		if (!strcmp(get_pref("publicDomain"), "yes"))
+			mask->spec_license = CC_PD;
 	}
-	sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
-
+		
 	return 0;
 }
+
