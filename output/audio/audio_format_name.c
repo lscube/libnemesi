@@ -1,5 +1,5 @@
 /* * 
- *  $Id: audio_format_name.c 48 2003-11-10 16:01:50Z mancho $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  $Id: img_format.h 48 2003-11-10 16:01:50Z mancho $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
