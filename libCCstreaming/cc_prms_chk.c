@@ -46,8 +46,10 @@ int cc_prms_chk(CCLicense *license, CCPermsMask *mask)
 {
 	CCPermsMask parsedmsk;
 
-	if (!license)
-		return nmserror("no license defined");
+	if (!license) {
+		nmsprintf(2, "no CC license defined\n");
+		return 0;
+	}
 
 	// uriLicense parse
 	if (!license->uriLicense)
