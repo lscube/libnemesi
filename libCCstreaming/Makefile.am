@@ -9,7 +9,7 @@ libCCstreaming_la_SOURCES =	issdplicense.c \
 				cc_prms_chk.c \
 				cc_printmask.c \
 				cc_tag_file.c \
-				cc_tag_mpa.c
+				cc_id3v2.c
 			
 libCCstreaming_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

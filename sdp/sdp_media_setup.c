@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>

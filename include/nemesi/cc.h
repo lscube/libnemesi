@@ -158,7 +158,7 @@ void cc_printmask(CCPermsMask);
 int cc_setag(int, CCLicense *);
 int cc_getag(int, CCTag **, char **);
 // MPA tagging function (pt 14)
-int cc_tag_mpa(CCLicense *, CCTag *, char **);
+int cc_id3v2(CCLicense *, CCTag *);
 
 #undef CC_EXTERN
 #undef CC_GLOBAL_DATA

@@ -32,6 +32,7 @@
 
 #include <nemesi/cc.h>
 #include <nemesi/comm.h>
+#include <nemesi/utils.h>
 
 #define CC_PT_MPA 14
 
@@ -60,7 +61,12 @@ int cc_setag(int pt, CCLicense *license)
 
 	switch (pt) {
 		case CC_PT_MPA: // MPA
-			cc_tag_mpa(license, &cc_tags[CC_PT_MPA], &cc_exts[CC_PT_MPA]);
+			cc_id3v2(license, &cc_tags[CC_PT_MPA]);
+			// TODO: set extension
+			cc_exts[CC_PT_MPA] = strdup("mp3");
+			break;
+		default:
+			break;
 	}
 
 	return 0;

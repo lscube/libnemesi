@@ -39,7 +39,7 @@
 
 typedef struct {
 	char *basename;
-	CCTag tag[MAX_PT+1];
+	CCTag *tag[MAX_PT+1];
 	char *ext[MAX_PT+1];
 	int fd[MAX_PT+1];
 } NMSDiskWriter;
