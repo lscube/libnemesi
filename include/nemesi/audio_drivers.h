@@ -89,17 +89,18 @@ typedef struct {
         /*
          * Pauses the driver
          */
-        void (*pause)(void);
+        void (*audio_pause)(void);
         /*
          * Resume playing
          */
-        void (*resume)(void);
+        void (*audio_resume)(void);
         /*
          * Closes driver. Should restore the original state of the system.
          */
         void (*uninit)(void);
 } NMSAFunctions;
 
+extern NMSAFunctions nms_audio_oss;
 #if HAVE_SDL
 extern NMSAFunctions nms_audio_sdl;
 #endif

@@ -27,16 +27,18 @@
  * */
 
 #include <nemesi/decoder.h>
+#include <nemesi/output.h>
 
 void dec_clean(void *args)
 {
-	struct audio_buff *audio_buffer = (struct audio_buff *)args;
+	NMSOutput *outc = (NMSOutput *)args;
 
-	pthread_mutex_unlock(&(audio_buffer->syn));
+	outc->video->functions->uninit();
+	outc->audio->functions->uninit();
+
 	/* chiudiamo eventualmente il file aperto per salvare lo steam invece
 	che eseguirlo */
 	close_file(); 
-	audio_pause();
-	empty_audio_buffer();
+
 	uiprintf("Decoder Thread R.I.P.\n");
 }

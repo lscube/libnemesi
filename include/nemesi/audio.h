@@ -94,25 +94,6 @@ uint8 *ab_get(uint32, ...);
 
 NMSAudio *audio_preinit(char *);
 
-/*
-int audio_init(void);
-
-#ifdef HAVE_SDL
-SDL_AudioSpec *init_SDL(struct audio_buff *);
-void SDL_mixaudio(void *, Uint8 *, int);
-#else
-*/
-int set_audiodev(void);
-int oss_play(void);
-void enable_output(int);
-// #endif
-
-int audio_play();
-int audio_pause();
-
-int empty_audio_buffer(void);
-int audio_close(void);
-
 #undef GLOBAL_AUDIO_BUFFER
 #undef AUDIO_EXTERN
 

@@ -31,7 +31,6 @@
 
 int output_uninit(void)
 {
-	audio_close();
 	diskwriter_close();
 
 	// free the global output contex

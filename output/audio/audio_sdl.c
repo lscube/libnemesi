@@ -213,14 +213,14 @@ static uint32 play_buff(uint8 *data, uint32 len)
 	return 0;
 }
 
-static void pause(void)
+static void audio_pause(void)
 {
 	SDL_PauseAudio(1);
 
 	return;
 }
 
-static void resume(void)
+static void audio_resume(void)
 {
 	SDL_PauseAudio(0);
 
@@ -229,8 +229,17 @@ static void resume(void)
 
 static void uninit(void)
 {
+	NMSAudioBuffer *ab = sdl_priv.audio_buffer;
+
+	SDL_PauseAudio(1);
 	SDL_CloseAudio();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
+	// reset audio buffer
+	// ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
+	free(ab);
+
+	uiprintf("SDL Audio closed\n");
 
 	return;
 }

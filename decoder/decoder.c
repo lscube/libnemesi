@@ -66,8 +66,6 @@ void *decoder(void *args)
 	struct Stream_Source *stm_src;
 	rtp_pkt *pkt;
 	int len=0;
-	// int sys_buff=AUDIO_SYS_BUFF;
-	struct audio_buff *audio_buffer = global_audio_buffer;
 	char output_pref[PREF_MAX_VALUE_LEN];
 
 	/* by sbiro: abilita la cancellazione del thread corrente */
@@ -78,7 +76,7 @@ void *decoder(void *args)
 	/* pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
 
 	/* by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente" */
-	pthread_cleanup_push(dec_clean, (void *)audio_buffer);
+	pthread_cleanup_push(dec_clean, (void *)(&nmsoutc) /*audio_buffer */);
 	
 	tvdiff.tv_sec=tvsleep.tv_sec=dec_args->startime.tv_sec;
 	tvdiff.tv_usec=tvsleep.tv_usec=dec_args->startime.tv_usec;
@@ -148,26 +146,15 @@ void *decoder(void *args)
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
-#ifndef HAVE_SDL
-								oss_play();
-#endif
-								/*
-								if(!sys_buff) {
-									audio_play();
-									sys_buff--;
-								}
-								else if(sys_buff > 0){
-									sys_buff--;
-								}
-								*/
 								nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
 								if(buffering_audio) {
 									if (audio_sysbuff > AUDIO_SYS_BUFF ) {
 										buffering_audio = 0;
-										audio_play();
+										// start playing audio
+										nmsoutc->audio->functions->audio_resume();
 									}
 								}
-							} /* XXX: not yet supported 
+							} /* XXX: not supported any more
 							     else if ( !strcmp(output_pref, "diskdecoded") ) {
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, \
 										(uint8 *(*)(uint32))db_get);
