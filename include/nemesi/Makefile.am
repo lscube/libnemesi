@@ -14,5 +14,6 @@ noinst_HEADERS	= 	bufferpool.h \
 			md5.h \
 			md5global.h \
 			types.h \
+			preferences.h \
 			audio.h
 INCLUDES = $(top_srcdir)

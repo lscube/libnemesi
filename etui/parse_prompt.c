@@ -1,5 +1,5 @@
 /* * 
- *  ./etui/parse_prompt.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
+ *  ./etui/parse_prompt.c: $Revision: 1.4 $ -- $Date: 2003/01/13 16:47:27 $
  *  
  *  This file is part of NeMeSI
  *
@@ -50,6 +50,8 @@ int parse_prompt(struct RTSP_args *rtsp_args, char *optstr)
 		printf("\t* zause               pause the playback\n");
 		printf("\t* stop                stop the playback\n");
 		printf("\t* close               close the connection\n");
+		printf("\t* edit option value   change the value of specified option\n");
+		printf("\t* list                show list of editable options, with assigned values and short description\n");
 		printf("\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
 		break;
 	case 'q':
@@ -80,6 +82,13 @@ int parse_prompt(struct RTSP_args *rtsp_args, char *optstr)
 		break;
 	case 'c':
 		send_close(rtsp_args);
+		break;
+	case 'e':
+		fgets(argstr, 256, stdin);
+		edit_pref(rtsp_args, argstr);
+		break;
+	case 'l':
+		list_prefs();
 		break;
 	default:
 		printf("\nUnknown command: %s\n", optstr);

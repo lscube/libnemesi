@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/etui.h: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
+ *  ./include/nemesi/etui.h: $Revision: 1.4 $ -- $Date: 2003/01/13 16:47:27 $
  *  
  *  This file is part of NeMeSI
  *
@@ -53,6 +53,8 @@ int send_open(struct RTSP_args *, char *);
 int send_play(struct RTSP_args *, char *);
 int send_pause(struct RTSP_args *, char);
 int send_close(struct RTSP_args *);
+int edit_pref(struct RTSP_args *, char *);
+int list_prefs(void);
 int get_infos(struct RTSP_args *);
 
 #endif

@@ -112,6 +112,8 @@ libetui_la_SOURCES = ui.c \
 			send_play.c \
 			send_pause.c \
 			send_close.c \
+			edit_pref.c \
+			list_prefs.c \
 			get_infos.c
 
 libetui_la_LDFLAGS = -static
@@ -125,7 +127,7 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 libetui_la_LIBADD =
 am_libetui_la_OBJECTS = ui.lo parse_cl.lo parse_prompt.lo seturlname.lo \
 	throbber.lo send_open.lo send_play.lo send_pause.lo \
-	send_close.lo get_infos.lo
+	send_close.lo edit_pref.lo list_prefs.lo get_infos.lo
 libetui_la_OBJECTS = $(am_libetui_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -135,8 +137,9 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/get_infos.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/parse_cl.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/edit_pref.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/get_infos.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/list_prefs.Plo ./$(DEPDIR)/parse_cl.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/parse_prompt.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/send_close.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/send_open.Plo \
@@ -183,7 +186,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edit_pref.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get_infos.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list_prefs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_cl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_prompt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/send_close.Plo@am__quote@

@@ -1,5 +1,5 @@
 /* * 
- *  ./src/main.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:49 $
+ *  ./src/main.c: $Revision: 1.4 $ -- $Date: 2003/01/13 16:47:27 $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,8 +29,14 @@
 #include <nemesi/main.h>
 #include <nemesi/etui.h>
 #include <nemesi/rtpptdefs.h>
+#include <nemesi/preferences.h>
 
 #include <nemesi/audio.h>
+
+struct Preference preferences[] = {
+	/* output */ { "output", "card", "card/disk", "Select where the stream will be written."},
+	PREFS_TABLE_END
+};
 
 int (*decoders[128])(char *, int, uint8 *(*)());
 
