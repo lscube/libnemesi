@@ -6,14 +6,14 @@ all:
 	@LIST_SRC_PLUGINS=`find $(top_builddir)/decoder -name \*.so`; \
 	echo -n "Copying plugins..."; \
 	for PLUGIN in $$LIST_SRC_PLUGINS; do \
-		cp $$PLUGIN $(PLUGINS_DIR); \
+		cp $$PLUGIN $(PLUGINS_DIR)/; \
 		DIR=`dirname $$PLUGIN`; \
 		NAME=`basename $$PLUGIN | cut -d. -f1`; \
 		NUNAME=$$DIR/$$NAME.la; \
-		cp $$NUNAME $(PLUGINS_DIR); \
+		cp $$NUNAME $(PLUGINS_DIR)/; \
 		chmod +x $(PLUGINS_DIR)/$$NAME.la; \
 		NUNAME=$$DIR/$$NAME.a; \
-		cp $$NUNAME $(PLUGINS_DIR); \
+		cp $$NUNAME $(PLUGINS_DIR)/; \
 	done; \
 	echo " done"
 
