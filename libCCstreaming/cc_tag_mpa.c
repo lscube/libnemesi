@@ -26,29 +26,10 @@
  *  
  * */
 
-#ifndef __DISKWRITER_H
-#define __DISKWRITER_H
+#include <nemesi/cc.h>
 
-#include <stdio.h>
-
-#include <nemesi/types.h>
-
-#define DEFAULT_FILENAME "nemesi.out"
-#define MAX_PT 127
-
-typedef struct {
-	char *basename;
-	char *header[MAX_PT+1];
-	char *footer[MAX_PT+1];
-	char *ext[MAX_PT+1];
-	int fd[MAX_PT+1];
-} NMSDiskWriter;
-
-NMSDiskWriter *diskwriter_init(const char *);
-int get_file_fd(NMSDiskWriter *, int);
-int diskwriter(NMSDiskWriter *, int, char *, int);
-void close_files(int []);
-int diskwriter_close(NMSDiskWriter *);
-
-#endif /* __DISKWRITER_H */
+int cc_tag_mpa(CCLicense *license, char **header, char **footer, char **ext)
+{
+	return 0;
+}
 

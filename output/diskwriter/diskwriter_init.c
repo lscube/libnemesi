@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ NMSDiskWriter *diskwriter_init(const char *basename)
 	int fd;
 	// struct disk_buff *disk_buffer;
 
-	if ((dc=malloc(sizeof(NMSDiskWriter))) == NULL) {
+	// use of calloc in order to initialize strings also
+	if ((dc=calloc(1, sizeof(NMSDiskWriter))) == NULL) {
 		nmserror("Could not alloc disk writer structure");
 		return NULL;
 	}
@@ -48,6 +49,7 @@ NMSDiskWriter *diskwriter_init(const char *basename)
 		dc->basename = strdup(basename);
 
 
+	// See if we can open file in chosen directory
 	if ( (fd=open( dc->basename, O_EXCL)) > 0 ) {
 		close(fd);
 	} else if ( (fd=creat( dc->basename, 00644)) > 0 ) {

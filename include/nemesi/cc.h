@@ -82,7 +82,7 @@ CC_EXTERN CCPermission cc_sa
 
 typedef struct {
 	char *name;
-	char *urlstr/*[3]*/;
+	char *urlstr;
 	char *descr;
 	CC_BITMASK_T int_code;
 } CCSpecLicense;
@@ -105,6 +105,7 @@ CC_EXTERN CCSpecLicense cc_spec_licenses[]
 }
 #endif // CC_GLOBAL_DATA
 ;
+
 /*
  * If someday we need to select more special licenses we can "upgrade" the
  * field of bit from uint8 to uint16, or more...
@@ -140,12 +141,22 @@ typedef struct {
 	// end of CC fields
 } CCLicense;
 
+typedef enum {
+	cc_set_tag,
+	cc_get_tag
+} CCTagAction;
+
 int issdplicense(char *sdp_a);
 CCLicense *cc_newlicense(void);
 int cc_set_sdplicense(CCLicense *, char *);
 int cc_parse_urilicense(char *, CCPermsMask *);
 int cc_prms_chk(CCLicense *, CCPermsMask *);
 void cc_printmask(CCPermsMask);
+// shawill: someday we will rewrite or remove this function
+int cc_setag(int, CCLicense *);
+int cc_getag(int, char **, char **, char **);
+// MPA tagging function (pt 14)
+int cc_tag_mpa(CCLicense *, char **, char **, char **);
 
 #undef CC_EXTERN
 #undef CC_GLOBAL_DATA

@@ -48,7 +48,8 @@ void *decoder(void *args)
 	struct Dec_args *dec_args=(struct Dec_args *)args;
 	struct RTP_Session *rtp_sess_head=dec_args->rtp_sess_head;
 	struct RTP_Session *rtp_sess;
-	struct timeval tvsleep, tvdiff; 
+	struct timeval startime;
+	struct timeval tvsleep;
 	struct timeval tvstart, tvstop;
 	struct timeval tv_elapsed;
 	// struct timeval tv_sys_buff;
@@ -58,6 +59,7 @@ void *decoder(void *args)
 	double ts_min_next = 0;
 #else // utilizzo lo scheduler basato su FAST CYCLES
 	struct timeval tvcheck;
+	struct timeval tvdiff; 
 	struct timeval tvsel, tvbody;
 	long int select_usec, body_usec, diff_usec, offset_usec=0;
 	unsigned short cycles=0;/*AUDIO_SYS_BUFF;*/
@@ -80,14 +82,15 @@ void *decoder(void *args)
 	/* by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente" */
 	pthread_cleanup_push(dec_clean, (void *)nmsoutc /*audio_buffer */);
 	
-	tvdiff.tv_sec=tvsleep.tv_sec=dec_args->startime.tv_sec;
-	tvdiff.tv_usec=tvsleep.tv_usec=dec_args->startime.tv_usec;
+	// tvdiff.tv_sec=tvsleep.tv_sec=dec_args->startime.tv_sec;
+	// tvdiff.tv_usec=tvsleep.tv_usec=dec_args->startime.tv_usec;
 
 	pthread_mutex_lock(&(dec_args->syn));
 	pthread_mutex_unlock(&(dec_args->syn));
 
 	/* FV: startime ora assume il significato di istante di partenza del decoder */
-	gettimeofday(&(dec_args->startime), NULL);
+	// gettimeofday(&(dec_args->startime), NULL);
+	gettimeofday(&startime, NULL);
 
 	while(1) {
 
@@ -121,9 +124,10 @@ void *decoder(void *args)
 					tv_elapsed.tv_sec=(long)ts_elapsed;
 					tv_elapsed.tv_usec=(long)((ts_elapsed-tv_elapsed.tv_sec)*1000000);
 
-					// timeval_add(&tv_elapsed, &(stm_src->ssrc_stats.firsttv), &tv_elapsed);
-					timeval_add(&tv_elapsed, &tv_elapsed, &(dec_args->startime));
-					// timeval_subtract(&tv_elapsed, &tv_elapsed, &tv_sys_buff);
+					   // timeval_add(&tv_elapsed, &(stm_src->ssrc_stats.firsttv), &tv_elapsed);
+					// timeval_add(&tv_elapsed, &tv_elapsed, &(dec_args->startime));
+					timeval_add(&tv_elapsed, &tv_elapsed, &startime);
+					   // timeval_subtract(&tv_elapsed, &tv_elapsed, &tv_sys_buff);
 					
 					if(
 #ifndef TS_SCHEDULE
@@ -245,8 +249,9 @@ void *decoder(void *args)
 			tv_min_next.tv_sec=(long)ts_min_next;
 			tv_min_next.tv_usec=(long)((ts_min_next-tv_min_next.tv_sec)*1000000);
 
-			timeval_add(&tv_min_next, &tv_min_next, &(dec_args->startime));
-			// timeval_subtract(&tv_min_next, &tv_min_next, &tv_sys_buff);
+			// timeval_add(&tv_min_next, &tv_min_next, &(dec_args->startime));
+			timeval_add(&tv_min_next, &tv_min_next, &startime);
+			   // timeval_subtract(&tv_min_next, &tv_min_next, &tv_sys_buff);
 
 			if ( !timeval_subtract(&tvsleep, &tv_min_next, &tvstop) && (tvsleep.tv_usec > 10000) ) {
 				// fprintf(stderr, "\n\tDormiamo per: %lds e %ldus\n", tvsleep.tv_sec, tvsleep.tv_usec);

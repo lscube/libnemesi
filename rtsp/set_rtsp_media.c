@@ -75,9 +75,10 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th, char description_format)
 					}
 					if ( !strncmpcase(sdp_attr->a, "rtpmap", 6) ) {
 						/* We assume the string in the format:
-					 	* rtpmap:PaloadType EncodingName/ClockRate/Channels */
+					 	* rtpmap:PaloadType EncodingName/ClockRate[/Channels] */
 						tkn = sdp_attr->a + 6; // 6 == strlen("rtpmap")
-						while ( (*tkn==' ') || (*tkn==':') ) // skip spaces and colon
+						// skip spaces and colon (we should not do this!)
+						while ( (*tkn==' ') || (*tkn==':') )
 							tkn++;
 						if ( ((pt=(uint8)strtoul(tkn, &tkn, 10)) >= 96) && ( pt <= 127 ) ){
 							while ( *tkn == ' ' )
@@ -96,7 +97,16 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th, char description_format)
 							}
 							tkn=++ch;
 							sscanf(tkn, "%u/%u", (unsigned *)&(rtp_pt_defs[pt].rate), (unsigned *)&(rtp_pt_defs[pt].channels));
-							rtp_pt_defs[pt].type=NA;
+
+							if ( !strncmpcase(sdp_m->m, "audio", 5/*strlen("audio")*/) )
+								rtp_pt_defs[pt].type=AU;
+							else if ( !strncmpcase(sdp_m->m, "video", 5/*strlen("video")*/) )
+								rtp_pt_defs[pt].type=VI;
+							else
+								rtp_pt_defs[pt].type=NA;
+						} else {
+							// shawill: should be an error or a warning?
+							nmsprintf(2, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
 						}
 					}
 				}

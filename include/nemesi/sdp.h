@@ -87,6 +87,12 @@ typedef struct _SDP_Medium_info {
 	SDP_attr *attr_list;	/*!< zero or more medium attribute lines */
 
 	CCLicense *cc;		/*!< Creative Commons License struct*/
+	/*! informations from media description string (m=) */
+	char media_type;	/*!< possibile values: A=Audio, V=Video, P=aPplication, D=Data, C=Control */
+	int port;		/*!< port of stream*/	
+	int n_ports;		/*!< number of consecutive ports */
+	char transport[8];	/*!< transport string */
+	char *fmts;		/*!< media formats: AVP payload types for audio/video*/
 
 	struct _SDP_Medium_info *next;	/*!< Next medium informatioin struct */
 } SDP_Medium_info;
@@ -131,7 +137,7 @@ typedef struct {
 
 	SDP_attr *attr_list;	/*!< zero or more session attribute lines */
 
-	CCLicense cc;		/*!< Creative Commons License struct */
+	CCLicense *cc;		/*!< Creative Commons License struct */
 
 	SDP_Medium_info *media_info_queue; /*!< Media information queue */
 } SDP_Session_info;
@@ -142,6 +148,7 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len);
 int sdp_set_attr(SDP_attr **attr_list, char *a);
 void sdp_session_destroy(SDP_Session_info *);
 void sdp_media_destroy(SDP_Medium_info *);
+int sdp_parse_m_descr(SDP_Medium_info *, char *);
 
 #endif // __SDP_H
 /* @} */

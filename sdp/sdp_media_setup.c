@@ -63,6 +63,8 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 					curr_sdp_m=curr_sdp_m->next;
 				}
 				curr_sdp_m->m=tkn+2;
+				if (sdp_parse_m_descr(curr_sdp_m, curr_sdp_m->m))
+					error=1;
 				break;
 			case 'i':
 				curr_sdp_m->i=tkn+2;
@@ -106,6 +108,9 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 	if (error) { // there was an error?
 		sdp_media_destroy(queue);
 		return NULL;
+	} else { // setup CC tags for disk writing
+		for (curr_sdp_m=queue; curr_sdp_m; curr_sdp_m=curr_sdp_m->next)
+			cc_setag(14 /*pass pt*/, curr_sdp_m->cc);
 	}
 
 	return queue;

@@ -58,8 +58,8 @@ void *rtp(void *args)
 	dec_args->startime.tv_sec=0;
 	dec_args->startime.tv_usec=700*(1000);
 	*/
-	dec_args->startime.tv_sec=PO_BUFF_SIZE_SEC;
-	dec_args->startime.tv_usec=PO_BUFF_SIZE_MSEC*(1000);
+	// dec_args->startime.tv_sec=PO_BUFF_SIZE_SEC;
+	// dec_args->startime.tv_usec=PO_BUFF_SIZE_MSEC*(1000);
 	/* 500 msec */
 
 	pthread_mutex_init(&(dec_args->syn), NULL);

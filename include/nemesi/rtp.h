@@ -177,7 +177,7 @@ struct RTP_Session {
 
 struct Dec_args {
 	struct RTP_Session *rtp_sess_head;
-	struct timeval startime;
+	// struct timeval startime;
 	pthread_mutex_t syn;
 };
 
