@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.4 $ -- $Date: 2003/01/15 11:17:59 $
+ *  ./decoder/decoder.c: $Revision: 1.5 $ -- $Date: 2003/01/15 11:48:20 $
  *  
  *  This file is part of NeMeSI
  *
@@ -101,16 +101,25 @@ void *decoder(void *args)
 						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
 							((void *)(pkt->data)-(void *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
 						if ((len != 0) && (decoders[pkt->pt] != NULL)) {
-							decoders[pkt->pt](((uint8 *)pkt->data + pkt->cc), len, (uint8 *(*)(uint32))ab_get);
-#ifndef HAVE_SDL
-							oss_play();
-#endif
-							if(!sys_buff) {
-								audio_play();
-								sys_buff--;
+							/* controllo che vada fatta la decodifica*/
+							if ( strcmp(get_pref("output"), "diskraw") ) {
+								fprintf(stderr, "\nDecodifica necessaria\n");
+								decoders[pkt->pt](((uint8 *)pkt->data + pkt->cc), len, \
+										(uint8 *(*)(uint32))ab_get);
 							}
-							else if(sys_buff > 0){
-								sys_buff--;
+							if ( !strcmp(get_pref("output"), "card") ) {
+#ifndef HAVE_SDL
+								oss_play();
+#endif
+								if(!sys_buff) {
+									audio_play();
+									sys_buff--;
+								}
+								else if(sys_buff > 0){
+									sys_buff--;
+								}
+							} else if ( !strcmp(get_pref("output"), "diskraw") ) {
+							} else if ( !strcmp(get_pref("output"), "diskdecoded") ) {
 							}
 						}
 /**/
