@@ -37,8 +37,9 @@
 #include <nemesi/output.h>
 #include <nemesi/audio_format.h>
 
-// #define SYS_BUFF 5 /*system buffer in num of packets*/
+#ifndef TS_SCHEDULE
 #define GRAIN 20
+#endif
 
 #define SKIP 4
 
@@ -54,15 +55,15 @@ void *decoder(void *args)
 	double ts_elapsed;
 #ifdef TS_SCHEDULE
 	struct timeval tv_min_next;
-	double ts_min_next = -1;
+	double ts_min_next = 0;
 #else // utilizzo lo scheduler basato su FAST CYCLES
 	struct timeval tvcheck;
 	struct timeval tvsel, tvbody;
 	long int select_usec, body_usec, diff_usec, offset_usec=0;
+	unsigned short cycles=0;/*AUDIO_SYS_BUFF;*/
 #endif // TS_SCHEDULE
 	char buffering_audio=1;
 	float audio_sysbuff;
-	unsigned short cycles=0;/*AUDIO_SYS_BUFF;*/
 	struct Stream_Source *stm_src;
 	rtp_pkt *pkt;
 	int len=0;
@@ -97,7 +98,9 @@ void *decoder(void *args)
 				select_usec + body_usec, select_usec, body_usec, diff_usec, offset_usec, tvdiff.tv_usec, cycles);
 #endif // TS_SCHEDULE
 */
+#ifndef TS_SCHEDULE
 		do { 
+#endif // TS_SCHEDULE
 			/*by sbiro: ciclo per ogni sessione rtp*/
 			for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 			
@@ -121,7 +124,11 @@ void *decoder(void *args)
 					timeval_add(&tv_elapsed, &tv_elapsed, &(dec_args->startime));
 					// timeval_subtract(&tv_elapsed, &tv_elapsed, &tv_sys_buff);
 					
-					if(cycles || timeval_subtract(NULL, &tv_elapsed, &tvstart) ){
+					if(
+#ifndef TS_SCHEDULE
+							cycles || 
+#endif // TS_SCHEDULE
+							timeval_subtract(NULL, &tv_elapsed, &tvstart) ){
 					
 						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
 							((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
@@ -167,7 +174,7 @@ void *decoder(void *args)
 				/* FV: controlli sul timestamp */
 				if(stm_src->po.potail >= 0){
 					pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail); // pacchetto successivo
-					if ( ts_min_next < 0) {
+					if ( !ts_min_next ) {
 						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
 						// fprintf(stderr, "\nNuovo min: %3.2f\n", ts_min_next);
 					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
@@ -176,8 +183,10 @@ void *decoder(void *args)
 				}
 #endif // TS_SCHEDULE
 			}
+#ifndef TS_SCHEDULE
 		} while( cycles-- > 0);
 		cycles=0;
+#endif // TS_SCHEDULE
 		
 		gettimeofday(&tvstop, NULL);
 
@@ -215,7 +224,7 @@ void *decoder(void *args)
 				cycles += 2;
 		}
 #else // TS_SCHEDULE DEFINED --> utilizzo scheduler basato sui Timestamp
-		if (ts_min_next >= 0) { // esiste un pacchetto successivo?
+		if ( ts_min_next ) { // esiste un pacchetto successivo?
 			tv_min_next.tv_sec=(long)ts_min_next;
 			tv_min_next.tv_usec=(long)((ts_min_next-tv_min_next.tv_sec)*1000000);
 
@@ -223,14 +232,14 @@ void *decoder(void *args)
 			// timeval_subtract(&tv_min_next, &tv_min_next, &tv_sys_buff);
 
 			if ( !timeval_subtract(&tvsleep, &tv_min_next, &tvstop) && (tvsleep.tv_usec > 10000) ) {
-				// fprintf(stderr, "\nDormiamo per: %lds e %ldus\n", tvsleep.tv_sec, tvsleep.tv_usec);
+				// fprintf(stderr, "\n\tDormiamo per: %lds e %ldus\n", tvsleep.tv_sec, tvsleep.tv_usec);
 				select(0, NULL, NULL, NULL, &tvsleep);
 			}
-			ts_min_next = -1;
+			ts_min_next = 0;
 
 		} else { // Buffer di Rete vuoto => dormiamo un po'
 			tvsleep.tv_sec = 0;
-			tvsleep.tv_usec = GRAIN * 1000;
+			tvsleep.tv_usec = 1000;
 			select(0, NULL, NULL, NULL, &tvsleep);
 /**/
 			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);

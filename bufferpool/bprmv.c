@@ -46,5 +46,6 @@ int bprmv(buffer_pool *bp, playout_buff * po, int index)
 {
 	podel(po, index);
 	bpfree(bp, index);
+	pthread_cond_signal(&(bp->cond_full));
 	return 0;
 }

@@ -163,6 +163,8 @@ typedef struct {
 	pthread_mutex_t fl_mutex; /*!< Variabile di mutua esclusione per il
 				    controllo di accesso alle strutture
 				    sensibili del Bufferpool. */
+	pthread_cond_t cond_full; /*!< Variabile condizionale per le segnalazioni
+					in caso di bufferpool pieno */
 	int freelist[BP_SLOT_NUM]; /*!< Lista degli slot liberi. */
 	int flhead; /*!< Indice della testa della Free List. */
 	int flcount; /*!< Contatore degli elementi presenti nella Free List. */

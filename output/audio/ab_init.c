@@ -58,12 +58,16 @@ NMSAudioBuffer *ab_init(uint32 buff_size)
 	if (pthread_mutex_init(&(buff->syn), &mutex_attr) > 0)
 		return NULL;
 
+	pthread_condattr_init(&cond_attr);
+	pthread_cond_init(&(buff->cond_full), &cond_attr);
 	// cond initioalization
+	/*
 	if (pthread_condattr_init(&cond_attr) > 0)
 		return NULL;
 
 	if (pthread_cond_init(&(buff->cond_full), &cond_attr) > 0)
 		return NULL;
+	*/ // pthread_condattr_init & pthread_cond_init always return 0
 
 	ab_get(0, buff);
 
