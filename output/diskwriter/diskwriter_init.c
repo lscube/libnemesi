@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/diskwriter_init.c: $Revision: 1.2 $ -- $Date: 2003/01/16 13:00:56 $
+ *  ./output/diskwriter/diskwriter_init.c: $Revision: 1.3 $ -- $Date: 2003/01/22 16:17:36 $
  *  
  *  This file is part of NeMeSI
  *
@@ -27,17 +27,23 @@
  * */
 
 #include <nemesi/diskwriter.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 int diskwriter_init(void)
 {
 	int fd;
 	struct disk_buff *disk_buffer;
 
-	if ( (fd=creat( DEFAULT_FILENAME, 00644)) < 0 ) {
+	if ( (fd=open( DEFAULT_FILENAME, O_EXCL)) > 0 ) {
+		close(fd);
+	} else if ( (fd=creat( DEFAULT_FILENAME, 00644)) > 0 ) {
+		close(fd);
+		unlink( DEFAULT_FILENAME );
+	} else {
 		fprintf(stderr, "\nError initializzing Disk Writer Module: you have not write permission\n");
 		return 1;
 	}
-	close(fd);
 	
 	if ( (disk_buffer=db_init()) == NULL ) {
 		fprintf(stderr, "\nFailed while initializing Disk Writer Buffer\n");

@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/get_file_fd.c: $Revision: 1.3 $ -- $Date: 2003/01/16 13:00:56 $
+ *  ./output/diskwriter/get_file_fd.c: $Revision: 1.4 $ -- $Date: 2003/01/22 16:17:36 $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,11 +30,9 @@
 
 int get_file_fd(void)
 {
-	static int fd=-1;
-
-	if ( (fd < 0) && ( (fd=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
+	if ( (global_disk_buffer->file_fd < 0) && ( (global_disk_buffer->file_fd=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
 		uiprintf("\nfile %s in current directory cannot be created\n", DEFAULT_FILENAME);
 
-	return fd;
+	return global_disk_buffer->file_fd;
 }
 

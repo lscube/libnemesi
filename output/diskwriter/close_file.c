@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/close_file.c: $Revision: 1.1 $ -- $Date: 2003/01/15 11:24:26 $
+ *  ./output/diskwriter/close_file.c: $Revision: 1.2 $ -- $Date: 2003/01/22 16:17:36 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,13 +26,13 @@
  *  
  * */
 
-#include <stdio.h>
+#include <nemesi/diskwriter.h>
 
 void close_file(void)
 {
-	int fd;
+	int fd = global_disk_buffer->file_fd;
 	
-	if ( (fd=get_file_fd()) > 0 )
+	if ( fd > 0 )
 		close(fd);
 
 	return;

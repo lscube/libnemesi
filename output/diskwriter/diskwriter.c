@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/diskwriter.c: $Revision: 1.2 $ -- $Date: 2003/01/15 17:39:13 $
+ *  ./output/diskwriter/diskwriter.c: $Revision: 1.3 $ -- $Date: 2003/01/22 16:17:36 $
  *  
  *  This file is part of NeMeSI
  *
@@ -34,7 +34,7 @@ int diskwriter(char *data, int len)
 	int written;
 
 	if ( (fd=get_file_fd()) < 0 ) {
-		uiprintf("\nError in diskwriter()\n");
+		uiprintf("\nError in diskwriter(), file not open\n");
 		return 1;
 	}
 

@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/db_init.c: $Revision: 1.1 $ -- $Date: 2003/01/15 17:40:26 $
+ *  ./output/diskwriter/db_init.c: $Revision: 1.2 $ -- $Date: 2003/01/22 16:17:36 $
  *  
  *  This file is part of NeMeSI
  *
@@ -43,6 +43,7 @@ struct disk_buff *db_init(void)
 	}
 
 	buff->len = 0;
+	buff->file_fd=-1;
 
 	db_get(0, buff);
 

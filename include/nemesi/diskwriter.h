@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/diskwriter.h: $Revision: 1.2 $ -- $Date: 2003/01/15 17:39:13 $
+ *  ./include/nemesi/diskwriter.h: $Revision: 1.3 $ -- $Date: 2003/01/22 16:17:35 $
  *  
  *  This file is part of NeMeSI
  *
@@ -53,6 +53,7 @@
 struct disk_buff {
 	uint8 data[DISK_BUFF_SIZE];
 	uint32 len;
+	int file_fd;
 };
 
 EXTERN struct disk_buff *global_disk_buffer;
