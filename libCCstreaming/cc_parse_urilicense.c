@@ -27,23 +27,17 @@
  * */
 
 #include <nemesi/cc.h>
-#include <nemesi/utils.h>
 
-#include <nemesi/comm.h>
-
-int issdplicense(char *sdp_a)
+/*! \brief Parses Licenes URI and fills CCPermissions data structure.
+ *
+ * To know what are the conditions of the license we parse the uri and look for
+ * short names.
+ *
+ * \param uri license uri to parse.  \param conds CCPermissions structure to be
+ * filled.
+ */
+int cc_parse_urilicense(char *uri, CCPermissions *perms)
 {
-	char *cclicenses[][2] = CC_LICENSE;
-	unsigned int i;
-
-	// shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
-	for(i=0; i<sizeof(cclicenses)/sizeof(*cclicenses); i++) {
-		if (!strncmpcase(sdp_a, cclicenses[i][CC_ATTR_NAME], strlen(cclicenses[i][CC_ATTR_NAME]))) {
-			nmsprintf(3, "found valid cc field in SDP description (%s - %s)\n", cclicenses[i][CC_ATTR_NAME], cclicenses[i][CC_ATTR_DESCR]);
-			return 1;
-		}
-	}
-
 	return 0;
 }
 

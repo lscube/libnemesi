@@ -31,14 +31,22 @@
 
 #include <nemesi/comm.h>
 
+/*! \brief Set the correct field in License definition.
+ *
+ * The sdp_l string is in the form, coming from an sdp description,
+ * <param>=<value>. According to <param>, we set the right field.  Warning the
+ * function does't copy the string, it sets just the right pointer to sdp_l, so
+ * the sdp_l parameter cannot be a temporary string.
+ */
 int cc_set_sdplicense(CCLicense *cc, char *sdp_l)
 {
-	char *cclicenses[][2] = CC_LICENSES;
+	char *cclicenses[][2] = CC_LICENSE;
 	unsigned int i;
 
 	// shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
 	for(i=0; i<sizeof(cclicenses)/sizeof(*cclicenses); i++) {
-		if (!strncmpcase(sdp_l, cclicenses[i][CC_NAME], strlen(cclicenses[i][CC_NAME]))) {
+		if (!strncmpcase(sdp_l, cclicenses[i][CC_ATTR_NAME], strlen(cclicenses[i][CC_ATTR_NAME]))) {
+			// XXX: we do not duplicate the string!!! Do we have to do that?
 			((char **)cc)[i] = sdp_l; // set the correct field using CCLicense struct like an array of strings
 			return 0;
 		}

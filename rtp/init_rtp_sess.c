@@ -37,8 +37,8 @@ struct RTP_Session *init_rtp_sess(struct sockaddr localaddr, struct sockaddr pee
 		return NULL;
 	}
 
-	rtp_sess->rtp_tid=-1;
-	rtp_sess->dec_tid=-1;	
+	// rtp_sess->rtp_tid=-1;
+	// rtp_sess->dec_tid=-1;	
 	rtp_sess->rtpfd=-1;
 	rtp_sess->rtcpfd=-1;
 	rtp_sess->local_ssrc=random32(0);
