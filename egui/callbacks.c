@@ -14,6 +14,7 @@
 
 static GtkWidget *nemesi;
 static GtkWidget *opendialog=NULL;
+static GtkWidget *aboutdialog=NULL;
 static struct RTSP_args *rtsp_args;
 
 void save_static_data(gpointer new_nemesi, gpointer new_rtsp_args)
@@ -92,7 +93,13 @@ void
 on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	GtkWidget *aboutimage;
 
+	if (!aboutdialog)
+		aboutdialog = create_aboutdialog();
+	gtk_widget_show(aboutdialog);
+	aboutimage = create_pixmap(NULL, "about-nemesi.png");
+	gtk_box_pack_start (GTK_BOX (lookup_widget(aboutdialog, "dialogvbox")), aboutimage, FALSE, FALSE, 0);
 }
 
 
@@ -158,5 +165,14 @@ on_okbutton1_clicked                   (GtkButton       *button,
 	opendialog = NULL;
 	send_open(rtsp_args, url);
 	gui_throbber(&rtsp_args->rtsp_th->busy);
+}
+
+
+void
+on_closebutton1_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	gtk_widget_destroy(aboutdialog);
+	aboutdialog = NULL;
 }
 

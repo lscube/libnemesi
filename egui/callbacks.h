@@ -40,3 +40,11 @@ void
 on_okbutton1_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
 
+
+void
+on_aboutdialog_realize                 (GtkWidget       *widget,
+                                        gpointer         user_data);
+
+void
+on_closebutton1_clicked                (GtkButton       *button,
+                                        gpointer         user_data);

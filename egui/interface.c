@@ -327,3 +327,43 @@ create_opendialog (void)
   return opendialog;
 }
 
+GtkWidget*
+create_aboutdialog (void)
+{
+  GtkWidget *aboutdialog;
+  GtkWidget *dialogvbox;
+  GtkWidget *dialog_action_area2;
+  GtkWidget *closebutton1;
+
+  aboutdialog = gtk_dialog_new ();
+  gtk_widget_set_name (aboutdialog, "aboutdialog");
+  gtk_window_set_title (GTK_WINDOW (aboutdialog), "dialog1");
+
+  dialogvbox = GTK_DIALOG (aboutdialog)->vbox;
+  gtk_widget_set_name (dialogvbox, "dialogvbox");
+  gtk_widget_show (dialogvbox);
+
+  dialog_action_area2 = GTK_DIALOG (aboutdialog)->action_area;
+  gtk_widget_set_name (dialog_action_area2, "dialog_action_area2");
+  gtk_widget_show (dialog_action_area2);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area2), GTK_BUTTONBOX_END);
+
+  closebutton1 = gtk_button_new_from_stock ("gtk-close");
+  gtk_widget_set_name (closebutton1, "closebutton1");
+  gtk_widget_show (closebutton1);
+  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), closebutton1, GTK_RESPONSE_CLOSE);
+  GTK_WIDGET_SET_FLAGS (closebutton1, GTK_CAN_DEFAULT);
+
+  g_signal_connect ((gpointer) closebutton1, "clicked",
+                    G_CALLBACK (on_closebutton1_clicked),
+                    NULL);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog, aboutdialog, "aboutdialog");
+  GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog, dialogvbox, "dialogvbox");
+  GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog, dialog_action_area2, "dialog_action_area2");
+  GLADE_HOOKUP_OBJECT (aboutdialog, closebutton1, "closebutton1");
+
+  return aboutdialog;
+}
+

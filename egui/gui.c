@@ -3,9 +3,12 @@
  * Glade will not overwrite this file.
  */
 
+/*
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+*/
+#  include <config.h>
 
 #include <gtk/gtk.h>
 
@@ -21,12 +24,21 @@
 int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[])
 {
   GtkWidget *nemesi;
+  char *path;
 
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
-  // add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
-  add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/throbber");
+  add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
+  // add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/throbber");
+  path=getenv(NEMESI_THROBBER_DIR_ENV);
+  if (!path) {
+  	add_pixmap_directory(NEMESI_THROBBER_DIR_DEFAULT);
+	nmsprintf(3, "NEMESI_THROBBER_DIR_DEFAULT: "NEMESI_THROBBER_DIR_DEFAULT"\n");
+  } else {
+  	add_pixmap_directory(path);
+	nmsprintf(3, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
+  }
 
   /*
    * The following code was added by Glade to create one of each component
@@ -36,6 +48,7 @@ int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[
   nemesi = create_nemesi ();
 
   save_static_data(nemesi, rtsp_args); // must be done fist of all
+
   if (create_throbber(lookup_widget(nemesi, "hbox3")))
 	  nmserror("no throbber available");
 
