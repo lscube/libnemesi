@@ -63,7 +63,8 @@ int cc_parse_urilicense(char *uri, CCPermsMask *mask)
 		*tkn = '\0';
 
 	// Check for special licenses :TODO
-	for (i=0; i<sizeof(cc_spec_licenses)/sizeof(*cc_spec_licenses); i++) {
+	// for (i=0; i<sizeof(cc_spec_licenses)/sizeof(*cc_spec_licenses); i++) {
+	for (i=0; cc_spec_licenses[i].int_code; i++) {
 		if ( !strcmpcase(permstr, cc_spec_licenses[i].urlstr)) {
 			mask->spec_license = cc_spec_licenses[i].int_code;
 			break;

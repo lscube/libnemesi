@@ -78,11 +78,13 @@ CC_EXTERN CCPermission cc_sa
 #endif // CC_GOBAL_DATA
 ;
 
+#define CC_BITMASK_T uint8
+
 typedef struct {
 	char *name;
 	char *urlstr/*[3]*/;
 	char *descr;
-	char int_code;
+	CC_BITMASK_T int_code;
 } CCSpecLicense;
 
 /*! definition of internal identification code for special licenses
@@ -98,12 +100,11 @@ typedef struct {
 CC_EXTERN CCSpecLicense cc_spec_licenses[]
 #ifdef CC_GLOBAL_DATA
 = {
-	{ "PubblicDomain", "publicdomain", "Public domain dedication", CC_PD }
+	{ "PubblicDomain", "publicdomain", "Public domain dedication", CC_PD },
+	/*end*/ { 0, 0, 0, 0 }
 }
 #endif // CC_GLOBAL_DATA
 ;
-
-#define CC_BITMASK_T uint8
 /*
  * If someday we need to select more special licenses we can "upgrade" the
  * field of bit from uint8 to uint16, or more...
@@ -144,6 +145,7 @@ CCLicense *cc_newlicense(void);
 int cc_set_sdplicense(CCLicense *, char *);
 int cc_parse_urilicense(char *, CCPermsMask *);
 int cc_prms_chk(CCLicense *, CCPermsMask *);
+void cc_printmask(CCPermsMask);
 
 #undef CC_EXTERN
 #undef CC_GLOBAL_DATA

@@ -57,11 +57,11 @@ PREFS_EXTERN struct Preference preferences[]
 = {
 	/* output */ { "output", "card", "card/disk", "Select where the stream will be written."},
 	/* Accept all */ {"acceptAll","yes" ,"no/yes","Accept all kind of streaming."},
-	/* Attribution */ {"attribution","no" ,"no/yes","Accept licence attribution."},
-	/* No Commercial */  {"nonCommercial", "no" ,"no/yes","Accept licence No Commercial."},
-	/* No Derivs */  {"noDerivs", "no" ,"no/yes","Accept licence No Derivs."},
-	/* Share Alike */  {"shareAlike", "no" ,"no/yes","Accept licence Share Alike."},
-	/* Public Domain */  {"publicDomain", "no" ,"no/yes","Accept licence Public Domain."},
+	/* Attribution */ {"Attribution","no" ,"no/yes","Accept licence attribution."},
+	/* No Commercial */  {"NonCommercial", "no" ,"no/yes","Accept licence No Commercial."},
+	/* No Derivs */  {"NoDerivative", "no" ,"no/yes","Accept licence No Derivative."},
+	/* Share Alike */  {"ShareAlike", "no" ,"no/yes","Accept licence Share Alike."},
+	/* Public Domain */  {"PublicDomain", "no" ,"no/yes","Accept licence Public Domain."},
 
 	{ PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END }
 }

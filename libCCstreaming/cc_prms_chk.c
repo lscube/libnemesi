@@ -59,18 +59,8 @@ int cc_prms_chk(CCLicense *license, CCPermsMask *mask)
 
 	*((CC_BITMASK_T *)mask) = ~(*((CC_BITMASK_T *)mask)) & *((CC_BITMASK_T *)&parsedmsk);
 
-	if (*((CC_BITMASK_T *)mask)) {
-		nmserror("You didn't accept some requested conditions of license\n");
-		if (mask->by)
-			nmsprintf(1, "%s\n", cc_by.name);
-		if (mask->nc)
-			nmsprintf(1, "%s\n", cc_nc.name);
-		if (mask->nd)
-			nmsprintf(1, "%s\n", cc_nd.name);
-		if (mask->sa)
-			nmsprintf(1, "%s\n", cc_sa.name);
+	if (*((CC_BITMASK_T *)mask))
 		return 1;
-	}
 	
 	return 0;
 }

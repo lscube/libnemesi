@@ -36,15 +36,29 @@ int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
 {
 	char b[256];
 	struct RTSP_Session *rtsp_sess;
-	CCPermsMask cc_mask;
+	struct RTSP_Medium *rtsp_med;
+	CCPermsMask cc_mask, cc_conflict;
 
 	// get_curr_sess(NULL, &rtsp_sess, NULL);
 	if (!(rtsp_sess=get_curr_sess(GCS_CUR_SESS)))
 		return 1;
 	
-	pref2ccmask(&cc_mask);
-	if ( cc_prms_chk(rtsp_sess->media_queue->medium_info->cc, &cc_mask) )
+	// CC License check
+	rtsp_med = rtsp_sess->media_queue;
+	memset(&cc_conflict, 0, sizeof(cc_conflict));
+	while ( rtsp_med ) {
+		pref2ccmask(&cc_mask);
+		if ( cc_prms_chk(rtsp_med->medium_info->cc, &cc_mask) )
+			*((CC_BITMASK_T *)&cc_conflict) |= *((CC_BITMASK_T *)&cc_mask);
+		rtsp_med = rtsp_med->next;
+	}
+	if (*((CC_BITMASK_T *)&cc_conflict)) {
+		nmserror("\nYou didn't accept some requested conditions of license\n");
+		cc_printmask(cc_conflict);
 		return 1;
+	}
+	// end of CC part
+
 	if ( rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)
 			sprintf(b, "%s %s/%s %s\nCSeq: %d\n", PLAY_TKN, rtsp_sess->content_base, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
