@@ -141,10 +141,12 @@ typedef struct {
 	// end of CC fields
 } CCLicense;
 
-typedef enum {
-	cc_set_tag,
-	cc_get_tag
-} CCTagAction;
+typedef struct {
+	int8 *header;
+	uint32 hdim;
+	int8 *footer;
+	uint32 fdim;
+} CCTag;
 
 int issdplicense(char *sdp_a);
 CCLicense *cc_newlicense(void);
@@ -154,9 +156,9 @@ int cc_prms_chk(CCLicense *, CCPermsMask *);
 void cc_printmask(CCPermsMask);
 // shawill: someday we will rewrite or remove this function
 int cc_setag(int, CCLicense *);
-int cc_getag(int, char **, char **, char **);
+int cc_getag(int, CCTag **, char **);
 // MPA tagging function (pt 14)
-int cc_tag_mpa(CCLicense *, char **, char **, char **);
+int cc_tag_mpa(CCLicense *, CCTag *, char **);
 
 #undef CC_EXTERN
 #undef CC_GLOBAL_DATA

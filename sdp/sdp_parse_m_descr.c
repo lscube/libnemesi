@@ -34,48 +34,49 @@
 
 int sdp_parse_m_descr(SDP_Medium_info *m_info, char *m_descr)
 {
-	char *tkn, *errtkn;
+	char *tkn, *endtkn;
 
 	if (!(tkn = strchr(m_descr, ' ')))
 		return nmserror("SDP Media description string not valid: (m=%s)", m_descr);
 	*tkn = '\0';
 
 	// parse media type
-	if (!strcmp(tkn, "video"))
+	if (!strcmp(m_descr, "video"))
 		m_info->media_type = 'V';
-	else if (!strcmp(tkn, "audio"))
+	else if (!strcmp(m_descr, "audio"))
 		m_info->media_type = 'A';
-	else if (!strcmp(tkn, "application"))
+	else if (!strcmp(m_descr, "application"))
 		m_info->media_type = 'P';
-	else if (!strcmp(tkn, "data"))
+	else if (!strcmp(m_descr, "data"))
 		m_info->media_type = 'D';
-	else if (!strcmp(tkn, "control"))
+	else if (!strcmp(m_descr, "control"))
 		m_info->media_type = 'C';
 
 	*tkn = ' ';
 
 	// parse port and number of ports
-	m_info->port = strtol(tkn, &errtkn, 10);
-	if ( tkn == errtkn )
+	m_info->port = strtol(tkn, &endtkn, 10);
+	if ( tkn == endtkn )
 		return nmserror("SDP Media description string not valid: (m=%s)\nCould not find port field", m_descr);
-	tkn = errtkn + 1;
-	if (*errtkn == '/') {
-		m_info->n_ports = strtol(tkn, &errtkn, 10);
-		tkn = errtkn + 1;
+	tkn = endtkn; // + 1;
+	if (*endtkn == '/') {
+		m_info->n_ports = strtol(tkn+1, &endtkn, 10);
+		tkn = endtkn; // + 1;
 	} else
 		m_info->n_ports = 1;
 
 	for (;*tkn==' ';tkn++); // skip spaces
-	if (!tkn)
+	if (!(*tkn))
 		return nmserror("SDP Media description string not valid: (m=%s)\nCould not find transport field", m_descr);
 
 	// parse transport protocol
-	if (!(tkn = strchr(m_descr, ' ')))
+	if (!(endtkn = strchr(tkn, ' ')))
 		return nmserror("SDP Media description string not valid: (m=%s)\nDescription terminates whithout <fmt list>", m_descr);
-	*tkn = '\0';
+	*endtkn = '\0';
 	strncpy(m_info->transport, tkn, 7);
 	m_info->transport[7] = '\0';
-	*tkn = ' ';
+	*endtkn = ' ';
+	tkn=endtkn + 1;
 
 	// fmt list: here we expect to store payload types
 	for (;*tkn==' ';tkn++); // skip spaces

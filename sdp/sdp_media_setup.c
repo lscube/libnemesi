@@ -37,6 +37,9 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 	SDP_Medium_info *queue=NULL, *curr_sdp_m=NULL;
 	char *tkn=NULL;
 	char error=0; // error flag
+	// for cc tagging
+	int pt;
+	char *endtkn = NULL;
 
 	do {
 		if ( tkn==NULL )
@@ -109,8 +112,16 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 		sdp_media_destroy(queue);
 		return NULL;
 	} else { // setup CC tags for disk writing
-		for (curr_sdp_m=queue; curr_sdp_m; curr_sdp_m=curr_sdp_m->next)
-			cc_setag(14 /*pass pt*/, curr_sdp_m->cc);
+		for (curr_sdp_m=queue; curr_sdp_m; curr_sdp_m=curr_sdp_m->next) {
+			for (tkn=curr_sdp_m->fmts; *tkn; tkn=endtkn) {
+				for (;*tkn==' ';tkn++); // skip spaces
+				pt = strtol(tkn, &endtkn, 10);
+				if (tkn != endtkn)
+					cc_setag(pt, curr_sdp_m->cc);
+				else
+					break;
+			}
+		}
 	}
 
 	return queue;

@@ -28,7 +28,7 @@
 
 #include <nemesi/cc.h>
 
-int cc_tag_mpa(CCLicense *license, char **header, char **footer, char **ext)
+int cc_tag_mpa(CCLicense *license, CCTag *tag, char **ext)
 {
 	return 0;
 }

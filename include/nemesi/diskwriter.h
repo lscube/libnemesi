@@ -32,14 +32,14 @@
 #include <stdio.h>
 
 #include <nemesi/types.h>
+#include <nemesi/cc.h>
 
 #define DEFAULT_FILENAME "nemesi.out"
 #define MAX_PT 127
 
 typedef struct {
 	char *basename;
-	char *header[MAX_PT+1];
-	char *footer[MAX_PT+1];
+	CCTag tag[MAX_PT+1];
 	char *ext[MAX_PT+1];
 	int fd[MAX_PT+1];
 } NMSDiskWriter;

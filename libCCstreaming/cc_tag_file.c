@@ -36,17 +36,14 @@
 #define CC_PT_MPA 14
 
 static char cc_taginit=0;
-static char **cc_headers=NULL;
-static char **cc_footers=NULL;
+static CCTag *cc_tags=NULL;
 static char **cc_exts=NULL;
 
 static int cc_tagsinit(void)
 {
-	if ( (!cc_headers) && (!(cc_headers=calloc(128, sizeof(char *)))))
-		return nmserror("cc_tag: could not alloc static headers");
-	
-	if ( (!cc_footers) && (!(cc_footers=calloc(128, sizeof(char *)))))
-		return nmserror("cc_tag: could not alloc static footers");
+	// if ( (!cc_headers) && (!(cc_headers=calloc(128, sizeof(char *)))))
+	if ( (!cc_tags) && (!(cc_tags=calloc(128, sizeof(CCTag)))))
+		return nmserror("cc_tag: could not alloc static tags");
 	
 	if ( (!cc_exts) && (!(cc_exts=calloc(128, sizeof(char *)))))
 		return nmserror("cc_tag: could not alloc static extensions");
@@ -63,19 +60,18 @@ int cc_setag(int pt, CCLicense *license)
 
 	switch (pt) {
 		case CC_PT_MPA: // MPA
-			cc_tag_mpa(license, &cc_headers[CC_PT_MPA], &cc_footers[CC_PT_MPA], &cc_exts[CC_PT_MPA]);
+			cc_tag_mpa(license, &cc_tags[CC_PT_MPA], &cc_exts[CC_PT_MPA]);
 	}
 
 	return 0;
 }
 
-int cc_getag(int pt, char **header, char **footer, char **ext)
+int cc_getag(int pt, CCTag **tag, char **ext)
 {
 	if ( (!cc_taginit) && (cc_tagsinit()) )
 		return 1;
 
-	*header = cc_headers[pt];
-	*footer = cc_footers[pt];
+	*tag = &cc_tags[pt];
 	*ext = cc_exts[pt];
 
 	return 0;
