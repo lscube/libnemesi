@@ -172,6 +172,7 @@ struct RTP_Session {
 	struct Conflict *conf_queue;
 	buffer_pool bp;
 	struct RTP_Session *next;
+	pthread_mutex_t syn;
 };
 
 struct Dec_args {

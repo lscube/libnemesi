@@ -39,18 +39,22 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 	memset(port, 0, strlen(port));
 
 	local_collision = (rtp_sess->local_ssrc == ssrc);
-	
+	pthread_mutex_lock(&rtp_sess->syn);	
+	pthread_mutex_unlock(&rtp_sess->syn);	
 	for(*stm_src=rtp_sess->ssrc_queue; !local_collision && *stm_src && ((*stm_src)->ssrc != ssrc); *stm_src=(*stm_src)->next);
 	if(!*stm_src && !local_collision ){
 		/* nuovo SSRC */
 		/* inserimento in testa */
+		pthread_mutex_lock(&rtp_sess->syn);	
 		uiprintf("\nnuovo SSRC\n");
 		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0){
 			uiprintf("Error while setting new Stream Source\n");
+			pthread_mutex_unlock(&rtp_sess->syn);	
 			return -1;
 		}
 
 		poinit(&((*stm_src)->po),&(rtp_sess->bp));
+		pthread_mutex_unlock(&rtp_sess->syn);	
 		return 1;
 	} else {
 		if (local_collision){
@@ -118,7 +122,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					/* New collision, change SSRC identifier */
 					
 					uiprintf("\nSSRC collision detected: getting new!\n");
-
+					
 
 					/* Send RTCP BYE pkt */
 					/*       TODO        */
@@ -133,11 +137,14 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 						return -1;
 					}
 					/* inserimento in testa */
+					pthread_mutex_lock(&rtp_sess->syn);	
 					if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0){
 						uiprintf("Error while setting new Stream Source\n");
+						pthread_mutex_unlock(&rtp_sess->syn);	
 						return -1;
 					}
 					poinit(&((*stm_src)->po),&(rtp_sess->bp));
+					pthread_mutex_unlock(&rtp_sess->syn);	
 				
 					/* New entry in SSRC Conflict queue */
 					stm_conf->transaddr=sockaddr;

@@ -42,7 +42,7 @@ struct RTP_Session *init_rtp_sess(struct sockaddr localaddr, struct sockaddr pee
 	rtp_sess->rtpfd=-1;
 	rtp_sess->rtcpfd=-1;
 	rtp_sess->local_ssrc=random32(0);
-
+	pthread_mutex_init(&rtp_sess->syn,NULL);
 	if((rtp_sess->transport.spec=(char *)malloc(sizeof(char)*(strlen(RTP_AVP_UDP)+1))) ==NULL){
 		uiprintf("Cannot allocate memory!\n");
 		return NULL;
