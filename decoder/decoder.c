@@ -88,11 +88,11 @@ void *decoder(void *args)
 
 	pthread_mutex_lock(&(dec_args->syn));
 	pthread_mutex_unlock(&(dec_args->syn));
-	
-	select(0, NULL, NULL, NULL, &tvsleep);
 
 	// Audio init
 	nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0);
+	
+	select(0, NULL, NULL, NULL, &tvsleep);
 
 	/* FV: startime ora assume il significato di istante di partenza del decoder */
 	gettimeofday(&(dec_args->startime), NULL);
@@ -147,6 +147,7 @@ void *decoder(void *args)
 							if ( !strcmp(output_pref, "card") ) {
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
 								nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+								// AUDIO
 								if(buffering_audio) {
 									if (audio_sysbuff > AUDIO_SYS_BUFF ) {
 										buffering_audio = 0;
@@ -154,6 +155,9 @@ void *decoder(void *args)
 										nmsoutc->audio->functions->audio_resume();
 									}
 								}
+								// VIDEO
+								if((nmsoutc->video->init) && (!nmsoutc->video->tid))
+									video_th_start(nmsoutc->video);
 							} /* XXX: not supported any more
 							     else if ( !strcmp(output_pref, "diskdecoded") ) {
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, \

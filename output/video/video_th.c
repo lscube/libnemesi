@@ -1,5 +1,5 @@
 /* * 
- *  $Id: video.h 48 2003-11-10 16:01:50Z mancho $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -26,36 +26,36 @@
  *  
  * */
 
-#ifndef __VIDEO_H
-#define __VIDEO_H
+#include <sys/select.h>
+#include <sys/time.h>
 
-#include <pthread.h>
+#include <nemesi/video.h>
+#include <nemesi/comm.h>
 
-#include <config.h>
+#define SLEEP_MS 40
 
-#include <nemesi/types.h>
-#include <nemesi/video_img.h>
-#include <nemesi/video_drivers.h>
+void *video_th(void *vc)
+{
+	NMSVFunctions *funcs = ((NMSVideo *)vc)->functions;
+	struct timeval tvsleep;
 
-typedef struct {
-	// True (1) if initialized
-	uint8 init;
-	//! thread id
-	pthread_t tid;
-	// pixel format of video output
-	uint32 format;
-	// window width
-	uint32 width;
-	// window height
-	uint32 height;
-	//! functions for the specific video output driver
-	NMSVFunctions *functions;
-	// void *functions;
-} NMSVideo;
+	// pthread cancel attributes
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+	// set cancel function
+	// pthread_cleanup_push(video_close, (void *)vc);
 
-NMSVideo *video_preinit(char *);
-int video_th_start(NMSVideo *);
-void *video_th(void *);
+	tvsleep.tv_sec = SLEEP_MS / 1000;
+	tvsleep.tv_usec = (SLEEP_MS % 1000) * 1000;
 
-#endif // __VIDEO_H
+	for (;;) {
+		select(0, NULL, NULL, NULL, &tvsleep);
+		funcs->update_screen();
+		uiprintf("\nUpdate screen!!!\n");
+	}
+
+	// pthread_cleanup_pop(1);
+
+	return NULL;
+}
 

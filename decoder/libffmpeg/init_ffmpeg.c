@@ -1,5 +1,5 @@
 /* * 
- *  $Id: video.h 48 2003-11-10 16:01:50Z mancho $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -26,36 +26,42 @@
  *  
  * */
 
-#ifndef __VIDEO_H
-#define __VIDEO_H
+#include <stdlib.h>
 
-#include <pthread.h>
+#include "ffmpeg.h"
 
-#include <config.h>
+FFMpegDec *init_ffmpeg(void)
+{
+	FFMpegDec *ff;
 
-#include <nemesi/types.h>
-#include <nemesi/video_img.h>
-#include <nemesi/video_drivers.h>
+	if (!(ff=malloc(sizeof(FFMpegDec)))) {
+		fprintf(stderr, "Could not alloc memory for FFMpeg data structures\n");
+		return NULL;
+	}
+	/* must be called before using avcodec lib */
+	avcodec_init();
 
-typedef struct {
-	// True (1) if initialized
-	uint8 init;
-	//! thread id
-	pthread_t tid;
-	// pixel format of video output
-	uint32 format;
-	// window width
-	uint32 width;
-	// window height
-	uint32 height;
-	//! functions for the specific video output driver
-	NMSVFunctions *functions;
-	// void *functions;
-} NMSVideo;
+	//register_avcodec(&mp3_decoder);
+	avcodec_register_all();
 
-NMSVideo *video_preinit(char *);
-int video_th_start(NMSVideo *);
-void *video_th(void *);
+	/* find the mpeg audio decoder */
+	if (!(ff->codec = avcodec_find_decoder(CODEC_ID_MPEG1VIDEO))) {
+		fprintf(stderr, "libffmpeg: codec MPEG1VIDEO not found\n");
+		return NULL;
+	}
+	ff->context = avcodec_alloc_context();
+	ff->frame = avcodec_alloc_frame();
+	
+	if(ff->codec->capabilities&CODEC_CAP_TRUNCATED)
+		ff->context->flags|= CODEC_FLAG_TRUNCATED; /* we dont send complete frames */
+ 
+	/* open it */
+	if (avcodec_open(ff->context, ff->codec) < 0) {
+		fprintf(stderr, "libffmpeg: could not open codec\n");
+		return NULL;
+	}
 
-#endif // __VIDEO_H
-
+	ff->got_frame = 0;
+   
+	return ff;
+}

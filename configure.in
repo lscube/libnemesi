@@ -196,6 +196,7 @@ AC_OUTPUT([\
 		decoder/L16_8k_m/Makefile \
 		decoder/gsm_amr_float/Makefile \
 		decoder/libffmp3/Makefile \
+		decoder/libffmpeg/Makefile \
 		md5/Makefile \
 		plugins/Makefile \
 		docs/Makefile \

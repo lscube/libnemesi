@@ -47,7 +47,7 @@ int decode(char *, int, NMSOutput *);
 
 int get_plugin_pt(void)
 {
-	return 96;
+	return 14;
 }
 
 int decode(char *data, int len, NMSOutput *outc)

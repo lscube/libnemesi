@@ -70,9 +70,10 @@
 #include <nemesi/types.h>
 
 /*! La lunghezza, in slot, del Buffer di Playout. */
-#define BP_SLOT_NUM 50		/* 1000ms / 20ms = Playout Buffer Size (in
+/* #define BP_SLOT_NUM 50 */	/* 1000ms / 20ms = Playout Buffer Size (in
 				   seconds) / Required RTP payload size (in
 				   seconds) */
+#define BP_SLOT_NUM 150		// Bigger buffer. For video needs.
 
 /*! La dimensione del singolo slot del Buffer Pool.  Il valore deriva dal
  * <em>"Minimum Reassembly Buffer Size"</em> di IPv4: questa, infatti, dovrebbe

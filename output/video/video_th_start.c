@@ -1,5 +1,5 @@
 /* * 
- *  $Id: video.h 48 2003-11-10 16:01:50Z mancho $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -26,36 +26,31 @@
  *  
  * */
 
-#ifndef __VIDEO_H
-#define __VIDEO_H
-
+#include <string.h>
 #include <pthread.h>
 
-#include <config.h>
+#include <nemesi/comm.h>
+#include <nemesi/video.h>
 
-#include <nemesi/types.h>
-#include <nemesi/video_img.h>
-#include <nemesi/video_drivers.h>
+int video_th_start(NMSVideo *vc)
+{
+	pthread_attr_t vth_attr;
+	int n;
 
-typedef struct {
-	// True (1) if initialized
-	uint8 init;
-	//! thread id
-	pthread_t tid;
-	// pixel format of video output
-	uint32 format;
-	// window width
-	uint32 width;
-	// window height
-	uint32 height;
-	//! functions for the specific video output driver
-	NMSVFunctions *functions;
-	// void *functions;
-} NMSVideo;
+// VIDEO THREAD INITIALIZATION
 
-NMSVideo *video_preinit(char *);
-int video_th_start(NMSVideo *);
-void *video_th(void *);
+	/* set Video thread attributes to make thread joinable */
+	pthread_attr_init(&vth_attr);
 
-#endif // __VIDEO_H
+	if ((n = pthread_attr_setdetachstate(&vth_attr, PTHREAD_CREATE_JOINABLE)) != 0) {
+		return uierror("Cannot set Video Thread attributes!: %s", strerror(n));
+	}
+
+	/* Create Video Thread */
+	if ((n = pthread_create(&(vc->tid), &vth_attr, &video_th, (void *)vc)) > 0) {
+		return uierror("Cannot create Video Thread: %s", strerror(n));
+	}
+
+	return 0;
+}
 

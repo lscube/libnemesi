@@ -1,5 +1,5 @@
 /* * 
- *  $Id: video.h 48 2003-11-10 16:01:50Z mancho $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -26,36 +26,23 @@
  *  
  * */
 
-#ifndef __VIDEO_H
-#define __VIDEO_H
+#ifndef __FFMPEG_H
+#define __FFMPEG_H
 
-#include <pthread.h>
+#include <stdio.h>
 
-#include <config.h>
+#include <ffmpeg/avcodec.h>
 
-#include <nemesi/types.h>
-#include <nemesi/video_img.h>
-#include <nemesi/video_drivers.h>
+#include <nemesi/img_format.h>
 
 typedef struct {
-	// True (1) if initialized
-	uint8 init;
-	//! thread id
-	pthread_t tid;
-	// pixel format of video output
-	uint32 format;
-	// window width
-	uint32 width;
-	// window height
-	uint32 height;
-	//! functions for the specific video output driver
-	NMSVFunctions *functions;
-	// void *functions;
-} NMSVideo;
+	AVCodec *codec;
+	AVCodecContext *context;
+	AVFrame *frame;
+	int got_frame;
+} FFMpegDec;
 
-NMSVideo *video_preinit(char *);
-int video_th_start(NMSVideo *);
-void *video_th(void *);
+FFMpegDec *init_ffmpeg(void);
 
-#endif // __VIDEO_H
+#endif // __FFMPEG_H
 

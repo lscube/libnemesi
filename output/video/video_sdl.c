@@ -176,8 +176,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 			priv->mode = RGB;
 			break;
 		default:
-			uiprintf("SDL: Unsupported image format (0x%X)\n",format);
-			return 1;
+			return uierror("SDL: Unsupported image format (0x%X)\n",format);
 			// return NULL;
 			break;
 	}
@@ -211,8 +210,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 
 	// if (!(newsurface = SDL_SetVideoMode(width, newheight, 0, flags))) {
 	if (!(newsurface = SDL_SetVideoMode(width, height, 0, flags))) {
-		uiprintf("SDL_SetVideoMode failed: %s", SDL_GetError());
-		return 1;
+		return uierror("SDL_SetVideoMode failed: %s", SDL_GetError());
 		// return NULL;
 	}
 	// uiprintf("Set Video Mode: w=%d, h=%d\n", width, newheight);
@@ -228,7 +226,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 
 	SDL_WM_SetCaption(title, title);
 	MUTEX_UNLOCK(priv->syn, 1);
-	// return rect;
+
 	return 0;
 }
 

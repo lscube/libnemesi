@@ -49,6 +49,9 @@ NMSVideo *video_preinit(char *drv_hint)
 		return NULL;
 	}
 
+	vc->init = 0;
+	vc->tid = 0;
+
 	// Video Output Driver selection
 	vc->functions = &nms_video_sdl; // XXX: very very temporanea
 	funcs = vc->functions;
