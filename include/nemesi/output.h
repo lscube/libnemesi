@@ -37,5 +37,7 @@ typedef struct {
 	NMSVideo *video;
 } NMSOutput;
 
+int output_init(NMSOutput **);
+
 #endif // __NEMESI_OUTPUT_H
 

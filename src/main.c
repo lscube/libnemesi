@@ -38,6 +38,7 @@
 #define GLOBAL_PREFERENCES
 #include <nemesi/preferences.h>
 
+#include <nemesi/output.h>
 #include <nemesi/audio.h>
 #include <nemesi/diskwriter.h>
 
@@ -50,6 +51,7 @@ int main(int argc, char *argv[])
 	void *ret;
 	
 	extern int (*decoders[])(char *, int, uint8 *(*)());
+	NMSOutput *output; // XXX temporanea
 
 	memset(decoders, 0, 128*sizeof(int (*)()));
 
@@ -68,10 +70,9 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	pthread_attr_init(&rtsp_attr);
-	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0){
-		fprintf(stderr, "Cannot set RTSP Thread attributes!\n");
-		exit(1);
+	// output initialization
+	if (output_init(&output)) {
+		fprintf(stderr, "Error initialazing output module\n");
 	}
 
 	if ( audio_init() ) {
@@ -90,12 +91,22 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// Creation of RTSP Thread
+	pthread_attr_init(&rtsp_attr);
+	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0){
+		fprintf(stderr, "Cannot set RTSP Thread attributes!\n");
+		exit(1);
+	}
+
 	if ((n = pthread_create(&rtsp_tid, NULL, &rtsp, (void *) rtsp_args)) > 0) {
 		fprintf(stderr, "Cannot create RTSP Thread: %s\n", strerror(n));
 		exit(1);
 	}
+
+	// UI interface function
 	if ((n=ui(rtsp_args, argc, argv)) > 0)
 		exit(1);
+
 	/* THREAD CANCEL */	
 	uiprintf("Sending cancel signal to all threads\n");
 	if(rtsp_tid > 0){
