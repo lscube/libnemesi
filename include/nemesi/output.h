@@ -40,9 +40,9 @@
 #endif
 
 typedef struct {
-	// NMSAudio *audio;
-	NMSAudio *audio; // XXX assolutamente temporanea;
+	NMSAudio *audio;
 	NMSVideo *video;
+	NMSDiskWriter *diskwriter;
 } NMSOutput;
 
 OUTPUT_EXTERN NMSOutput *nmsoutc;

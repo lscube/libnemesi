@@ -31,12 +31,12 @@
 #include <nemesi/diskwriter.h>
 #include <nemesi/comm.h>
 
-int diskwriter(char *data, int len)
+int diskwriter(NMSDiskWriter *dc, int pt, char *data, int len)
 {
 	int fd;
 	int written;
 
-	if ( (fd=get_file_fd()) < 0 ) {
+	if ( (fd=get_file_fd(dc, pt)) < 0 ) {
 		uiprintf("\nError in diskwriter(), file not open\n");
 		return 1;
 	}

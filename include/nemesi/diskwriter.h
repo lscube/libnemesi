@@ -46,6 +46,13 @@
 #define CHANNELS 2
 #define BYTES_X_SAMPLE 2
 
+#define MAX_PT 127
+
+typedef struct {
+	char *basename;
+	int fd[MAX_PT+1];
+} NMSDiskWriter;
+
 /* Disk Buffer defines */
 #define SECONDS 1
 #define DISK_BUFF_SIZE (unsigned long)(FREQ*SECONDS*CHANNELS*BYTES_X_SAMPLE)
@@ -56,17 +63,18 @@ struct disk_buff {
 	int file_fd;
 };
 
-DISK_EXTERN struct disk_buff *global_disk_buffer;
+// DISK_EXTERN struct disk_buff *global_disk_buffer;
 
 struct disk_buff *db_init(void);
 uint8 *db_get(uint32, ...);
 /* end of Disk Buffer defines */
 
-int diskwriter_init(void);
-int get_file_fd(void);
-int diskwriter(char *data, int len);
-void close_file(void);
-int diskwriter_close(void);
+NMSDiskWriter *diskwriter_init(const char *);
+// int get_file_fd(void);
+int get_file_fd(NMSDiskWriter *, int);
+int diskwriter(NMSDiskWriter *, int, char *, int);
+void close_file(int []);
+int diskwriter_close(NMSDiskWriter *);
 
 #undef GLOBAL_DISK_BUFFER
 #undef DISK_EXTERN

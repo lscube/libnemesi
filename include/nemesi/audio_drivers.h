@@ -49,20 +49,15 @@ typedef struct {
 
 typedef struct {
 	NMSADrvInfo *info;
-	/*
-	 * Preinitializes driver (real INITIALIZATION)
-	 *   returns: zero on successful initialization, non-zero on error.
-	 */
-	uint32 (*preinit)(const char *arg);
         /*
-         * Initialize (means CONFIGURE) the audio driver.
+         * Initialize the audio driver.
 	 * params:
          * 	rate:
 	 * 	channels: number of channels
 	 * 	format:
          * returns : zero on successful initialization, non-zero on error.
          */
-        uint32 (*config)(uint32 rate, uint8 channels, uint32 format, uint32 flags);
+        uint32 (*init)(uint32 rate, uint8 channels, uint32 format, uint32 flags, const char *arg);
 	/*
 	 * Control interface
 	 * params:
@@ -89,13 +84,13 @@ typedef struct {
         /*
          * Pauses the driver
          */
-        void (*audio_pause)(void);
+        void (*pause)(void);
         /*
          * Resume playing
          */
-        void (*audio_resume)(void);
+        void (*resume)(void);
 	/*
-	 * Reset driver.
+	 * Reset audio buffer. For seeking pourpose
 	 */
 	 void (*reset)(void);
         /*

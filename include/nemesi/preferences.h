@@ -43,7 +43,7 @@
 #define PREF_MAX_AVAIL_LEN 256
 #define PREF_MAX_DESCR_LEN 256
 
-#define PREFS_TABLE_END "pref_end"
+#define PREFS_TABLE_END "prefend"
 
 struct Preference {
 	char name[PREF_MAX_NAME_LEN];
@@ -55,7 +55,7 @@ struct Preference {
 PREFS_EXTERN struct Preference preferences[]
 #ifdef GLOBAL_PREFERENCES
 = {
-	/* output */ { "output", "card", "card/diskraw/diskdecoded", "Select where the stream will be written."},
+	/* output */ { "output", "card", "card/disk", "Select where the stream will be written."},
 	{ PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END }
 }
 #endif /* GLOBAL_PREFERENCES */

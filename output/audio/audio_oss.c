@@ -57,7 +57,7 @@ static struct oss_priv_s {
 	NMSAudioBuffer *audio_buffer;
 } oss_priv;
 
-static uint32 preinit(const char *arg)
+static uint32 oss_init(const char *arg)
 {
 	if (arg)
 		oss_priv.audiodev = strdup(arg);
@@ -80,13 +80,15 @@ static uint32 preinit(const char *arg)
 	return 0;
 }
 
-static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags)
+static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, const char *arg)
 {
 	int audiofd = oss_priv.audiofd;
 	int req_format;
 	int result;
 	audio_buf_info info;
 
+	oss_init(arg);
+	
 	// Audio Buffer initialization
 	if ( (oss_priv.audio_buffer=ab_init(AUDIO_BUFF_SIZE)) == NULL )
 		return uierror("Failed while initializing Audio Buffer\n");
@@ -223,14 +225,19 @@ static void reset(void)
 	NMSAudioBuffer *ab = oss_priv.audio_buffer;
 
 	// reset audio buffer
-	// ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
-	free(ab);
+	ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
 
 	return;
 }
 
 static void uninit(void)
 {
+	NMSAudioBuffer *ab = oss_priv.audio_buffer;
+
+	if (ab) {
+		ab_uninit(ab);
+		oss_priv.audio_buffer = NULL;
+	}
 	if((oss_priv.audiofd) > 0) 
 		close(oss_priv.audiofd);
 

@@ -36,6 +36,7 @@
 // #include <stdarg.h>
 #include <nemesi/types.h>
 #include <nemesi/comm.h>
+#include <nemesi/audio_format.h>
 #include <nemesi/audio_drivers.h>
 
 #include <config.h>
@@ -85,6 +86,6 @@ uint8 *ab_get(uint32, ...);
 void ab_uninit(NMSAudioBuffer *);
 /* end of Audio Buffer defines */
 
-NMSAudio *audio_preinit(char *);
+NMSAudio *audio_init(const char *);
 
 #endif

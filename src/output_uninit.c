@@ -33,12 +33,13 @@ int output_uninit(void)
 {
 	diskwriter_close();
 
-	if (nmsoutc->audio->init) {
+	fprintf(stderr, "\nuninit\n");
+	if ( !(nmsoutc->audio) && (nmsoutc->audio->init) ) {
 		nmsoutc->audio->functions->uninit();
 		nmsoutc->audio->init = 0;
 		free(nmsoutc->audio);
 	}
-	if (nmsoutc->video->init) {
+	if ( !(nmsoutc->video) && (nmsoutc->video->init) ) {
 		nmsoutc->video->functions->uninit();
 		nmsoutc->video->init = 0;
 		free(nmsoutc->video);

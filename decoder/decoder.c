@@ -81,15 +81,6 @@ void *decoder(void *args)
 	tvdiff.tv_sec=tvsleep.tv_sec=dec_args->startime.tv_sec;
 	tvdiff.tv_usec=tvsleep.tv_usec=dec_args->startime.tv_usec;
 
-	/*
-	tv_sys_buff.tv_sec=0;
-	tv_sys_buff.tv_usec=AUDIO_SYS_BUFF*GRAIN*1000;
-	*/
-
-	// Audio init -- XXX: must be done here?
-	if ( !(nmsoutc->audio->init) && !(nmsoutc->audio->init=!nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0)) )
-		pthread_exit(NULL);
-
 	pthread_mutex_lock(&(dec_args->syn));
 	pthread_mutex_unlock(&(dec_args->syn));
 
@@ -136,11 +127,8 @@ void *decoder(void *args)
 							((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
 						strcpy(output_pref, get_pref("output"));
 						
-						if ( (len != 0) && (!strcmp(output_pref, "diskraw")) )
-							diskwriter( ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
-							/* impostato per il payload mp3
-							diskwriter(((uint8 *)pkt->data + pkt->cc + 4), len -4);
-							*/
+						if ( (len != 0) && (!strcmp(output_pref, "disk")) )
+							diskwriter( nmsoutc->diskwriter, pkt->pt, ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
 						else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
@@ -152,7 +140,7 @@ void *decoder(void *args)
 									if (audio_sysbuff > AUDIO_SYS_BUFF /*0.99*/ ) {
 										buffering_audio = 0;
 										// start playing audio
-										nmsoutc->audio->functions->audio_resume();
+										nmsoutc->audio->functions->resume();
 									}
 								}
 								// VIDEO

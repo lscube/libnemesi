@@ -27,31 +27,49 @@
  * */
 
 #include <nemesi/diskwriter.h>
+#include <nemesi/utils.h>
 #include <fcntl.h>
 #include <unistd.h>
 
-int diskwriter_init(void)
+NMSDiskWriter *diskwriter_init(const char *basename)
 {
+	NMSDiskWriter *dc;
 	int fd;
-	struct disk_buff *disk_buffer;
+	// struct disk_buff *disk_buffer;
 
-	if ( (fd=open( DEFAULT_FILENAME, O_EXCL)) > 0 ) {
+	if ((dc=malloc(sizeof(NMSDiskWriter))) == NULL) {
+		uierror("Could not alloc disk writer structure");
+		return NULL;
+	}
+
+	if (!basename || !strlen(basename))
+		dc->basename = strdup(DEFAULT_FILENAME);
+	else
+		dc->basename = strdup(basename);
+
+
+	if ( (fd=open( dc->basename, O_EXCL)) > 0 ) {
 		close(fd);
-	} else if ( (fd=creat( DEFAULT_FILENAME, 00644)) > 0 ) {
+	} else if ( (fd=creat( dc->basename, 00644)) > 0 ) {
 		close(fd);
-		unlink( DEFAULT_FILENAME );
+		unlink( dc->basename );
 	} else {
 		fprintf(stderr, "\nError initializzing Disk Writer Module: you have not write permission\n");
-		return 1;
+		return NULL;
 	}
+
+	for(fd=0;fd<=MAX_PT;fd++)
+		fd=-1;
 	
+	/*
 	if ( (disk_buffer=db_init()) == NULL ) {
 		fprintf(stderr, "\nFailed while initializing Disk Writer Buffer\n");
 		return 1;
 	}
 
 	global_disk_buffer=disk_buffer;
+	*/
 	
-	return 0;
+	return dc;
 }
 

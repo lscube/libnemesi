@@ -32,8 +32,8 @@
 #undef SDL_NOHWSURFACE
 
 /* define to enable surface locks, this might be needed on SMP machines */
-#undef SDL_ENABLE_LOCKS
-// #define SDL_ENABLE_LOCKS
+// #undef SDL_ENABLE_LOCKS
+#define SDL_ENABLE_LOCKS
 
 //#define BUGGY_SDL //defined by configure
 
@@ -162,6 +162,7 @@ static void free_vbuffer(struct sdl_vbuffer *vbuffer)
 		}
 	}
 
+	// SDL_UnlockMutex(vbuffer->syn);
 	SDL_DestroyMutex(vbuffer->syn);
 	SDL_DestroyCond(vbuffer->cond_full);
 

@@ -162,7 +162,7 @@ libaudio_la_SOURCES = ab_get.c \
 			ab_uninit.c \
 			audio_format_bits.c \
 			audio_format_name.c \
-			audio_preinit.c \
+			audio_init.c \
 			audio_oss.c \
 			audio_sdl.c
 
@@ -178,7 +178,7 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libaudio_la_LIBADD =
 am_libaudio_la_OBJECTS = ab_get.lo ab_init.lo ab_uninit.lo \
-	audio_format_bits.lo audio_format_name.lo audio_preinit.lo \
+	audio_format_bits.lo audio_format_name.lo audio_init.lo \
 	audio_oss.lo audio_sdl.lo
 libaudio_la_OBJECTS = $(am_libaudio_la_OBJECTS)
 
@@ -189,9 +189,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ab_uninit.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_format_bits.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_format_name.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/audio_oss.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/audio_preinit.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/audio_sdl.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/audio_init.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/audio_oss.Plo ./$(DEPDIR)/audio_sdl.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -235,8 +234,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ab_uninit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_format_bits.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_format_name.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_init.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_oss.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_preinit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_sdl.Plo@am__quote@
 
 .c.o:

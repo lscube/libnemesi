@@ -70,6 +70,7 @@ int rem_avail_pref(const char *argstr)
 
 	fprintf(stderr, "\n\"%s\" available value for \"%s\" removed\n\n", available, name);
 	strcpy(preferences[i].available, new_avail);
+	// if the pref value was that removed then the new value is set to "null"
 	if ( !strcmp(preferences[i].value, available) )
 		strcpy(preferences[i].value, "null");
 

@@ -39,7 +39,7 @@
 /*!
   Init audio
   */
-NMSAudio *audio_preinit(char *drv_hint)
+NMSAudio *audio_init(const char *drv_hint)
 {
 	NMSAudio *ac;
 	NMSAFunctions *funcs;
@@ -59,7 +59,7 @@ NMSAudio *audio_preinit(char *drv_hint)
 	// TODO: parse drv hint for subdriver
 
 	// audio init
-	if (funcs->preinit(NULL)) // TODO: send subdriver hint
+	if ( !(ac->init = !funcs->init(FREQ, CHANNELS, FORMAT, 0, NULL)) )
 		return NULL;
 	
 	uiprintf("Audio driver: %s\n", funcs->info->name);

@@ -46,25 +46,29 @@ int output_init(void)
 
 	uiprintf(SEPARATOR);
 	// AUDIO MODULE INIT
-	if ((nmsoutc->audio=audio_preinit("sdl")) == NULL) {
-		fprintf(stderr, "Audio module not available: setting \"output\" to \"diskdecoded\"\n");
-		rem_avail_pref("output card");
-		edit_pref("output diskdecoded");
+	if ((nmsoutc->audio=audio_init("sdl")) == NULL) {
+		fprintf(stderr, "Audio module not available\n");
+		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
+		// rem_avail_pref("output card");
+		// edit_pref("output disk");
 	}
 
 	uiprintf(SEPARATOR);
 	// VIDEO MODULE INIT
 	if ((nmsoutc->video=video_preinit("sdl")) == NULL) {
-		// TODO: rimuovere il video dalle availabilities
-		return 1; // TODO non restituire errore
+		if (!nmsoutc->audio) {
+			fprintf(stderr, "Video module not available: setting \"output\" to \"null\"\n");
+			rem_avail_pref("output card");
+			// edit_pref("output disk");
+		} else
+			fprintf(stderr, "Video module not available\n");
 	}
 
 	uiprintf(SEPARATOR);
 	// DISKWRITER MODULE INIT
-	if ( diskwriter_init() ) {
+	if ( (nmsoutc->diskwriter=diskwriter_init(DEFAULT_FILENAME)) == NULL ) {
 		fprintf(stderr, "Disk Writer module not available\n");
-		rem_avail_pref("output diskraw");
-		rem_avail_pref("output diskdecoded");
+		rem_avail_pref("output disk");
 		if ( strcmp("card", get_pref("output")) ) {
 			fprintf(stderr, "\nNo output device available\n Cannot continue.\n");
 			return 1;

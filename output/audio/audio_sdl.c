@@ -104,7 +104,7 @@ static void SDL_mixaudio(void *userdata, Uint8* stream, int len)
 	return;
 }
 
-static uint32 preinit(const char *arg)
+static uint32 sdl_init(const char *arg)
 {
 	Uint32 subsystem_init;
 	Uint32 flags=0;
@@ -139,9 +139,11 @@ static uint32 preinit(const char *arg)
 	return 0;
 }
 
-static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags)
+static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, const char *arg)
 {
 	SDL_AudioSpec requested_fmt;
+
+	sdl_init(arg);
 
 	if (sdl_priv.audio_buffer)
 		free(sdl_priv.audio_buffer);
@@ -218,6 +220,7 @@ static uint32 play_buff(uint8 *data, uint32 len)
 
 static void audio_pause(void)
 {
+	// pthread_mutex_unlock(&(sdl_priv.audio_buffer->syn));
 	SDL_PauseAudio(1);
 
 	return;
@@ -234,17 +237,20 @@ static void reset(void)
 {
 	NMSAudioBuffer *ab = sdl_priv.audio_buffer;
 
+	// reset audio buffer
+	ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
+}
+
+static void uninit(void)
+{
+	NMSAudioBuffer *ab = sdl_priv.audio_buffer;
+
 	SDL_PauseAudio(1);
 	if (ab) {
 		ab_uninit(ab);
 		sdl_priv.audio_buffer = NULL;
 	}
 	SDL_CloseAudio();
-}
-
-static void uninit(void)
-{
-	reset();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 
 	uiprintf("SDL Audio closed\n");

@@ -39,7 +39,7 @@
 /*!
   Init video
   */
-NMSVideo *video_preinit(char *drv_hint)
+NMSVideo *video_preinit(const char *drv_hint)
 {
 	NMSVideo *vc;
 	NMSVFunctions *funcs;
