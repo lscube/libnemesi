@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/diskwriter.h: $Revision: 1.1 $ -- $Date: 2003/01/15 11:24:26 $
+ *  ./include/nemesi/diskwriter.h: $Revision: 1.2 $ -- $Date: 2003/01/15 17:39:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,11 +29,43 @@
 #ifndef __DISKWRITER_H
 #define __DISKWRITER_H
 
+#include <stdio.h>
+#include <stdarg.h>
+
+#include <nemesi/types.h>
+
+#ifdef GLOBAL_DISK_BUFFER
+#define EXTERN extern
+#else
+#define EXTERN
+#endif
+
 #define DEFAULT_FILENAME "nemesi.out"
 
+#define FREQ 44100
+#define CHANNELS 2
+#define BYTES_X_SAMPLE 2
+
+/* Disk Buffer defines */
+#define SECONDS 1
+#define DISK_BUFF_SIZE (unsigned long)(FREQ*SECONDS*CHANNELS*BYTES_X_SAMPLE)
+
+struct disk_buff {
+	uint8 data[DISK_BUFF_SIZE];
+	uint32 len;
+};
+
+EXTERN struct disk_buff *global_disk_buffer;
+
+struct disk_buff *db_init(void);
+uint8 *db_get(uint32, ...);
+/* end of Disk Buffer defines */
+
+int diskwriter_init(void);
 int get_file_fd(void);
 int diskwriter(char *data, int len);
 void close_file(void);
+int diskwriter_close(void);
 
 #endif /* __DISKWRITER_H */
 

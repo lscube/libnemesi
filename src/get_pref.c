@@ -1,5 +1,5 @@
 /* * 
- *  ./src/get_pref.c: $Revision: 1.1 $ -- $Date: 2003/01/15 11:24:27 $
+ *  ./src/get_pref.c: $Revision: 1.2 $ -- $Date: 2003/01/15 17:39:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -40,6 +40,6 @@ char *get_pref(const char *name)
 		return NULL;
 	}
 
-	return preferences[i].name;
+	return preferences[i].value;
 }
 

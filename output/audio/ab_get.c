@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/ab_get.c: $Revision: 1.4 $ -- $Date: 2003/01/15 11:18:00 $
+ *  ./output/audio/ab_get.c: $Revision: 1.5 $ -- $Date: 2003/01/15 17:39:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -67,7 +67,7 @@ uint8 *ab_get(uint32 len, ...)
 		va_start(ap, len);
 		audio_buffer = va_arg(ap, struct audio_buff *);
 	} else {
-		uiprintf("Error in <ab_get> function\n");
+		uiprintf("\nError in <ab_get> function\n");
 	}
 	return NULL;
 }

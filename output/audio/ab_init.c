@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/ab_init.c: $Revision: 1.4 $ -- $Date: 2003/01/15 11:18:00 $
+ *  ./output/audio/ab_init.c: $Revision: 1.5 $ -- $Date: 2003/01/15 17:39:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,15 +26,20 @@
  *  
  * */
 
+/* definizione per l'allocazione del buffer globale
+ * questa definizione deve essere fatta solo in un file.
+ *  */
+#define GLOBAL_AUDIO_BUFFER
+
 #include <nemesi/audio.h>
 
-struct audio_buff *ab_init()
+struct audio_buff *ab_init(void)
 {
 	struct audio_buff *buff;
 	pthread_mutexattr_t mutex_attr;
 	int n;
 
-	if ( (buff = (struct audio_buff *)malloc(sizeof(struct audio_buff))) ==NULL ) {
+	if ( (buff = (struct audio_buff *)malloc(sizeof(struct audio_buff))) == NULL ) {
 		uiprintf("Cannot allocate memory.\n");
 		return NULL;
 	}

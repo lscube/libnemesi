@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.5 $ -- $Date: 2003/01/15 11:48:20 $
+ *  ./decoder/decoder.c: $Revision: 1.6 $ -- $Date: 2003/01/15 17:39:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -51,6 +51,7 @@ void *decoder(void *args)
 	int len=0;
 	int sys_buff=SYS_BUFF;
 	struct audio_buff *audio_buffer = global_audio_buffer;
+	char output_pref[PREF_MAX_VALUE_LEN];
 
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -100,14 +101,15 @@ void *decoder(void *args)
 					
 						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
 							((void *)(pkt->data)-(void *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
-						if ((len != 0) && (decoders[pkt->pt] != NULL)) {
+						strcpy(output_pref, get_pref("output"));
+						
+						if ( !strcmp(output_pref, "diskraw") )
+							diskwriter(((uint8 *)pkt->data + pkt->cc + 4), len -4);
+						else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
 							/* controllo che vada fatta la decodifica*/
-							if ( strcmp(get_pref("output"), "diskraw") ) {
-								fprintf(stderr, "\nDecodifica necessaria\n");
+							if ( !strcmp(output_pref, "card") ) {
 								decoders[pkt->pt](((uint8 *)pkt->data + pkt->cc), len, \
 										(uint8 *(*)(uint32))ab_get);
-							}
-							if ( !strcmp(get_pref("output"), "card") ) {
 #ifndef HAVE_SDL
 								oss_play();
 #endif
@@ -118,8 +120,11 @@ void *decoder(void *args)
 								else if(sys_buff > 0){
 									sys_buff--;
 								}
-							} else if ( !strcmp(get_pref("output"), "diskraw") ) {
-							} else if ( !strcmp(get_pref("output"), "diskdecoded") ) {
+							} else if ( !strcmp(output_pref, "diskdecoded") ) {
+								decoders[pkt->pt](((uint8 *)pkt->data + pkt->cc), len, \
+										(uint8 *(*)(uint32))db_get);
+								diskwriter(global_disk_buffer->data, global_disk_buffer->len);
+								global_disk_buffer->len = 0;
 							}
 						}
 /**/
@@ -159,7 +164,8 @@ void *decoder(void *args)
 			}
 				offset_usec=(select_usec-diff_usec)%(GRAIN*1000);
 		}
-		cycles+=get_sys_buff();
+		if ( !strcmp(get_pref("output"), "card") )
+			cycles+=get_sys_buff();
 
 		
 	}

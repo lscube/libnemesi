@@ -1,5 +1,5 @@
 /* * 
- *  ./src/main.c: $Revision: 1.5 $ -- $Date: 2003/01/15 11:18:01 $
+ *  ./src/main.c: $Revision: 1.6 $ -- $Date: 2003/01/15 17:39:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -111,6 +111,9 @@ int main(int argc, char *argv[])
 	if ( audio_init() )
 		exit(1);
 
+	if ( diskwriter_init() )
+		exit(1);
+
 	if ((n = pthread_create(&rtsp_tid, NULL, &rtsp, (void *) rtsp_args)) > 0) {
 		fprintf(stderr, "Cannot create RTSP Thread: %s\n", strerror(n));
 		exit(1);
@@ -131,6 +134,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Cannot send cancel signal to RTSP Thread\n");
 
 	audio_close();
+	diskwriter_close();
 	fprintf(stderr, "\nBye bye!\n\n");
 
 	exit(0);

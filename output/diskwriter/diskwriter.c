@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/diskwriter.c: $Revision: 1.1 $ -- $Date: 2003/01/15 11:24:26 $
+ *  ./output/diskwriter/diskwriter.c: $Revision: 1.2 $ -- $Date: 2003/01/15 17:39:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,18 +26,20 @@
  *  
  * */
 
-#include <stdio.h>
+#include <nemesi/diskwriter.h>
 
 int diskwriter(char *data, int len)
 {
 	int fd;
+	int written;
 
 	if ( (fd=get_file_fd()) < 0 ) {
 		uiprintf("\nError in diskwriter()\n");
 		return 1;
 	}
 
-	write(fd, data, len);
+	if ( (written=write(fd, data, len)) < len )
+		uiprintf("\nWARNING: only %d bytes of %d written\n", written, len);
 	
 	return 0;
 }
