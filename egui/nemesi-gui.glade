@@ -46,38 +46,11 @@
 			<widget class="GtkMenu" id="menu1">
 
 			  <child>
-			    <widget class="GtkImageMenuItem" id="new1">
-			      <property name="visible">True</property>
-			      <property name="label">gtk-new</property>
-			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_new1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
-			    </widget>
-			  </child>
-
-			  <child>
 			    <widget class="GtkImageMenuItem" id="open1">
 			      <property name="visible">True</property>
 			      <property name="label">gtk-open</property>
 			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_open1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="save1">
-			      <property name="visible">True</property>
-			      <property name="label">gtk-save</property>
-			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_save1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="save_as1">
-			      <property name="visible">True</property>
-			      <property name="label">gtk-save-as</property>
-			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_save_as1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
+			      <signal name="activate" handler="on_open1_activate" last_modification_time="Thu, 01 Apr 2004 11:25:19 GMT"/>
 			    </widget>
 			  </child>
 
@@ -108,42 +81,6 @@
 
 		      <child>
 			<widget class="GtkMenu" id="menu2">
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="cut1">
-			      <property name="visible">True</property>
-			      <property name="label">gtk-cut</property>
-			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_cut1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="copy1">
-			      <property name="visible">True</property>
-			      <property name="label">gtk-copy</property>
-			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_copy1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="paste1">
-			      <property name="visible">True</property>
-			      <property name="label">gtk-paste</property>
-			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_paste1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkImageMenuItem" id="delete1">
-			      <property name="visible">True</property>
-			      <property name="label">gtk-delete</property>
-			      <property name="use_stock">True</property>
-			      <signal name="activate" handler="on_delete1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
-			    </widget>
-			  </child>
 			</widget>
 		      </child>
 		    </widget>
@@ -192,19 +129,7 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkImage" id="throbber">
-		  <property name="visible">True</property>
-		  <property name="xalign">0.5</property>
-		  <property name="yalign">0.5</property>
-		  <property name="xpad">0</property>
-		  <property name="ypad">0</property>
-		</widget>
-		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">False</property>
-		  <property name="fill">False</property>
-		  <property name="pack_type">GTK_PACK_END</property>
-		</packing>
+		<placeholder/>
 	      </child>
 	    </widget>
 	  </child>

@@ -36,24 +36,16 @@ create_nemesi (void)
   GtkWidget *menubar;
   GtkWidget *menuitem1;
   GtkWidget *menu1;
-  GtkWidget *new1;
   GtkWidget *open1;
-  GtkWidget *save1;
-  GtkWidget *save_as1;
   GtkWidget *separatormenuitem1;
   GtkWidget *quit1;
   GtkWidget *menuitem2;
   GtkWidget *menu2;
-  GtkWidget *cut1;
-  GtkWidget *copy1;
-  GtkWidget *paste1;
-  GtkWidget *delete1;
   GtkWidget *menuitem3;
   GtkWidget *menu3;
   GtkWidget *menuitem4;
   GtkWidget *menu4;
   GtkWidget *about1;
-  GtkWidget *throbber;
   GtkWidget *statusbar;
   GtkWidget *handlebox1;
   GtkWidget *hbox2;
@@ -102,25 +94,10 @@ create_nemesi (void)
   gtk_widget_set_name (menu1, "menu1");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem1), menu1);
 
-  new1 = gtk_image_menu_item_new_from_stock ("gtk-new", accel_group);
-  gtk_widget_set_name (new1, "new1");
-  gtk_widget_show (new1);
-  gtk_container_add (GTK_CONTAINER (menu1), new1);
-
   open1 = gtk_image_menu_item_new_from_stock ("gtk-open", accel_group);
   gtk_widget_set_name (open1, "open1");
   gtk_widget_show (open1);
   gtk_container_add (GTK_CONTAINER (menu1), open1);
-
-  save1 = gtk_image_menu_item_new_from_stock ("gtk-save", accel_group);
-  gtk_widget_set_name (save1, "save1");
-  gtk_widget_show (save1);
-  gtk_container_add (GTK_CONTAINER (menu1), save1);
-
-  save_as1 = gtk_image_menu_item_new_from_stock ("gtk-save-as", accel_group);
-  gtk_widget_set_name (save_as1, "save_as1");
-  gtk_widget_show (save_as1);
-  gtk_container_add (GTK_CONTAINER (menu1), save_as1);
 
   separatormenuitem1 = gtk_separator_menu_item_new ();
   gtk_widget_set_name (separatormenuitem1, "separatormenuitem1");
@@ -141,26 +118,6 @@ create_nemesi (void)
   menu2 = gtk_menu_new ();
   gtk_widget_set_name (menu2, "menu2");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem2), menu2);
-
-  cut1 = gtk_image_menu_item_new_from_stock ("gtk-cut", accel_group);
-  gtk_widget_set_name (cut1, "cut1");
-  gtk_widget_show (cut1);
-  gtk_container_add (GTK_CONTAINER (menu2), cut1);
-
-  copy1 = gtk_image_menu_item_new_from_stock ("gtk-copy", accel_group);
-  gtk_widget_set_name (copy1, "copy1");
-  gtk_widget_show (copy1);
-  gtk_container_add (GTK_CONTAINER (menu2), copy1);
-
-  paste1 = gtk_image_menu_item_new_from_stock ("gtk-paste", accel_group);
-  gtk_widget_set_name (paste1, "paste1");
-  gtk_widget_show (paste1);
-  gtk_container_add (GTK_CONTAINER (menu2), paste1);
-
-  delete1 = gtk_image_menu_item_new_from_stock ("gtk-delete", accel_group);
-  gtk_widget_set_name (delete1, "delete1");
-  gtk_widget_show (delete1);
-  gtk_container_add (GTK_CONTAINER (menu2), delete1);
 
   menuitem3 = gtk_menu_item_new_with_mnemonic ("_View");
   gtk_widget_set_name (menuitem3, "menuitem3");
@@ -184,11 +141,6 @@ create_nemesi (void)
   gtk_widget_set_name (about1, "about1");
   gtk_widget_show (about1);
   gtk_container_add (GTK_CONTAINER (menu4), about1);
-
-  throbber = create_pixmap (nemesi, NULL);
-  gtk_widget_set_name (throbber, "throbber");
-  gtk_widget_show (throbber);
-  gtk_box_pack_end (GTK_BOX (hbox3), throbber, FALSE, FALSE, 0);
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_set_name (statusbar, "statusbar");
@@ -258,32 +210,11 @@ create_nemesi (void)
   g_signal_connect ((gpointer) nemesi, "destroy",
                     G_CALLBACK (gtk_main_quit),
                     NULL);
-  g_signal_connect ((gpointer) new1, "activate",
-                    G_CALLBACK (on_new1_activate),
-                    NULL);
   g_signal_connect ((gpointer) open1, "activate",
                     G_CALLBACK (on_open1_activate),
                     NULL);
-  g_signal_connect ((gpointer) save1, "activate",
-                    G_CALLBACK (on_save1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) save_as1, "activate",
-                    G_CALLBACK (on_save_as1_activate),
-                    NULL);
   g_signal_connect ((gpointer) quit1, "activate",
                     G_CALLBACK (on_quit1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) cut1, "activate",
-                    G_CALLBACK (on_cut1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) copy1, "activate",
-                    G_CALLBACK (on_copy1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) paste1, "activate",
-                    G_CALLBACK (on_paste1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) delete1, "activate",
-                    G_CALLBACK (on_delete1_activate),
                     NULL);
   g_signal_connect ((gpointer) about1, "activate",
                     G_CALLBACK (on_about1_activate),
@@ -309,24 +240,16 @@ create_nemesi (void)
   GLADE_HOOKUP_OBJECT (nemesi, menubar, "menubar");
   GLADE_HOOKUP_OBJECT (nemesi, menuitem1, "menuitem1");
   GLADE_HOOKUP_OBJECT (nemesi, menu1, "menu1");
-  GLADE_HOOKUP_OBJECT (nemesi, new1, "new1");
   GLADE_HOOKUP_OBJECT (nemesi, open1, "open1");
-  GLADE_HOOKUP_OBJECT (nemesi, save1, "save1");
-  GLADE_HOOKUP_OBJECT (nemesi, save_as1, "save_as1");
   GLADE_HOOKUP_OBJECT (nemesi, separatormenuitem1, "separatormenuitem1");
   GLADE_HOOKUP_OBJECT (nemesi, quit1, "quit1");
   GLADE_HOOKUP_OBJECT (nemesi, menuitem2, "menuitem2");
   GLADE_HOOKUP_OBJECT (nemesi, menu2, "menu2");
-  GLADE_HOOKUP_OBJECT (nemesi, cut1, "cut1");
-  GLADE_HOOKUP_OBJECT (nemesi, copy1, "copy1");
-  GLADE_HOOKUP_OBJECT (nemesi, paste1, "paste1");
-  GLADE_HOOKUP_OBJECT (nemesi, delete1, "delete1");
   GLADE_HOOKUP_OBJECT (nemesi, menuitem3, "menuitem3");
   GLADE_HOOKUP_OBJECT (nemesi, menu3, "menu3");
   GLADE_HOOKUP_OBJECT (nemesi, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (nemesi, menu4, "menu4");
   GLADE_HOOKUP_OBJECT (nemesi, about1, "about1");
-  GLADE_HOOKUP_OBJECT (nemesi, throbber, "throbber");
   GLADE_HOOKUP_OBJECT (nemesi, statusbar, "statusbar");
   GLADE_HOOKUP_OBJECT (nemesi, handlebox1, "handlebox1");
   GLADE_HOOKUP_OBJECT (nemesi, hbox2, "hbox2");

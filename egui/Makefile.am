@@ -13,7 +13,7 @@ EXTRA_DIST =	nemesi-gui.glade \
 noinst_LTLIBRARIES = libegui.la
 
 libegui_la_SOURCES =	gui.c \
-			gui_throbber.c \
+			gui_throbber.c gui_throbber.h \
 			support.c support.h \
 			interface.c interface.h \
 			callbacks.c callbacks.h

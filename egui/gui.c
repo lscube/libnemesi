@@ -13,8 +13,10 @@
 #include "support.h"
 #include "callbacks.c"
 
+#include "gui_throbber.h"
 #include <nemesi/egui.h>
 #include <nemesi/etui.h>
+#include <nemesi/comm.h>
 
 int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[])
 {
@@ -34,16 +36,16 @@ int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[
   nemesi = create_nemesi ();
 
   save_static_data(nemesi, rtsp_args); // must be done fist of all
-  load_throbber();
+  if (create_throbber(lookup_widget(nemesi, "hbox3")))
+	  nmserror("no throbber available");
 
 	update_toolbar();
 	if (ui_hints->url) {
-		nmsprintf(1, "Connect: Please wait, opening \"%s\"", ui_hints->url);
+		nmsprintf(3, "Connect: Please wait, opening \"%s\"", ui_hints->url);
 		send_open(rtsp_args, ui_hints->url);
-		gui_throbber(rtsp_args);
-		printf("\nthrobber\n");
+		gui_throbber(&rtsp_args->rtsp_th->busy);
 	} else
-		nmsprintf(1, "Please, enter a command or press 'h' for help\n\n");
+		nmsprintf(3, "Please, enter a command or press 'h' for help\n\n");
   gtk_widget_show (nemesi);
 
   gtk_main ();

@@ -26,12 +26,22 @@
  *  
  * */
 
-#ifndef __E_GUI_H
-#define __E_GUI_H
+#ifndef __GUI_THROBBER_H
+#define __GUI_THROBBER_H
 
-#include <nemesi/main.h>
+#include <gtk/gtk.h>
+#include <nemesi/types.h>
 
-int gui(struct RTSP_args *, NMSUiHints *, int, char **);
+typedef struct {
+	GtkImage *rest;
+	GtkImage **anim;
+	int32 shown; //!< index of currently shown anim image. -1 for rest.
+	uint32 num_anim;
+} GNMSThrobber;
 
-#endif // __E_GUI_H
+int create_throbber(GtkWidget *box);
+void destroy_throbber(void);
+int gui_throbber(uint8 *busy);
+
+#endif // __GUI_THROBBER_H
 

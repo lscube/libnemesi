@@ -8,6 +8,7 @@
 #include "interface.h"
 #include "support.h"
 
+#include "gui_throbber.h"
 #include <nemesi/egui.h>
 #include <nemesi/etui.h>
 
@@ -71,49 +72,14 @@ void update_toolbar(void)
 	gtk_statusbar_push(statusbar, status_cid, statusstr);
 }
 
-int load_throbber(void)
-{
-	GdkImage *throbber_pix;
-	GtkImage *image;
-
-	image = lookup_widget(nemesi, "throbber");
-	throbber_pix = create_pixmap(NULL, "rest.png");
-	gtk_image_set_from_image(image, throbber_pix, NULL);
-	// gtk_image_set_from_file(image, "/usr/local/share/nemesi/throbber/rest.png");
-	return 0;
-}
-
-void
-on_new1_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
 void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	if (!opendialog)
+		opendialog = create_opendialog();
+	gtk_widget_show(opendialog);
 }
-
-
-void
-on_save1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_save_as1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
 
 void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
@@ -121,39 +87,6 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
 {
 	gtk_main_quit();
 }
-
-
-void
-on_cut1_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_copy1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_paste1_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_delete1_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
 
 void
 on_about1_activate                     (GtkMenuItem     *menuitem,
@@ -173,7 +106,7 @@ on_toggle_play_pause_toggled           (GtkToggleButton *togglebutton,
 		send_play(rtsp_args, argstr);
 	else
 		send_pause(rtsp_args, 'z');
-	gui_throbber(rtsp_args);
+	gui_throbber(&rtsp_args->rtsp_th->busy);
 
 }
 
@@ -182,7 +115,7 @@ on_stop_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
 	send_pause(rtsp_args, 's');
-	gui_throbber(rtsp_args);
+	gui_throbber(&rtsp_args->rtsp_th->busy);
 }
 
 
@@ -191,7 +124,7 @@ on_close_cmd_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
 	send_close(rtsp_args);
-	gui_throbber(rtsp_args);
+	gui_throbber(&rtsp_args->rtsp_th->busy);
 }
 
 
@@ -199,7 +132,6 @@ void
 on_open_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-
 	if (!opendialog)
 		opendialog = create_opendialog();
 	gtk_widget_show(opendialog);
@@ -219,12 +151,12 @@ void
 on_okbutton1_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-	gchar *url;
+	char *url;
 
-	url = gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
+	url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
 	gtk_widget_destroy(opendialog);
 	opendialog = NULL;
 	send_open(rtsp_args, url);
-	gui_throbber(rtsp_args);
+	gui_throbber(&rtsp_args->rtsp_th->busy);
 }
 
