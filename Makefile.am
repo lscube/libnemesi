@@ -18,19 +18,18 @@ SUBDIRS += src plugins docs
 EXTRA_DIST = 	config \
 		include
 
+
 dist-hook:
 	@for plugin in $(distdir)/plugins/plugins/*; do \
 		rm -rf $$plugin; \
 	done
-		
-uninstall-local:
-	@if test -d $(datadir)/nemesi/plugins; then\
-		rmdir $(datadir)/nemesi/plugins;\
-	fi
-	@if test -d $(datadir)/nemesi; then\
-		rmdir $(datadir)/nemesi;\
-	fi
+	@for svn in `find $(distdir) -iname .svn`; do \
+		rm -rf $$svn; \
+	done
 
+uninstall-local:
+	rm -rf $(nemesi_libdir)
+	
 distclean-local:
 	@if test -d autom4te.cache; then \
 		rm -rf autom4te.cache; \
@@ -45,4 +44,5 @@ maintainer-clean-local:
 	done;\
 	for mdir in $(MAINTAINER_DIRS); do \
 		test -d $$mdir && rm -rf $$mdir; \
-	done
+	done;\
+	find -iname Makefile.in -exec rm \{} \;

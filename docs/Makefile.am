@@ -23,21 +23,16 @@ clean:
 distclean: clean
 maintainer-clean: clean
 
+NEMESI_DOCS_DIR = $(datadir)/doc/nemesi
+
 install-data-local:
 	
-	@if test ! -d $(datadir)/nemesi/docs; then\
-		mkdir $(datadir)/nemesi/docs;\
-	fi
-	$(INSTALL_DATA) $(man_MANS).ps.gz $(datadir)/nemesi/docs
-	$(INSTALL_DATA) $(man_MANS).pdf $(datadir)/nemesi/docs
-	$(INSTALL_DATA) $(man_MANS).html $(datadir)/nemesi/docs
+	$(INSTALL) -m 755 -d $(NEMESI_DOCS_DIR)
+	$(INSTALL_DATA) $(man_MANS).ps.gz $(NEMESI_DOCS_DIR)
+	$(INSTALL_DATA) $(man_MANS).pdf $(NEMESI_DOCS_DIR)
+	$(INSTALL_DATA) $(man_MANS).html $(NEMESI_DOCS_DIR)
 
 uninstall-local:
-	rm -f $(datadir)/nemesi/docs/$(man_MANS).ps.gz
-	rm -f $(datadir)/nemesi/docs/$(man_MANS).pdf
-	rm -f $(datadir)/nemesi/docs/$(man_MANS).html
-	if test -d $(datadir)/nemesi/docs; then\
-		rmdir $(datadir)/nemesi/docs;\
-	fi
+	rm -rf $(NEMESI_DOCS_DIR)
 
 .PHONY: distclean

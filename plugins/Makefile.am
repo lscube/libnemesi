@@ -25,6 +25,9 @@ clean:
 	done; \
 	echo " done"
 
+uninstall-local:
+	rm -rf $(nemesi_plugindir)
+
 distclean: clean
 maintainer-clean: clean
 

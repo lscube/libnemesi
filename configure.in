@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(wsocket/server_connect.c)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(nemesi, 0.2.5)
+AM_INIT_AUTOMAKE(nemesi, 0.2.99)
 
 AC_PREFIX_PROGRAM(nemesi)
 
@@ -197,16 +197,17 @@ AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
 AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
 AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
 
-nemesi_prefix="$prefix"/lib
-nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
+nemesi_libdir="$prefix"/lib/nemesi
+AC_SUBST(nemesi_libdir)
+nemesi_plugindir="$nemesi_libdir"/plugins
 AC_SUBST(nemesi_plugindir)
-nemesi_throbberdir="$nemesi_prefix"/nemesi/throbbers
+nemesi_throbberdir="$nemesi_libdir"/throbber
 AC_SUBST(nemesi_throbberdir)
 
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
 AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
 
-AC_DEFINE_UNQUOTED(NEMESI_THROBBER_DIR_DEFAULT, "$nemesi_throbberdir", [Define default directory for NeMeSI throbbers])
+AC_DEFINE_UNQUOTED(NEMESI_THROBBER_DIR_DEFAULT, "$nemesi_throbberdir", [Define default directory for NeMeSI throbber])
 AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
 
 AC_CONFIG_FILES([Makefile])
