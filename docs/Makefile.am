@@ -15,13 +15,7 @@ all:
 	groff -mandoc -e -t -Thtml $(man_MANS) > $(man_MANS).html; \
 	echo " done";
 
-clean:
-	@echo -n "Cleaning...";\
-	rm $(man_MANS).ps.gz $(man_MANS).pdf $(man_MANS).html;\
-	echo " done"
-
-distclean: clean
-maintainer-clean: clean
+CLEANFILES = $(man_MANS).ps.gz $(man_MANS).pdf $(man_MANS).html
 
 NEMESI_DOCS_DIR = $(DESTDIR)@nemesi_docsdir@
 
@@ -41,5 +35,3 @@ install-data-local:
 
 uninstall-local:
 	rm -rf $(NEMESI_DOCS_DIR)
-
-.PHONY: distclean

@@ -14,18 +14,7 @@ all:
 	done; \
 	echo " done"
 
-clean:
-	@LIST_LOCAL_PLUGINS=`find $(LOCAL_PLUGINS_DIR) \( -name \*.so -or -name \*.la \)`; \
-	echo -n "Removing plugins..."; \
-	for PLUGIN in $$LIST_LOCAL_PLUGINS; do \
-		rm $$PLUGIN; \
-	done; \
-	echo " done"
+CLEANFILES = `find $(LOCAL_PLUGINS_DIR) \( -name \*.so -or -name \*.la \)`
 
 uninstall-local:
 	rm -rf $(DESTDIR)$(nemesi_plugindir)
-
-distclean: clean
-maintainer-clean: clean
-
-.PHONY: distclean

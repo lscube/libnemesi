@@ -18,7 +18,8 @@ SUBDIRS += src plugins docs
 
 
 EXTRA_DIST = 	config \
-		include
+		include \
+		debian
 
 
 install-exec-hook:
