@@ -15,7 +15,7 @@ libdec_la_LDFLAGS = -static
 
 lib_LTLIBRARIES = gsm_amr_float.la
 
-libdir = $(DESTDIR)$(nemesi_plugindir)
+libdir = $(nemesi_plugindir)
 
 gsm_amr_float_la_SOURCES = gsm-amr-float.c
 gsm_amr_float_la_LDFLAGS = -module -avoid-version

@@ -35,7 +35,8 @@ dist-hook:
 	done
 
 uninstall-local:
-	rm -rf $(nemesi_libdir)
+	test x"`ls $(DESTDIR)$(nemesi_libdir)`" = x && rm -rf $(DESTDIR)$(nemesi_libdir) || echo "$(DESTDIR)$(nemesi_libdir): Directory non empty"
+	test x"`ls $(DESTDIR)$(nemesi_sharedir)`" = x && rm -rf $(DESTDIR)$(nemesi_sharedir) || echo "$(DESTDIR)$(nemesi_sharedir): Directory non empty"
 	
 distclean-local:
 	@if test -d autom4te.cache; then \

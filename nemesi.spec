@@ -35,14 +35,15 @@ page (http://streaming.polito.it) for further information.
 
 %build
 ./configure --enable-optimize=full --prefix=%{_prefix} --mandir=%{_mandir}
-make
+make -s
 
 %install
 rm -rf %{buildroot}
-make DESTDIR=%{buildroot} install
+make -s DESTDIR=%{buildroot} install
+rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
-#%clean
-#rm -rf %{buildroot}
+%clean
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
@@ -55,7 +56,8 @@ make DESTDIR=%{buildroot} install
 %{_libdir}/%{name}/plugins/L16_8k_m.*
 %{_libdir}/%{name}/plugins/libffmpeg.*
 
-%{_libdir}/%{name}/throbber/*.png
-%{_libdir}/%{name}/pixmaps/*.png
+%{_datadir}/%{name}/throbber/*.png
+%{_datadir}/%{name}/pixmaps/*.png
+
 
 %doc README TODO COPYING ChangeLog docs/%{name}.1.*

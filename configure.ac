@@ -2,14 +2,15 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(nemesi, 0.4.0)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE($PACKAGE_NAME, $PACKAGE_VERSION)
+AM_INIT_AUTOMAKE(dist-bzip2 check-news)
 
 AC_PREFIX_PROGRAM(nemesi)
 
-test "$prefix" = . || test "$prefix" = NONE && prefix=/usr/local
-test "$exec_prefix" = NONE && exec_prefix=$prefix
+test "x$prefix" = x. || test "x$prefix" = xNONE && prefix=/usr/local
+test "x$exec_prefix" = xNONE && exec_prefix=$prefix
 test "x$sysconfdir" = 'x${prefix}/etc' && sysconfdir="/etc"
 test "x$localstatedir" = 'x${prefix}/var' && localstatedir="/var"
+test "x$mandir" = 'x${prefix}/man' && mandir="${prefix}/share/man"
 
 AM_CONFIG_HEADER(config.h)
 
@@ -241,16 +242,20 @@ AC_SUBST(nemesi_bin)
 nemesi_gui=g$nemesi_bin
 AC_SUBST(nemesi_gui)
 
-nemesi_docsdir=$datadir/doc/$PACKAGE_NAME-$PACKAGE_VERSION
+nemesi_docsdir=$datadir/doc/$PACKAGE_NAME
 AC_SUBST(nemesi_docsdir)
 
 nemesi_libdir="$prefix"/lib/$PACKAGE_NAME
 AC_SUBST(nemesi_libdir)
 nemesi_plugindir="$nemesi_libdir"/plugins
 AC_SUBST(nemesi_plugindir)
-nemesi_throbberdir="$nemesi_libdir"/throbber
+
+
+nemesi_sharedir="$prefix"/share/$PACKAGE_NAME
+AC_SUBST(nemesi_sharedir)
+nemesi_throbberdir="$nemesi_sharedir"/throbber
 AC_SUBST(nemesi_throbberdir)
-nemesi_pixmapdir="$nemesi_libdir"/pixmaps
+nemesi_pixmapdir="$nemesi_sharedir"/pixmaps
 AC_SUBST(nemesi_pixmapdir)
 
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])

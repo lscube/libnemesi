@@ -2,7 +2,7 @@ nemesiincludedir=$(top_srcdir)/include
 
 lib_LTLIBRARIES = libffmpeg.la
 
-libdir = $(DESTDIR)$(nemesi_plugindir)
+libdir = $(nemesi_plugindir)
 
 libffmpeg_la_SOURCES =	ffmpeg.c \
 			init_ffmpeg.c
@@ -10,6 +10,6 @@ libffmpeg_la_SOURCES =	ffmpeg.c \
 noinst_HEADERS =	ffmpeg.h
 
 libffmpeg_la_LDFLAGS = -module -avoid-version
-libffmpeg_la_LIBADD = -lm -lavcodec #/usr/local/lib/libavcodec.so# @LIBLTDL@
+libffmpeg_la_LIBADD = -lm -lavcodec
 
 INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir) 
