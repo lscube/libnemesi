@@ -51,7 +51,7 @@ void *video_th(void *vc)
 	for (;;) {
 		select(0, NULL, NULL, NULL, &tvsleep);
 		funcs->update_screen();
-		uiprintf("\nUpdate screen!!!\n");
+		// uiprintf("\nUpdate screen!!!\n");
 	}
 
 	// pthread_cleanup_pop(1);

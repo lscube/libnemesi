@@ -92,7 +92,7 @@ void *decoder(void *args)
 	// Audio init
 	nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0);
 	
-	select(0, NULL, NULL, NULL, &tvsleep);
+	// select(0, NULL, NULL, NULL, &tvsleep);
 
 	/* FV: startime ora assume il significato di istante di partenza del decoder */
 	gettimeofday(&(dec_args->startime), NULL);
