@@ -11,8 +11,8 @@
 #include "gui_throbber.h"
 #include "gui_statusbar.h"
 #include "gui_cc.h"
+#include "gui_url.h"
 #include "gnmsprint.h"
-#include "gnmscompletion.h"
 #include <nemesi/egui.h>
 #include <nemesi/etui.h>
 #include <nemesi/methods.h>
@@ -31,6 +31,8 @@ static GtkWidget *opendialog=NULL;
 static GtkWidget *aboutdialog=NULL;
 static GtkWidget *info = NULL;
 
+static GNMSurl *gnmsurl = NULL;
+
 static gint infowidth = 0;
 
 static struct RTSP_Ctrl *rtsp_ctrl;
@@ -38,6 +40,7 @@ static struct RTSP_Ctrl *rtsp_ctrl;
 static gboolean internal_call = FALSE;
 // end of static variables declarations
 
+// *** generic functions *** //
 void save_static_data(gpointer new_nemesi, gpointer new_rtsp_ctrl)
 {
 	nemesi = new_nemesi;
@@ -135,6 +138,11 @@ void hide_info()
 		info = NULL;
 	}
 }
+// *** ENDOF generic functions *** //
+
+// *** event functions *** //
+//
+// *** main window *** //
 
 void
 on_open1_activate                      (GtkMenuItem     *menuitem,
@@ -157,19 +165,8 @@ void
 on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	GtkWidget *aboutimage;
-	GtkWidget *aboutlabel;
-
 	if (!aboutdialog)
 		aboutdialog = create_aboutdialog();
-	aboutimage = create_pixmap(NULL, "about-nemesi.png");
-	gtk_widget_set_name(aboutimage, "aboutimage");
-	g_object_set_data_full (G_OBJECT (aboutdialog), "aboutimage", gtk_widget_ref (aboutimage), (GDestroyNotify) gtk_widget_unref);
-	gtk_box_pack_start (GTK_BOX (lookup_widget(aboutdialog, "dialogvbox")), aboutimage, FALSE, FALSE, 0);
-	gtk_widget_show(aboutimage);
-	// aboutlabel
-	aboutlabel = lookup_widget(aboutdialog, "aboutlabel");
-	gtk_label_set_markup (GTK_LABEL(aboutlabel), "Release "VERSION"\n");
 	gtk_widget_show(aboutdialog);
 }
 
@@ -219,106 +216,6 @@ on_open_cmd_clicked                    (GtkButton       *button,
 }
 
 
-void
-on_cancelbutton1_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	/*
-	gtk_widget_destroy(opendialog);
-	opendialog = NULL;
-	*/
-	gtk_widget_hide(opendialog);
-	nmsprintf(NMSML_DBG1, "open dialog closed\n");
-}
-
-
-void
-on_okbutton1_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	GtkWidget *combo_box;
-	char *url;
-	GtkTreeModel *list_store;
-	GtkTreeIter iter;
-	gboolean valid, found = FALSE;
-	gint txt_col;
-
-	combo_box = lookup_widget(opendialog, "urlname");
-
-	// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
-	url = (char *)gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
-
-	txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(combo_box));
-	list_store = gtk_combo_box_get_model(GTK_COMBO_BOX(combo_box));
-	valid = gtk_tree_model_get_iter_first(list_store, &iter);
-
-	nmsprintf(NMSML_DBG1, "List of urls\n");
-	while (valid) {
-		gchar *str_data;
-		gtk_tree_model_get (list_store, &iter, txt_col, &str_data, -1);
-		nmsprintf(NMSML_DBG1, "%s\n", str_data);
-		if (!strcmp(url, str_data)) {
-			found = TRUE;
-			break;
-		}
-		g_free(str_data);
-		valid = gtk_tree_model_iter_next (list_store, &iter);
-	}
-	nmsprintf(NMSML_DBG1, "ENDOF List of urls\n");
-	if (!found)
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), url);
-	/*
-	gtk_widget_destroy(opendialog);
-	opendialog = NULL;
-	*/
-	gtk_widget_hide(opendialog);
-	nmsprintf(NMSML_DBG1, "%s\n", url);
-	send_open(rtsp_ctrl, url);
-	gui_throbber(&rtsp_ctrl->busy);
-}
-
-void
-on_closeabout_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	gtk_widget_destroy(aboutdialog);
-	aboutdialog = NULL;
-}
-
-
-void
-on_credits_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	GtkWidget *aboutimage;
-	GtkWidget *credits;
-	GtkWidget *creditsview;
-	GtkRequisition requisition;
-
-	aboutimage = lookup_widget(aboutdialog, "aboutimage");
-	credits = lookup_widget(aboutdialog, "creditscroller");
-	creditsview = lookup_widget(aboutdialog, "creditsview");
-	gtk_widget_size_request(aboutimage, &requisition);
-	gtk_widget_set_size_request(credits, requisition.width, requisition.height);
-	gtk_text_buffer_set_text(gtk_text_view_get_buffer (GTK_TEXT_VIEW (creditsview)), CREDITS, -1);
-	gtk_widget_hide(aboutimage);
-	gtk_widget_show(credits);
-	gtk_widget_hide(GTK_WIDGET(button));
-	gtk_widget_show(lookup_widget(aboutdialog, "backabout"));
-}
-
-
-void
-on_backabout_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	gtk_widget_hide(lookup_widget(aboutdialog, "creditscroller"));
-	gtk_widget_show(lookup_widget(aboutdialog, "aboutimage"));
-	gtk_widget_hide(GTK_WIDGET(button));
-	gtk_widget_show(lookup_widget(aboutdialog, "credits"));
-}
-
-
 gboolean
 on_nemesi_configure_event              (GtkWidget       *widget,
                                         GdkEventConfigure *event,
@@ -330,74 +227,223 @@ on_nemesi_configure_event              (GtkWidget       *widget,
 	return FALSE;
 }
 
-
-void
-on_urlname_changed                     (GtkComboBox     *combobox,
-                                        gpointer         user_data)
-{
-	nmsprintf(NMSML_DBG2, "urlname changed\n");
-}
-
+// *** ENDOF main window *** //
+//
+// *** open dialog *** //
 
 void
 on_urlname_realize                     (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	GtkEntryCompletion *completion;
-	GtkTreeModel *model;
-	gint txt_col;
-	GNMScompletion *gnmsc;
+
+	if (!gnmsurl)
+		gnmsurl = gnmsurl_init();
 	
 	completion = gtk_entry_completion_new();
 
-	model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
-	txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(widget));
-	gtk_entry_completion_set_model(completion, model);
-	gtk_entry_completion_set_text_column(completion, txt_col);
+	// GtkComboBox
+	gtk_combo_box_set_model (GTK_COMBO_BOX(widget), gnmsurl->model);
+	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(widget), gnmsurl->txt_col);
 
-	gnmsc = gnmscompletion_init();
-	gnmsc->model = model;
-	gnmsc->txt_col = txt_col;
-
-	gtk_entry_completion_set_match_func(completion, gnmscompletion_machfunc, gnmsc, gnmscompletion_destroy);
+	// GtkEntryCompletion
+	gtk_entry_completion_set_model(completion, gnmsurl->model);
+	gtk_entry_completion_set_text_column(completion, gnmsurl->txt_col);
+	gtk_entry_completion_set_match_func(completion, gnmscompletion_machfunc, gnmsurl, gnmsurl_destroy);
 	// gtk_entry_completion_set_inline_completion(completioin, TRUE);
-
 	gtk_entry_set_completion(GTK_ENTRY(GTK_BIN(widget)->child), completion);
 
-#if 0
-	model = gtk_entry_completion_get_model(completion);
-// ---
-	GtkTreeIter iter;
-	gboolean valid;
-
-	valid = gtk_tree_model_get_iter_first(model, &iter);
-
-	nmsprintf(NMSML_DBG1, "List of urls\n");
-	while (valid) {
-		gchar *str_data;
-		gtk_tree_model_get (model, &iter, txt_col, &str_data, -1);
-		nmsprintf(NMSML_DBG1, "%s\n", str_data);
-		g_free(str_data);
-		valid = gtk_tree_model_iter_next (model, &iter);
-	}
-	nmsprintf(NMSML_DBG1, "ENDOF List of urls\n");
-// ---
-#endif
-
 	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
+
+	// press ok button on "enter" button pressed
+	gtk_entry_set_activates_default(GTK_ENTRY(GTK_BIN(widget)->child), TRUE);
+	gtk_widget_grab_focus(GTK_WIDGET(GTK_BIN(widget)->child));
+	gtk_editable_set_position(GTK_EDITABLE(GTK_BIN(widget)->child), -1);
 }
 
 
 void
-on_opendialog_close                    (GtkDialog       *dialog,
+on_opendialog_response                 (GtkDialog       *dialog,
+                                        gint             response_id,
                                         gpointer         user_data)
 {
-	/*
-	gtk_widget_destroy(opendialog);
-	opendialog = NULL;
-	*/
-	gtk_widget_hide(opendialog);
-	nmsprintf(NMSML_DBG1, "open dialog closed\n");
+	GtkWidget *combo_box;
+	char *url, *true_url;
+	GtkTreeModel *list_store;
+	GtkTreeIter iter;
+	gboolean valid, found = FALSE;
+	gint txt_col;
+
+	switch (response_id) {
+		case GTK_RESPONSE_NONE:
+			nmsprintf(NMSML_DBG3, "response: NONE\n");
+			break;
+		case GTK_RESPONSE_REJECT:
+			nmsprintf(NMSML_DBG3, "response: REJECT\n");
+			break;
+		case GTK_RESPONSE_ACCEPT:
+			nmsprintf(NMSML_DBG3, "response: ACCEPT\n");
+			break;
+		case GTK_RESPONSE_OK:
+			nmsprintf(NMSML_DBG3, "response: OK\n");
+			combo_box = lookup_widget(opendialog, "urlname");
+				
+			// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
+			url = (char *)gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
+		
+			txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(combo_box));
+			list_store = gtk_combo_box_get_model(GTK_COMBO_BOX(combo_box));
+			valid = gtk_tree_model_get_iter_first(list_store, &iter);
+		
+			nmsprintf(NMSML_DBG1, "List of urls\n");
+			while (valid) {
+				gchar *str_data;
+				gtk_tree_model_get (list_store, &iter, txt_col, &str_data, -1);
+				nmsprintf(NMSML_DBG1, "%s\n", str_data);
+				if (!strcmp(url, str_data)) {
+					found = TRUE;
+					break;
+				}
+				g_free(str_data);
+				valid = gtk_tree_model_iter_next (list_store, &iter);
+			}
+			nmsprintf(NMSML_DBG1, "ENDOF List of urls\n");
+			if (!found)
+				gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), url);
+		
+			true_url = strdup(url);
+			gtk_widget_destroy(opendialog);
+			opendialog = NULL;
+			/*
+			gtk_widget_hide(opendialog);
+			*/
+			nmsprintf(NMSML_DBG1, "%s\n", true_url);
+			send_open(rtsp_ctrl, true_url);
+			gui_throbber(&rtsp_ctrl->busy);
+			break;
+		case GTK_RESPONSE_CLOSE:
+			nmsprintf(NMSML_DBG3, "response: CLOSE\n");
+			break;
+		case GTK_RESPONSE_YES:
+			nmsprintf(NMSML_DBG3, "response: YES\n");
+			break;
+		case GTK_RESPONSE_NO:
+			nmsprintf(NMSML_DBG3, "response: NO\n");
+			break;
+		case GTK_RESPONSE_APPLY:
+			nmsprintf(NMSML_DBG3, "response: APPLY\n");
+			break;
+		case GTK_RESPONSE_HELP:
+			nmsprintf(NMSML_DBG3, "response: HELP\n");
+			break;
+		case GTK_RESPONSE_CANCEL:
+		case GTK_RESPONSE_DELETE_EVENT:
+		default:
+			gtk_widget_destroy(opendialog);
+			opendialog = NULL;
+			nmsprintf(NMSML_DBG3, "opendialog closed\n");
+			break;
+	}
 
 }
+
+// *** ENDOF open dialog *** //
+//
+// *** about dialog *** //
+
+void
+on_aboutdialog_realize                 (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+	GtkWidget *aboutimage;
+	GtkWidget *aboutlabel;
+
+	nmsprintf(NMSML_DBG3, "about dialog realized\n");
+	aboutimage = create_pixmap(NULL, "about-nemesi.png");
+	gtk_widget_set_name(aboutimage, "aboutimage");
+	g_object_set_data_full (G_OBJECT (aboutdialog), "aboutimage", gtk_widget_ref (aboutimage), (GDestroyNotify) gtk_widget_unref);
+	gtk_box_pack_start (GTK_BOX (lookup_widget(aboutdialog, "dialogvbox")), aboutimage, FALSE, FALSE, 0);
+	gtk_widget_show(aboutimage);
+	// aboutlabel
+	aboutlabel = lookup_widget(aboutdialog, "aboutlabel");
+	gtk_label_set_markup (GTK_LABEL(aboutlabel), "Release "VERSION"\n");
+}
+
+
+void
+on_aboutdialog_response                (GtkDialog       *dialog,
+                                        gint             response_id,
+                                        gpointer         user_data)
+{
+	GtkWidget *aboutimage;
+	GtkWidget *credits;
+	GtkWidget *creditsview;
+	GtkRequisition requisition;
+
+	switch (response_id) {
+		case 1: // show credits
+			nmsprintf(NMSML_DBG3, "response: CREDITS\n");
+			aboutimage = lookup_widget(aboutdialog, "aboutimage");
+			credits = lookup_widget(aboutdialog, "creditscroller");
+			creditsview = lookup_widget(aboutdialog, "creditsview");
+			gtk_widget_size_request(aboutimage, &requisition);
+			gtk_widget_set_size_request(credits, requisition.width, requisition.height);
+			gtk_text_buffer_set_text(gtk_text_view_get_buffer (GTK_TEXT_VIEW (creditsview)), CREDITS, -1);
+			gtk_widget_hide(aboutimage);
+			gtk_widget_show(credits);
+			// gtk_widget_hide(GTK_WIDGET(button));
+			gtk_widget_hide(lookup_widget(aboutdialog, "credits"));
+			gtk_widget_show(lookup_widget(aboutdialog, "backabout"));
+			break;
+		case 2: // return back
+			nmsprintf(NMSML_DBG3, "response: BACK\n");
+			gtk_widget_hide(lookup_widget(aboutdialog, "creditscroller"));
+			gtk_widget_show(lookup_widget(aboutdialog, "aboutimage"));
+			gtk_widget_hide(lookup_widget(aboutdialog, "backabout"));
+			gtk_widget_show(lookup_widget(aboutdialog, "credits"));
+			break;
+		case GTK_RESPONSE_NONE:
+			nmsprintf(NMSML_DBG3, "response: NONE\n");
+			break;
+		case GTK_RESPONSE_REJECT:
+			nmsprintf(NMSML_DBG3, "response: REJECT\n");
+			break;
+		case GTK_RESPONSE_ACCEPT:
+			nmsprintf(NMSML_DBG3, "response: ACCEPT\n");
+			break;
+		case GTK_RESPONSE_OK:
+			nmsprintf(NMSML_DBG3, "response: OK\n");
+			break;
+		case GTK_RESPONSE_CANCEL:
+		case GTK_RESPONSE_CLOSE:
+		case GTK_RESPONSE_DELETE_EVENT:
+			nmsprintf(NMSML_DBG3, "response: CLOSE\n");
+			gtk_widget_destroy(aboutdialog);
+			aboutdialog = NULL;
+			break;
+		case GTK_RESPONSE_YES:
+			nmsprintf(NMSML_DBG3, "response: YES\n");
+			break;
+		case GTK_RESPONSE_NO:
+			nmsprintf(NMSML_DBG3, "response: NO\n");
+			break;
+		case GTK_RESPONSE_APPLY:
+			nmsprintf(NMSML_DBG3, "response: APPLY\n");
+			break;
+		case GTK_RESPONSE_HELP:
+			nmsprintf(NMSML_DBG3, "response: HELP\n");
+			break;
+		default:
+			nmsprintf(NMSML_DBG3, "NO EVENT\n");
+			break;
+	}
+}
+
+// *** ENDOF about dialog *** //
+// 
+// *** info dialog *** //
+// 
+// *** ENDOF info dialog *** //
+//
+// *** ENDOF event functions *** //
 

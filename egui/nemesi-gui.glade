@@ -345,8 +345,7 @@
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
-  <signal name="close" handler="on_opendialog_close" last_modification_time="Tue, 15 Mar 2005 18:00:54 GMT"/>
-  <accelerator key="Escape" modifiers="0" signal="close"/>
+  <signal name="response" handler="on_opendialog_response" last_modification_time="Wed, 16 Mar 2005 12:04:01 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">
@@ -362,14 +361,12 @@
 	  <child>
 	    <widget class="GtkButton" id="cancelbutton1">
 	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
-	      <signal name="clicked" handler="on_cancelbutton1_clicked" last_modification_time="Tue, 15 Mar 2005 18:13:34 GMT"/>
 	    </widget>
 	  </child>
 
@@ -384,7 +381,6 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
-	      <signal name="clicked" handler="on_okbutton1_clicked" last_modification_time="Wed, 31 Mar 2004 11:36:34 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -402,8 +398,7 @@
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
 	  <property name="has_focus">True</property>
-	  <property name="items" translatable="yes">rtsp://</property>
-	  <signal name="changed" handler="on_urlname_changed" last_modification_time="Fri, 11 Mar 2005 16:20:55 GMT"/>
+	  <property name="items" translatable="yes"></property>
 	  <signal name="realize" handler="on_urlname_realize" last_modification_time="Fri, 11 Mar 2005 18:07:24 GMT"/>
 	</widget>
 	<packing>
@@ -421,16 +416,19 @@
   <property name="visible">True</property>
   <property name="title" translatable="yes">about NeMeSI</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
-  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
   <property name="skip_pager_hint">False</property>
-  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
+  <signal name="response" handler="on_aboutdialog_response" last_modification_time="Wed, 16 Mar 2005 14:35:14 GMT"/>
+  <signal name="realize" handler="on_aboutdialog_realize" last_modification_time="Wed, 16 Mar 2005 15:43:17 GMT"/>
+  <accelerator key="Escape" modifiers="0" signal="close"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialogvbox">
@@ -452,8 +450,7 @@
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NONE</property>
 	      <property name="focus_on_click">True</property>
-	      <property name="response_id">0</property>
-	      <signal name="clicked" handler="on_credits_clicked" last_modification_time="Fri, 02 Apr 2004 11:26:14 GMT"/>
+	      <property name="response_id">1</property>
 	    </widget>
 	  </child>
 
@@ -466,8 +463,7 @@
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NONE</property>
 	      <property name="focus_on_click">True</property>
-	      <property name="response_id">0</property>
-	      <signal name="clicked" handler="on_backabout_clicked" last_modification_time="Fri, 02 Apr 2004 15:10:34 GMT"/>
+	      <property name="response_id">2</property>
 	    </widget>
 	  </child>
 
@@ -481,8 +477,7 @@
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NONE</property>
 	      <property name="focus_on_click">True</property>
-	      <property name="response_id">-7</property>
-	      <signal name="clicked" handler="on_closeabout_clicked" last_modification_time="Fri, 02 Apr 2004 11:18:01 GMT"/>
+	      <property name="response_id">-6</property>
 	    </widget>
 	  </child>
 	</widget>

@@ -1,10 +1,14 @@
 #include <gtk/gtk.h>
 
 
+// *** generic functions *** //
 void save_static_data(gpointer new_nemesi, gpointer new_rtsp_ctl);
 void update_toolbar(void);
 void view_info(GtkWidget *);
 void hide_info(void);
+// *** ENDOF generic functions *** //
+//
+// *** main window *** //
 
 void
 on_open1_activate                      (GtkMenuItem     *menuitem,
@@ -34,46 +38,43 @@ void
 on_open_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
-void
-on_cancelbutton1_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_okbutton1_clicked                   (GtkButton       *button,
-                                        gpointer         user_data);
-
 
 void
 on_aboutdialog_realize                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_closeabout_clicked                  (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_credits_clicked                     (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_backabout_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
 
 gboolean
 on_nemesi_configure_event              (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data);
-
-
-void
-on_urlname_changed                     (GtkComboBox     *combobox,
-                                        gpointer         user_data);
+// *** ENDOF main window *** //
+//
+// *** open dialog *** //
 
 void
 on_urlname_realize                     (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
-on_opendialog_close                    (GtkDialog       *dialog,
+on_opendialog_response                 (GtkDialog       *dialog,
+                                        gint             response_id,
+                                        gpointer         user_data);
+// *** ENDOF open dialog *** //
+//
+// *** about dialog *** //
+
+void
+on_aboutdialog_realize                 (GtkWidget       *widget,
                                         gpointer         user_data);
 
+void
+on_aboutdialog_response                (GtkDialog       *dialog,
+                                        gint             response_id,
+                                        gpointer         user_data);
+// *** ENDOF about dialog *** //
+//
+// *** info dialog *** //
+//
+// *** ENDOF info dialog *** //
+//
+// *** ENDOF event functions *** //

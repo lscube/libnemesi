@@ -25,7 +25,7 @@ libegui_la_SOURCES =	gui.c \
 			gui_statusbar.c gui_statusbar.h \
 			cc_statw.c gui_cc.h \
 			gnmsprint.c gnmsprint.h \
-			gnmscompletion.c gnmscompletion.h
+			gui_url.c gui_url.h
 
 libegui_la_LDFLAGS = -static
 libegui_la_LIBADD = @PACKAGE_LIBS@

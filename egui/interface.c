@@ -299,15 +299,9 @@ create_opendialog (void)
   GtkWidget *dialog_action_area1;
   GtkWidget *cancelbutton1;
   GtkWidget *okbutton1;
-  GtkAccelGroup *accel_group;
-
-  accel_group = gtk_accel_group_new ();
 
   opendialog = gtk_dialog_new ();
   gtk_widget_set_name (opendialog, "opendialog");
-  gtk_widget_add_accelerator (opendialog, "close", accel_group,
-                              GDK_Escape, 0,
-                              GTK_ACCEL_VISIBLE);
   gtk_window_set_title (GTK_WINDOW (opendialog), "Open");
   gtk_window_set_position (GTK_WINDOW (opendialog), GTK_WIN_POS_CENTER_ON_PARENT);
   gtk_window_set_modal (GTK_WINDOW (opendialog), TRUE);
@@ -319,13 +313,12 @@ create_opendialog (void)
   gtk_widget_set_name (dialog_vbox1, "dialog_vbox1");
   gtk_widget_show (dialog_vbox1);
 
-  urlname = gtk_combo_box_entry_new_text ();
+  urlname = gtk_combo_box_entry_new ();
   gtk_widget_set_name (urlname, "urlname");
   gtk_widget_show (urlname);
   gtk_box_pack_end (GTK_BOX (dialog_vbox1), urlname, TRUE, FALSE, 0);
   gtk_widget_set_size_request (urlname, 333, -1);
   GTK_WIDGET_SET_FLAGS (urlname, GTK_CAN_FOCUS);
-  gtk_combo_box_append_text (GTK_COMBO_BOX (urlname), "rtsp://");
 
   dialog_action_area1 = GTK_DIALOG (opendialog)->action_area;
   gtk_widget_set_name (dialog_action_area1, "dialog_action_area1");
@@ -336,7 +329,6 @@ create_opendialog (void)
   gtk_widget_set_name (cancelbutton1, "cancelbutton1");
   gtk_widget_show (cancelbutton1);
   gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), cancelbutton1, GTK_RESPONSE_CANCEL);
-  GTK_WIDGET_SET_FLAGS (cancelbutton1, GTK_CAN_DEFAULT);
 
   okbutton1 = gtk_button_new_from_stock ("gtk-ok");
   gtk_widget_set_name (okbutton1, "okbutton1");
@@ -344,20 +336,11 @@ create_opendialog (void)
   gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), okbutton1, GTK_RESPONSE_OK);
   GTK_WIDGET_SET_FLAGS (okbutton1, GTK_CAN_DEFAULT);
 
-  g_signal_connect ((gpointer) opendialog, "close",
-                    G_CALLBACK (on_opendialog_close),
-                    NULL);
-  g_signal_connect ((gpointer) urlname, "changed",
-                    G_CALLBACK (on_urlname_changed),
+  g_signal_connect ((gpointer) opendialog, "response",
+                    G_CALLBACK (on_opendialog_response),
                     NULL);
   g_signal_connect ((gpointer) urlname, "realize",
                     G_CALLBACK (on_urlname_realize),
-                    NULL);
-  g_signal_connect ((gpointer) cancelbutton1, "clicked",
-                    G_CALLBACK (on_cancelbutton1_clicked),
-                    NULL);
-  g_signal_connect ((gpointer) okbutton1, "clicked",
-                    G_CALLBACK (on_okbutton1_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -370,8 +353,6 @@ create_opendialog (void)
 
   gtk_widget_grab_focus (urlname);
   gtk_widget_grab_default (okbutton1);
-  gtk_window_add_accel_group (GTK_WINDOW (opendialog), accel_group);
-
   return opendialog;
 }
 
@@ -387,11 +368,19 @@ create_aboutdialog (void)
   GtkWidget *credits;
   GtkWidget *backabout;
   GtkWidget *closeabout;
+  GtkAccelGroup *accel_group;
+
+  accel_group = gtk_accel_group_new ();
 
   aboutdialog = gtk_dialog_new ();
   gtk_widget_set_name (aboutdialog, "aboutdialog");
+  gtk_widget_add_accelerator (aboutdialog, "close", accel_group,
+                              GDK_Escape, 0,
+                              GTK_ACCEL_VISIBLE);
   gtk_window_set_title (GTK_WINDOW (aboutdialog), "about NeMeSI");
+  gtk_window_set_position (GTK_WINDOW (aboutdialog), GTK_WIN_POS_CENTER_ON_PARENT);
   gtk_window_set_resizable (GTK_WINDOW (aboutdialog), FALSE);
+  gtk_window_set_type_hint (GTK_WINDOW (aboutdialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   dialogvbox = GTK_DIALOG (aboutdialog)->vbox;
   gtk_widget_set_name (dialogvbox, "dialogvbox");
@@ -425,31 +414,28 @@ create_aboutdialog (void)
   credits = gtk_button_new_with_mnemonic ("credits");
   gtk_widget_set_name (credits, "credits");
   gtk_widget_show (credits);
-  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), credits, 0);
+  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), credits, 1);
   GTK_WIDGET_SET_FLAGS (credits, GTK_CAN_DEFAULT);
   gtk_button_set_relief (GTK_BUTTON (credits), GTK_RELIEF_NONE);
 
   backabout = gtk_button_new_from_stock ("gtk-go-back");
   gtk_widget_set_name (backabout, "backabout");
-  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), backabout, 0);
+  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), backabout, 2);
   GTK_WIDGET_SET_FLAGS (backabout, GTK_CAN_DEFAULT);
   gtk_button_set_relief (GTK_BUTTON (backabout), GTK_RELIEF_NONE);
 
   closeabout = gtk_button_new_from_stock ("gtk-close");
   gtk_widget_set_name (closeabout, "closeabout");
   gtk_widget_show (closeabout);
-  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), closeabout, GTK_RESPONSE_CLOSE);
+  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), closeabout, GTK_RESPONSE_CANCEL);
   GTK_WIDGET_SET_FLAGS (closeabout, GTK_CAN_DEFAULT);
   gtk_button_set_relief (GTK_BUTTON (closeabout), GTK_RELIEF_NONE);
 
-  g_signal_connect ((gpointer) credits, "clicked",
-                    G_CALLBACK (on_credits_clicked),
+  g_signal_connect ((gpointer) aboutdialog, "response",
+                    G_CALLBACK (on_aboutdialog_response),
                     NULL);
-  g_signal_connect ((gpointer) backabout, "clicked",
-                    G_CALLBACK (on_backabout_clicked),
-                    NULL);
-  g_signal_connect ((gpointer) closeabout, "clicked",
-                    G_CALLBACK (on_closeabout_clicked),
+  g_signal_connect ((gpointer) aboutdialog, "realize",
+                    G_CALLBACK (on_aboutdialog_realize),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -464,6 +450,8 @@ create_aboutdialog (void)
   GLADE_HOOKUP_OBJECT (aboutdialog, closeabout, "closeabout");
 
   gtk_widget_grab_default (backabout);
+  gtk_window_add_accel_group (GTK_WINDOW (aboutdialog), accel_group);
+
   return aboutdialog;
 }
 
