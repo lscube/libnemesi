@@ -42,7 +42,7 @@
 
 #define BUFFER 8192 
 
-// #define RESAMPLED
+#define RESAMPLED
 
 int get_plugin_pt(void);
 int decode(char *, int, NMSOutput *);
@@ -64,11 +64,13 @@ int decode(char *data, int len, NMSOutput *outc)
 	uint8 *audio_data;
 #ifdef RESAMPLED
 	// audio resample
-	ReSampleContext *resample_c = NULL;
+	static ReSampleContext *resample_c = NULL;
 	uint8 channels;
 	uint32 rate;
-	static int16_t out_resampled[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+	int16_t out_resampled[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+	int in_samples;
 #endif // RESAMPLED
+	int16_t *dec_data = out;
 
 	if (outc->audio)
 		funcs = outc->audio->functions;
@@ -104,27 +106,27 @@ int decode(char *data, int len, NMSOutput *outc)
 #endif // RESAMPLED
 
 	while ( len_tmp < (len - 4) ) {
-		len_tmp += avcodec_decode_audio(c, (int16_t *)out, (int *)&out_size, (uint8_t *)(data + 4 + len_tmp), (int)(len  - 4 - len_tmp));
-#ifdef RESAMPLED
-		// fprintf(stderr, "%d,%d\n", c->sample_rate, c->channels);
-		if ( (rate != c->sample_rate) || (channels != c->channels) ) {
-		       if ( !resample_c ) {
-			      resample_c = audio_resample_init(channels, c->channels, rate, c->sample_rate);
-		       }
-		       audio_resample(resample_c, out_resampled, out, out_size / (c->channels * 2));
-		       out_size = out_size * channels * 2;
-			if (out_size > 0){
-				// audio_data=(*ab_get)((uint32)out_size);
-				audio_data=funcs->get_buff((uint32)out_size);
-				memcpy(audio_data, out_resampled, out_size);
-				funcs->play_buff(audio_data, (uint32)out_size, outc->elapsed);
-			}
-		} else
-#endif // RESAMPLED
+		len_tmp += avcodec_decode_audio(c, out, &out_size, (uint8_t *)(data + 4 + len_tmp), len  - 4 - len_tmp);
 		if (out_size > 0){
-			// audio_data=(*ab_get)((uint32)out_size);
+#ifdef RESAMPLED
+			fprintf(stderr, "%d,%d\n", c->sample_rate, c->channels);
+			fprintf(stderr, "out size:%d", out_size);
+			if ( (rate != (uint32)c->sample_rate) || (channels != (uint8)c->channels) ) {
+				if ( !resample_c ) {
+					fprintf(stderr, "initilizing resampler... ");
+					resample_c = audio_resample_init(channels, c->channels, rate, c->sample_rate);
+					fprintf(stderr, "done\n");
+				}
+				in_samples = out_size / ( c->channels * 2 );
+				fprintf(stderr, " - in_samples:%d\n", in_samples);
+				audio_resample(resample_c, out_resampled, out, in_samples);
+				out_size *= channels/c->channels *2;
+				dec_data = out_resampled;
+			}
+#endif // RESAMPLED
+			fprintf(stderr, "\n");
 			audio_data=funcs->get_buff((uint32)out_size);
-			memcpy(audio_data, out, out_size);
+			memcpy(audio_data, dec_data, out_size);
 			funcs->play_buff(audio_data, (uint32)out_size, outc->elapsed);
 		}
 	}
