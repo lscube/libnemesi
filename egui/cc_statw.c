@@ -34,6 +34,7 @@
 #include "support.h"
 #include "gui_statusbar.h"
 #include "gui_cc.h"
+#include "callbacks.h"
 
 // #define CC_SOMERIGHTS "somerights.png"
 #define CC_SOMERIGHTS "CreativeCommonsSomeRights2.png"
@@ -41,6 +42,8 @@
 static GtkWidget *cc_box = NULL;
 static GtkWidget *cc_button = NULL;
 static GtkWidget *cc_logo;
+
+static GtkWidget *cc_info = NULL;
 
 static GtkWidget *cc_pix[5] = { NULL, NULL, NULL, NULL, NULL};
 
@@ -56,6 +59,60 @@ static void cc_box_add_pixmap(char *pixname)
 	pix_index++;
 
 	return;
+}
+
+static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
+{
+	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)user_data;
+	SDP_Session_info *sdp_s;
+	SDP_Medium_info *sdp_m;
+	GtkWidget *expndr, *box, *box1, *fixed, *lbl;
+
+	if (gtk_toggle_button_get_active(togglebutton)) {
+		if (!rtsp_th->rtsp_queue)
+			return;
+		if (!cc_info) {
+			cc_info = gtk_expander_new("session infos");
+			box = gtk_vbox_new(FALSE, 0);
+			gtk_container_add (GTK_CONTAINER(cc_info), box);
+			gtk_widget_show(box);
+			gtk_expander_set_expanded (GTK_EXPANDER(cc_info), TRUE);
+
+			switch (rtsp_th->descr_fmt) {
+				case DESCRIPTION_SDP_FORMAT:
+					if ((sdp_s = rtsp_th->rtsp_queue->info)) {
+						gtk_expander_set_label(GTK_EXPANDER(cc_info), sdp_s->s);
+					}
+					for(sdp_m=sdp_s->media_info_queue; sdp_m; sdp_m=sdp_m->next) {
+						fixed = gtk_fixed_new();
+						gtk_widget_show(fixed);
+						gtk_box_pack_start (GTK_BOX (box), fixed, FALSE, FALSE, 0);
+
+						expndr = gtk_expander_new(sdp_m->m);
+						gtk_expander_set_expanded(GTK_EXPANDER(expndr), TRUE);
+						gtk_widget_show(expndr);
+						gtk_fixed_put (GTK_FIXED (fixed), expndr, 16, 0);
+
+						box1 = gtk_vbox_new(FALSE, 0);
+						gtk_widget_show(box1);
+						gtk_container_add (GTK_CONTAINER(expndr), box1);
+						// gtk_container_add(GTK_CONTAINER (box), expndr);
+
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		gtk_widget_show(cc_info);
+		view_info(cc_info);
+	} else {
+		if (cc_info) {
+			gtk_widget_destroy(cc_info);
+			cc_info = NULL;
+		}
+		hide_info();
+	}
 }
 
 static gboolean cc_sdp_check(SDP_Medium_info *sdp_mqueue)
@@ -138,13 +195,14 @@ int cc_stbarw_add(struct RTSP_Thread *rtsp_th)
 
 	cc_box = gtk_hbox_new(FALSE, 0);
 
-	cc_button = gtk_button_new();
+	cc_button = gtk_toggle_button_new();
 	gtk_widget_show(cc_button);
 	gtk_box_pack_start (GTK_BOX (cc_box), cc_button, FALSE, FALSE, 0);
 
 	cc_logo = create_pixmap(NULL, CC_SOMERIGHTS);
 	gtk_widget_show(cc_logo);
 	gtk_container_add (GTK_CONTAINER (cc_button), cc_logo);
+	g_signal_connect ((gpointer) cc_button, "toggled", G_CALLBACK (cc_button_toggled), (gpointer) rtsp_th);
 	// gtk_widget_show (cc_button);
 
 	gnms_stbar_addwgt(cc_box, cc_stbarw_rm, cc_stbarw_upd, (gpointer)rtsp_th, TRUE);

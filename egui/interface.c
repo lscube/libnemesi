@@ -71,6 +71,7 @@ create_nemesi (void)
   gtk_widget_set_name (nemesi, "nemesi");
   gtk_window_set_title (GTK_WINDOW (nemesi), "NeMeSi");
   gtk_window_set_resizable (GTK_WINDOW (nemesi), FALSE);
+  gtk_window_set_gravity (GTK_WINDOW (nemesi), GDK_GRAVITY_STATIC);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_set_name (vbox1, "vbox1");
@@ -226,6 +227,9 @@ create_nemesi (void)
 
   g_signal_connect ((gpointer) nemesi, "destroy",
                     G_CALLBACK (gtk_main_quit),
+                    NULL);
+  g_signal_connect ((gpointer) nemesi, "configure_event",
+                    G_CALLBACK (on_nemesi_configure_event),
                     NULL);
   g_signal_connect ((gpointer) open1, "activate",
                     G_CALLBACK (on_open1_activate),
@@ -438,5 +442,27 @@ create_aboutdialog (void)
 
   gtk_widget_grab_default (backabout);
   return aboutdialog;
+}
+
+GtkWidget*
+create_info (void)
+{
+  GtkWidget *info;
+
+  info = gtk_window_new (GTK_WINDOW_POPUP);
+  gtk_widget_set_name (info, "info");
+  gtk_window_set_title (GTK_WINDOW (info), "Info");
+  gtk_window_set_resizable (GTK_WINDOW (info), FALSE);
+  gtk_window_set_destroy_with_parent (GTK_WINDOW (info), TRUE);
+  gtk_window_set_decorated (GTK_WINDOW (info), FALSE);
+  gtk_window_set_skip_taskbar_hint (GTK_WINDOW (info), TRUE);
+  gtk_window_set_skip_pager_hint (GTK_WINDOW (info), TRUE);
+  gtk_window_set_type_hint (GTK_WINDOW (info), GDK_WINDOW_TYPE_HINT_TOOLBAR);
+  gtk_window_set_gravity (GTK_WINDOW (info), GDK_GRAVITY_STATIC);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (info, info, "info");
+
+  return info;
 }
 

@@ -5,3 +5,4 @@
 GtkWidget* create_nemesi (void);
 GtkWidget* create_opendialog (void);
 GtkWidget* create_aboutdialog (void);
+GtkWidget* create_info (void);

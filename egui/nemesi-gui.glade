@@ -15,8 +15,9 @@
   <property name="skip_taskbar_hint">False</property>
   <property name="skip_pager_hint">False</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
-  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="gravity">GDK_GRAVITY_STATIC</property>
   <signal name="destroy" handler="gtk_main_quit" last_modification_time="Mon, 29 Mar 2004 16:43:28 GMT"/>
+  <signal name="configure_event" handler="on_nemesi_configure_event" last_modification_time="Mon, 15 Nov 2004 14:57:42 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
@@ -556,6 +557,25 @@
 	</packing>
       </child>
     </widget>
+  </child>
+</widget>
+
+<widget class="GtkWindow" id="info">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Info</property>
+  <property name="type">GTK_WINDOW_POPUP</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">False</property>
+  <property name="destroy_with_parent">True</property>
+  <property name="decorated">False</property>
+  <property name="skip_taskbar_hint">True</property>
+  <property name="skip_pager_hint">True</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_TOOLBAR</property>
+  <property name="gravity">GDK_GRAVITY_STATIC</property>
+
+  <child>
+    <placeholder/>
   </child>
 </widget>
 

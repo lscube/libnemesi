@@ -23,12 +23,18 @@
 		"Graduate Developers:\n"\
 		"\tMarco Penno - <marco.penno@polito.it>"
 
+// static variables declaration
 static GtkWidget *nemesi;
 static GtkWidget *opendialog=NULL;
 static GtkWidget *aboutdialog=NULL;
+static GtkWidget *info = NULL;
+
+static gint infowidth = 0;
+
 static struct RTSP_args *rtsp_args;
 
 static gboolean internal_call = FALSE;
+// end of static variables declarations
 
 void save_static_data(gpointer new_nemesi, gpointer new_rtsp_args)
 {
@@ -88,18 +94,41 @@ void update_toolbar(void)
 	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_args->rtsp_th->status));
 	gnms_stbar_update();
 
-	// Add elements to status bar
-	// CC licenses?
-#if 0
-	switch (rtsp_args->rtsp_th->descr_fmt) {
-		case DESCRIPTION_SDP_FORMAT:
-			// for (sdp_m=rtsp_args->rtsp_th->rtsp_queue->media_queue->)
-			break;
-		case DESCRIPTION_MH_FORMAT:
-		default:
-			break;
+}
+
+void view_info(GtkWidget *infow)
+{
+	gint nmsx, nmsy, nmsw, nmsh;
+	// GdkGravity nemesi_gvty;
+
+	if (!info)
+		info = create_info();
+	else // TODO: destroy only the internal, not the window
+		gtk_widget_destroy(info);
+
+	gtk_container_add (GTK_CONTAINER (info), infow);
+
+	/*
+	nemesi_gvty = gtk_window_get_gravity(GTK_WINDOW(nemesi));
+	gtk_window_set_gravity(GTK_WINDOW(nemesi), GDK_GRAVITY_STATIC);
+	gtk_window_set_gravity(GTK_WINDOW(info), GDK_GRAVITY_STATIC);
+	*/
+	gtk_window_get_position(GTK_WINDOW(nemesi), &nmsx, &nmsy);
+	gtk_window_get_size(GTK_WINDOW(nemesi), &nmsw, &nmsh);
+	gtk_window_get_size(GTK_WINDOW(info), &infowidth, NULL);
+
+	gtk_window_move(GTK_WINDOW(info), nmsx + nmsw - infowidth, nmsy + nmsh);
+
+	gtk_widget_show(info);
+	// gtk_window_set_gravity(GTK_WINDOW(nemesi), nemesi_gvty);
+}
+
+void hide_info()
+{
+	if (info) {
+		gtk_widget_destroy(info);
+		info = NULL;
 	}
-#endif
 }
 
 void
@@ -246,5 +275,17 @@ on_backabout_clicked                   (GtkButton       *button,
 	gtk_widget_show(lookup_widget(aboutdialog, "aboutimage"));
 	gtk_widget_hide(GTK_WIDGET(button));
 	gtk_widget_show(lookup_widget(aboutdialog, "credits"));
+}
+
+
+gboolean
+on_nemesi_configure_event              (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data)
+{
+	if (info)
+		gtk_window_move(GTK_WINDOW(info), event->x + event->width - infowidth, event->y + event->height);
+
+	return FALSE;
 }
 

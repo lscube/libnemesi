@@ -3,6 +3,8 @@
 
 void save_static_data(gpointer new_nemesi, gpointer new_rtsp_args);
 void update_toolbar(void);
+void view_info(GtkWidget *);
+void hide_info(void);
 
 void
 on_open1_activate                      (GtkMenuItem     *menuitem,
@@ -55,4 +57,9 @@ on_credits_clicked                     (GtkButton       *button,
 
 void
 on_backabout_clicked                   (GtkButton       *button,
+                                        gpointer         user_data);
+
+gboolean
+on_nemesi_configure_event              (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
                                         gpointer         user_data);
