@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/audio.h: $Revision: 1.4 $ -- $Date: 2003/01/15 17:39:13 $
+ *  ./include/nemesi/audio.h: $Revision: 1.5 $ -- $Date: 2003/07/02 15:12:13 $
  *  
  *  This file is part of NeMeSI
  *
@@ -39,7 +39,7 @@
 
 #include <config.h>
 
-#ifdef GLOBAL_AUDIO_BUFFER
+#ifndef GLOBAL_AUDIO_BUFFER
 #define EXTERN extern
 #else
 #define EXTERN
