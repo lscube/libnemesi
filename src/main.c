@@ -31,6 +31,7 @@
 
 #include <nemesi/main.h>
 #include <nemesi/etui.h>
+#include <nemesi/egui.h>
 
 #define GLOBAL_RTP_DEFS
 #include <nemesi/rtpptdefs.h>
@@ -55,8 +56,7 @@ int main(int argc, char *argv[])
 	header();
 
 	// command line parsing
-	// if ( (n=parse_main_cl(argc, argv, &output_hints)) )
-	if ( (n=parse_main_cl(argc, argv, &cl_opt)) )
+	if ( (n=parse_cl(argc, argv, &cl_opt)) )
 		exit((n<0) ? 1 : 0);
 
 	memset(decoders, 0, 128*sizeof(int (*)()));

@@ -12,7 +12,8 @@
 #include "interface.h"
 #include "support.h"
 
-#include <nemesi/main.h>
+#include <nemesi/egui.h>
+#include <nemesi/etui.h>
 
 int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[])
 {
@@ -22,6 +23,14 @@ int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[
   gtk_init (&argc, &argv);
 
   add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
+
+  save_rtsp_args(rtsp_args);
+	if (ui_hints->url) {
+		nmsprintf(1, "Connect: Please wait, opening \"%s\"", ui_hints->url);
+		send_open(rtsp_args, ui_hints->url);
+		gui_throbber(rtsp_args);
+	} else
+		nmsprintf(1, "Please, enter a command or press 'h' for help\n\n");
 
   /*
    * The following code was added by Glade to create one of each component

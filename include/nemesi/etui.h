@@ -80,10 +80,7 @@
 #define CL_LONG_OPTIONS CL_MAIN_LONG_OPTIONS
 
 int ui(struct RTSP_args *, NMSUiHints *, int, char **);
-int parse_cl(int, char **, char **);
-// int parse_main_cl(int, char **, NMSOutputHints *);
-int parse_main_cl(int, char **, NMSCLOptions *);
-// int parse_ui_cl(int, char **, char **);
+int parse_cl(int, char **, NMSCLOptions *);
 int parse_prompt(struct RTSP_args *, char *);
 int seturlname(struct RTSP_args *, char *);
 int throbber(struct RTSP_Thread *);

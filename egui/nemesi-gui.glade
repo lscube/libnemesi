@@ -241,6 +241,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="new_group">True</property>
+		      <signal name="toggled" handler="on_toggle_play_pause_toggled" last_modification_time="Mon, 29 Mar 2004 17:56:54 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="new_group">True</property>
@@ -252,6 +253,7 @@
 		      <property name="visible">True</property>
 		      <property name="label">gtk-stop</property>
 		      <property name="use_stock">True</property>
+		      <signal name="clicked" handler="on_stop_cmd_clicked" last_modification_time="Mon, 29 Mar 2004 18:30:03 GMT"/>
 		    </widget>
 		  </child>
 

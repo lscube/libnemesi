@@ -33,8 +33,7 @@
 #include <nemesi/video_drivers.h>
 #include <nemesi/audio_drivers.h>
 
-// int parse_main_cl(int argc, char **argv, NMSOutputHints *output_hints)
-int parse_main_cl(int argc, char **argv, NMSCLOptions *cl_opt)
+int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 {
 	NMSOutputHints *output_hints = cl_opt->output;
 	NMSUiHints *ui_hints = cl_opt->ui;

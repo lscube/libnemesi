@@ -276,6 +276,12 @@ create_nemesi (void)
   g_signal_connect ((gpointer) about1, "activate",
                     G_CALLBACK (on_about1_activate),
                     NULL);
+  g_signal_connect ((gpointer) toggle_play_pause, "toggled",
+                    G_CALLBACK (on_toggle_play_pause_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) stop_cmd, "clicked",
+                    G_CALLBACK (on_stop_cmd_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (nemesi, nemesi, "nemesi");

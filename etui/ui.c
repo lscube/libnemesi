@@ -43,10 +43,15 @@ int ui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char **argv)
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
 	*/
+	/*
 	if (fcntl(UIINPUT_FILENO, F_SETFL, O_NONBLOCK) < 0){
 		fprintf(stderr, "fcntl() error!\n");
 		return 1;
 	}
+	*/
+	if (fcntl(UIINPUT_FILENO, F_SETFL, O_NONBLOCK) < 0)
+		return nmserror(stderr, "fcntl() error!\n");
+
 #endif // USE_UIPRINTF
 	memset(optstr, '\0', 256);
 
@@ -56,10 +61,10 @@ int ui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char **argv)
 
 	*/
 	if (urlname != NULL) {
-		fprintf(stderr, "Connect: Please wait, opening \"%s\"", urlname);
+		nmsprintf(1, "Connect: Please wait, opening \"%s\"", urlname);
 		send_open(rtsp_args, urlname);
 	} else
-		fprintf(stderr, "Please, enter a command or press 'h' for help\n\n");
+		nmsprintf(1, "Please, enter a command or press 'h' for help\n\n");
 	
 	while (1) {
 		if(rtsp_args->rtsp_th->busy)

@@ -6,6 +6,7 @@ noinst_HEADERS	=	audio_driver.h \
 			comm.h \
 			decoder.h \
 			diskwriter.h \
+			egui.h \
 			etui.h \
 			img_format.h \
 			main.h \

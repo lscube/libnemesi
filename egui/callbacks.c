@@ -8,6 +8,14 @@
 #include "interface.h"
 #include "support.h"
 
+#include <nemesi/etui.h>
+
+static struct RTSP_args *rtsp_args;
+
+void save_rtsp_args(gpointer data)
+{
+	rtsp_args = data;
+}
 
 void
 on_new1_activate                       (GtkMenuItem     *menuitem,
@@ -86,5 +94,28 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 
+}
+
+
+void
+on_toggle_play_pause_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+	char argstr[] = " ";
+
+	if (gtk_toggle_button_get_active(togglebutton))
+		send_play(rtsp_args, argstr);
+	else
+		send_pause(rtsp_args, 'z');
+	gui_throbber(rtsp_args);
+
+}
+
+void
+on_stop_cmd_clicked                    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	send_pause(rtsp_args, 's');
+	gui_throbber(rtsp_args);
 }
 

@@ -178,6 +178,7 @@ EXTRA_DIST = nemesi-gui.glade \
 noinst_LTLIBRARIES = libegui.la
 
 libegui_la_SOURCES = gui.c \
+			gui_throbber.c \
 			support.c support.h \
 			interface.c interface.h \
 			callbacks.c callbacks.h
@@ -193,13 +194,15 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libegui_la_DEPENDENCIES =
-am_libegui_la_OBJECTS = gui.lo support.lo interface.lo callbacks.lo
+am_libegui_la_OBJECTS = gui.lo gui_throbber.lo support.lo interface.lo \
+	callbacks.lo
 libegui_la_OBJECTS = $(am_libegui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/callbacks.Plo ./$(DEPDIR)/gui.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/gui_throbber.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/interface.Plo ./$(DEPDIR)/support.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -241,6 +244,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callbacks.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gui.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gui_throbber.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/support.Plo@am__quote@
 
