@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.11 $ -- $Date: 2003/07/24 11:21:32 $
+ *  ./decoder/decoder.c: $Revision: 1.12 $ -- $Date: 2003/07/24 15:33:38 $
  *  
  *  This file is part of NeMeSI
  *
@@ -36,9 +36,7 @@
 #include <nemesi/preferences.h>
 
 // #define SYS_BUFF 5 /*system buffer in num of packets*/
-#ifdef TS_SCHEDULE
 #define GRAIN 20
-#endif // TS_SCHEDULE
 
 #define SKIP 4
 
@@ -241,8 +239,8 @@ void *decoder(void *args)
 				cycles+=get_sys_buff();
 			*/
 		} else { // Buffer di Rete vuoto => dormiamo 1 sec.
-			tvsleep.tv_sec = 1;
-			tvsleep.tv_usec = 0;
+			tvsleep.tv_sec = 0;
+			tvsleep.tv_usec = GRAIN * 1000;
 			select(0, NULL, NULL, NULL, &tvsleep);
 /**/
 	 		uiprintf("\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
