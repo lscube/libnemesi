@@ -263,6 +263,7 @@
 		      <property name="label">gtk-close</property>
 		      <property name="use_stock">True</property>
 		      <property name="new_group">True</property>
+		      <signal name="clicked" handler="on_close_cmd_clicked" last_modification_time="Tue, 30 Mar 2004 17:33:40 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="new_group">True</property>

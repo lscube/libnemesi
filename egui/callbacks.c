@@ -8,6 +8,7 @@
 #include "interface.h"
 #include "support.h"
 
+#include <nemesi/egui.h>
 #include <nemesi/etui.h>
 
 static struct RTSP_args *rtsp_args;
@@ -103,10 +104,13 @@ on_toggle_play_pause_toggled           (GtkToggleButton *togglebutton,
 {
 	char argstr[] = " ";
 
-	if (gtk_toggle_button_get_active(togglebutton))
+	if (gtk_toggle_button_get_active(togglebutton)) {
 		send_play(rtsp_args, argstr);
-	else
+		printf("Play\n");
+	} else {
 		send_pause(rtsp_args, 'z');
+		printf("Pause\n");
+	}
 	gui_throbber(rtsp_args);
 
 }
@@ -116,6 +120,15 @@ on_stop_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
 	send_pause(rtsp_args, 's');
+	gui_throbber(rtsp_args);
+}
+
+
+void
+on_close_cmd_clicked                   (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	send_close(rtsp_args);
 	gui_throbber(rtsp_args);
 }
 

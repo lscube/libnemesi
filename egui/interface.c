@@ -282,6 +282,9 @@ create_nemesi (void)
   g_signal_connect ((gpointer) stop_cmd, "clicked",
                     G_CALLBACK (on_stop_cmd_clicked),
                     NULL);
+  g_signal_connect ((gpointer) close_cmd, "clicked",
+                    G_CALLBACK (on_close_cmd_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (nemesi, nemesi, "nemesi");
