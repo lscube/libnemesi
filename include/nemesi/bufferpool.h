@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/bufferpool.h: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:47 $
+ *  ./include/nemesi/bufferpool.h: $Revision: 1.4 $ -- $Date: 2003/02/03 14:45:38 $
  *  
  *  This file is part of NeMeSI
  *
@@ -78,8 +78,10 @@
  * <em>"Minimum Reassembly Buffer Size"</em> di IPv4: questa, infatti, dovrebbe
  * essere la dimensione massima dei pacchetti RTP per essere certi che non
  * vengano frammentati dai router*/
-#define BP_SLOT_SIZE 548	/* 576 - 20 - 8 = Minimum Reassembly Buffer
+/*#define BP_SLOT_SIZE 548*/	/* 576 - 20 - 8 = Minimum Reassembly Buffer
 				   Size - IP datagram header -  UDP hedaer */
+
+#define BP_SLOT_SIZE 2048	/* bigger slot */
 
 /*! La dimensione totale, in byte, del Buffer Pool. */
 #define BP_SIZE BP_SLOT_NUM*BP_SLOT_SIZE	/* 1 sec G.711 - 8kHz * 8bit

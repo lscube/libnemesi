@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.7 $ -- $Date: 2003/01/15 17:57:40 $
+ *  ./decoder/decoder.c: $Revision: 1.8 $ -- $Date: 2003/02/03 14:45:38 $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,6 +32,8 @@
 
 #define SYS_BUFF 5 /*system buffer in num of packets*/
 #define GRAIN 20
+
+#define SKIP 4
 
 void *decoder(void *args)
 {
@@ -104,7 +106,7 @@ void *decoder(void *args)
 						strcpy(output_pref, get_pref("output"));
 						
 						if ( !strcmp(output_pref, "diskraw") )
-							diskwriter( ((uint8 *)pkt->data + pkt->cc), len );
+							diskwriter( ((uint8 *)pkt->data + pkt->cc + SKIP), len );
 							/* impostato per il payload mp3
 							diskwriter(((uint8 *)pkt->data + pkt->cc + 4), len -4);
 							*/
