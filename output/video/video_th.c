@@ -47,7 +47,7 @@ void *video_th(void *outc)
 	NMSVideo *videoc = ((NMSOutput *)outc)->video;
 	NMSAudio *audioc = ((NMSOutput *)outc)->audio;
 	NMSVFunctions *vfuncs = videoc->functions;
-	NMSAFunctions *afuncs = audioc->functions;
+	NMSAFunctions *afuncs;
 	struct timeval tvsleep, tvstart, tvstop;
 	float fps=DEF_FPS;
 	double last_pts = 0, next_pts = 0;
@@ -60,6 +60,9 @@ void *video_th(void *outc)
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	// set cancel function
 	// pthread_cleanup_push(video_close, (void *)vc);
+	
+	if (audioc)
+		afuncs = audioc->functions;
 
 	if (videoc->fps) {
 		fps = videoc->fps;
