@@ -1,1 +1,1 @@
-SUBDIRS = audio diskwriter
+SUBDIRS = audio diskwriter video

@@ -43,6 +43,7 @@ nemesi_LDADD =	@DLOPEN@ \
 		$(top_srcdir)/md5/libmd5.la \
 		$(top_srcdir)/src/libplugins.la \
 		$(top_srcdir)/output/audio/libaudio.la \
+		$(top_srcdir)/output/video/libvideo.la \
 		$(top_srcdir)/output/diskwriter/libdiskwriter.la
 
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

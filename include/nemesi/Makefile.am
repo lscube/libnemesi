@@ -16,5 +16,10 @@ noinst_HEADERS	= 	bufferpool.h \
 			types.h \
 			preferences.h \
 			diskwriter.h \
-			audio.h
+			audio.h \
+			img_format.h \
+			output.h \
+			video_driver.h \
+			video_drivers.h \
+			video_img.h
 INCLUDES = $(top_srcdir)

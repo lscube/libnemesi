@@ -190,6 +190,7 @@ AC_OUTPUT([\
 		wsocket/Makefile \
 		output/Makefile \
 		output/audio/Makefile \
+		output/video/Makefile \
 		output/diskwriter/Makefile \
 		decoder/Makefile \
 		decoder/L16_8k_m/Makefile \
