@@ -366,7 +366,11 @@ m4trace:configure.in:166: -1- AC_SUBST([HAVE_SOLARIS_TRUE])
 m4trace:configure.in:166: -1- AC_SUBST([HAVE_SOLARIS_FALSE])
 m4trace:configure.in:178: -1- AC_SUBST([nemesi_plugindir])
 m4trace:configure.in:180: -1- AC_DEFINE_TRACE_LITERAL([NEMESI_PLUGIN_DIR_DEFAULT])
+m4trace:configure.in:180: -1- AH_OUTPUT([NEMESI_PLUGIN_DIR_DEFAULT], [/* Define default directory for NeMeSI plugins */
+#undef NEMESI_PLUGIN_DIR_DEFAULT])
 m4trace:configure.in:181: -1- AC_DEFINE_TRACE_LITERAL([NEMESI_PLUGIN_DIR_ENV])
+m4trace:configure.in:181: -1- AH_OUTPUT([NEMESI_PLUGIN_DIR_ENV], [/* Define the name for the ENV variable forn NeMeSI plugins dir */
+#undef NEMESI_PLUGIN_DIR_ENV])
 m4trace:configure.in:202: -1- AC_CONFIG_FILES([\
 		Makefile \
 		bufferpool/Makefile \

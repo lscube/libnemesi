@@ -177,8 +177,8 @@ fi
 nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
 AC_SUBST(nemesi_plugindir)
 
-AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir")
-AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR")
+AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
+AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
 
 AC_OUTPUT([\
 		Makefile \

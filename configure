@@ -10718,9 +10718,11 @@ fi
 nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
 
 
+
 cat >>confdefs.h <<_ACEOF
 #define NEMESI_PLUGIN_DIR_DEFAULT "$nemesi_plugindir"
 _ACEOF
+
 
 cat >>confdefs.h <<\_ACEOF
 #define NEMESI_PLUGIN_DIR_ENV "NEMESI_PLUGIN_DIR"
