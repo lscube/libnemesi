@@ -2,8 +2,8 @@
 
 function dots ()
 {
-	while ps --no-headers $1 >/dev/null; do
-		sleep 0.5;
+	while ps h $1 >/dev/null; do
+		sleep 1;
 		echo -n ".";
 	done	
 }
