@@ -1707,7 +1707,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=nemesi
- VERSION=0.2.3
+ VERSION=0.2.4
 
 
 cat >>confdefs.h <<_ACEOF
@@ -10725,7 +10725,7 @@ _ACEOF
 
 
 
-ac_config_files="$ac_config_files Makefile bufferpool/Makefile etui/Makefile rtp/Makefile rtcp/Makefile rtsp/Makefile src/Makefile wsocket/Makefile output/Makefile output/audio/Makefile output/diskwriter/Makefile decoder/Makefile decoder/L16_8k_m/Makefile decoder/gsm_amr_float/Makefile decoder/mpglib/Makefile md5/Makefile plugins/Makefile docs/Makefile"
+ac_config_files="$ac_config_files Makefile bufferpool/Makefile etui/Makefile rtp/Makefile rtcp/Makefile rtsp/Makefile src/Makefile wsocket/Makefile output/Makefile output/audio/Makefile output/diskwriter/Makefile decoder/Makefile decoder/L16_8k_m/Makefile decoder/gsm_amr_float/Makefile decoder/libffmp3/Makefile md5/Makefile plugins/Makefile docs/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -11249,7 +11249,7 @@ do
   "decoder/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/Makefile" ;;
   "decoder/L16_8k_m/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/L16_8k_m/Makefile" ;;
   "decoder/gsm_amr_float/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/gsm_amr_float/Makefile" ;;
-  "decoder/mpglib/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/mpglib/Makefile" ;;
+  "decoder/libffmp3/Makefile" ) CONFIG_FILES="$CONFIG_FILES decoder/libffmp3/Makefile" ;;
   "md5/Makefile" ) CONFIG_FILES="$CONFIG_FILES md5/Makefile" ;;
   "plugins/Makefile" ) CONFIG_FILES="$CONFIG_FILES plugins/Makefile" ;;
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
@@ -12140,4 +12140,5 @@ echo "$as_me: error: $ac_sub_configure failed for $ac_dir" >&2;}
   done
 fi
 
+#decoder/mpglib/Makefile 
 

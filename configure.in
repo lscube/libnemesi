@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(wsocket/server_connect.c)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(nemesi, 0.2.3)
+AM_INIT_AUTOMAKE(nemesi, 0.2.4)
 
 AC_PREFIX_PROGRAM(nemesi)
 
@@ -192,9 +192,10 @@ AC_OUTPUT([\
 		decoder/Makefile \
 		decoder/L16_8k_m/Makefile \
 		decoder/gsm_amr_float/Makefile \
-		decoder/mpglib/Makefile \
+		decoder/libffmp3/Makefile \
 		md5/Makefile \
 		plugins/Makefile \
 		docs/Makefile \
 	])
+#decoder/mpglib/Makefile 
 
