@@ -59,7 +59,7 @@ NMSDiskWriter *diskwriter_init(const char *basename)
 	}
 
 	for(fd=0;fd<=MAX_PT;fd++)
-		fd=-1;
+		dc->fd[fd]=-1;
 	
 	/*
 	if ( (disk_buffer=db_init()) == NULL ) {

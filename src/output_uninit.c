@@ -31,9 +31,7 @@
 
 int output_uninit(void)
 {
-	diskwriter_close();
 
-	fprintf(stderr, "\nuninit\n");
 	if ( !(nmsoutc->audio) && (nmsoutc->audio->init) ) {
 		nmsoutc->audio->functions->uninit();
 		nmsoutc->audio->init = 0;
@@ -44,6 +42,8 @@ int output_uninit(void)
 		nmsoutc->video->init = 0;
 		free(nmsoutc->video);
 	}
+	if ( !(nmsoutc->diskwriter) )
+		diskwriter_close(nmsoutc->diskwriter);
 
 	// free the global output contex
 	free(nmsoutc);

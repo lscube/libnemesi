@@ -159,10 +159,8 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libdiskwriter.la
 libdiskwriter_la_SOURCES = diskwriter.c \
 				diskwriter_init.c \
-				db_init.c \
-				db_get.c \
 				get_file_fd.c \
-				close_file.c \
+				close_files.c \
 				diskwriter_close.c
 
 
@@ -177,15 +175,13 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libdiskwriter_la_LIBADD =
 am_libdiskwriter_la_OBJECTS = diskwriter.lo diskwriter_init.lo \
-	db_init.lo db_get.lo get_file_fd.lo close_file.lo \
-	diskwriter_close.lo
+	get_file_fd.lo close_files.lo diskwriter_close.lo
 libdiskwriter_la_OBJECTS = $(am_libdiskwriter_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/close_file.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/db_get.Plo ./$(DEPDIR)/db_init.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/close_files.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/diskwriter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/diskwriter_close.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/diskwriter_init.Plo \
@@ -228,9 +224,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/close_file.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/db_get.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/db_init.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/close_files.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diskwriter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diskwriter_close.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diskwriter_init.Plo@am__quote@

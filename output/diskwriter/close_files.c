@@ -30,10 +30,9 @@
 
 #include <nemesi/diskwriter.h>
 
-void close_file(int fd[])
+void close_files(int fd[])
 {
 	int i;
-	// int fd = global_disk_buffer->file_fd;
 	
 	for (i=0;i<=MAX_PT;i++)
 		if ( fd[i] > 0 )

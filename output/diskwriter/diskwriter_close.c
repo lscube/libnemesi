@@ -34,7 +34,7 @@ int diskwriter_close(NMSDiskWriter *dc)
 {
 	// struct disk_buff *disk_buffer=global_disk_buffer;
 
-	close_file(dc->fd);
+	close_files(dc->fd);
 	free(dc->basename);
 	free(dc);
 

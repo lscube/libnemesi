@@ -30,22 +30,10 @@
 #define __DISKWRITER_H
 
 #include <stdio.h>
-#include <stdarg.h>
 
 #include <nemesi/types.h>
 
-#ifndef GLOBAL_DISK_BUFFER
-#define DISK_EXTERN extern
-#else
-#define DISK_EXTERN
-#endif
-
 #define DEFAULT_FILENAME "nemesi.out"
-
-#define FREQ 44100
-#define CHANNELS 2
-#define BYTES_X_SAMPLE 2
-
 #define MAX_PT 127
 
 typedef struct {
@@ -53,31 +41,11 @@ typedef struct {
 	int fd[MAX_PT+1];
 } NMSDiskWriter;
 
-/* Disk Buffer defines */
-#define SECONDS 1
-#define DISK_BUFF_SIZE (unsigned long)(FREQ*SECONDS*CHANNELS*BYTES_X_SAMPLE)
-
-struct disk_buff {
-	uint8 data[DISK_BUFF_SIZE];
-	uint32 len;
-	int file_fd;
-};
-
-// DISK_EXTERN struct disk_buff *global_disk_buffer;
-
-struct disk_buff *db_init(void);
-uint8 *db_get(uint32, ...);
-/* end of Disk Buffer defines */
-
 NMSDiskWriter *diskwriter_init(const char *);
-// int get_file_fd(void);
 int get_file_fd(NMSDiskWriter *, int);
 int diskwriter(NMSDiskWriter *, int, char *, int);
-void close_file(int []);
+void close_files(int []);
 int diskwriter_close(NMSDiskWriter *);
-
-#undef GLOBAL_DISK_BUFFER
-#undef DISK_EXTERN
 
 #endif /* __DISKWRITER_H */
 
