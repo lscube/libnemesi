@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(nemesi, 0.3.1)
+AC_INIT(nemesi, 0.4.0)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE($PACKAGE_NAME, $PACKAGE_VERSION)
@@ -130,8 +130,9 @@ fi
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
 
+
 dnl Check for FFMpeg libavcodec library
-if test x$enable_avc = xyes; then
+if test "x$enable_avc" = "xyes"; then
 	AC_CHECK_LIB(avcodec,avcodec_open, \
 	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/true) \
 	NEMESI_HAVE_AVC=yes, \
@@ -141,6 +142,7 @@ else
 	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false)
 	NEMESI_HAVE_AVC=no
 fi
+
 
 AM_CONDITIONAL(NEMESI_EFENCE, /bin/false)
 if test "$enable_efence" = "yes"; then

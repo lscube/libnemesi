@@ -1,3 +1,5 @@
+.NOTPARALLEL: nemesi
+
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libutils.la libplugins.la

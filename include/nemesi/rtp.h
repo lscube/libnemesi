@@ -51,7 +51,8 @@
 
 #define RTP_VERSION 2
 
-#define RTP_AVP_UDP "RTP/AVP/UDP"
+// #define RTP_AVP_UDP "RTP/AVP/UDP"
+#define RTP_AVP_UDP "RTP/AVP" // Default low-trasport is UDP. See RFC2326 12.39
 #define RTP_SEQ_MOD (1<<16)
 #define MIN_SEQUENTIAL 2
 #define MAX_DROPOUT 3000
