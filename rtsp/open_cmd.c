@@ -42,6 +42,8 @@ int open_cmd(struct RTSP_Thread *rtsp_th, ...)
 		nmsprintf(1, "Client already connected!\n");
 		return 1;
 	}
+	if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
+		return 1;
 	urltokenize(rtsp_th->urlname, &server, NULL, NULL);
 	if (server_connect(server, rtsp_th->server_port, &(rtsp_th->fd), TCP)) {
 		rtsp_th->fd=-1;

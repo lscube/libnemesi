@@ -43,7 +43,7 @@ void save_static_data(gpointer new_nemesi, gpointer new_rtsp_ctrl)
 
 	// GUI statusbar initialization
 	gnms_stbar_init(GTK_BOX(lookup_widget(nemesi, "statushbox")));
-	cc_stbarw_add((struct RTSP_Thread *)rtsp_ctrl);
+	cc_stbarw_add(rtsp_ctrl);
 }
 
 void update_toolbar(void)

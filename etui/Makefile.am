@@ -5,7 +5,6 @@ noinst_LTLIBRARIES = libetui.la
 libetui_la_SOURCES =	ui.c \
 			parse_cl.c \
 			parse_prompt.c \
-			seturlname.c \
 			throbber.c \
 			send_open.c \
 			send_play.c \

@@ -212,7 +212,9 @@ struct RTSP_buffer {
 			enum states status;	/*!< Current RTSP state-machine status */ \
 			unsigned char busy; /*!< Boolean value identifing if \
 						the rtsp module is busy waiting reply from server*/ \
-			pthread_t rtsp_tid;
+			pthread_t rtsp_tid; \
+			char descr_fmt; /* Description format inside RTSP body */ \
+			struct RTSP_Session *rtsp_queue;/*!< List of active sessions. */
 
 /*!
  * \brief Struttura al vertice della piramide del modulo RTSP.
@@ -239,7 +241,6 @@ struct RTSP_Thread {
 							  multimediale attivo:
 							  Media On Demand o
 							  Container. */
-	char descr_fmt;
 	char waiting_for[64];	/*!< Stringa che contiene, eventualmente, la
 				  descrizione della risposta che si sta
 				  aspettando dal server. */
@@ -247,7 +248,7 @@ struct RTSP_Thread {
 				 */
 	char *urlname;		/*!< URL della richiesta. */
 	struct RTSP_buffer in_buffer;	/*!< Buffer di input dei dati. */
-	struct RTSP_Session *rtsp_queue;/*!< Lista delle sessioni attive. */
+	// struct RTSP_Session *rtsp_queue;/*!< Lista delle sessioni attive. */
 };
 
 struct RTSP_Ctrl {
@@ -290,6 +291,7 @@ int stop_cmd(struct RTSP_Thread *, ...);
 int open_cmd(struct RTSP_Thread *, ...);
 int close_cmd(struct RTSP_Thread *, ...);
 
+int seturlname(struct RTSP_Thread *, char *);
 int handle_rtsp_pkt(struct RTSP_Thread *);
 int full_msg_rcvd( struct RTSP_Thread *);
 int rtsp_recv(struct RTSP_Thread *);

@@ -29,7 +29,6 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 #include <nemesi/utils.h>
-#include <nemesi/etui.h>
 
 /*!
  * \brief scan status code of an RTSP reply
@@ -56,28 +55,31 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 		return res_state;
 	// if ( (res_state>=300) && (res_state<400) ) {
 	if ( RTSP_IS_REDIRECT(res_state) ) {
-		nmsprintf(1, "WARNING: Redirection. reply was: %hu %s -> INIT-STATE\n", res_state, reason_phrase);
-		prev_tkn = status_line;
+		nmsprintf(1, "WARNING: Redirection. reply was: %hu %s\n", res_state, reason_phrase);
+		// prev_tkn = status_line;
+		if ( (prev_tkn=strtok((rtsp_th->in_buffer).data + strlen(status_line) + 1,"\n"))==NULL ) {
+			nmsprintf(1, "Could not find \"Location\" so... were I'll redirect you?\n");
+			return -1;
+		}
 		while ( ((tkn=strtok(NULL, "\n")) != NULL) && ((tkn-prev_tkn)>1) ) {
 			if ( ((tkn-prev_tkn)==2) && (*prev_tkn=='\r') )
 				break;
-			prev_tkn=tkn;
-			if ( !strncmpcase(prev_tkn,"Location", 8) ) {
+			if ( !strncmpcase(prev_tkn, "Location", 8) ) {
 				prev_tkn+=8;
 				while ( (*(prev_tkn)==' ') || (*(prev_tkn)==':') )
 					prev_tkn++;
 				location = strdup(prev_tkn);
 				// sscanf(prev_tkn,"%d",&location);
 			}
+			prev_tkn=tkn;
 		}
 		if (location) {
 			nmsprintf(1, "Redirecting to %s\n", location);
 			// XXX:proving
-			if (seturlname((struct RTSP_Ctrl *)rtsp_th, location) > 0)
-				return 1;
 			pthread_mutex_lock(&(rtsp_th->comm_mutex));
 			rtsp_th->comm->opcode = OPEN;
 			write(rtsp_th->pipefd[1], "o", 1);
+			strncpy(rtsp_th->comm->arg, location, sizeof(rtsp_th->comm->arg));
 			rtsp_th->busy=1;
 			pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 			///// XXX: end proving

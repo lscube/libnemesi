@@ -53,7 +53,7 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 		return nmserror(stderr, "fcntl() error!\n");
 
 #endif // USE_UIPRINTF
-	memset(optstr, '\0', 256);
+	memset(optstr, '\0', sizeof(optstr));
 
 	/*
 	if (parse_ui_cl(argc, argv, &urlname) > 0)
@@ -89,8 +89,10 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 				return 0;
 		}
 #else // USE_UIPRINTF
-		scanf("%s", optstr);
-		if (parse_prompt(rtsp_ctrl, optstr) > 0)
+		// scanf("%s", optstr);
+		fgets(optstr, sizeof(optstr)-1, stdin);
+		optstr[strlen(optstr)-1] = '\0';
+		if ( strlen(optstr) && (parse_prompt(rtsp_ctrl, optstr) > 0) )
 			return 0;
 #endif // USE_UIPRINTF
 	}

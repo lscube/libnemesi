@@ -31,10 +31,9 @@
 int send_open(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
 {
 
-	if (seturlname(rtsp_ctrl, urlname) > 0)
-		return 1;
 	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
 		rtsp_ctrl->comm->opcode = OPEN;
+		strncpy(rtsp_ctrl->comm->arg, urlname, sizeof(rtsp_ctrl->comm->arg));
 		write(rtsp_ctrl->pipefd[1], "o", 1);
 		rtsp_ctrl->busy=1;
 	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));

@@ -35,7 +35,7 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 	char argstr[256];
 	char opt;
 
-	memset(argstr, '\0', 256);
+	memset(argstr, '\0', sizeof(argstr));
 	opt = optstr[0];
 
 	switch (opt) {
@@ -64,7 +64,7 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 		printf("              - shawill@cclinf.polito.it\n\n");
 		break;
 	case 'o':
-		scanf("%s%*c", argstr);
+		sscanf(optstr, "%*s %s", argstr);
 		printf("Connect: Please wait, opening \"%s\"\n", argstr);
 		send_open(rtsp_ctrl, argstr);
 		break;
@@ -72,7 +72,8 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 		get_infos(rtsp_ctrl);
 		break;
 	case 'p':
-		fgets(argstr, 256, stdin);
+		// fgets(argstr, 256, stdin);
+		sscanf(optstr, "%*s %s", argstr);
 		send_play(rtsp_ctrl, argstr);
 		break;
 	case 'z':
@@ -85,9 +86,15 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 		send_close(rtsp_ctrl);
 		break;
 	case 'e':
+		/*
 		fgets(argstr, 256, stdin);
 		*(argstr+strlen(argstr)-1)='\0';
-		edit_pref(argstr+1); /* c'è lo spazio all'inizio, lo togliamo */
+		edit_pref(argstr+1); // c'è lo spazio all'inizio, lo togliamo
+		 */
+		if ( sscanf(optstr, "%*s %[^\n]", argstr) > 0)
+			edit_pref(argstr);
+		else
+			printf("No preference give to edit\n");
 		break;
 	case 'l':
 		list_prefs();

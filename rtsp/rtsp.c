@@ -76,7 +76,7 @@ void *rtsp(void *rtsp_thread)
 				else if (n > 0){
 					if (full_msg_rcvd(rtsp_th))
 						if (handle_rtsp_pkt(rtsp_th)) {
-							nmsprintf(1, "\nError!\n");
+							// nmsprintf(1, "\nError!\n");
 							reinit_rtsp(rtsp_th);
 							// rtsp_th->busy=0; // already done in reinit
 						}

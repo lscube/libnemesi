@@ -139,21 +139,21 @@ static GtkWidget *add_leaf(const GtkWidget *where)
 
 static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 {
-	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)user_data;
+	struct RTSP_Ctrl *rtsp_ctrl = (struct RTSP_Ctrl *)user_data;
 	SDP_Session_info *sdp_s;
 	SDP_Medium_info *sdp_m;
 	CCLicense *cc;
 	GtkWidget *root, *node, *leaf, *lbl;
 
 	if (gtk_toggle_button_get_active(togglebutton)) {
-		if (!rtsp_th->rtsp_queue)
+		if (!rtsp_ctrl->rtsp_queue)
 			return;
 		if (!cc_info) {
 			root = add_root(&cc_info);
 
-			switch (rtsp_th->descr_fmt) {
+			switch (rtsp_ctrl->descr_fmt) {
 				case DESCRIPTION_SDP_FORMAT:
-					if ((sdp_s = rtsp_th->rtsp_queue->info)) {
+					if ((sdp_s = rtsp_ctrl->rtsp_queue->info)) {
 						gtk_expander_set_label(GTK_EXPANDER(cc_info), sdp_s->s);
 					}
 					for(sdp_m=sdp_s->media_info_queue; sdp_m; sdp_m=sdp_m->next) {
@@ -243,14 +243,14 @@ static gboolean cc_sdp_check(SDP_Medium_info *sdp_mqueue)
 
 static void cc_stbarw_upd(void *userdata)
 {
-	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)userdata;
+	struct RTSP_Ctrl *rtsp_ctrl = (struct RTSP_Ctrl *)userdata;
 
-	switch (rtsp_th->status) {
+	switch (rtsp_ctrl->status) {
 		case READY:
 		case PLAYING:
-			switch (rtsp_th->descr_fmt) {
+			switch (rtsp_ctrl->descr_fmt) {
 				case DESCRIPTION_SDP_FORMAT:
-					if (cc_sdp_check(rtsp_th->rtsp_queue->media_queue->medium_info))
+					if (cc_sdp_check(rtsp_ctrl->rtsp_queue->media_queue->medium_info))
 						gtk_widget_show(cc_box);
 					break;
 				default:
@@ -279,7 +279,7 @@ static void cc_stbarw_rm(GtkWidget *widget)
 	gtk_widget_destroy(widget);
 }
 
-int cc_stbarw_add(struct RTSP_Thread *rtsp_th)
+int cc_stbarw_add(struct RTSP_Ctrl *rtsp_ctrl)
 {
 	if (cc_box)
 		gtk_widget_destroy(cc_box);
@@ -293,10 +293,10 @@ int cc_stbarw_add(struct RTSP_Thread *rtsp_th)
 	cc_logo = create_pixmap(NULL, CC_SOMERIGHTS);
 	gtk_widget_show(cc_logo);
 	gtk_container_add (GTK_CONTAINER (cc_button), cc_logo);
-	g_signal_connect ((gpointer) cc_button, "toggled", G_CALLBACK (cc_button_toggled), (gpointer) rtsp_th);
+	g_signal_connect ((gpointer) cc_button, "toggled", G_CALLBACK (cc_button_toggled), (gpointer) rtsp_ctrl);
 	// gtk_widget_show (cc_button);
 
-	gnms_stbar_addwgt(cc_box, cc_stbarw_rm, cc_stbarw_upd, (gpointer)rtsp_th, TRUE);
+	gnms_stbar_addwgt(cc_box, cc_stbarw_rm, cc_stbarw_upd, (gpointer)rtsp_ctrl, TRUE);
 
 	return 0;
 }
