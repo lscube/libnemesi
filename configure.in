@@ -125,6 +125,7 @@ else
 fi
 
 
+AM_CONDITIONAL(NEMESI_DEBUG, /bin/false)
 if test "$enable_debug" = "yes"; then
 	CFLAGS="$CFLAGS -g -ggdb"
 	AM_CONDITIONAL(NEMESI_DEBUG, /bin/true) \
