@@ -30,9 +30,9 @@
 #include <nemesi/comm.h>
 #include <nemesi/etui.h>
 
-int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
+int ui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char **argv)
 {
-	char *urlname = NULL;
+	char *urlname = ui_hints->url; // NULL;
 	char optstr[256];
 
 #ifdef USE_UIPRINTF
@@ -50,8 +50,11 @@ int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 #endif // USE_UIPRINTF
 	memset(optstr, '\0', 256);
 
+	/*
 	if (parse_ui_cl(argc, argv, &urlname) > 0)
 		return 1;
+
+	*/
 	if (urlname != NULL) {
 		fprintf(stderr, "Connect: Please wait, opening \"%s\"", urlname);
 		send_open(rtsp_args, urlname);

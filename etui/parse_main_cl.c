@@ -33,10 +33,11 @@
 #include <nemesi/video_drivers.h>
 #include <nemesi/audio_drivers.h>
 
-// int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
+// int parse_main_cl(int argc, char **argv, NMSOutputHints *output_hints)
 int parse_main_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 {
-	NMSOutputHints *hints = cl_opt->output;
+	NMSOutputHints *output_hints = cl_opt->output;
+	NMSUiHints *ui_hints = cl_opt->ui;
 	int ret = 0;
 	char usage = 0; // printf usage at the end of function
 	// getopt variables
@@ -103,17 +104,17 @@ int parse_main_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 				list_audio_out();
 				ret = 1;
 			} else
-				hints->audio = strdup(optarg);
+				output_hints->audio = strdup(optarg);
 			break;
 		case 2: // video out driver selection
 			if ( !strcmp(optarg, "help") ) {
 				list_video_out();
 				ret = 1;
 			} else
-				hints->video = strdup(optarg);
+				output_hints->video = strdup(optarg);
 			break;
 		case 3: // system buffer msec selection
-			hints->sysbuff_ms = strtol(optarg, &v_err, 10);
+			output_hints->sysbuff_ms = strtol(optarg, &v_err, 10);
 			if ( *v_err ) {
 				if ( (*v_err == '.') || (*v_err == ',') )
 					nmserror("Argument to \"%s\" option must be an integer number of milliseconds", long_options[option_index].name);
@@ -123,12 +124,13 @@ int parse_main_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			}
 			break;
 		case 4: // use graphical user interface
-			cl_opt->gui = 1;
+			ui_hints->gui = 1;
+			// not break, because in gui mode we don't want status string on terminal
 		case 5: // do not show buffers status and elapsed time
 			nmsstatusprintf(NO_STATUS, NULL);
 			break;
 		case 6: // use textual user interface
-			cl_opt->gui = 0;
+			ui_hints->gui = 0;
 			break;
 		case ':':
 			nmserror("Missing argument for option \"%s\"\n", argv[optind-1]);
@@ -152,5 +154,12 @@ int parse_main_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 		usage();
 	if ( ret < 0 )
 		nmserror ("Error parsing command line... exit\n");
+	if (optind < argc) {
+		if ( argc == optind+1 ) {
+			if ( !(ui_hints->url = strdup(argv[optind])) )
+				return nmserror("Could not store urlname given in command line");
+		} else
+			return nmserror("You can specify only one media URL");
+	}
 	return ret;
 }

@@ -68,8 +68,8 @@ create_nemesi (void)
 
   nemesi = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (nemesi, "nemesi");
-  gtk_widget_set_size_request (nemesi, 505, -2);
   gtk_window_set_title (GTK_WINDOW (nemesi), "NeMeSi");
+  gtk_window_set_resizable (GTK_WINDOW (nemesi), FALSE);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_set_name (vbox1, "vbox1");
@@ -239,8 +239,13 @@ create_nemesi (void)
   gtk_widget_set_name (hscale2, "hscale2");
   gtk_widget_show (hscale2);
   gtk_box_pack_start (GTK_BOX (hbox2), hscale2, TRUE, TRUE, 0);
+  gtk_widget_set_size_request (hscale2, 271, 15);
+  gtk_widget_set_sensitive (hscale2, FALSE);
   gtk_scale_set_value_pos (GTK_SCALE (hscale2), GTK_POS_LEFT);
 
+  g_signal_connect ((gpointer) nemesi, "destroy",
+                    G_CALLBACK (gtk_main_quit),
+                    NULL);
   g_signal_connect ((gpointer) new1, "activate",
                     G_CALLBACK (on_new1_activate),
                     NULL);

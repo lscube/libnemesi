@@ -49,9 +49,13 @@ typedef struct {
 } NMSOutputHints;
 
 typedef struct {
-	NMSOutputHints *output;
 	uint8 gui;
 	char *url;
+} NMSUiHints;
+
+typedef struct {
+	NMSOutputHints *output;
+	NMSUiHints *ui;
 } NMSCLOptions;
 
 struct RTSP_args {

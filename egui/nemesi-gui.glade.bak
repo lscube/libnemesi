@@ -4,14 +4,14 @@
 <glade-interface>
 
 <widget class="GtkWindow" id="nemesi">
-  <property name="width_request">505</property>
   <property name="visible">True</property>
   <property name="title" translatable="yes">NeMeSi</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="resizable">True</property>
+  <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <signal name="destroy" handler="gtk_main_quit" last_modification_time="Mon, 29 Mar 2004 16:43:28 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
@@ -87,6 +87,7 @@
 			  <property name="label">gtk-quit</property>
 			  <property name="use_stock">True</property>
 			  <signal name="activate" handler="on_quit1_activate" last_modification_time="Fri, 26 Mar 2004 16:21:34 GMT"/>
+			  <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 			</widget>
 		      </child>
 		    </widget>
@@ -276,7 +277,10 @@
 
 	      <child>
 		<widget class="GtkHScale" id="hscale2">
+		  <property name="width_request">271</property>
+		  <property name="height_request">15</property>
 		  <property name="visible">True</property>
+		  <property name="sensitive">False</property>
 		  <property name="can_focus">True</property>
 		  <property name="draw_value">True</property>
 		  <property name="value_pos">GTK_POS_LEFT</property>

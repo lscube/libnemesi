@@ -14,7 +14,7 @@
 
 #include <nemesi/main.h>
 
-int gui(struct RTSP_args *rtsp_args, int argc, char *argv[])
+int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[])
 {
   GtkWidget *nemesi;
 

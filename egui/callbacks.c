@@ -45,7 +45,7 @@ void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	gtk_main_quit();
 }
 
 
