@@ -101,12 +101,14 @@ NMS_LIB_VIDEO(sdl);
 #define VBUFFER_SIZE 25
 
 struct sdl_vbuffer {
-	SDL_Overlay *overlay[VBUFFER_SIZE];
+	// SDL_Overlay *overlay[VBUFFER_SIZE];
+	SDL_Overlay **overlay;
 	SDL_Surface *surface[VBUFFER_SIZE];
 	double pic_pts[VBUFFER_SIZE];
 	int readpos;
 	int writepos;
 	int size;
+	uint32 buff_size; //!< total size of allocated buffer
 	SDL_mutex *syn;
 	SDL_cond *cond_full;
 };
@@ -127,12 +129,16 @@ static struct sdl_priv_s {
 } sdl_priv;
 
 //--- Video buffer ---------------//
-static struct sdl_vbuffer *new_vbuffer()
+static struct sdl_vbuffer *new_vbuffer(uint32 size)
 {
 	int i; // index
 	struct sdl_vbuffer *vbuffer;
 
 	if ((vbuffer = malloc(sizeof(struct sdl_vbuffer))) == NULL) {
+		nmserror("SDL: could not alloc memory for video buffer");
+		return NULL;
+	}
+	if ((vbuffer->overlay = malloc(size * sizeof(SDL_Overlay *))) == NULL) {
 		nmserror("SDL: could not alloc memory for video buffer");
 		return NULL;
 	}
@@ -286,7 +292,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 
 	if (priv->vbuffer)
 		free_vbuffer(priv->vbuffer);
-	priv->vbuffer = new_vbuffer();
+	priv->vbuffer = new_vbuffer(VBUFFER_SIZE);
 
 	if (!(newsurface = SDL_SetVideoMode(width, height, 0, flags))) {
 		return nmserror("SDL_SetVideoMode failed: %s", SDL_GetError());
@@ -309,12 +315,27 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 	return 0;
 }
 
+static uint32 control(uint32 cmd, void *arg, ...)
+{
+	switch(cmd) {
+		case VCTRL_GET_SYSBUFF:
+			// *((float *)arg) = (float)()
+			return 0;
+			break;
+		default:
+			return -1;
+			break;
+	}
+	return 0;
+}
+
 static uint32 get_picture(int w, int h, NMSPicture *pict)
 {
 	struct sdl_priv_s *priv = &sdl_priv;
 	struct sdl_vbuffer *vbuffer = priv->vbuffer;
 	SDL_Overlay *bmp = vbuffer->overlay[vbuffer->writepos];
 
+#if 0
 	SDL_LockMutex(vbuffer->syn);
 	while(vbuffer->size == VBUFFER_SIZE) {
 		SDL_CondWait(vbuffer->cond_full, vbuffer->syn);
@@ -325,6 +346,10 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 		*/
 	}
 	SDL_UnlockMutex(vbuffer->syn);
+#else
+	if (vbuffer->size == VBUFFER_SIZE)
+		return 1;
+#endif
 
 	MUTEX_LOCK(priv->syn, 1);
 
@@ -403,8 +428,11 @@ static uint32 update_screen(double *next_pts)
 		return 1;
 
 	// if (vbuffer->size < (VBUFFER_SIZE / 2) + 1) // no frame to show
-	if (!vbuffer->size) // no available frames in buffer
+	if (!vbuffer->size) { // no available frames in buffer
+		if (next_pts)
+			*next_pts = 0;
 		return 0;
+	}
 	MUTEX_LOCK(priv->syn, 1);
 
 	// bmp = sdl_priv.overlay;

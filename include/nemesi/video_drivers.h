@@ -36,6 +36,8 @@
 #include <nemesi/img_format.h>
 #include <nemesi/video_img.h>
 
+#define VCTRL_GET_SYSBUFF 0
+
 typedef struct {
         /* driver name */
         const char *name;
@@ -68,6 +70,7 @@ typedef struct {
         uint32 (*config)(uint32 width, uint32 height, uint32 d_width,
 			 uint32 d_height, uint8 fullscreen, char *title,
 			 uint32 format);
+	uint32 (*control)(uint32 cmd, void *arg, ...);
 	/*
 	 * allocs a new picture.
 	 * params:

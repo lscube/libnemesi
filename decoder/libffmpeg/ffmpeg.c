@@ -108,12 +108,13 @@ int decode(char *data, int len, NMSOutput *outc)
 					return 1;
 				vc->init = 1;
 			}
-			funcs->get_picture(ff->context->width, ff->context->height, &pict);
-			img_convert((AVPicture *)pict_pt, PIX_FMT_YUV420P, (AVPicture *)ff->frame, ff->context->pix_fmt, \
-					ff->context->width, ff->context->height);
 			// XXX; setto questa variabile temporanea
 			elapsed += 40;
+			if (!funcs->get_picture(ff->context->width, ff->context->height, &pict)) {
+				img_convert((AVPicture *)pict_pt, PIX_FMT_YUV420P, (AVPicture *)ff->frame, ff->context->pix_fmt, \
+					ff->context->width, ff->context->height);
 			funcs->draw_picture(&pict, elapsed);
+			}
 			// funcs->update_screen();
 			//got_picture--;
 		}

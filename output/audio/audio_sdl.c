@@ -146,6 +146,8 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 
 	sdl_init(arg);
 
+	sdl_priv.last_pts = 0;
+
 	if (!buff_ms)
 		buff_ms = AUDIO_BUFF_SIZE;
 	if (sdl_priv.audio_buffer)
@@ -216,8 +218,11 @@ static uint32 control(uint32 cmd, void *arg)
 					bytes_x_sample = 1;
 					break;
 			}
-			*((double *)arg) = sdl_priv.last_pts - ((double)(sdl_priv.audio_buffer->len + sdl_priv.aspec.size) * 1000.0 ) / (double)(sdl_priv.aspec.freq * \
+			if (sdl_priv.last_pts)
+				*((double *)arg) = sdl_priv.last_pts - ((double)(sdl_priv.audio_buffer->len + sdl_priv.aspec.size) * 1000.0 ) / (double)(sdl_priv.aspec.freq * \
 					sdl_priv.aspec.channels * bytes_x_sample);
+			else
+				*((double *)arg) = 0;
 			break;
 		default:
 			return -1;
@@ -261,6 +266,7 @@ static void reset(void)
 
 	// reset audio buffer
 	ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
+	sdl_priv.last_pts = 0;
 }
 
 static void uninit(void)

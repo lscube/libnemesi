@@ -40,7 +40,7 @@
 
 #define SLEEP_MS 40
 #define DEF_FPS 25.0 // must be float
-#define MAX_AV_THRES 100
+// #define MAX_AV_THRES 100
 
 void *video_th(void *vc)
 {
@@ -81,31 +81,27 @@ void *video_th(void *vc)
 		funcs->update_screen(&next_pts);
 		nmsprintf(3, "next presentation timestamp is: %3.2f\n", next_pts);
 		gettimeofday(&tvstop, NULL);
+		if ( !next_pts )
+			next_pts = last_pts + 1000/fps;
+		nmsprintf(3, "Video elapsed time: %3.2fms", last_pts);
 #ifdef AV_SYNC
 		if (nmsoutc->audio && nmsoutc->audio->init)
 			nmsoutc->audio->functions->control(ACTRL_GET_ELAPTM, &audio_elapsed);
-		if (audio_elapsed)
-			nmsprintf(3, "Audio elapsed time: %3.2fms\t", audio_elapsed);
-#endif // AV_SYNC
-		nmsprintf(3, "Video elapsed time: %3.2fms\n", last_pts);
-		if ( !next_pts )
-			next_pts = last_pts + 1000/fps;
-#ifdef AV_SYNC
-#if 1
 		if ( audio_elapsed ) {
+			nmsprintf(3, "\tAudio elapsed time: %3.2fms", audio_elapsed);
 			if ( next_pts < audio_elapsed )
 				tvsleep.tv_usec = 9999; // < 10000, do not sleep
-			else if ( next_pts - audio_elapsed > MAX_AV_THRES ) {
+			else /*if ( next_pts - audio_elapsed > MAX_AV_THRES ) {
 				tvsleep.tv_sec = 0;
 				tvsleep.tv_usec = ( next_pts + MAX_AV_THRES ) * 1000;
-			} else {
+			} else */{
 				tvsleep.tv_sec = (next_pts - audio_elapsed) / 1000;
 				tvsleep.tv_usec = (next_pts - audio_elapsed - tvsleep.tv_sec * 1000 ) * 1000;
 			}
 		} else
-#endif
 #endif // AV_SYNC
 			tvsleep.tv_usec = ( next_pts - last_pts ) * 1000;
+		nmsprintf(3, "\n");
 		/*
 		else {
 			tvsleep.tv_sec = 1/fps;
