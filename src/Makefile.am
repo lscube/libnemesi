@@ -27,7 +27,6 @@ libutils_la_LDFLAGS = -static
 libplugins_la_SOURCES = load_plugins.c
 
 libplugins_la_LDFLAGS = -static
-libplugins_la_LIBADD = @LIBLTDL@
 
 bin_PROGRAMS = nemesi
 
@@ -50,9 +49,7 @@ nemesi_LDADD =	$(top_srcdir)/rtsp/librtsp.la \
 		$(top_srcdir)/output/video/libvideo.la \
 		$(top_srcdir)/output/diskwriter/libdiskwriter.la \
 		$(top_srcdir)/src/libutils.la \
-		$(top_srcdir)/md5/libmd5.la \
-		@DLOPEN@ \
-		@DLPREOPEN@
+		$(top_srcdir)/md5/libmd5.la 
 
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
 

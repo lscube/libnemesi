@@ -39,45 +39,39 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
-dnl GUI checks
-pkg_modules="gtk+-2.0 >= 2.0.0"
-PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
-AC_SUBST(PACKAGE_CFLAGS)
-AC_SUBST(PACKAGE_LIBS)
-
 dnl Check for LibTool Dynamic Loading
-AC_LIBLTDL_CONVENIENCE([libltdl])
-AC_CONFIG_SUBDIRS([libltdl])
-AC_SUBST([INCLTDL])
-AC_SUBST([LIBLTDL])
-AC_SUBST(DLOPEN)
-AC_SUBST(DLPREOPEN)
-AC_SUBST([LIBTOOL_DEPS])
+dnl AC_LIBLTDL_CONVENIENCE([libltdl])
+dnl AC_CONFIG_SUBDIRS([libltdl])
+dnl AC_SUBST([INCLTDL])
+dnl AC_SUBST([LIBLTDL])
+dnl AC_SUBST(DLOPEN)
+dnl AC_SUBST(DLPREOPEN)
 
 dnl if test x$enable_debug = xyes; then
 dnl AC_DISABLE_SHARED
 dnl fi
-AC_LIBTOOL_DLOPEN
+dnl AC_LIBTOOL_DLOPEN
+
+AC_CHECK_LIB(ltdl,lt_dlopen,,\
+AC_MSG_ERROR([
+ *********************************************************************
+ *                                                                   *
+ *         NeMeSI needs LibTool's libltdl to support plug-ins.       *
+ *                                                                   *
+ *            Please install libtool or libtool-libs from            *
+ *               http://www.gnu.org/software/libtool                 *
+ *           or check for a version suitable to your distro.         *
+ *                                                                   *
+ *********************************************************************]))
+
 AC_PROG_LIBTOOL
+AC_SUBST([LIBTOOL_DEPS])
 
-
-dnl Check for Endianess
-AC_C_BIGENDIAN
-
-dnl Checks for libraries.
+dnl Checks for pthread libraries.
 AC_CHECK_LIB(pthread,pthread_create)
 
-dnl Checks for FFMpeg libavcodec library.
-AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false)
-if test x$enable_avc = xyes; then
-	AC_CHECK_LIB(avcodec,avcodec_open, \
-	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/true) \
-	NEMESI_HAVE_AVC=yes,
-	AC_MSG_WARN([libavcodec not present!]))
-else
-	AC_MSG_WARN([libavcodec disabled!])
-fi
-
+dnl Check for Endianess
+AC_C_BIGENDIAN([BIGENDIAN="Big Endian"],[BIGENDIAN="Little Endian"])
 
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
@@ -105,20 +99,45 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv)
 AC_CHECK_FUNC(getaddrinfo)
 
-CFLAGS=""
+dnl CFLAGS=""
 
 dnl Check for SDL library
 AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/false)
 if test "$enable_sdl" = "yes"; then
 	AM_PATH_SDL("1.2.2",
 		AC_DEFINE([HAVE_SDL], 1, [Define if SDL library is present]) \
-		CFLAGS="$CFLAGS $SDL_CFLAGS" \
-		LIBS="$LIBS $SDL_LIBS" \
-		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/true),
+dnl		CFLAGS="$CFLAGS $SDL_CFLAGS" \
+dnl		SDL_LIBS="$LIBS $SDL_LIBS" \
+		AC_SUBST(SDL_CFLAGS) \
+		AC_SUBST(SDL_LIBS) \
+		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/true)
+		NEMESI_HAVE_SDL=yes,
 		AC_MSG_WARN([Falling back to OSS Audio output!]))
 else
 	AC_MSG_WARN([SDL library disabled!])
 fi
+
+dnl GTK GUI checks
+pkg_modules="gtk+-2.0 >= 2.0.0"
+PKG_CHECK_MODULES(PACKAGE, [$pkg_modules], \
+	AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/true) \
+	NEMESI_HAVE_GTK=yes, \
+	AC_MSG_WARN([GUI will not be compiled!]))
+	
+AC_SUBST(PACKAGE_CFLAGS)
+AC_SUBST(PACKAGE_LIBS)
+
+dnl Checks for FFMpeg libavcodec library.
+AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false)
+if test x$enable_avc = xyes; then
+	AC_CHECK_LIB(avcodec,avcodec_open, \
+	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/true) \
+	NEMESI_HAVE_AVC=yes,
+	AC_MSG_WARN([libavcodec not present!]))
+else
+	AC_MSG_WARN([libavcodec disabled!])
+fi
+
 
 if test "$enable_debug" = "yes"; then
 	CFLAGS="$CFLAGS -g -ggdb"
@@ -192,17 +211,26 @@ AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
 AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
 AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
 
-nemesi_prefix="$prefix"/share
+nemesi_prefix="$prefix"/lib
 nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
 AC_SUBST(nemesi_plugindir)
+nemesi_throbberdir="$nemesi_prefix"/nemesi/throbbers
+AC_SUBST(nemesi_throbberdir)
 
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
 AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
 
+AC_DEFINE_UNQUOTED(NEMESI_THROBBER_DIR_DEFAULT, "$nemesi_throbberdir", [Define default directory for NeMeSI throbbers])
+AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
+
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([bufferpool/Makefile])
 AC_CONFIG_FILES([etui/Makefile])
+
+if test x$NEMESI_HAVE_GTK = xyes; then
 AC_CONFIG_FILES([egui/Makefile])
+fi
+
 AC_CONFIG_FILES([rtp/Makefile])
 AC_CONFIG_FILES([rtcp/Makefile])
 AC_CONFIG_FILES([rtsp/Makefile])
@@ -227,4 +255,22 @@ AC_CONFIG_FILES([docs/Makefile])
 dnl AC_CONFIG_FILES([decoder/mp3/Makefile])
 dnl AC_CONFIG_FILES([decoder/mpglib/Makefile])
 AC_OUTPUT
+
+AC_MSG_NOTICE([config files successfully generated!
+ 
+	Install prefix: $prefix
+	NeMeSI Binary path: $exec_prefix/bin/nemesi
+	NeMeSI Plugins dir: $nemesi_plugindir
+	NeMeSI Thorbbers dir: $nemesi_throbberdir
+
+	Byte order: this is a $BIGENDIAN machine
+
+	LibSDL support enabled:		$NEMESI_HAVE_SDL
+	LibAVCodec support enabled:	$NEMESI_HAVE_AVC
+
+	GUI support enabled:		$NEMESI_HAVE_GTK
+
+ 'make' will now compile NeMeSI and 'su -c make install' will install it.
+ Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.
+])
 dnl

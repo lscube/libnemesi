@@ -15,4 +15,5 @@ endif
 
 
 libaudio_la_LDFLAGS = -static
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+libaudio_la_LIBADD = @SDL_LIBS@
+INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir) @SDL_CFLAGS@

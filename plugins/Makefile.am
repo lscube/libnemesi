@@ -26,5 +26,6 @@ clean:
 	echo " done"
 
 distclean: clean
+maintainer-clean: clean
 
 .PHONY: distclean

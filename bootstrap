@@ -2,7 +2,7 @@
 
 function dots ()
 {
-	while ps -h $1 >/dev/null; do
+	while ps --no-headers $1 >/dev/null; do
 		sleep 0.5;
 		echo -n ".";
 	done	
@@ -10,9 +10,14 @@ function dots ()
 
 echo
 echo "Bootstrapping NeMeSI package AutoTools configuration..."
+
+if ! test -d config; then
+	mkdir config;
+fi
+
 if which libtoolize >/dev/null 2>&1 ; then
 	echo -n "Running libtoolize..."
-	libtoolize --force --copy --ltdl --automake &
+	libtoolize --force --copy --automake &
 #	libtoolize --automake &
 	echo " done."
 fi
@@ -37,7 +42,7 @@ if which autoconf >/dev/null 2>&1 ; then
 fi
 if which automake >/dev/null 2>&1 ; then
 	echo -n "Running automake..."
-	automake --gnu --add-missing --copy --force-missing&
+	automake --gnu --add-missing --copy --force-missing 2>&1 | grep -v installing&
 	dots $! 
 	echo " done."
 fi
