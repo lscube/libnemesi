@@ -29,12 +29,22 @@
 #ifndef _LIB_CC_STREAMING
 #define _LIB_CC_STREAMING
 
+//! definition of couples containing name and description for each valid cc license
+#define CC_LICENSES { \
+			{ "uriLicense", "License URI" }, \
+			{ "uriMetadata", "Validation URL" }, \
+			{ "title", "Title of the presentation" }, \
+			{ "creator", "Author of the presentation" } \
+		    }
+
 typedef struct {
 	char *uriLicense;	//!< License URI
 	char *uriMetadata;	//!< Validation URL
 	char *title;		//!< Title of the presentation
 	char *creator;		//!< Author of the presentation
 } cc_license;
+
+int issdplicense(char *sdp_a);
 
 #endif // _LIB_CC_STREAMING
 

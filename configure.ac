@@ -260,6 +260,7 @@ dnl if test x$NEMESI_HAVE_GTK = xyes; then
 AC_CONFIG_FILES([egui/Makefile])
 dnl fi
 
+AC_CONFIG_FILES([libCCstreaming/Makefile])
 AC_CONFIG_FILES([rtp/Makefile])
 AC_CONFIG_FILES([rtcp/Makefile])
 AC_CONFIG_FILES([sdp/Makefile])

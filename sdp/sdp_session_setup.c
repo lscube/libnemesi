@@ -96,25 +96,11 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 					nmserror("Error setting SDP session atrtibute");
 					return NULL;
 				}
-				/*
-				if ( !strncmpcase(tkn, "control", 7) ) {
-					tkn+=7;
-					while ( (*(tkn)==' ') || (*(tkn)==':') )
-						tkn++;
-					rtsp_th->rtsp_queue->pathname=tkn;
-					rtsp_th->type=CONTAINER;
-				}
-				*/
 				break;
 			case 'm':
 				tkn[strlen(tkn)]='\n';
 				if (!(new->media_info_queue=sdp_media_setup(&tkn, descr_len-(tkn-descr))))
 					return NULL;
-				/*
-				if ( set_rtsp_media(rtsp_th, content_length-(tkn-rtsp_th->rtsp_queue->body), \
-							&tkn) )
-					return 1;
-				*/
 				break;
 		}
 	} while ( (tkn+strlen(tkn)-descr+2)<descr_len );
