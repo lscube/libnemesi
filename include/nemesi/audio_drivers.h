@@ -52,13 +52,14 @@ typedef struct {
 	NMSADrvInfo *info;
         /*
          * Initialize the audio driver.
-	 * params:
+	 * params: (in and out)
          * 	rate:
 	 * 	channels: number of channels
 	 * 	format:
          * returns : zero on successful initialization, non-zero on error.
          */
-        uint32 (*init)(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, uint32 flags, const char *arg);
+	// XXX: rate, channels and format are both input and output parameters
+        uint32 (*init)(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms, uint32 flags, const char *arg);
 	/*
 	 * Control interface
 	 * params:
@@ -108,7 +109,7 @@ extern NMSAFunctions nms_audio_sdl;
 #endif
 
 void list_audio_out(void);
-NMSAFunctions *init_best_audio_out(char *, uint32);
+NMSAFunctions *init_best_audio_out(char *,uint32 *, uint8 *, uint32 *, uint32);
 /*
 char *ao_format_name(int format);
 int ao_init(void);

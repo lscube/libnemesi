@@ -141,7 +141,7 @@ static uint32 sdl_init(const char *arg)
 	return 0;
 }
 
-static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, uint32 flags, const char *arg)
+static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms, uint32 flags, const char *arg)
 {
 	SDL_AudioSpec requested_fmt;
 	uint32 buff_size;
@@ -151,7 +151,7 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 
 	sdl_priv.last_pts = 0;
 
-	switch(format) {
+	switch(*format) {
 	    case AFMT_U8:
 		requested_fmt.format = AUDIO_U8;
 		sdl_priv.bytes_x_sample = 1;
@@ -177,7 +177,7 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 		sdl_priv.bytes_x_sample = 2;
 	    break;
 	    default:
-                return nmserror("SDL: Unsupported audio format: %s (0x%x).", audio_format_name(format), format);
+                return nmserror("SDL: Unsupported audio format: %s (0x%x).", audio_format_name(*format), *format);
 		break;
 	}
 
@@ -185,15 +185,15 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 		buff_size = AUDIO_BUFF_SIZE;
 		nmsprintf(3, "Setting default audio system buffer\n");
 	} else
-		buff_size = buff_ms * rate * channels * sdl_priv.bytes_x_sample / 1000;
+		buff_size = buff_ms * (*rate) * (*channels) * sdl_priv.bytes_x_sample / 1000;
 	if (sdl_priv.audio_buffer)
 		free(sdl_priv.audio_buffer);
 	if ( (sdl_priv.audio_buffer=ab_init(buff_size)) == NULL )
 		return nmserror("Failed while initializing Audio Buffer\n");
 	nmsprintf(3, "Audio system buffer: %u\n", buff_size);
 
-	requested_fmt.freq = rate;
-	requested_fmt.channels = channels;
+	requested_fmt.freq = *rate;
+	requested_fmt.channels = *channels;
 	requested_fmt.samples = SAMPLES;
 	requested_fmt.callback = SDL_mixaudio;
 	requested_fmt.userdata = (void *)(sdl_priv.audio_buffer);
@@ -201,11 +201,39 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 	if ( SDL_OpenAudio(&requested_fmt, &(sdl_priv.aspec)) < 0 )
 		return nmserror("SDL: unable to open audio: %s", SDL_GetError());
 
+	// set output parameters
+	*rate = sdl_priv.aspec.freq;
+	*channels = sdl_priv.aspec.channels;
+	switch(sdl_priv.aspec.format) {
+	    case AUDIO_U8:
+		*format = AFMT_U8;
+		break;
+	    case AUDIO_S16LSB:
+		*format = AFMT_S16_LE;
+		break;
+	    case AUDIO_S16MSB:
+		*format = AFMT_S16_BE;
+		break;
+	    case AUDIO_S8:
+		*format = AFMT_S8;
+		break;
+	    case AUDIO_U16LSB:
+		*format = AFMT_U16_LE;
+		break;
+	    case AUDIO_U16MSB:
+		*format = AFMT_U16_BE;
+		break;
+	    default:
+                return nmserror("SDL: Unsupported audio format returned: %s (0x%x).", audio_format_name(*format), *format);
+		break;
+	}
+	
 	nmsprintf(1, "SDL Audio initialization completed successfully\n\n");
 	nmsprintf(2, "FREQ: requested %d -> obtained %d\n", requested_fmt.freq, sdl_priv.aspec.freq);
 	nmsprintf(2, "FORMAT: requested %u -> obtained %u\n", requested_fmt.format, sdl_priv.aspec.format);
 	nmsprintf(2, "CHANNELS: requested %hu -> obtained %hu\n", requested_fmt.channels, sdl_priv.aspec.channels);
 	nmsprintf(2, "SAMPLE: requested %hu -> obtained %hu\n", requested_fmt.samples, sdl_priv.aspec.samples);
+
 
 	return 0;
 }

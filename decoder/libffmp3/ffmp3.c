@@ -42,6 +42,8 @@
 
 #define BUFFER 8192 
 
+// #define RESAMPLED
+
 int get_plugin_pt(void);
 int decode(char *, int, NMSOutput *);
 
@@ -60,6 +62,13 @@ int decode(char *data, int len, NMSOutput *outc)
 	static int16_t out[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 	int len_tmp=0;
 	uint8 *audio_data;
+#ifdef RESAMPLED
+	// audio resample
+	ReSampleContext *resample_c = NULL;
+	uint8 channels;
+	uint32 rate;
+	static int16_t out_resampled[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+#endif // RESAMPLED
 
 	if (outc->audio)
 		funcs = outc->audio->functions;
@@ -84,11 +93,34 @@ int decode(char *data, int len, NMSOutput *outc)
 			fprintf(stderr, "could not open codec\n");
 			exit(1);
 		}
+
+		// fprintf(stderr, "channels: %d, rate: %d\n", outc->audio->channels, outc->audio->rate);
     
 	}
 
+#ifdef RESAMPLED
+	channels = outc->audio->channels;
+	rate = outc->audio->rate;
+#endif // RESAMPLED
+
 	while ( len_tmp < (len - 4) ) {
 		len_tmp += avcodec_decode_audio(c, (int16_t *)out, (int *)&out_size, (uint8_t *)(data + 4 + len_tmp), (int)(len  - 4 - len_tmp));
+#ifdef RESAMPLED
+		// fprintf(stderr, "%d,%d\n", c->sample_rate, c->channels);
+		if ( (rate != c->sample_rate) || (channels != c->channels) ) {
+		       if ( !resample_c ) {
+			      resample_c = audio_resample_init(channels, c->channels, rate, c->sample_rate);
+		       }
+		       audio_resample(resample_c, out_resampled, out, out_size / (c->channels * 2));
+		       out_size = out_size * channels * 2;
+			if (out_size > 0){
+				// audio_data=(*ab_get)((uint32)out_size);
+				audio_data=funcs->get_buff((uint32)out_size);
+				memcpy(audio_data, out_resampled, out_size);
+				funcs->play_buff(audio_data, (uint32)out_size, outc->elapsed);
+			}
+		} else
+#endif // RESAMPLED
 		if (out_size > 0){
 			// audio_data=(*ab_get)((uint32)out_size);
 			audio_data=funcs->get_buff((uint32)out_size);

@@ -51,9 +51,16 @@
 #define FORMAT AFMT_S16_BE
 #endif
 
+#define AUDIO_SETTINGS \
+	uint32 rate; \
+	uint8 channels; \
+	uint32 format;
+
 typedef struct {
 	// True (1) if initialized
 	uint8 init;
+	// audio settings
+	AUDIO_SETTINGS
 	//! Functions for the specific audio output driver
 	NMSAFunctions *functions;
 } NMSAudio;
