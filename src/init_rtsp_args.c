@@ -56,6 +56,7 @@ int init_rtsp_args(struct RTSP_args **rtsp_args)
 		return 1;
 	(*rtsp_args)->rtsp_th->fd = -1;
 	(*rtsp_args)->rtsp_th->status = INIT;
+	(*rtsp_args)->rtsp_th->descr_fmt = 0;
 	memset((*rtsp_args)->rtsp_th->waiting_for, '\0', strlen((*rtsp_args)->rtsp_th->waiting_for));
 	(*rtsp_args)->rtsp_th->busy=0;
 	(*rtsp_args)->rtsp_th->urlname = NULL;

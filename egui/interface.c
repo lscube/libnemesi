@@ -46,17 +46,24 @@ create_nemesi (void)
   GtkWidget *menuitem4;
   GtkWidget *menu4;
   GtkWidget *about1;
+  GtkWidget *statushbox;
   GtkWidget *statusbar;
   GtkWidget *handlebox1;
   GtkWidget *hbox2;
   GtkWidget *toolbar;
+  gint tmp_toolbar_icon_size;
   GtkWidget *open_cmd;
-  GtkWidget *tmp_toolbar_icon;
+  GtkWidget *separatortoolitem1;
+  GtkWidget *tmp_image;
   GtkWidget *toggle_play_pause;
   GtkWidget *stop_cmd;
+  GtkWidget *separatortoolitem2;
   GtkWidget *close_cmd;
   GtkWidget *hscale2;
   GtkAccelGroup *accel_group;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   accel_group = gtk_accel_group_new ();
 
@@ -142,10 +149,16 @@ create_nemesi (void)
   gtk_widget_show (about1);
   gtk_container_add (GTK_CONTAINER (menu4), about1);
 
+  statushbox = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (statushbox, "statushbox");
+  gtk_widget_show (statushbox);
+  gtk_box_pack_end (GTK_BOX (vbox1), statushbox, TRUE, TRUE, 0);
+
   statusbar = gtk_statusbar_new ();
   gtk_widget_set_name (statusbar, "statusbar");
   gtk_widget_show (statusbar);
-  gtk_box_pack_end (GTK_BOX (vbox1), statusbar, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (statushbox), statusbar, TRUE, TRUE, 0);
+  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (statusbar), FALSE);
 
   handlebox1 = gtk_handle_box_new ();
   gtk_widget_set_name (handlebox1, "handlebox1");
@@ -162,42 +175,46 @@ create_nemesi (void)
   gtk_widget_show (toolbar);
   gtk_box_pack_start (GTK_BOX (hbox2), toolbar, FALSE, FALSE, 0);
   gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_ICONS);
+  gtk_toolbar_set_show_arrow (GTK_TOOLBAR (toolbar), FALSE);
+  tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar));
 
-  open_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
-                                "gtk-open",
-                                "gtk-open",
-                                NULL, NULL, NULL, -1);
+  open_cmd = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-open");
   gtk_widget_set_name (open_cmd, "open_cmd");
   gtk_widget_show (open_cmd);
+  gtk_container_add (GTK_CONTAINER (toolbar), open_cmd);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (open_cmd), tooltips, "Open location", NULL);
 
-  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+  separatortoolitem1 = (GtkWidget*) gtk_separator_tool_item_new ();
+  gtk_widget_set_name (separatortoolitem1, "separatortoolitem1");
+  gtk_widget_show (separatortoolitem1);
+  gtk_container_add (GTK_CONTAINER (toolbar), separatortoolitem1);
 
-  tmp_toolbar_icon = gtk_image_new_from_stock ("gtk-go-forward", gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar)));
-  toggle_play_pause = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
-                                GTK_TOOLBAR_CHILD_TOGGLEBUTTON,
-                                NULL,
-                                "_Play",
-                                "play/pause streaming", NULL,
-                                tmp_toolbar_icon, NULL, NULL);
-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
+  toggle_play_pause = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (toggle_play_pause), "_Play");
+  tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
+  gtk_widget_show (tmp_image);
+  gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (toggle_play_pause), tmp_image);
   gtk_widget_set_name (toggle_play_pause, "toggle_play_pause");
   gtk_widget_show (toggle_play_pause);
+  gtk_container_add (GTK_CONTAINER (toolbar), toggle_play_pause);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toggle_play_pause), tooltips, "play/pause streaming", NULL);
 
-  stop_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
-                                "gtk-stop",
-                                "gtk-stop",
-                                NULL, NULL, NULL, -1);
+  stop_cmd = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-stop");
   gtk_widget_set_name (stop_cmd, "stop_cmd");
   gtk_widget_show (stop_cmd);
+  gtk_container_add (GTK_CONTAINER (toolbar), stop_cmd);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (stop_cmd), tooltips, "stop streaming", NULL);
 
-  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+  separatortoolitem2 = (GtkWidget*) gtk_separator_tool_item_new ();
+  gtk_widget_set_name (separatortoolitem2, "separatortoolitem2");
+  gtk_widget_show (separatortoolitem2);
+  gtk_container_add (GTK_CONTAINER (toolbar), separatortoolitem2);
 
-  close_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
-                                "gtk-close",
-                                "gtk-close",
-                                NULL, NULL, NULL, -1);
+  close_cmd = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-close");
   gtk_widget_set_name (close_cmd, "close_cmd");
   gtk_widget_show (close_cmd);
+  gtk_container_add (GTK_CONTAINER (toolbar), close_cmd);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (close_cmd), tooltips, "close connection", NULL);
 
   hscale2 = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
   gtk_widget_set_name (hscale2, "hscale2");
@@ -250,15 +267,19 @@ create_nemesi (void)
   GLADE_HOOKUP_OBJECT (nemesi, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (nemesi, menu4, "menu4");
   GLADE_HOOKUP_OBJECT (nemesi, about1, "about1");
+  GLADE_HOOKUP_OBJECT (nemesi, statushbox, "statushbox");
   GLADE_HOOKUP_OBJECT (nemesi, statusbar, "statusbar");
   GLADE_HOOKUP_OBJECT (nemesi, handlebox1, "handlebox1");
   GLADE_HOOKUP_OBJECT (nemesi, hbox2, "hbox2");
   GLADE_HOOKUP_OBJECT (nemesi, toolbar, "toolbar");
   GLADE_HOOKUP_OBJECT (nemesi, open_cmd, "open_cmd");
+  GLADE_HOOKUP_OBJECT (nemesi, separatortoolitem1, "separatortoolitem1");
   GLADE_HOOKUP_OBJECT (nemesi, toggle_play_pause, "toggle_play_pause");
   GLADE_HOOKUP_OBJECT (nemesi, stop_cmd, "stop_cmd");
+  GLADE_HOOKUP_OBJECT (nemesi, separatortoolitem2, "separatortoolitem2");
   GLADE_HOOKUP_OBJECT (nemesi, close_cmd, "close_cmd");
   GLADE_HOOKUP_OBJECT (nemesi, hscale2, "hscale2");
+  GLADE_HOOKUP_OBJECT_NO_REF (nemesi, tooltips, "tooltips");
 
   gtk_window_add_accel_group (GTK_WINDOW (nemesi), accel_group);
 
@@ -355,7 +376,6 @@ create_aboutdialog (void)
   gtk_box_pack_end (GTK_BOX (dialogvbox), aboutlabel, TRUE, TRUE, 0);
   GTK_WIDGET_SET_FLAGS (aboutlabel, GTK_CAN_FOCUS);
   gtk_label_set_use_markup (GTK_LABEL (aboutlabel), TRUE);
-  gtk_label_set_justify (GTK_LABEL (aboutlabel), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (aboutlabel), TRUE);
   gtk_label_set_selectable (GTK_LABEL (aboutlabel), TRUE);
 

@@ -39,7 +39,7 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 	// check for active rtp/rtcp session
 	if(sess && sess->media_queue && sess->media_queue->rtp_sess) {
 		if(sess->media_queue->rtp_sess->rtcp_tid > 0){
-			nmsprintf(2, "Sending cancel signal to RTCP Thread (ID: %d)\n", sess->media_queue->rtp_sess->rtcp_tid);
+			nmsprintf(2, "Sending cancel signal to RTCP Thread (ID: %lu)\n", sess->media_queue->rtp_sess->rtcp_tid);
 			if (pthread_cancel(sess->media_queue->rtp_sess->rtcp_tid) != 0)
 				nmsprintf(3, "Error while sending cancelation to RTCP Thread.\n");
 			else
@@ -48,7 +48,7 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 				nmsprintf(3, "Warning! RTCP Thread joined, but  not canceled!\n");
 		}
 		if(sess->media_queue->rtp_sess->rtp_tid > 0){
-			nmsprintf(2, "Sending cancel signal to RTP Thread (ID: %d)\n", sess->media_queue->rtp_sess->rtp_tid);
+			nmsprintf(2, "Sending cancel signal to RTP Thread (ID: %lu)\n", sess->media_queue->rtp_sess->rtp_tid);
 			if(pthread_cancel(sess->media_queue->rtp_sess->rtp_tid) != 0)
 				nmsprintf(3, "Error while sending cancelation to RTP Thread.\n");
 			else

@@ -11,6 +11,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <signal name="destroy" handler="gtk_main_quit" last_modification_time="Mon, 29 Mar 2004 16:43:28 GMT"/>
 
   <child>
@@ -146,14 +151,27 @@
       </child>
 
       <child>
-	<widget class="GtkStatusbar" id="statusbar">
+	<widget class="GtkHBox" id="statushbox">
 	  <property name="visible">True</property>
-	  <property name="has_resize_grip">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">0</property>
+
+	  <child>
+	    <widget class="GtkStatusbar" id="statusbar">
+	      <property name="visible">True</property>
+	      <property name="has_resize_grip">False</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
-	  <property name="expand">False</property>
-	  <property name="fill">False</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
 	  <property name="pack_type">GTK_PACK_END</property>
 	</packing>
       </child>
@@ -177,55 +195,98 @@
 		  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
 		  <property name="toolbar_style">GTK_TOOLBAR_ICONS</property>
 		  <property name="tooltips">True</property>
+		  <property name="show_arrow">False</property>
 
 		  <child>
-		    <widget class="button" id="open_cmd">
+		    <widget class="GtkToolButton" id="open_cmd">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Open location</property>
-		      <property name="label">gtk-open</property>
-		      <property name="use_stock">True</property>
+		      <property name="stock_id">gtk-open</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
 		      <signal name="clicked" handler="on_open_cmd_clicked" last_modification_time="Wed, 31 Mar 2004 11:17:40 GMT"/>
 		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="toggle" id="toggle_play_pause">
-		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">play/pause streaming</property>
-		      <property name="label" translatable="yes">_Play</property>
-		      <property name="use_underline">True</property>
-		      <property name="stock_pixmap">gtk-go-forward</property>
-		      <property name="active">False</property>
-		      <property name="inconsistent">False</property>
-		      <property name="new_group">True</property>
-		      <signal name="toggled" handler="on_toggle_play_pause_toggled" last_modification_time="Mon, 29 Mar 2004 17:56:54 GMT"/>
-		    </widget>
 		    <packing>
-		      <property name="new_group">True</property>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
 		    </packing>
 		  </child>
 
 		  <child>
-		    <widget class="button" id="stop_cmd">
+		    <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
 		      <property name="visible">True</property>
-		      <property name="tooltip" translatable="yes">stop streaming</property>
-		      <property name="label">gtk-stop</property>
-		      <property name="use_stock">True</property>
-		      <signal name="clicked" handler="on_stop_cmd_clicked" last_modification_time="Mon, 29 Mar 2004 18:30:03 GMT"/>
+		      <property name="draw">True</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
 		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">False</property>
+		    </packing>
 		  </child>
 
 		  <child>
-		    <widget class="button" id="close_cmd">
+		    <widget class="GtkToggleToolButton" id="toggle_play_pause">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">play/pause streaming</property>
+		      <property name="label" translatable="yes">_Play</property>
+		      <property name="use_underline">True</property>
+		      <property name="stock_id">gtk-go-forward</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
+		      <property name="active">False</property>
+		      <signal name="toggled" handler="on_toggle_play_pause_toggled" last_modification_time="Mon, 29 Mar 2004 17:56:54 GMT"/>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkToolButton" id="stop_cmd">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">stop streaming</property>
+		      <property name="stock_id">gtk-stop</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
+		      <signal name="clicked" handler="on_stop_cmd_clicked" last_modification_time="Mon, 29 Mar 2004 18:30:03 GMT"/>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorToolItem" id="separatortoolitem2">
+		      <property name="visible">True</property>
+		      <property name="draw">True</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkToolButton" id="close_cmd">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">close connection</property>
-		      <property name="label">gtk-close</property>
-		      <property name="use_stock">True</property>
-		      <property name="new_group">True</property>
+		      <property name="stock_id">gtk-close</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
 		      <signal name="clicked" handler="on_close_cmd_clicked" last_modification_time="Tue, 30 Mar 2004 17:33:40 GMT"/>
 		    </widget>
 		    <packing>
-		      <property name="new_group">True</property>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
 		    </packing>
 		  </child>
 		</widget>
@@ -277,6 +338,11 @@
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -298,6 +364,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	      <signal name="clicked" handler="on_cancelbutton1_clicked" last_modification_time="Wed, 31 Mar 2004 11:24:00 GMT"/>
 	    </widget>
@@ -312,6 +379,7 @@
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
 	      <signal name="clicked" handler="on_okbutton1_clicked" last_modification_time="Wed, 31 Mar 2004 11:36:34 GMT"/>
 	    </widget>
@@ -356,6 +424,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -377,6 +450,7 @@
 	      <property name="label" translatable="yes">credits</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NONE</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_credits_clicked" last_modification_time="Fri, 02 Apr 2004 11:26:14 GMT"/>
 	    </widget>
@@ -390,6 +464,7 @@
 	      <property name="label">gtk-go-back</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NONE</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">0</property>
 	      <signal name="clicked" handler="on_backabout_clicked" last_modification_time="Fri, 02 Apr 2004 15:10:34 GMT"/>
 	    </widget>
@@ -404,6 +479,7 @@
 	      <property name="label">gtk-close</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NONE</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-7</property>
 	      <signal name="clicked" handler="on_closeabout_clicked" last_modification_time="Fri, 02 Apr 2004 11:18:01 GMT"/>
 	    </widget>
@@ -457,6 +533,8 @@
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="editable">False</property>
+	      <property name="overwrite">False</property>
+	      <property name="accepts_tab">True</property>
 	      <property name="justification">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap_mode">GTK_WRAP_NONE</property>
 	      <property name="cursor_visible">False</property>

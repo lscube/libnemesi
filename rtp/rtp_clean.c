@@ -40,7 +40,7 @@ void rtp_clean(void *args)
 	nmsprintf(2, "RTP Thread is dying suicide!\n");
 
 	if(rtp_sess->dec_tid > 0) {
-		nmsprintf(2, "Sending cancel signal to Decoder Thread (ID: %d)\n", rtp_sess->dec_tid);
+		nmsprintf(2, "Sending cancel signal to Decoder Thread (ID: %lu)\n", rtp_sess->dec_tid);
 		if (pthread_cancel(rtp_sess->dec_tid) != 0)
 			nmsprintf(3, "Error while sending cancelation to Decoder Thread.\n");
 		else

@@ -36,8 +36,8 @@
  * To know what are the conditions of the license we parse the uri and look for
  * short names.
  *
- * \param uri license uri to parse.  \param conds CCPermissions structure to be
- * filled.
+ * \param uri license uri to parse.
+ * \param conds CCPermissions structure to be filled.
  */
 int cc_parse_urilicense(char *uri, CCPermsMask *mask)
 {

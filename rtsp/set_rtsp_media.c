@@ -31,7 +31,7 @@
 #include <nemesi/utils.h>
 #include <nemesi/rtpptdefs.h>
 
-int set_rtsp_media(struct RTSP_Thread *rtsp_th, char description_format)
+int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 {
 
 	struct RTSP_Session *curr_rtsp_s=rtsp_th->rtsp_queue;
@@ -42,7 +42,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th, char description_format)
 	uint8 pt;
 	
 
-	switch (description_format) {
+	switch (rtsp_th->descr_fmt) {
 		case DESCRIPTION_SDP_FORMAT :
 			for(sdp_m=curr_rtsp_s->info->media_info_queue; sdp_m; sdp_m=sdp_m->next) {
 				if ( curr_rtsp_m==NULL ) {

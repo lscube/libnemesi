@@ -36,7 +36,6 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 	char *prev_tkn;/* punta prima al token precedente per il controllo sulla fine dell'header
 			  e poi ai vari componenti della riga di comando */
 	int content_length;
-	char description_format=0;
 	char *content_base=NULL;
 
 	if ( (prev_tkn=strtok((rtsp_th->in_buffer).data,"\n"))==NULL ) {
@@ -65,7 +64,8 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 			while ( (*(prev_tkn)==' ') || (*(prev_tkn)==':') )
 				prev_tkn++;
 			if ( !strncmpcase(prev_tkn, "application/sdp", 15) )
-				description_format=DESCRIPTION_SDP_FORMAT;
+				rtsp_th->descr_fmt=DESCRIPTION_SDP_FORMAT;
+				// description_format=DESCRIPTION_SDP_FORMAT;
 			/* 
 			else if ( !strncmpcase(prev_tkn, "application/x-rtsp-mh", 21) )
 				description_format=DESCRIPTION_MH_FORMAT;
@@ -89,7 +89,8 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 		tkn=strtok(NULL, "\n"); /* cerco l'inizio del body o, eventualmente del prossimo pkt */
 	if ( tkn!=NULL )
 		tkn[strlen(tkn)]='\n'; /* rimetto a posto il \n modificato dalla strtok */
-	if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn, description_format) ) {
+	// if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn, description_format) ) {
+	if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn) ) {
 		rtsp_th->busy=0;	
 		return 1;
 	}

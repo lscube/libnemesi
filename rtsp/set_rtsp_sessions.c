@@ -29,12 +29,12 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *content_base, char *body, char description_format)
+int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *content_base, char *body)
 {
 	SDP_attr *sdp_a;
 	char *tkn;
 	
-	switch (description_format) {
+	switch (rtsp_th->descr_fmt) {
 		case DESCRIPTION_SDP_FORMAT :
 			if ( !(rtsp_th->rtsp_queue=rtsp_sess_create(rtsp_th->urlname, content_base)) )
 				return 1;
@@ -61,7 +61,7 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 			}
 
 			// media setup
-			if (set_rtsp_media(rtsp_th, description_format))
+			if (set_rtsp_media(rtsp_th))
 				return 1;
 
 			// for (tmp_sdp=curr_rtsp_s->)

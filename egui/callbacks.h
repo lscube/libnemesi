@@ -17,7 +17,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_toggle_play_pause_toggled           (GtkToggleButton *togglebutton,
+on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
                                         gpointer         user_data);
 
 void

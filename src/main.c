@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 	/* THREAD CANCEL */	
 	nmsprintf(2, "Sending cancel signal to all threads\n");
 	if(rtsp_tid > 0){
-		nmsprintf(2, "Sending cancel signal to RTSP Thread (ID: %ld)\n", rtsp_tid);
+		nmsprintf(2, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_tid);
 		if (pthread_cancel(rtsp_tid) != 0)
 			nmsprintf(3, "Error while sending cancelation to RTSP Thread.\n");
 		else

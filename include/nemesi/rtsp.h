@@ -229,6 +229,7 @@ struct RTSP_Thread {
 								  della
 								  macchina a
 								  stati. */
+	char descr_fmt;
 	unsigned char busy;	/*!< valore booleano che indica se c'è una
 				  richiesta in sospeso per cui si stat
 				  aspettando una risposta da server. */
@@ -293,8 +294,8 @@ int get_transport_str(struct RTP_Session *, char *);
 void *get_curr_sess(int cmd, ...);
 // int get_curr_sess(struct RTSP_Thread *, struct RTSP_Session **, struct RTSP_Medium **);
 
-int set_rtsp_sessions(struct RTSP_Thread *, int, char *, char *, char);
-int set_rtsp_media(struct RTSP_Thread *, char);
+int set_rtsp_sessions(struct RTSP_Thread *, int, char *, char *);
+int set_rtsp_media(struct RTSP_Thread *);
 struct RTSP_Session *rtsp_sess_copy(struct RTSP_Session *);
 struct RTSP_Session *rtsp_sess_create(char *, char *);
 struct RTSP_Medium *rtsp_med_create(int);

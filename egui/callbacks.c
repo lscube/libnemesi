@@ -9,8 +9,11 @@
 #include "support.h"
 
 #include "gui_throbber.h"
+#include "gui_statusbar.h"
+#include "gui_cc.h"
 #include <nemesi/egui.h>
 #include <nemesi/etui.h>
+#include <nemesi/methods.h>
 
 #define CREDITS	"NeMeSI -- Network Media Streamer I\n\n"\
 		"\tCopyleft 2001\n"\
@@ -25,17 +28,20 @@ static GtkWidget *opendialog=NULL;
 static GtkWidget *aboutdialog=NULL;
 static struct RTSP_args *rtsp_args;
 
+static gboolean internal_call = FALSE;
+
 void save_static_data(gpointer new_nemesi, gpointer new_rtsp_args)
 {
 	nemesi = new_nemesi;
 	rtsp_args = new_rtsp_args;
+
+	// GUI statusbar initialization
+	gnms_stbar_init(GTK_BOX(lookup_widget(nemesi, "statushbox")));
+	cc_stbarw_add(rtsp_args->rtsp_th);
 }
 
 void update_toolbar(void)
 {
-	GtkStatusbar *statusbar = (GtkStatusbar *)lookup_widget(nemesi, "statusbar");
-	static guint status_cid=0;
-	char statusstr[32];
 	GtkWidget *toolbar = lookup_widget(nemesi, "toolbar");
 	GtkWidget *open_but;
 	GtkWidget *play_tog;
@@ -50,22 +56,24 @@ void update_toolbar(void)
 	play_tog = lookup_widget(nemesi, "toggle_play_pause");
 	stop_but = lookup_widget(nemesi, "stop_cmd");
 	close_but = lookup_widget(nemesi, "close_cmd");
+	internal_call = TRUE;
 	switch (rtsp_args->rtsp_th->status) {
 		case INIT:
 			gtk_widget_set_sensitive(open_but, TRUE);
 			gtk_widget_set_sensitive(play_tog, FALSE);
 			gtk_widget_set_sensitive(stop_but, FALSE);
 			gtk_widget_set_sensitive(close_but, FALSE);
+			// gnms_stbar_clear();
 			break;
 		case READY:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_tog), FALSE);
+			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), FALSE);
 			gtk_widget_set_sensitive(open_but, FALSE);
 			gtk_widget_set_sensitive(play_tog, TRUE);
 			gtk_widget_set_sensitive(stop_but, FALSE);
 			gtk_widget_set_sensitive(close_but, TRUE);
 			break;
 		case PLAYING:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(play_tog), TRUE);
+			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), TRUE);
 			gtk_widget_set_sensitive(open_but, FALSE);
 			gtk_widget_set_sensitive(play_tog, TRUE);
 			gtk_widget_set_sensitive(stop_but, TRUE);
@@ -74,11 +82,24 @@ void update_toolbar(void)
 		default:
 			break;
 	}
+	internal_call = FALSE;
 	gtk_widget_set_sensitive(toolbar, TRUE);
-	if (!status_cid)
-		status_cid = gtk_statusbar_get_context_id(statusbar, "Status");
-	sprintf(statusstr, "NeMeSI RTSP Status: %s", statustostr(rtsp_args->rtsp_th->status));
-	gtk_statusbar_push(statusbar, status_cid, statusstr);
+
+	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_args->rtsp_th->status));
+	gnms_stbar_update();
+
+	// Add elements to status bar
+	// CC licenses?
+#if 0
+	switch (rtsp_args->rtsp_th->descr_fmt) {
+		case DESCRIPTION_SDP_FORMAT:
+			// for (sdp_m=rtsp_args->rtsp_th->rtsp_queue->media_queue->)
+			break;
+		case DESCRIPTION_MH_FORMAT:
+		default:
+			break;
+	}
+#endif
 }
 
 void
@@ -94,6 +115,7 @@ void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	gnms_stbar_clear();
 	gtk_main_quit();
 }
 
@@ -119,15 +141,18 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
 
 
 void
-on_toggle_play_pause_toggled           (GtkToggleButton *togglebutton,
+on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
                                         gpointer         user_data)
 {
 	char argstr[] = " ";
 
-	if (gtk_toggle_button_get_active(togglebutton))
+	if (internal_call)
+		return;
+	if (gtk_toggle_tool_button_get_active(togglebutton))
 		send_play(rtsp_args, argstr);
 	else
 		send_pause(rtsp_args, 'z');
+
 	gui_throbber(&rtsp_args->rtsp_th->busy);
 
 }
