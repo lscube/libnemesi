@@ -52,8 +52,8 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 	pthread_mutex_lock(&(po->po_mutex));
 
 	i = po->pohead;
+
 	cseq = (uint32)ntohs(((rtp_pkt *) (*(po->bufferpool) + index))->seq) + cycles;
-	
 	while ((i != -1) && ((uint32)ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) + po->cycles > cseq)) {
 		i = po->pobuff[i].next;
 	}
@@ -70,15 +70,18 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 			po->pobuff[i].prev = index;
 		po->pobuff[index].prev = -1;
 		po->cycles=cycles;
-	} else {		/* inserimento */
+	} else {		
+		if (i == -1) { /* inserimento in coda*/
+			i = po->potail;
+			po->potail=index;
+		}
+		else	/* inserimento */
+			po->pobuff[po->pobuff[i].next].prev=index;		
+		
 		po->pobuff[index].next = po->pobuff[i].next;
 		po->pobuff[i].next = index;
 		po->pobuff[index].prev = i;
-		if (i == po->potail)	/* inserimento in coda */
-			po->potail = index;
-		else
-			po->pobuff[po->pobuff[index].next].prev = index;
-
+		
 		pthread_mutex_unlock(&(po->po_mutex));
 		return 2;
 	}
