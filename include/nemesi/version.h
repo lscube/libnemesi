@@ -32,9 +32,9 @@
 #include <config.h>
 
 #ifndef VERSION
-#define VERSION "0.1.2"
+#define VERSION "0.4.0"
 #endif
-#define VERSION_NAME "barbarians"
+#define VERSION_NAME "Kettle Shaft"
 #define PROG_NAME "NeMeSI"
 #define PROG_DESCR "NEtwork MEdia Streamer I"
 
