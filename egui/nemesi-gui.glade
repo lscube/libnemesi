@@ -563,7 +563,7 @@
 <widget class="GtkWindow" id="info">
   <property name="visible">True</property>
   <property name="title" translatable="yes">Info</property>
-  <property name="type">GTK_WINDOW_POPUP</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
   <property name="resizable">False</property>

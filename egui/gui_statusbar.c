@@ -161,9 +161,8 @@ void gnms_stbar_clear(void)
 	for (stw=nmsstatusbar.widgetq; stw; stw=stw->next) {
 		if (stw->destroyer)
 			stw->destroyer(stw->widget);
-		else {
+		else
 			gtk_widget_destroy(stw->widget);
-		}
 		free(stw);
 	}
 

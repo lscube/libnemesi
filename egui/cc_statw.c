@@ -49,16 +49,92 @@ static GtkWidget *cc_pix[5] = { NULL, NULL, NULL, NULL, NULL};
 
 static void cc_box_add_pixmap(char *pixname)
 {
-	static int pix_index = 0;
+	const int max_pixs = sizeof(cc_pix)/sizeof(GtkWidget *);
+	int pix_idx;
 
-	cc_pix[pix_index] = create_pixmap(NULL, pixname);
-	gtk_widget_show(cc_pix[pix_index]);
-	gtk_container_add (GTK_CONTAINER (cc_box), cc_pix[pix_index]);
+	for (pix_idx=0; pix_idx<max_pixs && cc_pix[pix_idx]; pix_idx++);
+	if (pix_idx >= max_pixs)
+		return;
+
+	cc_pix[pix_idx] = create_pixmap(NULL, pixname);
+	gtk_widget_show(cc_pix[pix_idx]);
+	gtk_container_add (GTK_CONTAINER (cc_box), cc_pix[pix_idx]);
 	// gtk_widget_show (cc_button);
 	
-	pix_index++;
+	pix_idx++;
 
 	return;
+}
+
+static void cc_box_clear_pixmaps(void)
+{
+	const int max_pixs = sizeof(cc_pix)/sizeof(GtkWidget *);
+	int pix_idx;
+
+	for (pix_idx=0; pix_idx<max_pixs && cc_pix[pix_idx]; pix_idx++) {
+		gtk_widget_destroy(cc_pix[pix_idx]);
+		cc_pix[pix_idx] = NULL;
+	}
+}
+
+static GtkWidget *add_root(GtkWidget **root)
+{
+	GtkWidget *expndr, *box;
+
+	expndr = gtk_expander_new("session infos");
+	if (root)
+		*root = expndr;
+
+	box = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(box);
+	gtk_container_add (GTK_CONTAINER(expndr), box);
+
+	gtk_expander_set_expanded (GTK_EXPANDER(expndr), TRUE);
+
+	gtk_widget_show(expndr);
+
+	return box;
+}
+
+static GtkWidget *add_node(const GtkWidget *where, const gchar *label)
+{
+	GtkWidget *expndr, *box, *fixed;
+
+	fixed = gtk_fixed_new();
+	gtk_widget_show(fixed);
+	if (where)
+		gtk_box_pack_start (GTK_BOX (where), fixed, FALSE, FALSE, 0);
+
+	expndr = gtk_expander_new(label);
+	gtk_expander_set_expanded (GTK_EXPANDER(expndr), TRUE);
+	gtk_widget_show(expndr);
+	gtk_fixed_put(GTK_FIXED(fixed), expndr, 16, 0);
+
+	box = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(box);
+	gtk_container_add (GTK_CONTAINER(expndr), box);
+
+	gtk_widget_show(fixed);
+
+	return box;
+}
+
+static GtkWidget *add_leaf(const GtkWidget *where)
+{
+	GtkWidget *box, *fixed;
+
+	fixed = gtk_fixed_new();
+	gtk_widget_show(fixed);
+	if (where)
+		gtk_box_pack_start (GTK_BOX (where), fixed, FALSE, FALSE, 0);
+
+	box = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(box);
+	gtk_fixed_put(GTK_FIXED(fixed), box, 16, 0);
+
+	gtk_widget_show(fixed);
+
+	return box;
 }
 
 static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
@@ -66,17 +142,14 @@ static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)user_data;
 	SDP_Session_info *sdp_s;
 	SDP_Medium_info *sdp_m;
-	GtkWidget *expndr, *box, *box1, *fixed, *lbl;
+	CCLicense *cc;
+	GtkWidget *root, *node, *leaf, *lbl;
 
 	if (gtk_toggle_button_get_active(togglebutton)) {
 		if (!rtsp_th->rtsp_queue)
 			return;
 		if (!cc_info) {
-			cc_info = gtk_expander_new("session infos");
-			box = gtk_vbox_new(FALSE, 0);
-			gtk_container_add (GTK_CONTAINER(cc_info), box);
-			gtk_widget_show(box);
-			gtk_expander_set_expanded (GTK_EXPANDER(cc_info), TRUE);
+			root = add_root(&cc_info);
 
 			switch (rtsp_th->descr_fmt) {
 				case DESCRIPTION_SDP_FORMAT:
@@ -84,20 +157,32 @@ static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 						gtk_expander_set_label(GTK_EXPANDER(cc_info), sdp_s->s);
 					}
 					for(sdp_m=sdp_s->media_info_queue; sdp_m; sdp_m=sdp_m->next) {
-						fixed = gtk_fixed_new();
-						gtk_widget_show(fixed);
-						gtk_box_pack_start (GTK_BOX (box), fixed, FALSE, FALSE, 0);
-
-						expndr = gtk_expander_new(sdp_m->m);
-						gtk_expander_set_expanded(GTK_EXPANDER(expndr), TRUE);
-						gtk_widget_show(expndr);
-						gtk_fixed_put (GTK_FIXED (fixed), expndr, 16, 0);
-
-						box1 = gtk_vbox_new(FALSE, 0);
-						gtk_widget_show(box1);
-						gtk_container_add (GTK_CONTAINER(expndr), box1);
-						// gtk_container_add(GTK_CONTAINER (box), expndr);
-
+						node = add_node(root, sdp_m->m);
+						cc = sdp_m->cc;
+						if (cc->uriLicense) {
+							leaf = add_leaf(node);
+							lbl = gtk_label_new(cc->uriLicense);
+							gtk_box_pack_start (GTK_BOX (leaf), lbl, FALSE, FALSE, 0);
+							gtk_widget_show(lbl);
+						}
+						if (cc->uriMetadata) {
+							leaf = add_leaf(node);
+							lbl = gtk_label_new(cc->uriMetadata);
+							gtk_box_pack_start (GTK_BOX (leaf), lbl, FALSE, FALSE, 0);
+							gtk_widget_show(lbl);
+						}
+						if (cc->title) {
+							leaf = add_leaf(node);
+							lbl = gtk_label_new(cc->title);
+							gtk_box_pack_start (GTK_BOX (leaf), lbl, FALSE, FALSE, 0);
+							gtk_widget_show(lbl);
+						}
+						if (cc->creator) {
+							leaf = add_leaf(node);
+							lbl = gtk_label_new(cc->creator);
+							gtk_box_pack_start (GTK_BOX (leaf), lbl, FALSE, FALSE, 0);
+							gtk_widget_show(lbl);
+						}
 					}
 					break;
 				default:
@@ -122,6 +207,7 @@ static gboolean cc_sdp_check(SDP_Medium_info *sdp_mqueue)
 	CC_BITMASK_T msk1st, mskcur;
 	CCPermsMask *msk=(CCPermsMask *)&msk1st;
 
+	cc_box_clear_pixmaps();
 	for (sdp_m=sdp_mqueue; sdp_m; sdp_m=sdp_m->next)
 		if(sdp_m->cc) {
 			if (!iscc)
@@ -162,8 +248,6 @@ static void cc_stbarw_upd(void *userdata)
 	switch (rtsp_th->status) {
 		case READY:
 		case PLAYING:
-			// cc_box_add_pixmap("nd.png");
-			// cc_box_add_pixmap("sa.png");
 			switch (rtsp_th->descr_fmt) {
 				case DESCRIPTION_SDP_FORMAT:
 					if (cc_sdp_check(rtsp_th->rtsp_queue->media_queue->medium_info))
@@ -176,6 +260,10 @@ static void cc_stbarw_upd(void *userdata)
 			break;
 		case INIT:
 		default:
+			if (cc_info) {
+				gtk_widget_destroy(cc_info);
+				cc_info = NULL;
+			}
 			gtk_widget_hide(cc_box);
 			break;
 	}
@@ -185,6 +273,9 @@ static void cc_stbarw_upd(void *userdata)
 
 static void cc_stbarw_rm(GtkWidget *widget)
 {
+	if (cc_info)
+		gtk_widget_destroy(cc_info);
+
 	gtk_widget_destroy(widget);
 }
 

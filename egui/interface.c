@@ -449,7 +449,7 @@ create_info (void)
 {
   GtkWidget *info;
 
-  info = gtk_window_new (GTK_WINDOW_POPUP);
+  info = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (info, "info");
   gtk_window_set_title (GTK_WINDOW (info), "Info");
   gtk_window_set_resizable (GTK_WINDOW (info), FALSE);
