@@ -37,7 +37,8 @@ struct audio_buff *ab_init(uint32 buff_size)
 {
 	struct audio_buff *buff;
 	pthread_mutexattr_t mutex_attr;
-	int n;
+	pthread_condattr_t cond_attr;
+	// int n;
 
 	if ( (buff = (struct audio_buff *)malloc(sizeof(struct audio_buff))) == NULL ) {
 		uiprintf("Cannot allocate memory.\n");
@@ -52,15 +53,21 @@ struct audio_buff *ab_init(uint32 buff_size)
 	buff->read_pos=buff->write_pos=buff->valid_data=buff->len=0;
 	buff->buff_size = buff_size;
 
-#if 1
-	if ((n = pthread_mutexattr_init(&mutex_attr)) > 0)
+	// nutex initialization
+	if (pthread_mutexattr_init(&mutex_attr) > 0)
 		return NULL;
 #ifdef	_POSIX_THREAD_PROCESS_SHARED
-	if ((n = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
+	if (pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED) > 0)
 		return NULL;
 #endif
-#endif
-	if ((n = pthread_mutex_init(&(buff->syn), &mutex_attr)) > 0)
+	if (pthread_mutex_init(&(buff->syn), &mutex_attr) > 0)
+		return NULL;
+
+	// cond initioalization
+	if (pthread_condattr_init(&cond_attr) > 0)
+		return NULL;
+
+	if (pthread_cond_init(&(buff->cond_full), &cond_attr) > 0)
 		return NULL;
 
 	ab_get(0, buff);

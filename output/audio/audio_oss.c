@@ -171,7 +171,6 @@ static uint32 play_buff(uint8 *data, uint32 len)
 	ioctl(audiofd,SNDCTL_DSP_GETOSPACE, &info);
 	len_in_frags = audio_buffer->len/info.fragsize;
 	bytes_to_copy = (min(len_in_frags, info.fragments))*info.fragsize;
-	fprintf(stderr, "\nbytes: %d\n", bytes_to_copy);
 	while (bytes_to_copy > 0) {
 		prev_to_valid = to_valid;
 		to_valid = min(bytes_to_copy,(audio_buffer->valid_data - audio_buffer->read_pos));
@@ -184,6 +183,7 @@ static uint32 play_buff(uint8 *data, uint32 len)
 		}
 		bytes_to_copy -= to_valid;
 		audio_buffer->len -= to_valid;
+		pthread_cond_signal(&(audio_buffer->cond_full));
 	}
 	pthread_mutex_unlock(&(audio_buffer->syn));
 

@@ -97,6 +97,7 @@ static void SDL_mixaudio(void *userdata, Uint8* stream, int len)
 		}
 		bytes_to_copy -= to_valid;
 		audio_buffer->len -= to_valid;
+		pthread_cond_signal(&(audio_buffer->cond_full));
 	}
 	pthread_mutex_unlock(&(audio_buffer->syn));
 

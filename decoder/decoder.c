@@ -91,6 +91,9 @@ void *decoder(void *args)
 
 	// Audio init
 	if ( !(nmsoutc->audio->init) && !(nmsoutc->audio->init=!nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0)) )
+		return NULL; // TODO: uscire dal thread
+
+// nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0);
 	
 	// select(0, NULL, NULL, NULL, &tvsleep);
 
@@ -147,6 +150,7 @@ void *decoder(void *args)
 							if ( !strcmp(output_pref, "card") ) {
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
 								nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+
 								// AUDIO
 								if(buffering_audio) {
 									if (audio_sysbuff > AUDIO_SYS_BUFF ) {

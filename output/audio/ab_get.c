@@ -40,6 +40,8 @@ uint8 *ab_get(uint32 len, ...)
 	if ( (len > 0) && (audio_buffer)) {
 		while(1) {
 			pthread_mutex_lock(&(audio_buffer->syn));
+			while ( (audio_buffer->len + len) > audio_buffer->buff_size )
+				pthread_cond_wait(&(audio_buffer->cond_full), &(audio_buffer->syn));
 			if ( (audio_buffer->write_pos >= audio_buffer->read_pos) ) {
 				if ((audio_buffer->write_pos + len) </*=*/ audio_buffer->buff_size /*AUDIO_BUFF_SIZE*/ ) {
 					audio_buffer->write_pos += len;
@@ -60,10 +62,12 @@ uint8 *ab_get(uint32 len, ...)
 				return &audio_buffer->audio_data[audio_buffer->write_pos-len];
 			}
 			pthread_mutex_unlock(&(audio_buffer->syn));
+			/*
 			uiprintf("No more space in System Buffer\n");
 			tv_sleep.tv_sec = 0;
 			tv_sleep.tv_usec = WAIT_IF_FULL*1000;
 			select(0, NULL, NULL, NULL, &tv_sleep);
+			*/
 		}
 	} else if ( len == 0 ){
 		/* audio buffer pointer assignement */
