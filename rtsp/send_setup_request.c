@@ -68,16 +68,16 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 		return 1;
 
 	if ( rtsp_sess->content_base != NULL)
-		sprintf(b, "%s %s/%s %s\n", SETUP_TKN, rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
+		sprintf(b, "%s %s/%s %s"RTSP_EL, SETUP_TKN, rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
 	else
-		sprintf(b, "%s %s %s\n", SETUP_TKN, rtsp_med->filename, RTSP_VER);
-	sprintf(b + strlen(b), "CSeq: %d\n", ++(rtsp_sess->CSeq));
-	sprintf(b + strlen(b), "Transport: %s\n", options);
+		sprintf(b, "%s %s %s"RTSP_EL, SETUP_TKN, rtsp_med->filename, RTSP_VER);
+	sprintf(b + strlen(b), "CSeq: %d"RTSP_EL, ++(rtsp_sess->CSeq));
+	sprintf(b + strlen(b), "Transport: %s"RTSP_EL, options);
 	
 	if (rtsp_sess->Session_ID) //Caso di controllo aggregato: è già stato definito un numero per la sessione corrente.
-		sprintf(b + strlen(b), "Session: %llu\n", rtsp_sess->Session_ID);
+		sprintf(b + strlen(b), "Session: %llu"RTSP_EL, rtsp_sess->Session_ID);
 	
-	strcat(b, "\r\n"); 
+	strcat(b, RTSP_EL); 
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
 		nmsprintf(NMSML_ERR, "Cannot send SETUP request...\n");

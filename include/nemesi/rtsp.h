@@ -60,12 +60,14 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 
-/*! Porta RTSP predefinita (impostazione di default dell'rfc) se non ne viene
- * specificata una in esplicitamente. */
+/*! Default RTSP port (default setting from rfc) if not explicitly scecified. */
 #define RTSP_DEFAULT_PORT 554
 
-/*! Versione del protocollo implementato. */
-#define RTSP_VER  "RTSP/1.0"
+/*! Version of implemented protocol. */
+#define RTSP_VER "RTSP/1.0"
+
+/*! RTSP End of Line. */
+#define RTSP_EL "\r\n"
 
 /*! 
  * Total number of recognized commands.

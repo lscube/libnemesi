@@ -40,20 +40,20 @@ int send_pause_request(struct RTSP_Thread *rtsp_th, char *range)
 	
 	if ( rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)
-			sprintf(b, "%s %s/%s %s\nCSeq: %d\n", PAUSE_TKN, rtsp_sess->content_base, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+			sprintf(b, "%s %s/%s %s"RTSP_EL"CSeq: %d"RTSP_EL, PAUSE_TKN, rtsp_sess->content_base, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 		else
-			sprintf(b, "%s %s %s\nCSeq: %d\n", PAUSE_TKN, rtsp_sess->content_base, RTSP_VER, ++(rtsp_sess->CSeq));
+			sprintf(b, "%s %s %s"RTSP_EL"CSeq: %d"RTSP_EL, PAUSE_TKN, rtsp_sess->content_base, RTSP_VER, ++(rtsp_sess->CSeq));
 	else
-		sprintf(b, "%s %s %s\nCSeq: %d\n", PAUSE_TKN, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+		sprintf(b, "%s %s %s"RTSP_EL"CSeq: %d"RTSP_EL, PAUSE_TKN, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 		
 	if (rtsp_sess->Session_ID != 0)	/* must add session ID? */
-		sprintf(b + strlen(b), "Session: %llu\n", rtsp_sess->Session_ID);
+		sprintf(b + strlen(b), "Session: %llu"RTSP_EL, rtsp_sess->Session_ID);
 	if (range && *range)
-		sprintf(b + strlen(b), "Range: %s\n", range);
+		sprintf(b + strlen(b), "Range: %s"RTSP_EL, range);
 	else
-		sprintf(b + strlen(b), "Range: time=0-\n");
+		sprintf(b + strlen(b), "Range: time=0-"RTSP_EL);
 	
-	strcat(b, "\r\n");
+	strcat(b, RTSP_EL);
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
 		nmsprintf(NMSML_ERR, "Cannot send PAUSE request...\n");
