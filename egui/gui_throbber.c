@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 
+#include "callbacks.h"
 #include <nemesi/egui.h>
 #include <nemesi/comm.h>
 
@@ -39,6 +40,7 @@ int gui_throbber(struct RTSP_args *rtsp_args)
 {
 	static gint timer=-1;
 
+	update_toolbar();
 	if (timer > 0)
 		g_source_remove(timer);
 	timer = g_timeout_add(10, progress_timeout, (gpointer *) rtsp_args);
@@ -50,7 +52,8 @@ static gint progress_timeout(gpointer data)
 	struct RTSP_args *rtsp_args = data;
 
 	if (!rtsp_args->rtsp_th->busy) {
-		nmsprintf(1, "Done\n");
+		update_toolbar();
+		nmsprintf(1, "[gui] Done\n");
 		return FALSE;
 	}
 	return TRUE;

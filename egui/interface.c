@@ -32,6 +32,7 @@ create_nemesi (void)
   GtkWidget *nemesi;
   GtkWidget *vbox1;
   GtkWidget *handlebox2;
+  GtkWidget *hbox3;
   GtkWidget *menubar;
   GtkWidget *menuitem1;
   GtkWidget *menu1;
@@ -52,10 +53,11 @@ create_nemesi (void)
   GtkWidget *menuitem4;
   GtkWidget *menu4;
   GtkWidget *about1;
+  GtkWidget *throbber;
   GtkWidget *statusbar;
   GtkWidget *handlebox1;
   GtkWidget *hbox2;
-  GtkWidget *toolbar1;
+  GtkWidget *toolbar;
   GtkWidget *open_cmd;
   GtkWidget *tmp_toolbar_icon;
   GtkWidget *toggle_play_pause;
@@ -81,10 +83,15 @@ create_nemesi (void)
   gtk_widget_show (handlebox2);
   gtk_box_pack_start (GTK_BOX (vbox1), handlebox2, FALSE, FALSE, 0);
 
+  hbox3 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox3, "hbox3");
+  gtk_widget_show (hbox3);
+  gtk_container_add (GTK_CONTAINER (handlebox2), hbox3);
+
   menubar = gtk_menu_bar_new ();
   gtk_widget_set_name (menubar, "menubar");
   gtk_widget_show (menubar);
-  gtk_container_add (GTK_CONTAINER (handlebox2), menubar);
+  gtk_box_pack_start (GTK_BOX (hbox3), menubar, TRUE, TRUE, 0);
 
   menuitem1 = gtk_menu_item_new_with_mnemonic ("_File");
   gtk_widget_set_name (menuitem1, "menuitem1");
@@ -178,6 +185,11 @@ create_nemesi (void)
   gtk_widget_show (about1);
   gtk_container_add (GTK_CONTAINER (menu4), about1);
 
+  throbber = create_pixmap (nemesi, NULL);
+  gtk_widget_set_name (throbber, "throbber");
+  gtk_widget_show (throbber);
+  gtk_box_pack_end (GTK_BOX (hbox3), throbber, FALSE, FALSE, 0);
+
   statusbar = gtk_statusbar_new ();
   gtk_widget_set_name (statusbar, "statusbar");
   gtk_widget_show (statusbar);
@@ -193,42 +205,42 @@ create_nemesi (void)
   gtk_widget_show (hbox2);
   gtk_container_add (GTK_CONTAINER (handlebox1), hbox2);
 
-  toolbar1 = gtk_toolbar_new ();
-  gtk_widget_set_name (toolbar1, "toolbar1");
-  gtk_widget_show (toolbar1);
-  gtk_box_pack_start (GTK_BOX (hbox2), toolbar1, FALSE, FALSE, 0);
-  gtk_toolbar_set_style (GTK_TOOLBAR (toolbar1), GTK_TOOLBAR_ICONS);
+  toolbar = gtk_toolbar_new ();
+  gtk_widget_set_name (toolbar, "toolbar");
+  gtk_widget_show (toolbar);
+  gtk_box_pack_start (GTK_BOX (hbox2), toolbar, FALSE, FALSE, 0);
+  gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_ICONS);
 
-  open_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar1),
+  open_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
                                 "gtk-open",
                                 NULL,
                                 NULL, NULL, NULL, -1);
   gtk_widget_set_name (open_cmd, "open_cmd");
   gtk_widget_show (open_cmd);
 
-  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar1));
+  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
 
-  tmp_toolbar_icon = gtk_image_new_from_stock ("gtk-go-forward", gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar1)));
-  toggle_play_pause = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar1),
+  tmp_toolbar_icon = gtk_image_new_from_stock ("gtk-go-forward", gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar)));
+  toggle_play_pause = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_TOGGLEBUTTON,
                                 NULL,
                                 "_Play",
                                 NULL, NULL,
                                 tmp_toolbar_icon, NULL, NULL);
-  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar1)->children)->data))->label), TRUE);
+  gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
   gtk_widget_set_name (toggle_play_pause, "toggle_play_pause");
   gtk_widget_show (toggle_play_pause);
 
-  stop_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar1),
+  stop_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
                                 "gtk-stop",
                                 NULL,
                                 NULL, NULL, NULL, -1);
   gtk_widget_set_name (stop_cmd, "stop_cmd");
   gtk_widget_show (stop_cmd);
 
-  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar1));
+  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
 
-  close_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar1),
+  close_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
                                 "gtk-close",
                                 NULL,
                                 NULL, NULL, NULL, -1);
@@ -276,6 +288,9 @@ create_nemesi (void)
   g_signal_connect ((gpointer) about1, "activate",
                     G_CALLBACK (on_about1_activate),
                     NULL);
+  g_signal_connect ((gpointer) open_cmd, "clicked",
+                    G_CALLBACK (on_open_cmd_clicked),
+                    NULL);
   g_signal_connect ((gpointer) toggle_play_pause, "toggled",
                     G_CALLBACK (on_toggle_play_pause_toggled),
                     NULL);
@@ -290,6 +305,7 @@ create_nemesi (void)
   GLADE_HOOKUP_OBJECT_NO_REF (nemesi, nemesi, "nemesi");
   GLADE_HOOKUP_OBJECT (nemesi, vbox1, "vbox1");
   GLADE_HOOKUP_OBJECT (nemesi, handlebox2, "handlebox2");
+  GLADE_HOOKUP_OBJECT (nemesi, hbox3, "hbox3");
   GLADE_HOOKUP_OBJECT (nemesi, menubar, "menubar");
   GLADE_HOOKUP_OBJECT (nemesi, menuitem1, "menuitem1");
   GLADE_HOOKUP_OBJECT (nemesi, menu1, "menu1");
@@ -310,10 +326,11 @@ create_nemesi (void)
   GLADE_HOOKUP_OBJECT (nemesi, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (nemesi, menu4, "menu4");
   GLADE_HOOKUP_OBJECT (nemesi, about1, "about1");
+  GLADE_HOOKUP_OBJECT (nemesi, throbber, "throbber");
   GLADE_HOOKUP_OBJECT (nemesi, statusbar, "statusbar");
   GLADE_HOOKUP_OBJECT (nemesi, handlebox1, "handlebox1");
   GLADE_HOOKUP_OBJECT (nemesi, hbox2, "hbox2");
-  GLADE_HOOKUP_OBJECT (nemesi, toolbar1, "toolbar1");
+  GLADE_HOOKUP_OBJECT (nemesi, toolbar, "toolbar");
   GLADE_HOOKUP_OBJECT (nemesi, open_cmd, "open_cmd");
   GLADE_HOOKUP_OBJECT (nemesi, toggle_play_pause, "toggle_play_pause");
   GLADE_HOOKUP_OBJECT (nemesi, stop_cmd, "stop_cmd");
@@ -323,5 +340,67 @@ create_nemesi (void)
   gtk_window_add_accel_group (GTK_WINDOW (nemesi), accel_group);
 
   return nemesi;
+}
+
+GtkWidget*
+create_opendialog (void)
+{
+  GtkWidget *opendialog;
+  GtkWidget *dialog_vbox1;
+  GtkWidget *urlname;
+  GtkWidget *dialog_action_area1;
+  GtkWidget *cancelbutton1;
+  GtkWidget *okbutton1;
+
+  opendialog = gtk_dialog_new ();
+  gtk_widget_set_name (opendialog, "opendialog");
+  gtk_window_set_title (GTK_WINDOW (opendialog), "Open");
+  gtk_window_set_modal (GTK_WINDOW (opendialog), TRUE);
+
+  dialog_vbox1 = GTK_DIALOG (opendialog)->vbox;
+  gtk_widget_set_name (dialog_vbox1, "dialog_vbox1");
+  gtk_widget_show (dialog_vbox1);
+
+  urlname = gtk_entry_new ();
+  gtk_widget_set_name (urlname, "urlname");
+  gtk_widget_show (urlname);
+  gtk_box_pack_end (GTK_BOX (dialog_vbox1), urlname, FALSE, FALSE, 0);
+  gtk_entry_set_text (GTK_ENTRY (urlname), "rtsp://");
+  gtk_entry_set_activates_default (GTK_ENTRY (urlname), TRUE);
+
+  dialog_action_area1 = GTK_DIALOG (opendialog)->action_area;
+  gtk_widget_set_name (dialog_action_area1, "dialog_action_area1");
+  gtk_widget_show (dialog_action_area1);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area1), GTK_BUTTONBOX_END);
+
+  cancelbutton1 = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_set_name (cancelbutton1, "cancelbutton1");
+  gtk_widget_show (cancelbutton1);
+  gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), cancelbutton1, GTK_RESPONSE_CANCEL);
+  GTK_WIDGET_SET_FLAGS (cancelbutton1, GTK_CAN_DEFAULT);
+
+  okbutton1 = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_set_name (okbutton1, "okbutton1");
+  gtk_widget_show (okbutton1);
+  gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), okbutton1, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (okbutton1, GTK_CAN_DEFAULT);
+
+  g_signal_connect ((gpointer) cancelbutton1, "clicked",
+                    G_CALLBACK (on_cancelbutton1_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) okbutton1, "clicked",
+                    G_CALLBACK (on_okbutton1_clicked),
+                    NULL);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (opendialog, opendialog, "opendialog");
+  GLADE_HOOKUP_OBJECT_NO_REF (opendialog, dialog_vbox1, "dialog_vbox1");
+  GLADE_HOOKUP_OBJECT (opendialog, urlname, "urlname");
+  GLADE_HOOKUP_OBJECT_NO_REF (opendialog, dialog_action_area1, "dialog_action_area1");
+  GLADE_HOOKUP_OBJECT (opendialog, cancelbutton1, "cancelbutton1");
+  GLADE_HOOKUP_OBJECT (opendialog, okbutton1, "okbutton1");
+
+  gtk_widget_grab_default (okbutton1);
+  return opendialog;
 }
 
