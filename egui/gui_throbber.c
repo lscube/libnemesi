@@ -46,11 +46,11 @@ int create_throbber(GtkWidget *box)
 	char filename[127];
 
 	if ((new_throbber=malloc(sizeof(GNMSThrobber))) == NULL)
-		return nmserror("Could not alloc throbber structure");
+		return nmsprintf(NMSML_FATAL, "Could not alloc throbber structure\n");
 
 	new_throbber->num_anim = 9; // TODO: automatizzare
 	if ((new_throbber->anim=malloc(new_throbber->num_anim * sizeof(GtkWidget *))) == NULL)
-		return nmserror("Could not alloc throbber animation vector");
+		return nmsprintf(NMSML_FATAL, "Could not alloc throbber animation vector\n");
 
 	new_throbber->rest = GTK_IMAGE(create_pixmap(NULL, "rest.png"));
 	gtk_box_pack_end (GTK_BOX (box), GTK_WIDGET(new_throbber->rest), FALSE, FALSE, 0);

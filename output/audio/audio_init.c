@@ -45,7 +45,7 @@ NMSAudio *audio_init(char *drv_hint, uint32 sysbuff_ms)
 	// NMSAFunctions *funcs;
 
 	if ((ac=malloc(sizeof(NMSAudio))) == NULL) {
-		nmserror("Could not alloc audio structure");
+		nmsprintf(NMSML_FATAL, "Could not alloc audio structure\n");
 		return NULL;
 	}
 

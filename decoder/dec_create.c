@@ -38,11 +38,11 @@ int dec_create(struct Dec_args *dec_args)
 
 	pthread_attr_init(&dec_attr);
 	if ( pthread_attr_setdetachstate(&dec_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		return nmserror("Cannot set Decoder Thread attributes!\n");
+		return nmsprintf(NMSML_FATAL, "Cannot set Decoder Thread attributes!\n");
 
 /*	pthread_attr_setschedpolicy(&dec_attr, SCHED_RR);*/
 	if((n=pthread_create(&dec_tid, &dec_attr, &decoder, (void *) dec_args)) > 0)
-		return nmserror("Cannot Create Decoder Thread: %s\n", strerror(n));
+		return nmsprintf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n", strerror(n));
 		
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		rtp_sess->dec_tid=dec_tid;

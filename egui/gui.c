@@ -61,7 +61,7 @@ int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char *argv[
   save_static_data(nemesi, rtsp_ctrl); // must be done fist of all
 
   if (create_throbber(lookup_widget(nemesi, "hbox3")))
-	  nmserror("no throbber available");
+	  nmsprintf(NMSML_ERR, "no throbber available\n");
 
 	update_toolbar();
 	if (ui_hints->url) {

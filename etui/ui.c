@@ -53,7 +53,7 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 	}
 	*/
 	if (fcntl(UIINPUT_FILENO, F_SETFL, O_NONBLOCK) < 0)
-		return nmserror(stderr, "fcntl() error!\n");
+		return nmsprintf(NMSML_FATAL, "fcntl() error!\n");
 
 #endif // USE_UIPRINTF
 	memset(optstr, '\0', sizeof(optstr));

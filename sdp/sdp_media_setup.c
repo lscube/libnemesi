@@ -85,7 +85,7 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 			case 'a':
 				tkn+=2;
 				if (sdp_set_attr(&(curr_sdp_m->attr_list), tkn)) {
-					nmserror("Error setting SDP media atrtibute");
+					nmsprintf(NMSML_ERR, "Error setting SDP media atrtibute\n");
 					error=1;
 					break;
 					// return NULL;
@@ -93,7 +93,7 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 				if (issdplicense(tkn)) {
 					if (!curr_sdp_m->cc)
 						if (!(curr_sdp_m->cc=cc_newlicense())) {
-							nmserror("Could not get new CC license struct");
+							nmsprintf(NMSML_ERR, "Could not get new CC license struct\n");
 							error=1;
 							break;
 							// return NULL;

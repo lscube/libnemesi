@@ -53,12 +53,12 @@ int cc_parse_urilicense(char *uri, CCPermsMask *mask)
 		tkn = uri + 7;
 
 	if(strncmpcase(tkn, BASE_URI_LICENSE, strlen(BASE_URI_LICENSE))) // TODO: must continue or give an error, or ask what to to?
-		return nmserror("the base URI of license is not \"%s\", so it can't be considered valid");
+		return nmsprintf(NMSML_ERR, "the base URI of license is not \"%s\", so it can't be considered valid\n");
 
 	tkn = tkn + strlen(BASE_URI_LICENSE);
 	while(*tkn == '/') tkn++;
 	if (!(permstr = strdup(tkn)))
-		return nmserror("memory error in cc_parse_urilicense");
+		return nmsprintf(NMSML_FATAL, "memory error in cc_parse_urilicense\n");
 	if ((tkn = strchr(permstr, '/')))
 		*tkn = '\0';
 

@@ -39,7 +39,7 @@ NMSDiskWriter *diskwriter_init(const char *basename)
 
 	// use of calloc in order to initialize strings also
 	if ((dc=calloc(1, sizeof(NMSDiskWriter))) == NULL) {
-		nmserror("Could not alloc disk writer structure");
+		nmsprintf(NMSML_FATAL, "Could not alloc disk writer structure\n");
 		return NULL;
 	}
 

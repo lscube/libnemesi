@@ -68,7 +68,7 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 				if (*optarg == 'v') {
 					for(i=0;optarg[i]=='v'; i++);
 					if (optarg[i]!='\0') {
-						nmserror("Invalid argument to \"%s\" option\n", long_options[option_index].name);
+						nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 						usage = 1;
 						ret = -1;
 					}
@@ -76,12 +76,12 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 				} else if ( (isdigit(*optarg)) ) {
 					v = strtol(optarg, &v_err, 10);
 					if ( (*v_err) ) {
-						nmserror("Invalid argument to \"%s\" option\n", long_options[option_index].name);
+						nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 						usage = 1;
 						ret = -1;
 					}
 				} else {
-					nmserror("Invalid argument to \"%s\" option\n", long_options[option_index].name);
+					nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 					usage = 1;
 					ret = -1;
 				}
@@ -116,8 +116,8 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			output_hints->sysbuff_ms = strtol(optarg, &v_err, 10);
 			if ( *v_err ) {
 				if ( (*v_err == '.') || (*v_err == ',') )
-					nmserror("Argument to \"%s\" option must be an integer number of milliseconds", long_options[option_index].name);
-				nmserror("Invalid argument to \"%s\" option", long_options[option_index].name);
+					nmsprintf(NMSML_ERR, "Argument to \"%s\" option must be an integer number of milliseconds\n", long_options[option_index].name);
+				nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 				usage = 1;
 				ret = -1;
 			}
@@ -141,15 +141,15 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			output_hints->diskwriter = strdup("nodisk");
 			break;
 		case ':':
-			nmserror("Missing argument for option \"%s\"\n", argv[optind-1]);
+			nmsprintf(NMSML_ERR, "Missing argument for option \"%s\"\n", argv[optind-1]);
 			usage = 1;
 			ret = -1;
 			break;
 		case '?':
 			if (isprint(optopt))
-				nmserror("Unknown option `-%c'.\n", optopt);
+				nmsprintf(NMSML_ERR, "Unknown option `-%c'.\n", optopt);
 			else
-				nmserror("Unknown option character `\\x%x'.\n", optopt);
+				nmsprintf(NMSML_ERR, "Unknown option character `\\x%x'.\n", optopt);
 			// ch = 'h';
 			usage = 1;
 			ret = -1;
@@ -161,13 +161,13 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 	if ( usage )
 		usage();
 	if ( ret < 0 )
-		nmserror ("Error parsing command line... exit\n");
+		nmsprintf(NMSML_ERR, "Error parsing command line... exit\n");
 	if (optind < argc) {
 		if ( argc == optind+1 ) {
 			if ( !(ui_hints->url = strdup(argv[optind])) )
-				return nmserror("Could not store urlname given in command line");
+				return nmsprintf(NMSML_FATAL, "Could not store urlname given in command line\n");
 		} else
-			return nmserror("You can specify only one media URL");
+			return nmsprintf(NMSML_ERR, "You can specify only one media URL\n");
 	}
 	return ret;
 }

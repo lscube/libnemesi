@@ -67,7 +67,7 @@ NMSAFunctions *init_best_audio_out(char *drv, uint32 *rate, uint8 *channels, uin
 		while ( device && *device && strcmp(device, "...") ) {
 			for (i=0;audio_out_drivers[i] && strcmp(device, audio_out_drivers[i]->info->short_name);i++);
 			if (!audio_out_drivers[i])
-				nmserror("Could not find audio driver %s", device);
+				nmsprintf(NMSML_ERR, "Could not find audio driver %s\n", device);
 			else {
 				nmsprintf(NMSML_VERB, "Found audio output driver %s\n", audio_out_drivers[i]->info->name);
 				if (!audio_out_drivers[i]->init(rate, channels, format, sysbuff_ms, 0, NULL)) {
@@ -85,7 +85,7 @@ NMSAFunctions *init_best_audio_out(char *drv, uint32 *rate, uint8 *channels, uin
 			return audio_out_drivers[i];
 	}
 
-	nmserror("Could not find any working audio driver");
+	nmsprintf(NMSML_ERR, "Could not find any working audio driver\n");
 
 	return NULL;
 }

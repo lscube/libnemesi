@@ -41,7 +41,7 @@ struct RTSP_Medium *rtsp_med_create(int fd)
 	getpeername(fd, &peeraddr, &len);
 	
 	if ( (rtsp_m=(struct RTSP_Medium *)malloc(sizeof(struct RTSP_Medium))) == NULL ) {
-		nmserror("Cannot allocate memory.");
+		nmsprintf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}
 

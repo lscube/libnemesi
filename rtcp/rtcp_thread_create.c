@@ -37,10 +37,10 @@ int rtcp_thread_create(struct RTP_Session *rtp_sess_head)
 
 	pthread_attr_init(&rtcp_attr);
 	if (pthread_attr_setdetachstate(&rtcp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		return nmserror("Cannot set RTCP Thread attributes!");
+		return nmsprintf(NMSML_FATAL, "Cannot set RTCP Thread attributes!\n");
 
 	if ((n=pthread_create(&rtcp_tid, &rtcp_attr, &rtcp, (void *)rtp_sess_head)) > 0)
-		return nmserror("%s", strerror(n));
+		return nmsprintf(NMSML_FATAL, "%s\n", strerror(n));
 
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		rtp_sess->rtcp_tid=rtcp_tid;

@@ -61,11 +61,11 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 			/* Nessun altra SETUP da inviare */
 			/* Esecuzione del Thread RTP: uno per ogni sessione RTSP */
 			if (rtp_thread_create(rtsp_th->rtsp_queue->media_queue->rtp_sess))
-				return nmserror("Cannot create RTP Thread!");
+				return nmsprintf(NMSML_FATAL, "Cannot create RTP Thread!\n");
 
 			/* Esecuzione del Thread RTCP: uno per ogni sessione RTSP */
 			if (rtcp_thread_create(rtsp_th->rtsp_queue->media_queue->rtp_sess))
-				return nmserror("Cannot create RTCP Thread!\n");
+				return nmsprintf(NMSML_FATAL, "Cannot create RTCP Thread!\n");
 
 			rtsp_th->status = READY;
 			rtsp_th->busy = 0;

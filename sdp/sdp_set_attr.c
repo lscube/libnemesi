@@ -37,7 +37,7 @@ int sdp_set_attr(SDP_attr **attr_list, char *a)
 
 	// we use calloc, so it's all already initialized to NULL
 	if (!(new=(SDP_attr *)calloc(1, sizeof(SDP_attr))))
-		return nmserror("Could not allocate memory");
+		return nmsprintf(NMSML_FATAL, "Could not allocate memory\n");
 
 	new->a = a;
 

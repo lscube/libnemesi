@@ -53,7 +53,7 @@ int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
 		rtsp_med = rtsp_med->next;
 	}
 	if (*((CC_BITMASK_T *)&cc_conflict)) {
-		nmserror("\nYou didn't accept some requested conditions of license\n");
+		nmsprintf(NMSML_ERR, "You didn't accept some requested conditions of license:\n");
 		cc_printmask(cc_conflict);
 		return 1;
 	}

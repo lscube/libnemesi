@@ -49,23 +49,23 @@
 
 #ifdef SDL_ENABLE_LOCKS
 #define MUTEX_LOCK(mtx, x)	if (SDL_LockMutex(mtx)) { \
-					nmserror("Cannot lock mutex"); \
+					nmsprintf(NMSML_WARN, "Cannot lock mutex\n"); \
 					return x; \
 				}
 
 #define MUTEX_UNLOCK(mtx, x)	if (SDL_UnlockMutex(mtx)) { \
-					nmserror("Cannot unlock mutex"); \
+					nmsprintf(NMSML_WARN, "Cannot unlock mutex\n"); \
 					return x; \
 				}
 #define	SDL_OVR_LOCK(ovr, x)	if (SDL_LockYUVOverlay (ovr)) { \
-					nmserror("SDL: Couldn't lock YUV overlay"); \
+					nmsprintf(NMSML_WARN, "SDL: Couldn't lock YUV overlay\n"); \
 					return x; \
 				}
 #define SDL_OVR_UNLOCK(ovr)	SDL_UnlockYUVOverlay (ovr);
 
 #define SDL_SRF_LOCK(srf, x)	if(SDL_MUSTLOCK(srf)) { \
 					if(SDL_LockSurface (srf)) { \
-						nmserror("SDL: Couldn't lock RGB surface"); \
+						nmsprintf(NMSML_WARN, "SDL: Couldn't lock RGB surface\n"); \
 						return x; \
 					} \
 				}
@@ -134,19 +134,19 @@ static struct sdl_vbuffer *new_vbuffer(uint32 size)
 	struct sdl_vbuffer *vbuffer;
 
 	if ((vbuffer = malloc(sizeof(struct sdl_vbuffer))) == NULL) {
-		nmserror("SDL: could not alloc memory for video buffer");
+		nmsprintf(NMSML_FATAL, "SDL: could not alloc memory for video buffer\n");
 		return NULL;
 	}
 	if ((vbuffer->overlay = malloc(size * sizeof(SDL_Overlay *))) == NULL) {
-		nmserror("SDL: could not alloc memory for video buffer");
+		nmsprintf(NMSML_FATAL, "SDL: could not alloc memory for video buffer\n");
 		return NULL;
 	}
 	if ((vbuffer->surface = malloc(size * sizeof(SDL_Surface *))) == NULL) {
-		nmserror("SDL: could not alloc memory for video buffer");
+		nmsprintf(NMSML_FATAL, "SDL: could not alloc memory for video buffer\n");
 		return NULL;
 	}
 	if ((vbuffer->pic_pts = malloc(size * sizeof(double))) == NULL) {
-		nmserror("SDL: could not alloc memory for video buffer");
+		nmsprintf(NMSML_FATAL, "SDL: could not alloc memory for video buffer\n");
 		return NULL;
 	}
 
@@ -224,11 +224,11 @@ static uint32 preinit(const char *arg, uint32 buff_ms)
 		nmsprintf(NMSML_NORM, "Initializing SDL Video output\n");
 		if (subsystem_init) {
 			if (SDL_InitSubSystem(flags))
-				return nmserror("Could not initialize SDL Video");
+				return nmsprintf(NMSML_ERR, "Could not initialize SDL Video\n");
 		} else {
 			flags |= SDL_INIT_NOPARACHUTE;
 			if (SDL_Init(flags))
-				return nmserror("Could not initialize SDL Video");
+				return nmsprintf(NMSML_ERR, "Could not initialize SDL Video\n");
 		}
 		nmsprintf(NMSML_NORM, "SDL Video initialized\n");
 	}
@@ -274,7 +274,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 			priv->mode = RGB;
 			break;
 		default:
-			return nmserror("SDL: Unsupported image format (0x%X)",format);
+			return nmsprintf(NMSML_ERR, "SDL: Unsupported image format (0x%X)\n",format);
 			// return NULL;
 			break;
 	}
@@ -312,7 +312,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 	nmsprintf(NMSML_DBG1, "Video system buffer: %u\n", buff_size);
 
 	if (!(newsurface = SDL_SetVideoMode(width, height, 0, flags))) {
-		return nmserror("SDL_SetVideoMode failed: %s", SDL_GetError());
+		return nmsprintf(NMSML_ERR, "SDL_SetVideoMode failed: %s\n", SDL_GetError());
 	}
 	nmsprintf(NMSML_NORM, "Set Video Mode: w=%d, h=%d\n", width, height);
 	if (priv->display) {
@@ -415,7 +415,7 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 			pict->linesize[2] = bmp->pitches[2];
 			break;
 		default:
-			return nmserror("SDL: unsupported format in get_picture");
+			return nmsprintf(NMSML_ERR, "SDL: unsupported format in get_picture\n");
 			break;
 	}
 	SDL_OVR_LOCK(bmp, 1);

@@ -96,7 +96,7 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 			case 'a':
 				tkn+=2;
 				if (sdp_set_attr(&(new->attr_list), tkn)) {
-					nmserror("Error setting SDP session atrtibute");
+					nmsprintf(NMSML_ERR, "Error setting SDP session attribute\n");
 					error=1;
 					break;
 					// return NULL;

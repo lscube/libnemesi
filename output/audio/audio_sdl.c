@@ -129,11 +129,11 @@ static uint32 sdl_init(const char *arg)
 		nmsprintf(NMSML_NORM, "Initializing SDL Audio output\n");
 		if (subsystem_init) {
 			if (SDL_InitSubSystem(flags))
-				return nmserror("Could not initialize SDL Audio");
+				return nmsprintf(NMSML_ERR, "Could not initialize SDL Audio\n");
 		} else {
 			flags |= SDL_INIT_NOPARACHUTE;
 			if (SDL_Init(flags))
-				return nmserror("Could not initialize SDL Audio");
+				return nmsprintf(NMSML_ERR, "Could not initialize SDL Audio\n");
 		}
 		nmsprintf(NMSML_NORM, "SDL Audio initialized\n");
 	}
@@ -177,7 +177,7 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 		sdl_priv.bytes_x_sample = 2;
 	    break;
 	    default:
-                return nmserror("SDL: Unsupported audio format: %s (0x%x).", audio_format_name(*format), *format);
+                return nmsprintf(NMSML_ERR, "SDL: Unsupported audio format: %s (0x%x).\n", audio_format_name(*format), *format);
 		break;
 	}
 
@@ -189,7 +189,7 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 	if (sdl_priv.audio_buffer)
 		free(sdl_priv.audio_buffer);
 	if ( (sdl_priv.audio_buffer=ab_init(buff_size)) == NULL )
-		return nmserror("Failed while initializing Audio Buffer\n");
+		return nmsprintf(NMSML_FATAL, "Failed while initializing Audio Buffer\n");
 	nmsprintf(NMSML_DBG1, "Audio system buffer: %u\n", buff_size);
 
 	requested_fmt.freq = *rate;
@@ -199,7 +199,7 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 	requested_fmt.userdata = (void *)(sdl_priv.audio_buffer);
 
 	if ( SDL_OpenAudio(&requested_fmt, &(sdl_priv.aspec)) < 0 )
-		return nmserror("SDL: unable to open audio: %s", SDL_GetError());
+		return nmsprintf(NMSML_ERR, "SDL: unable to open audio: %s\n", SDL_GetError());
 
 	// set output parameters
 	*rate = sdl_priv.aspec.freq;
@@ -224,7 +224,7 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 		*format = AFMT_U16_BE;
 		break;
 	    default:
-                return nmserror("SDL: Unsupported audio format returned: %s (0x%x).", audio_format_name(*format), *format);
+                return nmsprintf(NMSML_ERR, "SDL: Unsupported audio format returned: %s (0x%x).\n", audio_format_name(*format), *format);
 		break;
 	}
 	

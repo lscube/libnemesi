@@ -39,7 +39,7 @@ int get_file_fd(NMSDiskWriter *dc, int pt)
 	uint32 written;
 
 	if (pt > MAX_PT)
-		return -nmserror("Payload type exeded max allowed");
+		return -nmsprintf(NMSML_ERR, "Payload type exeded max allowed\n");
 
 	if ( dc->fd[pt] < 0 ) {
 		cc_getag(pt, &(dc->tag[pt]), &(dc->ext[pt]));
@@ -48,7 +48,7 @@ int get_file_fd(NMSDiskWriter *dc, int pt)
 		else
 			sprintf(filename, "%s.%d", dc->basename, pt);
 		if ( (dc->fd[pt]=creat( filename, 00644 )) < 0 )
-			nmserror("file %s in current directory cannot be created", filename);
+			nmsprintf(NMSML_ERR, "file %s in current directory cannot be created\n", filename);
 		if (dc->tag[pt]->hdim)
 			if ( (written=write(dc->fd[pt], dc->tag[pt]->header, dc->tag[pt]->hdim)) < dc->tag[pt]->hdim )
 				nmsprintf(NMSML_DBG1, "WARNING: only %d bytes of %d written\n", written, dc->tag[pt]->hdim);
@@ -58,10 +58,10 @@ int get_file_fd(NMSDiskWriter *dc, int pt)
 
 	/*
 	if ( (dc->fd[pt] < 0) && ( (dc->fd[pt]=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
-		nmserror("file %s in current directory cannot be created\n", DEFAULT_FILENAME);
+		nmsprintf(NMSML_ERR, "file %s in current directory cannot be created\n", DEFAULT_FILENAME);
 
 	if ( (global_disk_buffer->file_fd < 0) && ( (global_disk_buffer->file_fd=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
-		nmserror("file %s in current directory cannot be created\n", DEFAULT_FILENAME);
+		nmsprintf(NMSML_ERR, "file %s in current directory cannot be created\n", DEFAULT_FILENAME);
 
 	return global_disk_buffer->file_fd;
 	*/

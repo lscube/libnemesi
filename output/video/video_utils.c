@@ -68,7 +68,7 @@ NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
 		while ( device && *device && strcmp(device, "...") ) {
 			for (i=0;video_out_drivers[i] && strcmp(device, video_out_drivers[i]->info->short_name);i++);
 			if (!video_out_drivers[i])
-				nmserror("Could not find video driver %s", device);
+				nmsprintf(NMSML_ERR, "Could not find video driver %s", device);
 			else {
 				nmsprintf(NMSML_VERB, "Found video output driver %s\n", video_out_drivers[i]->info->name);
 				if (!video_out_drivers[i]->preinit(sub_device, sysbuff_ms)) {
@@ -86,7 +86,7 @@ NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
 			return video_out_drivers[i];
 	}
 
-	nmserror("Could not find any working video driver");
+	nmsprintf(NMSML_ERR, "Could not find any working video driver\n");
 
 	return NULL;
 }

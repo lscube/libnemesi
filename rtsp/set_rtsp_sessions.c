@@ -40,14 +40,14 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 				return 1;
 
 			if ( !(rtsp_th->rtsp_queue->body=(char *)malloc((content_length+1)*sizeof(char))) )
-				return nmserror("Cannot allocate memory.");
+				return nmsprintf(NMSML_FATAL, "Cannot allocate memory.\n");
 			memcpy(rtsp_th->rtsp_queue->body, body, content_length*sizeof(char));
 			rtsp_th->rtsp_queue->body[content_length]='\0';
 
 			rtsp_th->type=M_ON_DEMAND;
 
 			if (!(rtsp_th->rtsp_queue->info=sdp_session_setup(rtsp_th->rtsp_queue->body, content_length)))
-				return nmserror("SDP parse error");
+				return nmsprintf(NMSML_ERR, "SDP parse error\n");
 
 			// we look for particular attributes of session
 			for(sdp_a=rtsp_th->rtsp_queue->info->attr_list; sdp_a; sdp_a=sdp_a->next) {

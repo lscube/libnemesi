@@ -53,11 +53,11 @@ int nmsverbosity_set(int level){
 		fprintf(stderr, NMSCLR_YELLOW"warning: verbosity level must be a non negative integer. Setting to 0\n"NMSCLR_DEFAULT);
 		verbosity = 0;
 	}
-	return verbosity;
+	return verbosity-NMSML_NORM;
 }
 
 int nmsverbosity_get(void){
-	return verbosity;
+	return verbosity-NMSML_NORM;
 }
 
 /*!  \brief Default print function.

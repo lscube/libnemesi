@@ -44,7 +44,7 @@ NMSVideo *video_preinit(char *drv_hint, uint32 sysbuff_ms)
 	NMSVideo *vc;
 
 	if ((vc=malloc(sizeof(NMSVideo))) == NULL) {
-		nmserror("Could not alloc video structure");
+		nmsprintf(NMSML_FATAL, "Could not alloc video structure\n");
 		return NULL;
 	}
 

@@ -35,7 +35,7 @@ int set_stm_src(struct RTP_Session *rtp_sess, struct Stream_Source **stm_src, ui
 	memset(port, 0, sizeof(port));
 	
 	if(((*stm_src)=(struct Stream_Source *)malloc(sizeof(struct Stream_Source))) == NULL)
-		return -nmserror("Cannot allocate memory");
+		return -nmsprintf(NMSML_FATAL, "Cannot allocate memory\n");
 
 	(*stm_src)->next=rtp_sess->ssrc_queue;
 	rtp_sess->ssrc_queue=*stm_src;

@@ -48,7 +48,7 @@ void *rtp(void *args)
 		bpinit(&(rtp_sess->bp));
 	
 	if((dec_args=(struct Dec_args *)malloc(sizeof(struct Dec_args))) == NULL) {
-		nmserror("Cannot allocate memory!");
+		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
 		pthread_exit(NULL);
 	}
 	dec_args->rtp_sess_head=rtp_sess_head;

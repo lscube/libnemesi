@@ -50,7 +50,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 		nmsprintf(NMSML_DBG1, "new SSRC\n");
 		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0){
 			pthread_mutex_unlock(&rtp_sess->syn);	
-			return -nmserror("Error while setting new Stream Source");
+			return -nmsprintf(NMSML_ERR, "Error while setting new Stream Source\n");
 		}
 
 		poinit(&((*stm_src)->po),&(rtp_sess->bp));
@@ -60,7 +60,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 		if (local_collision){
 			
 			if ( (sockaddr=(struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL )
-				return -nmserror("Cannot allocate memory");
+				return -nmsprintf(NMSML_FATAL, "Cannot allocate memory\n");
 
 			if (proto_type == RTP)
 				getsockname(rtp_sess->rtpfd, (struct sockaddr *) sockaddr, &socklen);
@@ -132,13 +132,13 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			
 					/* New entry in SSRC queue with conflicting ssrc */
 					if( (stm_conf=(struct Conflict *)malloc(sizeof(struct Conflict))) == NULL)
-						return -nmserror("Cannot allocate memory!");
+						return -nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
 
 					/* inserimento in testa */
 					pthread_mutex_lock(&rtp_sess->syn);	
 					if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 						pthread_mutex_unlock(&rtp_sess->syn);	
-						return -nmserror("Error while setting new Stream Source");
+						return -nmsprintf(NMSML_ERR, "Error while setting new Stream Source\n");
 					}
 					poinit(&((*stm_src)->po),&(rtp_sess->bp));
 					pthread_mutex_unlock(&rtp_sess->syn);	

@@ -116,7 +116,6 @@ extern int uipipe[2];
 #endif
 
 int nmsprintf_default(int level, const char *fmt, ...);
-int nmserror(const char *fmt, ...);
 
 #define NO_STATUS 0
 #define PRINT_STATUS 1

@@ -53,9 +53,9 @@ int cc_prms_chk(CCLicense *license, CCPermsMask *mask)
 
 	// uriLicense parse
 	if (!license->uriLicense)
-		return nmserror("no uriLicense present: could not parse license uri");
+		return nmsprintf(NMSML_ERR, "no uriLicense present: could not parse license uri\n");
 	if ( (cc_parse_urilicense(license->uriLicense, &parsedmsk)) )
-		return nmserror("cannot parse uriLicense (cc_prms_mask)");
+		return nmsprintf(NMSML_ERR, "cannot parse uriLicense (cc_prms_mask)\n");
 
 	*((CC_BITMASK_T *)mask) = ~(*((CC_BITMASK_T *)mask)) & *((CC_BITMASK_T *)&parsedmsk);
 

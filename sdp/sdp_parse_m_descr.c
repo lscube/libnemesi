@@ -37,7 +37,7 @@ int sdp_parse_m_descr(SDP_Medium_info *m_info, char *m_descr)
 	char *tkn, *endtkn;
 
 	if (!(tkn = strchr(m_descr, ' ')))
-		return nmserror("SDP Media description string not valid: (m=%s)", m_descr);
+		return nmsprintf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\n", m_descr);
 	*tkn = '\0';
 
 	// parse media type
@@ -57,7 +57,7 @@ int sdp_parse_m_descr(SDP_Medium_info *m_info, char *m_descr)
 	// parse port and number of ports
 	m_info->port = strtol(tkn, &endtkn, 10);
 	if ( tkn == endtkn )
-		return nmserror("SDP Media description string not valid: (m=%s)\nCould not find port field", m_descr);
+		return nmsprintf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\nCould not find port field\n", m_descr);
 	tkn = endtkn; // + 1;
 	if (*endtkn == '/') {
 		m_info->n_ports = strtol(tkn+1, &endtkn, 10);
@@ -67,11 +67,11 @@ int sdp_parse_m_descr(SDP_Medium_info *m_info, char *m_descr)
 
 	for (;*tkn==' ';tkn++); // skip spaces
 	if (!(*tkn))
-		return nmserror("SDP Media description string not valid: (m=%s)\nCould not find transport field", m_descr);
+		return nmsprintf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\nCould not find transport field\n", m_descr);
 
 	// parse transport protocol
 	if (!(endtkn = strchr(tkn, ' ')))
-		return nmserror("SDP Media description string not valid: (m=%s)\nDescription terminates whithout <fmt list>", m_descr);
+		return nmsprintf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\nDescription terminates whithout <fmt list>\n", m_descr);
 	*endtkn = '\0';
 	strncpy(m_info->transport, tkn, 7);
 	m_info->transport[7] = '\0';
