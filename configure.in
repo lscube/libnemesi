@@ -203,12 +203,17 @@ nemesi_plugindir="$nemesi_libdir"/plugins
 AC_SUBST(nemesi_plugindir)
 nemesi_throbberdir="$nemesi_libdir"/throbber
 AC_SUBST(nemesi_throbberdir)
+nemesi_pixmapdir="$nemesi_libdir"/pixmaps
+AC_SUBST(nemesi_pixmapdir)
 
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
 AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
 
 AC_DEFINE_UNQUOTED(NEMESI_THROBBER_DIR_DEFAULT, "$nemesi_throbberdir", [Define default directory for NeMeSI throbber])
-AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
+AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name for the ENV variable forn NeMeSI throbber dir])
+
+AC_DEFINE_UNQUOTED(NEMESI_PIXMAPS_DIR_DEFAULT, "$nemesi_pixmapdir", [Define default directory for NeMeSI pixmaps])
+AC_DEFINE(NEMESI_PIXMAPS_DIR_ENV, "NEMESI_PIXMAP_DIR",[Define the name for the ENV variable forn NeMeSI pixmaps dir])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([bufferpool/Makefile])
@@ -243,17 +248,20 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([config files successfully generated!
  
-	Install prefix: $prefix
-	NeMeSI Binary path: $exec_prefix/bin/nemesi
-	NeMeSI Plugins dir: $nemesi_plugindir
-	NeMeSI Thorbbers dir: $nemesi_throbberdir
+NeMeSI Install prefix .......... : $prefix
+NeMeSI Binary path ............. : $exec_prefix/bin/nemesi
+NeMeSI Plugins dir ............. : $nemesi_plugindir
+NeMeSI Throbbers dir ........... : $nemesi_throbberdir
+NeMeSI Pixmaps dir ............. : $nemesi_pixmapdir
 
-	Byte order: this is a $BIGENDIAN machine
+Byte order ..................... : this is a $BIGENDIAN machine
 
-	LibSDL support enabled:		$NEMESI_HAVE_SDL
-	LibAVCodec support enabled:	$NEMESI_HAVE_AVC
+LibSDL support enabled ......... : $NEMESI_HAVE_SDL
+LibAVCodec support enabled ..... : $NEMESI_HAVE_AVC
 
-	GUI support enabled:		$NEMESI_HAVE_GTK
+GUI support enabled ............ : $NEMESI_HAVE_GTK
+NeMeSI GUI Binary path ......... : $exec_prefix/bin/gnemesi
+
 
  'make' will now compile NeMeSI and 'su -c make install' will install it.
  Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.

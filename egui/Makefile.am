@@ -8,10 +8,12 @@ INCLUDES = \
 	@PACKAGE_CFLAGS@
 
 THROBBER_DIR = throbber
+PIXMAP_DIR = pixmaps
 	
 EXTRA_DIST =	nemesi-gui.glade \
 		nemesi-gui.gladep \
-		$(THROBBER_DIR)
+		$(THROBBER_DIR) \
+		$(PIXMAP_DIR)
 
 noinst_LTLIBRARIES = libegui.la
 
@@ -28,8 +30,11 @@ libegui_la_LIBADD = @PACKAGE_LIBS@
 install-data-local:
 	$(INSTALL) -m 755 -d $(nemesi_throbberdir)
 	$(INSTALL_DATA) $(THROBBER_DIR)/*.png $(nemesi_throbberdir)
+	$(INSTALL) -m 755 -d $(nemesi_pixmapdir)
+	$(INSTALL_DATA) $(PIXMAP_DIR)/*.png $(nemesi_pixmapdir)
 
 uninstall-local:
 	rm -rf $(nemesi_throbberdir)
+	rm -rf $(nemesi_pixmapdir)
 		
 

@@ -35,7 +35,7 @@ distclean-local:
 		rm -rf autom4te.cache; \
 	fi
 
-MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs
+MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log
 MAINTAINER_DIRS = config
 
 maintainer-clean-local:

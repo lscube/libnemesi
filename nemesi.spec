@@ -12,8 +12,8 @@ Requires: SDL >= 1.2.2
 BuildRequires: SDL-devel >= 1.2.2
 Requires: ffmpeg >= 0.4.6
 BuildRequires: ffmpeg-devel >= 0.4.6
-Requires: libtool-libs >= 1.5
-Requires: libtool >= 1.5
+Requires: libtool-libs >= 1.4
+Requires: libtool >= 1.4
 
 %description
 
@@ -41,30 +41,38 @@ make
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_bindir}
 install -m 755 src/%{name} %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/%{name}/plugins
-install -m 755 plugins/plugins/*.so %{buildroot}%{_datadir}/%{name}/plugins
-install -m 755 plugins/plugins/*.la %{buildroot}%{_datadir}/%{name}/plugins
-install -m 755 plugins/plugins/*.a %{buildroot}%{_datadir}/%{name}/plugins
+cd %{buildroot}%{_bindir}
+ln -s %{name} g%{name}
+cd -
+mkdir -p %{buildroot}%{_libdir}/%{name}/plugins
+install -m 755 plugins/plugins/*.so %{buildroot}%{_libdir}/%{name}/plugins
+install -m 755 plugins/plugins/*.la %{buildroot}%{_libdir}/%{name}/plugins
+install -m 755 plugins/plugins/*.a %{buildroot}%{_libdir}/%{name}/plugins
 
 mkdir -p %{buildroot}%{_mandir}/man1
 install -m 755 docs/%{name}.1 %{buildroot}%{_mandir}/man1
 
-mkdir -p %{buildroot}%{_datadir}/%{name}/throbber
-install -m 644 egui/throbber/*.png %{buildroot}%{_datadir}/%{name}/throbber
+mkdir -p %{buildroot}%{_libdir}/%{name}/throbber
+install -m 644 egui/throbber/*.png %{buildroot}%{_libdir}/%{name}/throbber
 
-%clean
-rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_libdir}/%{name}/pixmaps
+install -m 644 egui/pixmaps/*.png %{buildroot}%{_libdir}/%{name}/pixmaps
+
+#%clean
+#rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
 %{_bindir}/%{name}
+%{_bindir}/g%{name}
 %{_mandir}/man1/%{name}.1*
 
-%{_datadir}/%{name}/plugins/libffmp3.*
-%{_datadir}/%{name}/plugins/gsm_amr_float.*
-%{_datadir}/%{name}/plugins/L16_8k_m.*
-%{_datadir}/%{name}/plugins/libffmpeg.*
+%{_libdir}/%{name}/plugins/libffmp3.*
+%{_libdir}/%{name}/plugins/gsm_amr_float.*
+%{_libdir}/%{name}/plugins/L16_8k_m.*
+%{_libdir}/%{name}/plugins/libffmpeg.*
 
-%{_datadir}/%{name}/throbber/*.png
+%{_libdir}/%{name}/throbber/*.png
+%{_libdir}/%{name}/pixmaps/*.png
 
 %doc README TODO COPYING ChangeLog docs/%{name}.1.*

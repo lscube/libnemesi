@@ -57,3 +57,7 @@ $(OBJECTS): libtool
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
+install-exec-local:
+	@cd $(exec_prefix)/bin; \
+	ln -s nemesi gnemesi; \
+	cd -
