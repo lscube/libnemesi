@@ -335,14 +335,14 @@
   <property name="visible">True</property>
   <property name="title" translatable="yes">Open</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
-  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
   <property name="modal">True</property>
-  <property name="resizable">True</property>
+  <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
-  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_taskbar_hint">True</property>
   <property name="skip_pager_hint">False</property>
-  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
@@ -395,20 +395,17 @@
       </child>
 
       <child>
-	<widget class="GtkEntry" id="urlname">
+	<widget class="GtkComboBoxEntry" id="urlname">
+	  <property name="width_request">333</property>
 	  <property name="visible">True</property>
-	  <property name="can_focus">True</property>
-	  <property name="editable">True</property>
-	  <property name="visibility">True</property>
-	  <property name="max_length">0</property>
-	  <property name="text" translatable="yes">rtsp://</property>
-	  <property name="has_frame">True</property>
-	  <property name="invisible_char" translatable="yes">*</property>
-	  <property name="activates_default">True</property>
+	  <property name="has_focus">True</property>
+	  <property name="items" translatable="yes">rtsp://</property>
+	  <signal name="changed" handler="on_urlname_changed" last_modification_time="Fri, 11 Mar 2005 16:20:55 GMT"/>
+	  <signal name="realize" handler="on_urlname_realize" last_modification_time="Fri, 11 Mar 2005 18:07:24 GMT"/>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
-	  <property name="expand">False</property>
+	  <property name="expand">True</property>
 	  <property name="fill">False</property>
 	  <property name="pack_type">GTK_PACK_END</property>
 	</packing>

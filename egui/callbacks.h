@@ -63,3 +63,12 @@ gboolean
 on_nemesi_configure_event              (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data);
+
+
+void
+on_urlname_changed                     (GtkComboBox     *combobox,
+                                        gpointer         user_data);
+
+void
+on_urlname_realize                     (GtkWidget       *widget,
+                                        gpointer         user_data);

@@ -34,6 +34,8 @@
 
 #include "gui_statusbar.h"
 
+#define MAXSTATUSSTR 512
+
 typedef struct _gnms_stwidget {
 	GtkWidget *widget;
 	void (*updater)(void *userdata);
@@ -62,13 +64,15 @@ void gnms_stbar_init(GtkBox *statusbox)
 
 int gnms_stbar_setstr(const char *fmt, ...)
 {
-	char statusstr[32];
+	char statusstr[MAXSTATUSSTR];
 	int ret;
 	va_list args;
 
 	va_start(args, fmt);
 	ret=vsnprintf(statusstr, sizeof(statusstr), fmt, args);
 	va_end(args);
+
+	statusstr[sizeof(statusstr)-1]='\0';
 
 	gtk_statusbar_push(nmsstatusbar.statusbar, nmsstatusbar.status_cid, statusstr);
 

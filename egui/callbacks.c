@@ -11,6 +11,7 @@
 #include "gui_throbber.h"
 #include "gui_statusbar.h"
 #include "gui_cc.h"
+#include "gnmsprint.h"
 #include <nemesi/egui.h>
 #include <nemesi/etui.h>
 #include <nemesi/methods.h>
@@ -93,6 +94,7 @@ void update_toolbar(void)
 
 	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_ctrl->status));
 	gnms_stbar_update();
+	gnms_showmsgs();
 
 }
 
@@ -103,8 +105,10 @@ void view_info(GtkWidget *infow)
 
 	if (!info)
 		info = create_info();
-	else // TODO: destroy only the internal, not the window
+	else { // TODO: destroy only the internal, not the window
 		gtk_widget_destroy(info);
+		info = create_info();
+	}
 
 	gtk_container_add (GTK_CONTAINER (info), infow);
 
@@ -218,8 +222,11 @@ void
 on_cancelbutton1_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
+	/*
 	gtk_widget_destroy(opendialog);
 	opendialog = NULL;
+	*/
+	gtk_widget_hide(opendialog);
 }
 
 
@@ -227,11 +234,43 @@ void
 on_okbutton1_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
+	GtkWidget *combo_box;
 	char *url;
+	GtkTreeModel *list_store;
+	GtkTreeIter iter;
+	gboolean valid, found = FALSE;
+	gint txt_col;
 
-	url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
+	combo_box = lookup_widget(opendialog, "urlname");
+
+	// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
+	url = (char *)gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
+
+	txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(combo_box));
+	list_store = gtk_combo_box_get_model(GTK_COMBO_BOX(combo_box));
+	valid = gtk_tree_model_get_iter_first(list_store, &iter);
+
+	nmsprintf(NMSML_DBG1, "List of urls\n");
+	while (valid) {
+		gchar *str_data;
+		gtk_tree_model_get (list_store, &iter, txt_col, &str_data, -1);
+		nmsprintf(NMSML_DBG1, "%s\n", str_data);
+		if (!strcmp(url, str_data)) {
+			found = TRUE;
+			break;
+		}
+		g_free(str_data);
+		valid = gtk_tree_model_iter_next (list_store, &iter);
+	}
+	nmsprintf(NMSML_DBG1, "ENDOF List of urls\n");
+	if (!found)
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), url);
+	/*
 	gtk_widget_destroy(opendialog);
 	opendialog = NULL;
+	*/
+	gtk_widget_hide(opendialog);
+	nmsprintf(NMSML_DBG1, "%s\n", url);
 	send_open(rtsp_ctrl, url);
 	gui_throbber(&rtsp_ctrl->busy);
 }
@@ -287,5 +326,53 @@ on_nemesi_configure_event              (GtkWidget       *widget,
 		gtk_window_move(GTK_WINDOW(info), event->x + event->width - infowidth, event->y + event->height);
 
 	return FALSE;
+}
+
+
+void
+on_urlname_changed                     (GtkComboBox     *combobox,
+                                        gpointer         user_data)
+{
+	nmsprintf(NMSML_DBG2, "urlname changed\n");
+}
+
+
+void
+on_urlname_realize                     (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+	GtkEntryCompletion *completion;
+	GtkTreeModel *model;
+	gint txt_col;
+	
+	completion = gtk_entry_completion_new();
+
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+	txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(widget));
+	gtk_entry_completion_set_model(completion, model);
+	gtk_entry_completion_set_text_column(completion, txt_col);
+	// gtk_entry_completion_set_inline_completion(completioin, TRUE);
+
+	gtk_entry_set_completion(GTK_ENTRY(GTK_BIN(widget)->child), completion);
+
+	model = gtk_entry_completion_get_model(completion);
+// ---
+	GtkTreeIter iter;
+	gboolean valid;
+
+	valid = gtk_tree_model_get_iter_first(model, &iter);
+
+	nmsprintf(NMSML_DBG1, "List of urls\n");
+	while (valid) {
+		gchar *str_data;
+		gtk_tree_model_get (model, &iter, txt_col, &str_data, -1);
+		nmsprintf(NMSML_DBG1, "%s\n", str_data);
+		g_free(str_data);
+		valid = gtk_tree_model_iter_next (model, &iter);
+	}
+	nmsprintf(NMSML_DBG1, "ENDOF List of urls\n");
+// ---
+
+	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 }
 

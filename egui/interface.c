@@ -303,18 +303,22 @@ create_opendialog (void)
   opendialog = gtk_dialog_new ();
   gtk_widget_set_name (opendialog, "opendialog");
   gtk_window_set_title (GTK_WINDOW (opendialog), "Open");
+  gtk_window_set_position (GTK_WINDOW (opendialog), GTK_WIN_POS_CENTER_ON_PARENT);
   gtk_window_set_modal (GTK_WINDOW (opendialog), TRUE);
+  gtk_window_set_resizable (GTK_WINDOW (opendialog), FALSE);
+  gtk_window_set_skip_taskbar_hint (GTK_WINDOW (opendialog), TRUE);
+  gtk_window_set_type_hint (GTK_WINDOW (opendialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   dialog_vbox1 = GTK_DIALOG (opendialog)->vbox;
   gtk_widget_set_name (dialog_vbox1, "dialog_vbox1");
   gtk_widget_show (dialog_vbox1);
 
-  urlname = gtk_entry_new ();
+  urlname = gtk_combo_box_entry_new_text ();
   gtk_widget_set_name (urlname, "urlname");
   gtk_widget_show (urlname);
-  gtk_box_pack_end (GTK_BOX (dialog_vbox1), urlname, FALSE, FALSE, 0);
-  gtk_entry_set_text (GTK_ENTRY (urlname), "rtsp://");
-  gtk_entry_set_activates_default (GTK_ENTRY (urlname), TRUE);
+  gtk_box_pack_end (GTK_BOX (dialog_vbox1), urlname, TRUE, FALSE, 0);
+  gtk_widget_set_size_request (urlname, 333, -1);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (urlname), "rtsp://");
 
   dialog_action_area1 = GTK_DIALOG (opendialog)->action_area;
   gtk_widget_set_name (dialog_action_area1, "dialog_action_area1");
@@ -333,6 +337,12 @@ create_opendialog (void)
   gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), okbutton1, GTK_RESPONSE_OK);
   GTK_WIDGET_SET_FLAGS (okbutton1, GTK_CAN_DEFAULT);
 
+  g_signal_connect ((gpointer) urlname, "changed",
+                    G_CALLBACK (on_urlname_changed),
+                    NULL);
+  g_signal_connect ((gpointer) urlname, "realize",
+                    G_CALLBACK (on_urlname_realize),
+                    NULL);
   g_signal_connect ((gpointer) cancelbutton1, "clicked",
                     G_CALLBACK (on_cancelbutton1_clicked),
                     NULL);
@@ -348,6 +358,7 @@ create_opendialog (void)
   GLADE_HOOKUP_OBJECT (opendialog, cancelbutton1, "cancelbutton1");
   GLADE_HOOKUP_OBJECT (opendialog, okbutton1, "okbutton1");
 
+  gtk_widget_grab_focus (urlname);
   gtk_widget_grab_default (okbutton1);
   return opendialog;
 }

@@ -121,8 +121,8 @@ int nmsprintf_default(int level, const char *fmt, ...);
 #define PRINT_STATUS 1
 #define ELAPSED_STATUS 2
 #define BUFFERS_STATUS 3
-#define ELAPSED_STATUS_VERBOSITY 1
-#define BUFFERS_STATUS_VERBOSITY 2
+#define ELAPSED_STATUS_VERBOSITY NMSML_NORM
+#define BUFFERS_STATUS_VERBOSITY NMSML_VERB
 int nmsstatusprintf_default(int cmd, const char *fmt, ...);
 
 int nmsverbosity_set(int);

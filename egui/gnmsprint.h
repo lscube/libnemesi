@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,26 +26,8 @@
  *  
  * */
 
-#include <pthread.h>
-
-#include <nemesi/video.h>
 #include <nemesi/comm.h>
 
-int video_th_stop(NMSVideo *vc)
-{
-	void *ret;
-
-	if (vc && vc->tid) {
-		nmsprintf(NMSML_DBG1, "Sending cancel signal to Video Thread (ID: %u)\n", vc->tid);
-		if (pthread_cancel(vc->tid) != 0)
-			nmsprintf(NMSML_DBG2, "Error while sending cancelation to Video Thread.\n");
-		else
-			pthread_join(vc->tid, (void **)&ret);
-		if ( ret != PTHREAD_CANCELED )
-			nmsprintf(NMSML_DBG2, "Warning! Video Thread joined, but  not canceled!\n");
-		vc->tid = 0;
-	}
-
-	return 0;
-}
+void gnmsprint_init(void);
+int gnms_showmsgs(void);
 

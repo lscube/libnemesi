@@ -48,16 +48,16 @@ int nmsverbosity_set(int level){
 		if ( (level + NMSML_NORM) > NMSML_MAX)
 			verbosity = NMSML_MAX;
 		else
-			verbosity = NMSML_NORM + level;
+			verbosity = NMSML_ALWAYS + level;
 	} else {
 		fprintf(stderr, NMSCLR_YELLOW"warning: verbosity level must be a non negative integer. Setting to 0\n"NMSCLR_DEFAULT);
 		verbosity = 0;
 	}
-	return verbosity-NMSML_NORM;
+	return verbosity-NMSML_ALWAYS;
 }
 
 int nmsverbosity_get(void){
-	return verbosity-NMSML_NORM;
+	return verbosity-NMSML_ALWAYS;
 }
 
 /*!  \brief Default print function.

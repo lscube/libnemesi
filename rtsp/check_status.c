@@ -91,9 +91,9 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 	}
 	// if ( (res_state>=400) && (res_state<500))
 	if ( RTSP_IS_CLIENT_ERROR(res_state) )
-		nmsprintf(NMSML_ERR, "WARNING: Client error. Reply was: %hu %s\n", res_state, reason_phrase);
+		nmsprintf(NMSML_ERR, "Client error. Reply was: %hu %s\n", res_state, reason_phrase);
 	// if ( res_state>=500 )
 	if ( RTSP_IS_SERVER_ERROR(res_state) )
-		nmsprintf(NMSML_ERR, "WARNING; Server error. Reply was: %hu %s\n", res_state, reason_phrase);
+		nmsprintf(NMSML_ERR, "Server error. Reply was: %hu %s\n", res_state, reason_phrase);
 	return -1;
 }
