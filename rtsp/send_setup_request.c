@@ -73,6 +73,10 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 		sprintf(b, "%s %s %s\n", SETUP_TKN, rtsp_med->filename, RTSP_VER);
 	sprintf(b + strlen(b), "CSeq: %d\n", ++(rtsp_sess->CSeq));
 	sprintf(b + strlen(b), "Transport: %s\n", options);
+	
+	if (rtsp_sess->Session_ID) //Caso di controllo aggregato: é giá stato definito un numero per la sessione corrente.
+		sprintf(b + strlen(b), "Session: %d\n", rtsp_sess->Session_ID);
+	
 	strcat(b, "\r\n"); 
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
