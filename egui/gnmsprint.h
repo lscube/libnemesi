@@ -26,8 +26,13 @@
  *  
  * */
 
+#ifndef __GNMSPRINTF_H
+#define __GNMSPRINTF_H
+
 #include <nemesi/comm.h>
 
 void gnmsprint_init(void);
 int gnms_showmsgs(void);
+
+#endif // __GNMSPRINTF_H
 

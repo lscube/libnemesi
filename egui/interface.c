@@ -299,9 +299,15 @@ create_opendialog (void)
   GtkWidget *dialog_action_area1;
   GtkWidget *cancelbutton1;
   GtkWidget *okbutton1;
+  GtkAccelGroup *accel_group;
+
+  accel_group = gtk_accel_group_new ();
 
   opendialog = gtk_dialog_new ();
   gtk_widget_set_name (opendialog, "opendialog");
+  gtk_widget_add_accelerator (opendialog, "close", accel_group,
+                              GDK_Escape, 0,
+                              GTK_ACCEL_VISIBLE);
   gtk_window_set_title (GTK_WINDOW (opendialog), "Open");
   gtk_window_set_position (GTK_WINDOW (opendialog), GTK_WIN_POS_CENTER_ON_PARENT);
   gtk_window_set_modal (GTK_WINDOW (opendialog), TRUE);
@@ -318,6 +324,7 @@ create_opendialog (void)
   gtk_widget_show (urlname);
   gtk_box_pack_end (GTK_BOX (dialog_vbox1), urlname, TRUE, FALSE, 0);
   gtk_widget_set_size_request (urlname, 333, -1);
+  GTK_WIDGET_SET_FLAGS (urlname, GTK_CAN_FOCUS);
   gtk_combo_box_append_text (GTK_COMBO_BOX (urlname), "rtsp://");
 
   dialog_action_area1 = GTK_DIALOG (opendialog)->action_area;
@@ -337,6 +344,9 @@ create_opendialog (void)
   gtk_dialog_add_action_widget (GTK_DIALOG (opendialog), okbutton1, GTK_RESPONSE_OK);
   GTK_WIDGET_SET_FLAGS (okbutton1, GTK_CAN_DEFAULT);
 
+  g_signal_connect ((gpointer) opendialog, "close",
+                    G_CALLBACK (on_opendialog_close),
+                    NULL);
   g_signal_connect ((gpointer) urlname, "changed",
                     G_CALLBACK (on_urlname_changed),
                     NULL);
@@ -360,6 +370,8 @@ create_opendialog (void)
 
   gtk_widget_grab_focus (urlname);
   gtk_widget_grab_default (okbutton1);
+  gtk_window_add_accel_group (GTK_WINDOW (opendialog), accel_group);
+
   return opendialog;
 }
 

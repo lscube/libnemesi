@@ -72,3 +72,8 @@ on_urlname_changed                     (GtkComboBox     *combobox,
 void
 on_urlname_realize                     (GtkWidget       *widget,
                                         gpointer         user_data);
+
+void
+on_opendialog_close                    (GtkDialog       *dialog,
+                                        gpointer         user_data);
+

@@ -12,6 +12,7 @@
 #include "gui_statusbar.h"
 #include "gui_cc.h"
 #include "gnmsprint.h"
+#include "gnmscompletion.h"
 #include <nemesi/egui.h>
 #include <nemesi/etui.h>
 #include <nemesi/methods.h>
@@ -227,6 +228,7 @@ on_cancelbutton1_clicked               (GtkButton       *button,
 	opendialog = NULL;
 	*/
 	gtk_widget_hide(opendialog);
+	nmsprintf(NMSML_DBG1, "open dialog closed\n");
 }
 
 
@@ -344,6 +346,7 @@ on_urlname_realize                     (GtkWidget       *widget,
 	GtkEntryCompletion *completion;
 	GtkTreeModel *model;
 	gint txt_col;
+	GNMScompletion *gnmsc;
 	
 	completion = gtk_entry_completion_new();
 
@@ -351,10 +354,17 @@ on_urlname_realize                     (GtkWidget       *widget,
 	txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(widget));
 	gtk_entry_completion_set_model(completion, model);
 	gtk_entry_completion_set_text_column(completion, txt_col);
+
+	gnmsc = gnmscompletion_init();
+	gnmsc->model = model;
+	gnmsc->txt_col = txt_col;
+
+	gtk_entry_completion_set_match_func(completion, gnmscompletion_machfunc, gnmsc, gnmscompletion_destroy);
 	// gtk_entry_completion_set_inline_completion(completioin, TRUE);
 
 	gtk_entry_set_completion(GTK_ENTRY(GTK_BIN(widget)->child), completion);
 
+#if 0
 	model = gtk_entry_completion_get_model(completion);
 // ---
 	GtkTreeIter iter;
@@ -372,7 +382,22 @@ on_urlname_realize                     (GtkWidget       *widget,
 	}
 	nmsprintf(NMSML_DBG1, "ENDOF List of urls\n");
 // ---
+#endif
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
+}
+
+
+void
+on_opendialog_close                    (GtkDialog       *dialog,
+                                        gpointer         user_data)
+{
+	/*
+	gtk_widget_destroy(opendialog);
+	opendialog = NULL;
+	*/
+	gtk_widget_hide(opendialog);
+	nmsprintf(NMSML_DBG1, "open dialog closed\n");
+
 }
 
