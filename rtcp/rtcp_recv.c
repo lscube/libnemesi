@@ -34,7 +34,8 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 	struct Stream_Source *stm_src;
 	struct sockaddr_in server;
 	rtcp_pkt *pkt;
-	int ret, n, server_len=sizeof(struct sockaddr);
+	int ret, n;
+	socklen_t server_len=sizeof(struct sockaddr);
 
 	memset(buffer, 0, 1024);
 	

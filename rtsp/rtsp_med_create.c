@@ -32,7 +32,7 @@ struct RTSP_Medium *rtsp_med_create(int fd)
 {
 	struct RTSP_Medium *rtsp_m;
 	struct sockaddr localaddr, peeraddr;
-	int len=sizeof(struct sockaddr);
+	socklen_t len=sizeof(struct sockaddr);
 
 	memset(&localaddr, 0, len);
 	memset(&peeraddr, 0, len);

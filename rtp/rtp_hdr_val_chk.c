@@ -40,12 +40,12 @@ int rtp_hdr_val_chk(rtp_pkt *pkt, int len)
 		uiprintf(BLANK_LINE);
 		return 1;
 	}
-	if ( (pkt->pad) && ( *(((uint8 *)pkt)+len-1) > (len - ((void *)(pkt->data)-(void *)pkt)) )){
+	if ( (pkt->pad) && ( *(((uint8 *)pkt)+len-1) > (len - ((uint8 *)(pkt->data)-(uint8 *)pkt)) )){
 		uiprintf("RTP Header not valid: mismatching lenght!");
 		uiprintf(BLANK_LINE);
 		return 1;
 	}
-	if ( (pkt->cc) && ( pkt->cc > (len - ((void *)(pkt->data)-(void *)pkt))-((*(((uint8 *)pkt)+len-1)) * pkt->pad) )){
+	if ( (pkt->cc) && ( pkt->cc > (len - ((uint8 *)(pkt->data)-(uint8 *)pkt))-((*(((uint8 *)pkt)+len-1)) * pkt->pad) )){
 		uiprintf("RTP Header not valid: mismatching CSRC count!");
 		uiprintf(BLANK_LINE);
 		return 1;

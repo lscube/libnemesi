@@ -58,7 +58,7 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 
 	item->type=RTCP_SDES_CNAME;
 	item->len=strlen(str);
-	strcpy(item->data, str);
+	strcpy((char *)item->data, str);
 	
 	item = (rtcp_sdes_item_t *)((char *)item + strlen((char *)item));
 
@@ -78,7 +78,7 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 
 	item->type=RTCP_SDES_NAME;
 	item->len=strlen(str);
-	strcpy(item->data, str);
+	strcpy((char *)item->data, str);
 	
 	item = (rtcp_sdes_item_t *)((char *)item + strlen((char *)item));
 
@@ -98,7 +98,7 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 
 	item->type=RTCP_SDES_TOOL;
 	item->len=strlen(str);
-	strcpy(item->data, str);
+	strcpy((char *)item->data, str);
 
 	item = (rtcp_sdes_item_t *)((char *)item + strlen((char *)item));
 

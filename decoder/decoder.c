@@ -130,18 +130,18 @@ void *decoder(void *args)
 					if(cycles || timeval_subtract(NULL, &tv_elapsed, &tvstart) ){
 					
 						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
-							((void *)(pkt->data)-(void *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
+							((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
 						strcpy(output_pref, get_pref("output"));
 						
 						if ( (len != 0) && (!strcmp(output_pref, "diskraw")) )
-							diskwriter( ((uint8 *)pkt->data + pkt->cc + SKIP), len - SKIP );
+							diskwriter( ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
 							/* impostato per il payload mp3
 							diskwriter(((uint8 *)pkt->data + pkt->cc + 4), len -4);
 							*/
 						else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
-								decoders[pkt->pt](((uint8 *)pkt->data + pkt->cc), len, \
+								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, \
 										(uint8 *(*)(uint32))ab_get);
 #ifndef HAVE_SDL
 								oss_play();
@@ -162,9 +162,9 @@ void *decoder(void *args)
 									}
 								}
 							} else if ( !strcmp(output_pref, "diskdecoded") ) {
-								decoders[pkt->pt](((uint8 *)pkt->data + pkt->cc), len, \
+								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, \
 										(uint8 *(*)(uint32))db_get);
-								diskwriter(global_disk_buffer->data, global_disk_buffer->len);
+								diskwriter((char *)global_disk_buffer->data, global_disk_buffer->len);
 								global_disk_buffer->len = 0;
 							}
 						}
@@ -181,7 +181,7 @@ void *decoder(void *args)
 				if(stm_src->po.potail >= 0){
 					pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail); // pacchetto successivo
 					if ( !ts_min_next) {
-					//	uiprintf("\nNuovo min\n");
+						//uiprintf("\nNuovo min\n");
 						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
 					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
 						ts_min_next = min(ts_min_next, \
