@@ -38,6 +38,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+@NEMESI_HAVE_SDL_TRUE@am__append_1 = video_sdl.c
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -91,6 +92,10 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+NEMESI_HAVE_AVC_FALSE = @NEMESI_HAVE_AVC_FALSE@
+NEMESI_HAVE_AVC_TRUE = @NEMESI_HAVE_AVC_TRUE@
+NEMESI_HAVE_SDL_FALSE = @NEMESI_HAVE_SDL_FALSE@
+NEMESI_HAVE_SDL_TRUE = @NEMESI_HAVE_SDL_TRUE@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -159,12 +164,11 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libvideo.la
 libvideo_la_SOURCES = img_format_name.c \
 			video_preinit.c \
-			video_sdl.c \
 			video_th.c \
 			video_th_start.c \
 			video_th_stop.c \
-			video_utils.c
-
+			video_utils.c\
+$(am__append_1)
 
 libvideo_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
@@ -176,9 +180,13 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libvideo_la_LIBADD =
-am_libvideo_la_OBJECTS = img_format_name.lo video_preinit.lo \
-	video_sdl.lo video_th.lo video_th_start.lo video_th_stop.lo \
-	video_utils.lo
+am__libvideo_la_SOURCES_DIST = img_format_name.c video_preinit.c \
+	video_th.c video_th_start.c video_th_stop.c video_utils.c \
+	video_sdl.c
+@NEMESI_HAVE_SDL_TRUE@am__objects_1 = video_sdl.lo
+am_libvideo_la_OBJECTS = img_format_name.lo video_preinit.lo video_th.lo \
+	video_th_start.lo video_th_stop.lo video_utils.lo \
+	$(am__objects_1)
 libvideo_la_OBJECTS = $(am_libvideo_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -197,7 +205,7 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libvideo_la_SOURCES)
+DIST_SOURCES = $(am__libvideo_la_SOURCES_DIST)
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
 SOURCES = $(libvideo_la_SOURCES)
 

@@ -425,6 +425,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="wsocket/server_connect.c"
+ac_subdirs_all="$ac_subdirs_all libltdl"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -462,8 +463,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subdirs_all="$ac_subdirs_all libltdl"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot ac_prefix_program CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LN_S INCLTDL LIBLTDL ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL subdirs LIBTOOL_DEPS DLOPEN DLPREOPEN ALLOCA LIBOBJS SDL_CONFIG SDL_CFLAGS SDL_LIBS ARCH_DEFINES ARCH_X86_TRUE ARCH_X86_FALSE ARCH_PPC_TRUE ARCH_PPC_FALSE HAVE_SOLARIS_TRUE HAVE_SOLARIS_FALSE nemesi_plugindir LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot ac_prefix_program CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LN_S subdirs INCLTDL LIBLTDL DLOPEN DLPREOPEN LIBTOOL_DEPS ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL NEMESI_HAVE_AVC_TRUE NEMESI_HAVE_AVC_FALSE ALLOCA LIBOBJS NEMESI_HAVE_SDL_TRUE NEMESI_HAVE_SDL_FALSE SDL_CONFIG SDL_CFLAGS SDL_LIBS ARCH_DEFINES ARCH_X86_TRUE ARCH_X86_FALSE ARCH_PPC_TRUE ARCH_PPC_FALSE HAVE_SOLARIS_TRUE HAVE_SOLARIS_FALSE nemesi_plugindir LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1028,12 +1028,12 @@ Optional Features:
   --enable-warnings       enable/choose gcc warnings level: none, normal, pedantic default=none
   --enable-errors         make gcc warnings behave like errors: none, normal, pedantic default=none
   --enable-optimize       enable/chose optimization level: none, poor, normal, full, super default=normal
-  --enable-gcc3           enable/chose gcc3 as default compiler default=no
   --enable-sdl            enable/chose sdl as default output library default=yes
+  --enable-avc            enable libavcodec support default=yes
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
   --enable-shared[=PKGS]
-                          build shared libraries [default=yes]
+                          build shared libraries [default=no]
   --enable-static[=PKGS]
                           build static libraries [default=yes]
   --enable-fast-install[=PKGS]
@@ -2058,13 +2058,6 @@ if test "${enable_optimize+set}" = set; then
 else
   enable_optimize="normal"
 fi;
-# Check whether --enable-gcc3 or --disable-gcc3 was given.
-if test "${enable_gcc3+set}" = set; then
-  enableval="$enable_gcc3"
-
-else
-  enable_gcc3="no"
-fi;
 # Check whether --enable-sdl or --disable-sdl was given.
 if test "${enable_sdl+set}" = set; then
   enableval="$enable_sdl"
@@ -2072,10 +2065,14 @@ if test "${enable_sdl+set}" = set; then
 else
   enable_sdl="yes"
 fi;
+# Check whether --enable-avc or --disable-avc was given.
+if test "${enable_avc+set}" = set; then
+  enableval="$enable_avc"
 
-if test "$enable_gcc3" = "yes"; then
-	CC="gcc3";
-fi
+else
+  enable_avc="yes"
+fi;
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -3813,13 +3810,22 @@ echo "$as_me: error: this package needs a convenience libltdl" >&2;}
   "") enable_ltdl_convenience=yes
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
-  LIBLTDL='${top_builddir}/''libltdl'/libltdlc.la
-  LTDLINCL='-I${top_srcdir}/''libltdl'
+  LIBLTDL='${top_builddir}/'libltdl/libltdlc.la
+  LTDLINCL='-I${top_srcdir}/'libltdl
   # For backwards non-gettext consistent compatibility...
   INCLTDL="$LTDLINCL"
 
 
 
+subdirs="$subdirs libltdl"
+
+
+
+
+
+
+
+if test x$enable_debug = xyes; then
 # Check whether --enable-shared or --disable-shared was given.
 if test "${enable_shared+set}" = set; then
   enableval="$enable_shared"
@@ -3841,8 +3847,12 @@ if test "${enable_shared+set}" = set; then
       ;;
     esac
 else
-  enable_shared=yes
+  enable_shared=no
 fi;
+
+
+fi
+
 
 # Check whether --enable-static or --disable-static was given.
 if test "${enable_static+set}" = set; then
@@ -4364,7 +4374,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4367 "configure"' > conftest.$ac_ext
+  echo '#line 4377 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5626,7 +5636,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:5629:" \
+echo "$as_me:5639:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -6496,7 +6506,7 @@ fi
   ;;
 esac
 
-enable_dlopen=no
+enable_dlopen=yes
 enable_win32_dll=no
 
 # Check whether --enable-libtool-lock or --disable-libtool-lock was given.
@@ -6631,11 +6641,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6634: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6644: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6638: \$? = $ac_status" >&5
+   echo "$as_me:6648: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -6863,11 +6873,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6866: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6876: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6870: \$? = $ac_status" >&5
+   echo "$as_me:6880: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -6930,11 +6940,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6933: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6943: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:6937: \$? = $ac_status" >&5
+   echo "$as_me:6947: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8270,7 +8280,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 8273 "configure"' > conftest.$ac_ext
+    echo '#line 8283 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8966,7 +8976,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8969 "configure"
+#line 8979 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9064,7 +9074,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9067 "configure"
+#line 9077 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11196,11 +11206,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11199: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11209: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11203: \$? = $ac_status" >&5
+   echo "$as_me:11213: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -11263,11 +11273,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11266: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11276: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11270: \$? = $ac_status" >&5
+   echo "$as_me:11280: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11834,7 +11844,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 11837 "configure"' > conftest.$ac_ext
+    echo '#line 11847 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -12530,7 +12540,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12533 "configure"
+#line 12543 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12628,7 +12638,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12631 "configure"
+#line 12641 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13450,11 +13460,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13453: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13463: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13457: \$? = $ac_status" >&5
+   echo "$as_me:13467: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -13517,11 +13527,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13520: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13530: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13524: \$? = $ac_status" >&5
+   echo "$as_me:13534: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14835,7 +14845,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 14838 "configure"' > conftest.$ac_ext
+    echo '#line 14848 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -15481,11 +15491,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15484: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15494: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15488: \$? = $ac_status" >&5
+   echo "$as_me:15498: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -15713,11 +15723,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15716: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15726: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15720: \$? = $ac_status" >&5
+   echo "$as_me:15730: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -15780,11 +15790,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15783: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15793: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15787: \$? = $ac_status" >&5
+   echo "$as_me:15797: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17120,7 +17130,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 17123 "configure"' > conftest.$ac_ext
+    echo '#line 17133 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -17816,7 +17826,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 17819 "configure"
+#line 17829 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -17914,7 +17924,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 17917 "configure"
+#line 17927 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18922,13 +18932,6 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
-subdirs="$subdirs libltdl"
-
-
-
-
-
-
 echo "$as_me:$LINENO: checking whether byte ordering is bigendian" >&5
 echo $ECHO_N "checking whether byte ordering is bigendian... $ECHO_C" >&6
 if test "${ac_cv_c_bigendian+set}" = set; then
@@ -19199,7 +19202,18 @@ _ACEOF
 fi
 
 
-echo "$as_me:$LINENO: checking for avcodec_open in -lavcodec" >&5
+
+
+if /bin/false; then
+  NEMESI_HAVE_AVC_TRUE=
+  NEMESI_HAVE_AVC_FALSE='#'
+else
+  NEMESI_HAVE_AVC_TRUE='#'
+  NEMESI_HAVE_AVC_FALSE=
+fi
+
+if test x$enable_avc = xyes; then
+	echo "$as_me:$LINENO: checking for avcodec_open in -lavcodec" >&5
 echo $ECHO_N "checking for avcodec_open in -lavcodec... $ECHO_C" >&6
 if test "${ac_cv_lib_avcodec_avcodec_open+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -19254,12 +19268,26 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_avcodec_avcodec_open" >&5
 echo "${ECHO_T}$ac_cv_lib_avcodec_avcodec_open" >&6
 if test $ac_cv_lib_avcodec_avcodec_open = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVCODEC 1
-_ACEOF
+  \
 
-  LIBS="-lavcodec $LIBS"
 
+if /bin/true; then
+  NEMESI_HAVE_AVC_TRUE=
+  NEMESI_HAVE_AVC_FALSE='#'
+else
+  NEMESI_HAVE_AVC_TRUE='#'
+  NEMESI_HAVE_AVC_FALSE=
+fi
+ \
+	NEMESI_HAVE_AVC=yes
+else
+  { echo "$as_me:$LINENO: WARNING: libavcodec not present!" >&5
+echo "$as_me: WARNING: libavcodec not present!" >&2;}
+fi
+
+else
+	{ echo "$as_me:$LINENO: WARNING: libavcodec disabled!" >&5
+echo "$as_me: WARNING: libavcodec disabled!" >&2;}
 fi
 
 
@@ -21617,6 +21645,16 @@ echo "${ECHO_T}$ac_cv_func_getaddrinfo" >&6
 
 CFLAGS=""
 
+
+
+if /bin/false; then
+  NEMESI_HAVE_SDL_TRUE=
+  NEMESI_HAVE_SDL_FALSE='#'
+else
+  NEMESI_HAVE_SDL_TRUE='#'
+  NEMESI_HAVE_SDL_FALSE=
+fi
+
 if test "$enable_sdl" = "yes"; then
 
 # Check whether --with-sdl-prefix or --without-sdl-prefix was given.
@@ -21826,7 +21864,17 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
  \
 		CFLAGS="$CFLAGS $SDL_CFLAGS" \
-		LIBS="$LIBS $SDL_LIBS"
+		LIBS="$LIBS $SDL_LIBS" \
+
+
+if /bin/true; then
+  NEMESI_HAVE_SDL_TRUE=
+  NEMESI_HAVE_SDL_FALSE='#'
+else
+  NEMESI_HAVE_SDL_TRUE='#'
+  NEMESI_HAVE_SDL_FALSE=
+fi
+
   else
      echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
@@ -22035,8 +22083,50 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 
+          ac_config_files="$ac_config_files Makefile"
 
-                                                                                                                                                                                                        ac_config_files="$ac_config_files Makefile bufferpool/Makefile etui/Makefile rtp/Makefile rtcp/Makefile rtsp/Makefile src/Makefile wsocket/Makefile output/Makefile output/audio/Makefile output/video/Makefile output/diskwriter/Makefile decoder/Makefile decoder/L16_8k_m/Makefile decoder/gsm_amr_float/Makefile decoder/libffmp3/Makefile decoder/libffmpeg/Makefile md5/Makefile plugins/Makefile docs/Makefile"
+          ac_config_files="$ac_config_files bufferpool/Makefile"
+
+          ac_config_files="$ac_config_files etui/Makefile"
+
+          ac_config_files="$ac_config_files rtp/Makefile"
+
+          ac_config_files="$ac_config_files rtcp/Makefile"
+
+          ac_config_files="$ac_config_files rtsp/Makefile"
+
+          ac_config_files="$ac_config_files src/Makefile"
+
+          ac_config_files="$ac_config_files wsocket/Makefile"
+
+          ac_config_files="$ac_config_files output/Makefile"
+
+          ac_config_files="$ac_config_files output/audio/Makefile"
+
+          ac_config_files="$ac_config_files output/video/Makefile"
+
+          ac_config_files="$ac_config_files output/diskwriter/Makefile"
+
+          ac_config_files="$ac_config_files decoder/Makefile"
+
+          ac_config_files="$ac_config_files decoder/L16_8k_m/Makefile"
+
+          ac_config_files="$ac_config_files decoder/gsm_amr_float/Makefile"
+
+
+if test x$NEMESI_HAVE_AVC = xyes; then
+          ac_config_files="$ac_config_files decoder/libffmp3/Makefile"
+
+          ac_config_files="$ac_config_files decoder/libffmpeg/Makefile"
+
+fi
+
+          ac_config_files="$ac_config_files md5/Makefile"
+
+          ac_config_files="$ac_config_files plugins/Makefile"
+
+          ac_config_files="$ac_config_files docs/Makefile"
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -22146,6 +22236,34 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${NEMESI_HAVE_AVC_TRUE}" && test -z "${NEMESI_HAVE_AVC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"NEMESI_HAVE_AVC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"NEMESI_HAVE_AVC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${NEMESI_HAVE_AVC_TRUE}" && test -z "${NEMESI_HAVE_AVC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"NEMESI_HAVE_AVC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"NEMESI_HAVE_AVC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${NEMESI_HAVE_SDL_TRUE}" && test -z "${NEMESI_HAVE_SDL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"NEMESI_HAVE_SDL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"NEMESI_HAVE_SDL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${NEMESI_HAVE_SDL_TRUE}" && test -z "${NEMESI_HAVE_SDL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"NEMESI_HAVE_SDL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"NEMESI_HAVE_SDL\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -22771,8 +22889,12 @@ s,@am__fastdepCC_FALSE@,$am__fastdepCC_FALSE,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
 s,@LN_S@,$LN_S,;t t
+s,@subdirs@,$subdirs,;t t
 s,@INCLTDL@,$INCLTDL,;t t
 s,@LIBLTDL@,$LIBLTDL,;t t
+s,@DLOPEN@,$DLOPEN,;t t
+s,@DLPREOPEN@,$DLPREOPEN,;t t
+s,@LIBTOOL_DEPS@,$LIBTOOL_DEPS,;t t
 s,@ECHO@,$ECHO,;t t
 s,@AR@,$AR,;t t
 s,@ac_ct_AR@,$ac_ct_AR,;t t
@@ -22789,12 +22911,12 @@ s,@F77@,$F77,;t t
 s,@FFLAGS@,$FFLAGS,;t t
 s,@ac_ct_F77@,$ac_ct_F77,;t t
 s,@LIBTOOL@,$LIBTOOL,;t t
-s,@subdirs@,$subdirs,;t t
-s,@LIBTOOL_DEPS@,$LIBTOOL_DEPS,;t t
-s,@DLOPEN@,$DLOPEN,;t t
-s,@DLPREOPEN@,$DLPREOPEN,;t t
+s,@NEMESI_HAVE_AVC_TRUE@,$NEMESI_HAVE_AVC_TRUE,;t t
+s,@NEMESI_HAVE_AVC_FALSE@,$NEMESI_HAVE_AVC_FALSE,;t t
 s,@ALLOCA@,$ALLOCA,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
+s,@NEMESI_HAVE_SDL_TRUE@,$NEMESI_HAVE_SDL_TRUE,;t t
+s,@NEMESI_HAVE_SDL_FALSE@,$NEMESI_HAVE_SDL_FALSE,;t t
 s,@SDL_CONFIG@,$SDL_CONFIG,;t t
 s,@SDL_CFLAGS@,$SDL_CFLAGS,;t t
 s,@SDL_LIBS@,$SDL_LIBS,;t t
@@ -23579,6 +23701,4 @@ echo "$as_me: error: $ac_sub_configure failed for $ac_dir" >&2;}
     cd $ac_popdir
   done
 fi
-
-#decoder/mpglib/Makefile
 

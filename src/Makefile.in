@@ -91,6 +91,10 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+NEMESI_HAVE_AVC_FALSE = @NEMESI_HAVE_AVC_FALSE@
+NEMESI_HAVE_AVC_TRUE = @NEMESI_HAVE_AVC_TRUE@
+NEMESI_HAVE_SDL_FALSE = @NEMESI_HAVE_SDL_FALSE@
+NEMESI_HAVE_SDL_TRUE = @NEMESI_HAVE_SDL_TRUE@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -193,9 +197,7 @@ nemesi_SOURCES = main.c \
 			output_uninit.c
 
 
-nemesi_LDADD = @DLOPEN@ \
-		@DLPREOPEN@ \
-		$(top_srcdir)/rtsp/librtsp.la \
+nemesi_LDADD = $(top_srcdir)/rtsp/librtsp.la \
 		$(top_srcdir)/rtcp/librtcp.la \
 		$(top_srcdir)/rtp/librtp.la \
 		$(top_srcdir)/decoder/libdecoder.la \
@@ -207,10 +209,12 @@ nemesi_LDADD = @DLOPEN@ \
 		$(top_srcdir)/output/video/libvideo.la \
 		$(top_srcdir)/output/diskwriter/libdiskwriter.la \
 		$(top_srcdir)/src/libutils.la \
-		$(top_srcdir)/md5/libmd5.la
+		$(top_srcdir)/md5/libmd5.la \
+		@DLOPEN@ \
+		@DLPREOPEN@
 
 
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir) @INCLTDL@
+INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -584,6 +588,10 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-info-am
 
+
+$(OBJECTS): libtool
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

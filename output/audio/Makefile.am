@@ -8,8 +8,11 @@ libaudio_la_SOURCES =	ab_get.c \
 			audio_format_name.c \
 			audio_init.c \
 			audio_oss.c \
-			audio_sdl.c \
 			audio_utils.c
+if NEMESI_HAVE_SDL
+libaudio_la_SOURCES += audio_sdl.c
+endif
+
 
 libaudio_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

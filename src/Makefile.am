@@ -36,9 +36,7 @@ nemesi_SOURCES =	main.c \
 			output_uninit.c
 
 
-nemesi_LDADD =	@DLOPEN@ \
-		@DLPREOPEN@ \
-		$(top_srcdir)/rtsp/librtsp.la \
+nemesi_LDADD =	$(top_srcdir)/rtsp/librtsp.la \
 		$(top_srcdir)/rtcp/librtcp.la \
 		$(top_srcdir)/rtp/librtp.la \
 		$(top_srcdir)/decoder/libdecoder.la \
@@ -50,7 +48,13 @@ nemesi_LDADD =	@DLOPEN@ \
 		$(top_srcdir)/output/video/libvideo.la \
 		$(top_srcdir)/output/diskwriter/libdiskwriter.la \
 		$(top_srcdir)/src/libutils.la \
-		$(top_srcdir)/md5/libmd5.la
+		$(top_srcdir)/md5/libmd5.la \
+		@DLOPEN@ \
+		@DLPREOPEN@
 
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
-INCLUDES += @INCLTDL@
+
+$(OBJECTS): libtool
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck
+

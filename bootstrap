@@ -13,6 +13,7 @@ echo "Bootstrapping NeMeSI package AutoTools configuration..."
 if which libtoolize >/dev/null 2>&1 ; then
 	echo -n "Running libtoolize..."
 	libtoolize --force --copy --ltdl --automake &
+#	libtoolize --automake &
 	echo " done."
 fi
 if which aclocal >/dev/null 2>&1 ; then
@@ -41,13 +42,13 @@ if which automake >/dev/null 2>&1 ; then
 	echo " done."
 fi
 
-echo -n "Copying missing files..."
-	cp -f config/lt* libltdl
-	cp -f config/config.* libltdl
-	cp -f config/install-sh libltdl
-	cp -f config/mkinstalldirs .
-	cp -f libltdl/acinclude.m4 .
-echo " done."
+#echo -n "Copying missing files..."
+#	cp -f config/lt* libltdl
+#	cp -f config/config.* libltdl
+#	cp -f config/install-sh libltdl
+#	cp -f config/mkinstalldirs .
+#	cp -f libltdl/acinclude.m4 .
+#echo " done."
 
 echo "All done. Bye."
 echo

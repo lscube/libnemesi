@@ -9,4 +9,3 @@ L16_8k_m_la_LDFLAGS = -module -avoid-version
 L16_8k_m_la_LIBADD = @LIBLTDL@
 
 INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir)
-INCLUDES += @INCLTDL@
