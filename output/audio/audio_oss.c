@@ -93,6 +93,7 @@ static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags)
 
 	// TODO; init card
 	req_format=0x7FFF000D;
+	// req_format=0x7FFF000A;
 	ioctl(audiofd, SNDCTL_DSP_SETFRAGMENT, &req_format);
 	ioctl(audiofd, SNDCTL_DSP_GETOSPACE, &info);
 	uiprintf("\nFrag: %d\nFrag total: %d\nFrag Size: %d\n", info.fragments, info.fragstotal, info.fragsize);
@@ -163,12 +164,14 @@ static uint32 play_buff(uint8 *data, uint32 len)
 	NMSAudioBuffer *audio_buffer = oss_priv.audio_buffer;
 	int audiofd = oss_priv.audiofd;
 	audio_buf_info info;
-	uint32 bytes_to_copy, len_in_frags, to_valid, prev_to_valid;
+	uint32 bytes_to_copy, to_valid, prev_to_valid;
+	int32 len_in_frags;
 
 	pthread_mutex_lock(&(audio_buffer->syn));
 	ioctl(audiofd,SNDCTL_DSP_GETOSPACE, &info);
 	len_in_frags = audio_buffer->len/info.fragsize;
 	bytes_to_copy = (min(len_in_frags, info.fragments))*info.fragsize;
+	fprintf(stderr, "\nbytes: %d\n", bytes_to_copy);
 	while (bytes_to_copy > 0) {
 		prev_to_valid = to_valid;
 		to_valid = min(bytes_to_copy,(audio_buffer->valid_data - audio_buffer->read_pos));
@@ -210,21 +213,26 @@ static void audio_resume(void)
 	if (format & DSP_CAP_TRIGGER) {
 		format= PCM_ENABLE_OUTPUT;
 		ioctl(audiofd, SNDCTL_DSP_SETTRIGGER, &format);		
-	}	
+	}
+
+	return;
+}
+
+static void reset(void)
+{
+	NMSAudioBuffer *ab = oss_priv.audio_buffer;
+
+	// reset audio buffer
+	// ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
+	free(ab);
 
 	return;
 }
 
 static void uninit(void)
 {
-	NMSAudioBuffer *ab = oss_priv.audio_buffer;
-
 	if((oss_priv.audiofd) > 0) 
 		close(oss_priv.audiofd);
-
-	// reset audio buffer
-	// ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
-	free(ab);
 
 	uiprintf("OSS Audio closed\n");
 

@@ -26,29 +26,26 @@
  *  
  * */
 
-#include <nemesi/decoder.h>
-#include <nemesi/output.h>
+#include <pthread.h>
 
-void dec_clean(void *args)
+#include <nemesi/video.h>
+#include <nemesi/comm.h>
+
+int video_th_stop(NMSVideo *vc)
 {
-	NMSOutput *outc = (NMSOutput *)args;
+	void *ret;
 
-	// kill Video Thread
-	video_th_stop(outc->video);
-	// Uninit Output modules
-	if (outc->video->init) {
-		outc->video->functions->uninit();
-		outc->video->init = 0;
-	}
-	if (outc->audio->init) {
-		// outc->audio->functions->uninit();
-		outc->audio->functions->reset();
-		outc->audio->init = 0;
+	if (vc->tid) {
+		uiprintf("Sending cancel signal to Video Thread (ID: %d)\n", vc->tid);
+		if (pthread_cancel(vc->tid) != 0)
+			uiprintf("Error while sending cancelation to Video Thread.\n");
+		else
+			pthread_join(vc->tid, (void **)&ret);
+		if ( ret != PTHREAD_CANCELED )
+			uiprintf("Warning! Video Thread joined, but  not canceled!\n");
+		vc->tid = 0;
 	}
 
-	/* chiudiamo eventualmente il file aperto per salvare lo steam invece
-	che riprodurlo */
-	close_file(); 
-
-	uiprintf("Decoder Thread R.I.P.\n");
+	return 0;
 }
+

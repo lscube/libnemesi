@@ -60,17 +60,17 @@ static struct sdl_priv_s {
 #ifndef HAVE_SETENV
 static void setenv(const char *name, const char *val, int _xx)
 {
-  int len  = strlen(name) + strlen(val) + 2;
-  char *env = malloc(len);
-
-  if (env != NULL) {
-    strcpy(env, name);
-    strcat(env, "=");
-    strcat(env, val);
-    putenv(env);
-  }
+	int len  = strlen(name) + strlen(val) + 2;
+	char *env = malloc(len);
+	
+	if (env != NULL) {
+		strcpy(env, name);
+		strcat(env, "=");
+		strcat(env, val);
+		putenv(env);
+	}
 }
-#endif // SETENV
+#endif // HAVE_SETENV
 #endif // SDLENV
 
 static void SDL_mixaudio(void *userdata, Uint8* stream, int len)
@@ -142,6 +142,8 @@ static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags)
 {
 	SDL_AudioSpec requested_fmt;
 
+	if (sdl_priv.audio_buffer)
+		free(sdl_priv.audio_buffer);
 	if ( (sdl_priv.audio_buffer=ab_init(AUDIO_BUFF_SIZE)) == NULL )
 		return uierror("Failed while initializing Audio Buffer\n");
 
@@ -227,17 +229,24 @@ static void audio_resume(void)
 	return;
 }
 
-static void uninit(void)
+static void reset(void)
 {
 	NMSAudioBuffer *ab = sdl_priv.audio_buffer;
 
-	SDL_PauseAudio(1);
+	// SDL_PauseAudio(1);
 	SDL_CloseAudio();
-	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 
 	// reset audio buffer
 	// ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
+
 	free(ab);
+	sdl_priv.audio_buffer = NULL;
+}
+
+static void uninit(void)
+{
+	reset();
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 
 	uiprintf("SDL Audio closed\n");
 

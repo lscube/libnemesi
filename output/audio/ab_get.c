@@ -41,7 +41,7 @@ uint8 *ab_get(uint32 len, ...)
 		while(1) {
 			pthread_mutex_lock(&(audio_buffer->syn));
 			if ( (audio_buffer->write_pos >= audio_buffer->read_pos) ) {
-				if ((audio_buffer->write_pos + len) </*=*/ AUDIO_BUFF_SIZE ) {
+				if ((audio_buffer->write_pos + len) </*=*/ audio_buffer->buff_size /*AUDIO_BUFF_SIZE*/ ) {
 					audio_buffer->write_pos += len;
 					audio_buffer->valid_data = audio_buffer->write_pos;
 					audio_buffer->len += len;

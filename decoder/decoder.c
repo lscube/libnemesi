@@ -76,7 +76,7 @@ void *decoder(void *args)
 	/* pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
 
 	/* by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente" */
-	pthread_cleanup_push(dec_clean, (void *)(&nmsoutc) /*audio_buffer */);
+	pthread_cleanup_push(dec_clean, (void *)nmsoutc /*audio_buffer */);
 	
 	tvdiff.tv_sec=tvsleep.tv_sec=dec_args->startime.tv_sec;
 	tvdiff.tv_usec=tvsleep.tv_usec=dec_args->startime.tv_usec;
@@ -90,7 +90,7 @@ void *decoder(void *args)
 	pthread_mutex_unlock(&(dec_args->syn));
 
 	// Audio init
-	nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0);
+	if ( !(nmsoutc->audio->init) && !(nmsoutc->audio->init=!nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0)) )
 	
 	// select(0, NULL, NULL, NULL, &tvsleep);
 

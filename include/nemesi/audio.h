@@ -61,6 +61,8 @@
 #define FORMAT AFMT_S16_LE
 
 typedef struct {
+	// True (1) if initialized
+	uint8 init;
 	//! Functions for the specific audio output driver
 	NMSAFunctions *functions;
 } NMSAudio;
@@ -75,19 +77,16 @@ typedef struct {
 typedef struct audio_buff {
 	uint8 *audio_data;
 /*	uint8 audio_data[AUDIO_BUFF_SIZE]; */
+	uint32 buff_size;
 	uint32 read_pos;
 	uint32 write_pos;
 	uint32 valid_data;
 	uint32 len;
-#ifndef HAVE_SDL
-	int audio_fd;
-#endif
 	pthread_mutex_t syn;
 } NMSAudioBuffer;
 
-AUDIO_EXTERN struct audio_buff *global_audio_buffer;
+// AUDIO_EXTERN struct audio_buff *global_audio_buffer;
 
-// struct audio_buff *ab_init(uint32);
 NMSAudioBuffer *ab_init(uint32);
 uint8 *ab_get(uint32, ...);
 /* end of Audio Buffer defines */

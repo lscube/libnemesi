@@ -95,7 +95,7 @@ int decode(char *data, int len, NMSOutput *outc)
                 	return 1;
             	} else if (ff->got_frame){
 			// if (!vc->tid) {
-			if (!vc->tid) {
+			if (!vc->init) {
 				vc->format = IMGFMT_YV12;
 				// vc->format = IMGFMT_I420;
 				vc->width = ff->context->width;

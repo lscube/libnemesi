@@ -50,6 +50,7 @@ struct audio_buff *ab_init(uint32 buff_size)
 	}
 
 	buff->read_pos=buff->write_pos=buff->valid_data=buff->len=0;
+	buff->buff_size = buff_size;
 
 #if 1
 	if ((n = pthread_mutexattr_init(&mutex_attr)) > 0)
@@ -63,10 +64,6 @@ struct audio_buff *ab_init(uint32 buff_size)
 		return NULL;
 
 	ab_get(0, buff);
-
-#ifndef HAVE_SDL
-	buff->audio_fd = -1;
-#endif
 
 	return buff;
 }

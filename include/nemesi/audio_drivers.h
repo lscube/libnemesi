@@ -94,6 +94,10 @@ typedef struct {
          * Resume playing
          */
         void (*audio_resume)(void);
+	/*
+	 * Reset driver.
+	 */
+	 void (*reset)(void);
         /*
          * Closes driver. Should restore the original state of the system.
          */

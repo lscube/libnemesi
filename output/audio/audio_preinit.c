@@ -49,7 +49,10 @@ NMSAudio *audio_preinit(char *drv_hint)
 		return NULL;
 	}
 
+	ac->init = 0;
+
 	// Audio Output Driver selection
+	// ac->functions = &nms_audio_oss;
 	ac->functions = &nms_audio_sdl; // XXX: very very temporanea
 	funcs = ac->functions;
 

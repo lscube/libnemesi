@@ -40,6 +40,7 @@ static uint8 *get_buff(uint32 len);
 static uint32 play_buff(uint8 *data, uint32 len);
 static void audio_pause(void);
 static void audio_resume(void);
+static void reset(void);
 static void uninit(void);
 
 #define NMS_LIB_AUDIO(x) NMSAFunctions nms_audio_##x =\
@@ -52,6 +53,7 @@ static void uninit(void);
 	play_buff, \
 	audio_pause, \
 	audio_resume, \
+	reset, \
 	uninit \
 }
 

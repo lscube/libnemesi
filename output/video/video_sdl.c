@@ -152,10 +152,14 @@ static void free_vbuffer(struct sdl_vbuffer *vbuffer)
 	int i; // index
 
 	for(i=0;i<VBUFFER_SIZE;i++) {
-		if (vbuffer->overlay[i])
+		if (vbuffer->overlay[i]) {
 			SDL_FreeYUVOverlay(vbuffer->overlay[i]);
-		if (vbuffer->surface[i])
+			vbuffer->overlay[i] = NULL;
+		}
+		if (vbuffer->surface[i]) {
 			SDL_FreeSurface(vbuffer->surface[i]);
+			vbuffer->surface[i] = NULL;
+		}
 	}
 
 	SDL_DestroyMutex(vbuffer->syn);
@@ -315,10 +319,7 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 {
 	struct sdl_priv_s *priv = &sdl_priv;
 	struct sdl_vbuffer *vbuffer = priv->vbuffer;
-	// SDL_Rect *rect = (SDL_Rect *)rect_pt;
-	// SDL_Overlay *bmp = sdl_priv.overlay;
 	SDL_Overlay *bmp = vbuffer->overlay[vbuffer->writepos];
-	char must_alloc=0;
 
 	SDL_LockMutex(vbuffer->syn);
 	while(vbuffer->size == VBUFFER_SIZE)
@@ -327,12 +328,10 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 
 	MUTEX_LOCK(priv->syn, 1);
 
-	if (!bmp) // must alloc
-		must_alloc = 1;
-	else if ((bmp->w != w) || (bmp->h != h)) {
-		uiprintf("Freeing old SDL Overlay 1\n");
+	if ( (bmp) && ((bmp->w != w) || (bmp->h != h)) ) {
+		uiprintf("Freeing old SDL Overlay\n");
 		SDL_FreeYUVOverlay(bmp);
-		must_alloc = 1;
+		bmp = NULL;
 	}
 	/* XXX: already freed in config()
 	else if ((bmp->w != priv->width) || (bmp->h != priv->height)) {
@@ -342,11 +341,10 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 	}
 	*/
 
-	if (must_alloc) {
+	if (!bmp) { // We must alloc new SDL_Overlay
 		bmp = SDL_CreateYUVOverlay(priv->width, priv->height, priv->format, priv->display);
 		uiprintf("Creating new SDL Overlay: w=%d, h=%d\n", \
 				priv->width, priv->height);
-		// sdl_priv.overlay = bmp;
 		vbuffer->overlay[vbuffer->writepos] = bmp;
 	}
 	MUTEX_UNLOCK(priv->syn, 1);
@@ -399,6 +397,9 @@ static uint32 update_screen(void)
 	struct sdl_vbuffer *vbuffer = priv->vbuffer;
 	SDL_Overlay *bmp;
 
+	if (!vbuffer)
+		return 1;
+
 	if (vbuffer->size < (VBUFFER_SIZE / 2) + 1) // no frame to show
 		return 0;
 	MUTEX_LOCK(priv->syn, 1);
@@ -424,13 +425,17 @@ static uint32 update_screen(void)
 	
 	return 0;
 }
+
 static void uninit(void)
 {
+	uiprintf("Video Module uninit\n");
 	free_vbuffer(sdl_priv.vbuffer);
+	sdl_priv.vbuffer = NULL; // XXX: very important for next initialization;
 #ifdef SDL_ENABLE_LOCKS
-	 SDL_DestroyMutex(sdl_priv.syn);
+	 // SDL_DestroyMutex(sdl_priv.syn);
 #endif // SDL_ENABLE_LOCKS
-	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	// SDL_FreeSurface(sdl_priv.display);
+	// SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
 	return;
 }
