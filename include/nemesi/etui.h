@@ -50,6 +50,7 @@
 			nmsprintf(1, "\t-h|--help\t\tdisplay this help and exit\n"); \
 			nmsprintf(1, "\t-V|--version\t\tdisplay version information and exit\n"); \
 			nmsprintf(1, "\t-v|--verbose [n]\tset verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
+			nmsprintf(1, "\t--nostatus\t\tDo not show buffers status and elapsed time.\n"); \
 			nmsprintf(1, "\n   Output options:\n"); \
 			nmsprintf(1, "\t--sysbuff <msec>\tsystem cache of decoded milliseconds\n"); \
 			nmsprintf(1, "\t--ao <drv[:dev]>\tselect audio output driver (--ao help for a list)\n"); \
@@ -69,7 +70,10 @@
 				{"verbose", 2, NULL, 'v'}, \
 				{"ao", 1, NULL, 1}, \
 				{"vo", 1, NULL, 2}, \
-				{"sysbuff", 1, NULL, 3}
+				{"sysbuff", 1, NULL, 3}, \
+				{"gui", 0, NULL, 4}, \
+				{"nostatus", 0, NULL, 5}, \
+				{"tui", 0, NULL, 6}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS
@@ -77,7 +81,8 @@
 
 int ui(struct RTSP_args *, int, char **);
 int parse_cl(int, char **, char **);
-int parse_main_cl(int, char **, NMSOutputHints *);
+// int parse_main_cl(int, char **, NMSOutputHints *);
+int parse_main_cl(int, char **, NMSCLOptions *);
 int parse_ui_cl(int, char **, char **);
 int parse_prompt(struct RTSP_args *, char *);
 int seturlname(struct RTSP_args *, char *);

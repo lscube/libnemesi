@@ -8,6 +8,7 @@ SUBDIRS =	libltdl \
 		output \
 		decoder \
 		etui \
+		egui \
 		src \
 		plugins \
 		docs

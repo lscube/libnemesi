@@ -85,12 +85,11 @@ void *video_th(void *outc)
 		gettimeofday(&tvstop, NULL);
 		if ( !next_pts )
 			next_pts = last_pts + 1000/fps;
-		nmsprintf(1, "Elapsed: V: %3.2fms", last_pts);
 #ifdef AV_SYNC
 		if (audioc && audioc->init)
 			afuncs->control(ACTRL_GET_ELAPTM, &audio_elapsed);
 		if ( audio_elapsed ) {
-			nmsprintf(1, "\tA: %3.2fms\tsync A-V: %3.2fms   ", audio_elapsed, next_pts-audio_elapsed);
+			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2fms\tA: %3.2fms\tsync A-V: %3.2fms", last_pts, audio_elapsed, next_pts-audio_elapsed);
 			if ( next_pts < audio_elapsed )
 				tvsleep.tv_usec = 9999; // < 10000, do not sleep
 			else /*if ( next_pts - audio_elapsed > MAX_AV_THRES ) {
@@ -100,10 +99,11 @@ void *video_th(void *outc)
 				tvsleep.tv_sec = (next_pts - audio_elapsed) / 1000;
 				tvsleep.tv_usec = (next_pts - audio_elapsed - tvsleep.tv_sec * 1000 ) * 1000;
 			}
-		} else
+		} else {
 #endif // AV_SYNC
+			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2fms", last_pts);
 			tvsleep.tv_usec = ( next_pts - last_pts ) * 1000;
-		nmsprintf(1, "\r");
+		}
 		/*
 		else {
 			tvsleep.tv_sec = 1/fps;

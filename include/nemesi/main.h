@@ -48,6 +48,12 @@ typedef struct {
 	int32 sysbuff_ms;
 } NMSOutputHints;
 
+typedef struct {
+	NMSOutputHints *output;
+	uint8 gui;
+	char *url;
+} NMSCLOptions;
+
 struct RTSP_args {
 	int pipefd[2];
 	pthread_mutex_t comm_mutex;

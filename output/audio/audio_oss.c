@@ -57,7 +57,8 @@ static struct oss_priv_s {
 	NMSAudioBuffer *audio_buffer;
 	int capabilities;
 	uint32 freq;
-	uint8 channels;
+	uint32 channels;
+	uint8 bytes_x_sample;
 	uint32 format;
 	double last_pts;
 } oss_priv;
@@ -89,15 +90,35 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 	int req_format;
 	int result;
 	audio_buf_info info;
+	uint32 buff_size;
 
 	if ( oss_init(arg) )
 		return 1;
+
+	oss_priv.last_pts = 0;
+
+	switch (format) {
+		case AFMT_U8:
+		case AFMT_S8:
+			oss_priv.bytes_x_sample = 1;
+			break;
+		case AFMT_S16_LE:
+		case AFMT_S16_BE:
+		case AFMT_U16_LE:
+		case AFMT_U16_BE:
+			oss_priv.bytes_x_sample = 2;
+			break;
+	}
 	
 	// Audio Buffer initialization
-	if (!buff_ms)
-		buff_ms = AUDIO_BUFF_SIZE;
-	if ( (oss_priv.audio_buffer=ab_init(buff_ms)) == NULL )
+	if (!buff_ms) {
+		buff_size = AUDIO_BUFF_SIZE;
+		nmsprintf(3, "Setting default audio system buffer\n");
+	} else
+		buff_size = buff_ms * rate * channels * oss_priv.bytes_x_sample / 1000;
+	if ( (oss_priv.audio_buffer=ab_init(buff_size)) == NULL )
 		return nmserror("[OSS] Failed while initializing Audio Buffer");
+	nmsprintf(3, "Audio system buffer: %u\n", buff_size);
 
 	nmsprintf(3, "[OSS] Requested Rate is: %d\n", rate);
 	nmsprintf(3, "[OSS] Requested Channel number is: %d\n", channels);
@@ -127,7 +148,7 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 			return nmserror("OSS: Could not set format");
 		}
 	} else
-		return nmserror("OSS: Format %s non supported: exiting...", audio_format_name(oss_priv.format));
+		return nmserror("OSS: Format %s not supported: exiting...", audio_format_name(oss_priv.format));
 
 	// set channels
 	oss_priv.channels = channels;
@@ -146,7 +167,6 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 static uint32 control(uint32 cmd, void *arg)
 {
 	audio_buf_info info;
-	int bytes_x_sample = 2;
 	int bytes;
 
 	switch(cmd) {
@@ -155,28 +175,20 @@ static uint32 control(uint32 cmd, void *arg)
 			*((float *)arg) = (1.0-((float)info.bytes/(float)(info.fragsize*info.fragstotal)));
 			break;
 		case ACTRL_GET_ELAPTM:
-			switch (oss_priv.format) {
-				case AFMT_U8:
-				case AFMT_S8:
-					bytes_x_sample = 1;
-					break;
-				case AFMT_S16_LE:
-				case AFMT_S16_BE:
-				case AFMT_U16_LE:
-				case AFMT_U16_BE:
-					bytes_x_sample = 2;
-					break;
-			}
+			if (oss_priv.last_pts) {
 #ifdef SNDCTL_DSP_GETODELAY
-			if (ioctl(oss_priv.audiofd, SNDCTL_DSP_GETODELAY, &bytes) == -1) { // XXX: try using GETODELAY
+				if (ioctl(oss_priv.audiofd, SNDCTL_DSP_GETODELAY, &bytes) == -1) { // XXX: try using GETODELAY
 #endif
-				if (ioctl(oss_priv.audiofd, SNDCTL_DSP_GETOSPACE, &info) == -1) // XXX: try using GETOSPACE
-					return -1;
-				bytes = info.fragsize*info.fragstotal - info.bytes;
+					if (ioctl(oss_priv.audiofd, SNDCTL_DSP_GETOSPACE, &info) == -1) // XXX: try using GETOSPACE
+						return -1;
+					bytes = info.fragsize*info.fragstotal - info.bytes;
 #ifdef SNDCTL_DSP_GETODELAY
-			}
+				}
 #endif
-			*((double *)arg) = oss_priv.last_pts - ( (double)( bytes + oss_priv.audio_buffer->len) * 1000.0 ) / (double)(oss_priv.freq * oss_priv.channels * bytes_x_sample);
+				*((double *)arg) = oss_priv.last_pts - ( (double)( bytes + oss_priv.audio_buffer->len) * 1000.0 ) / (double)(oss_priv.freq * oss_priv.channels * \
+						oss_priv.bytes_x_sample);
+			} else
+				*((double *)arg) = 0;
 			break;
 		default:
 			return -1;
@@ -258,6 +270,7 @@ static void reset(void)
 
 	// reset audio buffer
 	ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
+	oss_priv.last_pts = 0;
 
 	return;
 }

@@ -223,11 +223,9 @@ static uint32 preinit(const char *arg, uint32 buff_ms)
 	} else {
 		nmsprintf(1, "Initializing SDL Video output\n");
 		if (subsystem_init) {
-			nmsprintf(0, "subsystem flags:%d\n", flags);
 			if (SDL_InitSubSystem(flags))
 				return nmserror("Could not initialize SDL Video");
 		} else {
-			nmsprintf(0, "system\n");
 			flags |= SDL_INIT_NOPARACHUTE;
 			if (SDL_Init(flags))
 				return nmserror("Could not initialize SDL Video");

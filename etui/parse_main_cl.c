@@ -33,8 +33,10 @@
 #include <nemesi/video_drivers.h>
 #include <nemesi/audio_drivers.h>
 
-int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
+// int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
+int parse_main_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 {
+	NMSOutputHints *hints = cl_opt->output;
 	int ret = 0;
 	char usage = 0; // printf usage at the end of function
 	// getopt variables
@@ -119,6 +121,14 @@ int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
 				usage = 1;
 				ret = -1;
 			}
+			break;
+		case 4: // use graphical user interface
+			cl_opt->gui = 1;
+		case 5: // do not show buffers status and elapsed time
+			nmsstatusprintf(NO_STATUS, NULL);
+			break;
+		case 6: // use textual user interface
+			cl_opt->gui = 0;
 			break;
 		case ':':
 			nmserror("Missing argument for option \"%s\"\n", argv[optind-1]);

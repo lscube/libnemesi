@@ -98,11 +98,14 @@ NEMESI_HAVE_SDL_TRUE = @NEMESI_HAVE_SDL_TRUE@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
+PACKAGE_CFLAGS = @PACKAGE_CFLAGS@
+PACKAGE_LIBS = @PACKAGE_LIBS@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
 RANLIB = @RANLIB@
 SDL_CFLAGS = @SDL_CFLAGS@
 SDL_CONFIG = @SDL_CONFIG@
@@ -179,7 +182,8 @@ libutils_la_SOURCES = urltokenize.c \
 			uiprintf.c \
 			uierror.c \
 			nmserror.c \
-			nmsprintf.c
+			nmsprintf.c \
+			nmsstatusprintf.c
 
 
 libutils_la_LDFLAGS = -static
@@ -202,6 +206,7 @@ nemesi_LDADD = $(top_srcdir)/rtsp/librtsp.la \
 		$(top_srcdir)/rtp/librtp.la \
 		$(top_srcdir)/decoder/libdecoder.la \
 		$(top_srcdir)/bufferpool/libbuffpool.la \
+		$(top_srcdir)/egui/libegui.la \
 		$(top_srcdir)/etui/libetui.la \
 		$(top_srcdir)/wsocket/libwsocket.la \
 		$(top_srcdir)/src/libplugins.la \
@@ -230,7 +235,8 @@ am_libutils_la_OBJECTS = urltokenize.lo strdup.lo strstrcase.lo \
 	strncmpcase.lo statustostr.lo random32.lo timeval_subtract.lo \
 	timeval_add.lo edit_pref.lo edit_avail_pref.lo \
 	add_avail_pref.lo rem_avail_pref.lo list_prefs.lo get_pref.lo \
-	uiprintf.lo uierror.lo nmserror.lo nmsprintf.lo
+	uiprintf.lo uierror.lo nmserror.lo nmsprintf.lo \
+	nmsstatusprintf.lo
 libutils_la_OBJECTS = $(am_libutils_la_OBJECTS)
 bin_PROGRAMS = nemesi$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
@@ -242,7 +248,7 @@ nemesi_DEPENDENCIES = $(top_srcdir)/rtsp/librtsp.la \
 	$(top_srcdir)/rtcp/librtcp.la $(top_srcdir)/rtp/librtp.la \
 	$(top_srcdir)/decoder/libdecoder.la \
 	$(top_srcdir)/bufferpool/libbuffpool.la \
-	$(top_srcdir)/etui/libetui.la \
+	$(top_srcdir)/egui/libegui.la $(top_srcdir)/etui/libetui.la \
 	$(top_srcdir)/wsocket/libwsocket.la \
 	$(top_srcdir)/src/libplugins.la \
 	$(top_srcdir)/output/audio/libaudio.la \
@@ -261,6 +267,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/list_prefs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/load_plugins.Plo ./$(DEPDIR)/main.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/nmserror.Plo ./$(DEPDIR)/nmsprintf.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/nmsstatusprintf.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/output_init.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/output_uninit.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/random32.Plo \
@@ -355,6 +362,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmserror.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmsprintf.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmsstatusprintf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/output_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/output_uninit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random32.Plo@am__quote@

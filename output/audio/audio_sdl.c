@@ -146,7 +146,8 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 buff_ms, u
 	SDL_AudioSpec requested_fmt;
 	uint32 buff_size;
 
-	sdl_init(arg);
+	if (sdl_init(arg) )
+		return 1;
 
 	sdl_priv.last_pts = 0;
 

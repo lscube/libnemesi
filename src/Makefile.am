@@ -19,7 +19,8 @@ libutils_la_SOURCES =	urltokenize.c \
 			uiprintf.c \
 			uierror.c \
 			nmserror.c \
-			nmsprintf.c
+			nmsprintf.c \
+			nmsstatusprintf.c
 
 libutils_la_LDFLAGS = -static
 
@@ -41,6 +42,7 @@ nemesi_LDADD =	$(top_srcdir)/rtsp/librtsp.la \
 		$(top_srcdir)/rtp/librtp.la \
 		$(top_srcdir)/decoder/libdecoder.la \
 		$(top_srcdir)/bufferpool/libbuffpool.la \
+		$(top_srcdir)/egui/libegui.la \
 		$(top_srcdir)/etui/libetui.la \
 		$(top_srcdir)/wsocket/libwsocket.la \
 		$(top_srcdir)/src/libplugins.la \

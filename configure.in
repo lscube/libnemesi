@@ -39,6 +39,12 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+dnl GUI checks
+pkg_modules="gtk+-2.0 >= 2.0.0"
+PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
+AC_SUBST(PACKAGE_CFLAGS)
+AC_SUBST(PACKAGE_LIBS)
+
 dnl Check for LibTool Dynamic Loading
 AC_LIBLTDL_CONVENIENCE([libltdl])
 AC_CONFIG_SUBDIRS([libltdl])
@@ -48,9 +54,9 @@ AC_SUBST(DLOPEN)
 AC_SUBST(DLPREOPEN)
 AC_SUBST([LIBTOOL_DEPS])
 
-if test x$enable_debug = xyes; then
-AC_DISABLE_SHARED
-fi
+dnl if test x$enable_debug = xyes; then
+dnl AC_DISABLE_SHARED
+dnl fi
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
@@ -196,6 +202,7 @@ AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the EN
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([bufferpool/Makefile])
 AC_CONFIG_FILES([etui/Makefile])
+AC_CONFIG_FILES([egui/Makefile])
 AC_CONFIG_FILES([rtp/Makefile])
 AC_CONFIG_FILES([rtcp/Makefile])
 AC_CONFIG_FILES([rtsp/Makefile])

@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 	pthread_t rtsp_tid;
 	pthread_attr_t rtsp_attr;
 	NMSOutputHints hints = {NULL, NULL, NULL, 0};
+	NMSCLOptions cl_opt = { &hints, 0, NULL };
 	int n;
 	void *ret;
 	
@@ -53,7 +54,8 @@ int main(int argc, char *argv[])
 	header();
 
 	// command line parsing
-	if ( (n=parse_main_cl(argc, argv, &hints)) )
+	// if ( (n=parse_main_cl(argc, argv, &hints)) )
+	if ( (n=parse_main_cl(argc, argv, &cl_opt)) )
 		exit((n<0) ? 1 : 0);
 
 	memset(decoders, 0, 128*sizeof(int (*)()));
@@ -84,8 +86,11 @@ int main(int argc, char *argv[])
 		exit( nmserror("Cannot create RTSP Thread: %s", strerror(n)) );
 
 	// UI interface function
-	if ((n=ui(rtsp_args, argc, argv)) > 0)
-		exit(1);
+	if (cl_opt.gui)
+		gui(rtsp_args, argc, argv);
+	else
+		if ((n=ui(rtsp_args, argc, argv)) > 0)
+			exit(1);
 
 	/* THREAD CANCEL */	
 	nmsprintf(2, "Sending cancel signal to all threads\n");

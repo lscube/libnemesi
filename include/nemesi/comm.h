@@ -61,6 +61,14 @@ COMM_EXTERN int uipipe[2];
 int nmsprintf(int verbosity, const char *fmt, ...);
 int nmserror(const char *fmt, ...);
 
+#define NO_STATUS 0
+#define PRINT_STATUS 1
+#define ELAPSED_STATUS 2
+#define BUFFERS_STATUS 3
+#define ELAPSED_STATUS_VERBOSITY 1
+#define BUFFERS_STATUS_VERBOSITY 2
+int nmsstatusprintf(int cmd, const char *fmt, ...);
+
 #ifdef USE_UIPRINTF
 int uiprintf(const char *fmt, ...);
 int uierror(const char *fmt, ...);

@@ -170,7 +170,7 @@ void *decoder(void *args)
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, len);
 */				
 /**/				
-				 		nmsprintf(2, "\rBuffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
+				 		nmsstatusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
 						nmsprintf(3, " - pkt len: %d\n", len);
 /**/				
