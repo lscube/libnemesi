@@ -21,7 +21,6 @@ libutils_la_SOURCES =	urltokenize.c \
 			get_pref.c \
 			uiprintf.c \
 			uierror.c \
-			nmserror.c \
 			nmsprint.c \
 			pref2ccmask.c
 
