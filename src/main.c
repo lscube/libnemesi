@@ -55,10 +55,10 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));
 	
-	/*
+#ifdef USE_UIPRINTF
 	if(pipe(uipipe) < 0)
 		exit( nmserror("Cannot create UI pipe!") );
-	*/
+#endif // USE_UIPRINTF
 
 	if ((n = init_rtsp_args(&rtsp_args)) > 0)
 		exit( nmserror("Cannot initialize RTSP: %s", strerror(n)) );

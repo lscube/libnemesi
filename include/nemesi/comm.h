@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 
+// #define USE_UIPRINTF
 #undef USE_UIPRINTF
 
 #ifdef USE_UIPRINTF
