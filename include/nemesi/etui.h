@@ -54,7 +54,10 @@
 			nmsprintf(1, "\n   Output options:\n"); \
 			nmsprintf(1, "\t--sysbuff <msec>\tsystem cache of decoded milliseconds\n"); \
 			nmsprintf(1, "\t--ao <drv[:dev]>\tselect audio output driver (--ao help for a list)\n"); \
+			nmsprintf(1, "\t--noaudio\tdo not inizialize audio output\n"); \
 			nmsprintf(1, "\t--vo <drv[:opt]>\tselect video output driver (--vo help for a list)\n"); \
+			nmsprintf(1, "\t--novideo\tdo not inizialize video output\n"); \
+			nmsprintf(1, "\t--nodisk\tdo not inizialize diskwriter output\n"); \
 			nmsprintf(1, "\n"); \
 		}
 
@@ -73,7 +76,10 @@
 				{"sysbuff", 1, NULL, 3}, \
 				{"gui", 0, NULL, 4}, \
 				{"nostatus", 0, NULL, 5}, \
-				{"tui", 0, NULL, 6}
+				{"tui", 0, NULL, 6}, \
+				{"noaudio", 0, NULL, 7}, \
+				{"novideo", 0, NULL, 8}, \
+				{"nodisk", 0, NULL, 9}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS

@@ -55,6 +55,7 @@ NMSDiskWriter *diskwriter_init(const char *basename)
 		unlink( dc->basename );
 	} else {
 		fprintf(stderr, "\nError initializzing Disk Writer Module: you have not write permission\n");
+		free(dc);
 		return NULL;
 	}
 

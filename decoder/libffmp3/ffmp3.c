@@ -53,13 +53,18 @@ int get_plugin_pt(void)
 int decode(char *data, int len, NMSOutput *outc)
 {
 	
-	NMSAFunctions *funcs = outc->audio->functions;
+	NMSAFunctions *funcs = NULL; // = outc->audio->functions;
 	static	AVCodec *codec;
     	static AVCodecContext *c= NULL;
 	int out_size;
 	static int16_t out[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 	int len_tmp=0;
 	uint8 *audio_data;
+
+	if (outc->audio)
+		funcs = outc->audio->functions;
+	else
+		return 1;
 
 	if (!c){
 

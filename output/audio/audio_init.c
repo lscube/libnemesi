@@ -52,9 +52,10 @@ NMSAudio *audio_init(char *drv_hint, uint32 sysbuff_ms)
 	ac->init = 0;
 
 	// Audio Output Driver selection
-	if ( !(ac->functions = init_best_audio_out(drv_hint, sysbuff_ms)) )
+	if ( !(ac->functions = init_best_audio_out(drv_hint, sysbuff_ms)) )  {
+		free(ac);
 		return NULL;
-	else
+	} else
 		ac->init = 1;
 	
 	nmsprintf(1, "Audio driver: %s\n", ac->functions->info->name);

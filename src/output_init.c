@@ -27,6 +27,7 @@
  * */
 
 #include <stdlib.h>
+#include <string.h>
 
 //! with this define we declare global variables contained in video.h
 #define NMS_GLOBAL_OUTPUT
@@ -47,7 +48,10 @@ int output_init(NMSOutputHints *hints)
 	nmsprintf(1, SEPARATOR);
 	// AUDIO MODULE INIT
 	// if ((nmsoutc->audio=audio_init("sdl")) == NULL) {
-	if ((nmsoutc->audio=audio_init(hints ? hints->audio : NULL, nmsoutc->sysbuff_ms)) == NULL) {
+	if (hints && hints->audio && !strcmp(hints->audio, "noaudio")) {
+		nmsprintf(1, "No Audio\n");
+		nmsoutc->audio = NULL;
+	} else if ((nmsoutc->audio=audio_init(hints ? hints->audio : NULL, nmsoutc->sysbuff_ms)) == NULL) {
 		nmserror("Audio module not available");
 		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
 		// rem_avail_pref("output card");
@@ -56,7 +60,10 @@ int output_init(NMSOutputHints *hints)
 
 	nmsprintf(1, SEPARATOR);
 	// VIDEO MODULE INIT
-	if ((nmsoutc->video=video_preinit(hints ? hints->video : NULL, nmsoutc->sysbuff_ms)) == NULL) {
+	if (hints && hints->video && !strcmp(hints->video, "novideo")) {
+		nmsprintf(1, "No Video\n");
+		nmsoutc->video = NULL;
+	} else if ((nmsoutc->video=video_preinit(hints ? hints->video : NULL, nmsoutc->sysbuff_ms)) == NULL) {
 		if (!nmsoutc->audio) {
 			nmserror("Video module not available: setting \"output\" to \"null\"");
 			rem_avail_pref("output card");
@@ -67,7 +74,10 @@ int output_init(NMSOutputHints *hints)
 
 	nmsprintf(1, SEPARATOR);
 	// DISKWRITER MODULE INIT
-	if ( (nmsoutc->diskwriter=diskwriter_init(hints ? hints->diskwriter : NULL)) == NULL ) {
+	if (hints && hints->diskwriter && !strcmp(hints->diskwriter, "nodisk")) {
+		nmsprintf(1, "No DiskWriter\n");
+		nmsoutc->diskwriter = NULL;
+	} else if ( (nmsoutc->diskwriter=diskwriter_init(hints ? hints->diskwriter : NULL)) == NULL ) {
 		fprintf(stderr, "Disk Writer module not available\n");
 		rem_avail_pref("output disk");
 		if ( strcmp("card", get_pref("output")) )

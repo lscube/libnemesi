@@ -67,8 +67,13 @@ void *video_th(void *outc)
 	} else {
 		nmsprintf(2, "Video Thread Started: using default fps = %f\n", fps);
 	}
+#if 1
 	tvsleep.tv_sec = 1/fps;// SLEEP_MS / 1000;
 	tvsleep.tv_usec = (long)(1000000/fps) % 1000000; //(SLEEP_MS % 1000) * 1000;
+#else
+	tvsleep.tv_sec = ((NMSOutput *)outc)->sysbuff_ms / 1000;
+	tvsleep.tv_usec = (((NMSOutput *)outc)->sysbuff_ms * 1000 ) % 1000000;
+#endif
 	gettimeofday(&tvstart, NULL);
 	tvstop.tv_sec = tvstart.tv_sec;
 	tvstop.tv_usec = tvstart.tv_usec;
@@ -82,16 +87,16 @@ void *video_th(void *outc)
 			nmsprintf(3, "didn't sleep\n");
 		vfuncs->update_screen(&next_pts);
 		nmsprintf(3, "next presentation timestamp is: %3.2f\n", next_pts);
-		gettimeofday(&tvstop, NULL);
+		// gettimeofday(&tvstop, NULL);
 		if ( !next_pts )
 			next_pts = last_pts + 1000/fps;
 #ifdef AV_SYNC
 		if (audioc && audioc->init)
 			afuncs->control(ACTRL_GET_ELAPTM, &audio_elapsed);
 		if ( audio_elapsed ) {
-			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2fms\tA: %3.2fms\tsync A-V: %3.2fms", last_pts, audio_elapsed, next_pts-audio_elapsed);
+			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms\tA: %3.2lfms\tsync A-V: %3.2lfms", last_pts, audio_elapsed, next_pts-audio_elapsed);
 			if ( next_pts < audio_elapsed )
-				tvsleep.tv_usec = 9999; // < 10000, do not sleep
+				tvsleep.tv_sec = tvsleep.tv_usec = 0;
 			else /*if ( next_pts - audio_elapsed > MAX_AV_THRES ) {
 				tvsleep.tv_sec = 0;
 				tvsleep.tv_usec = ( next_pts + MAX_AV_THRES ) * 1000;
@@ -101,8 +106,9 @@ void *video_th(void *outc)
 			}
 		} else {
 #endif // AV_SYNC
-			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2fms", last_pts);
-			tvsleep.tv_usec = ( next_pts - last_pts ) * 1000;
+			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms", last_pts);
+			tvsleep.tv_sec = (next_pts - last_pts) / 1000;
+			tvsleep.tv_usec = ( next_pts - last_pts - tvsleep.tv_sec * 1000 ) * 1000;
 		}
 		/*
 		else {
@@ -112,6 +118,7 @@ void *video_th(void *outc)
 		}
 		*/
 		last_pts = next_pts;
+		gettimeofday(&tvstop, NULL);
 	}
 
 	// pthread_cleanup_pop(1);

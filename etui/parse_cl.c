@@ -131,6 +131,15 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 		case 6: // use textual user interface
 			ui_hints->gui = 0;
 			break;
+		case 7:
+			output_hints->audio = strdup("noaudio");
+			break;
+		case 8:
+			output_hints->video = strdup("novideo");
+			break;
+		case 9:
+			output_hints->diskwriter = strdup("nodisk");
+			break;
 		case ':':
 			nmserror("Missing argument for option \"%s\"\n", argv[optind-1]);
 			usage = 1;

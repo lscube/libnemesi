@@ -63,8 +63,8 @@ void *decoder(void *args)
 	unsigned short cycles=0;/*AUDIO_SYS_BUFF;*/
 #endif // TS_SCHEDULE
 	char buffering_audio=1;
-	float audio_sysbuff;
-	float video_sysbuff;
+	float audio_sysbuff=0;
+	float video_sysbuff=0;
 	struct Stream_Source *stm_src;
 	rtp_pkt *pkt;
 	int len=0;
@@ -131,19 +131,28 @@ void *decoder(void *args)
 #endif // TS_SCHEDULE
 							timeval_subtract(NULL, &tv_elapsed, &tvstart) ){
 					
+						/* istruzione con bug
 						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
 							((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
+						*/
+						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
+						if (len) {
+							len -= ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
+						}
 						strcpy(output_pref, get_pref("output"));
 						
-						if ( (len != 0) && (!strcmp(output_pref, "disk")) )
-							diskwriter( nmsoutc->diskwriter, pkt->pt, ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
-						else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
+						if ( (len != 0) && (!strcmp(output_pref, "disk")) ) {
+							if (nmsoutc->diskwriter)
+								diskwriter( nmsoutc->diskwriter, pkt->pt, ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
+						} else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
 								nmsoutc->elapsed = ts_elapsed * 1000;
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
-								nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
-								nmsoutc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
+								if (nmsoutc->audio)
+									nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+								if (nmsoutc->video)
+									nmsoutc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
 
 								// AUDIO
 								if(buffering_audio) {
@@ -154,7 +163,7 @@ void *decoder(void *args)
 									}
 								}
 								// VIDEO
-								if((nmsoutc->video->init) && (!nmsoutc->video->tid))
+								if((nmsoutc->video) && (nmsoutc->video->init) && (!nmsoutc->video->tid))
 									video_th_start(nmsoutc);
 							}
 							/* XXX: not supported any more
@@ -250,9 +259,16 @@ void *decoder(void *args)
 			tvsleep.tv_usec = 1000;
 			select(0, NULL, NULL, NULL, &tvsleep);
 /**/
+			/*
 			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+			nmsoutc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
+			nmsstatusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
+					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
+			*/
+			/*
 	 		nmsprintf(2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - no pkt   ",\
 					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0);
+			*/
 			len = 0;
 /**/				
 		}

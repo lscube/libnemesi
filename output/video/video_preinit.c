@@ -63,8 +63,10 @@ NMSVideo *video_preinit(char *drv_hint, uint32 sysbuff_ms)
 	if (funcs->preinit(NULL)) // TODO: send subdriver hint
 		return NULL;
 #endif
-	if ( !(vc->functions = init_best_video_out(drv_hint, sysbuff_ms)) )
+	if ( !(vc->functions = init_best_video_out(drv_hint, sysbuff_ms)) ) {
+		free(vc);
 		return NULL;
+	}
 	
 	nmsprintf(1, "Video driver: %s\n", vc->functions->info->name);
 

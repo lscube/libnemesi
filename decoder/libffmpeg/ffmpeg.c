@@ -52,14 +52,20 @@ int get_plugin_pt(void)
 
 int decode(char *data, int len, NMSOutput *outc)
 {
-	NMSVideo *vc = outc->video;
-	NMSVFunctions *funcs = vc->functions;
+	NMSVideo *vc = NULL; // = outc->video;
+	NMSVFunctions *funcs = NULL; // vc->functions;
 	NMSPicture pict;
 	NMSPicture *pict_pt = &pict;
 	int decd_len=0, size;
 	static FFMpegDec *ff=NULL;
 	// XXX: variabile temporanea temporanea temporanea
 	static double elapsed = 0;
+
+	if (outc->video) {
+		vc = outc->video;
+		funcs = vc->functions;
+	} else
+		return 1;
 
 	if ( (!ff) && (!(ff=init_ffmpeg())) )
 		return 1;

@@ -51,6 +51,10 @@ nemesi_LDADD =	$(top_srcdir)/rtsp/librtsp.la \
 		$(top_srcdir)/src/libutils.la \
 		$(top_srcdir)/md5/libmd5.la 
 
+if NEMESI_DEBUG
+nemesi_LDFLAGS = -lefence
+endif
+
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
 
 $(OBJECTS): libtool

@@ -145,7 +145,7 @@ static struct sdl_vbuffer *new_vbuffer(uint32 size)
 		nmserror("SDL: could not alloc memory for video buffer");
 		return NULL;
 	}
-	if ((vbuffer->pic_pts = malloc(size * sizeof(double *))) == NULL) {
+	if ((vbuffer->pic_pts = malloc(size * sizeof(double))) == NULL) {
 		nmserror("SDL: could not alloc memory for video buffer");
 		return NULL;
 	}
@@ -315,8 +315,10 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 		return nmserror("SDL_SetVideoMode failed: %s", SDL_GetError());
 	}
 	nmsprintf(1, "Set Video Mode: w=%d, h=%d\n", width, height);
-	if (priv->display)
+	if (priv->display) {
 		SDL_FreeSurface(priv->display);
+		nmsprintf(2, "Freeing previously allocated surface\n");
+	}
 	priv->display = newsurface;
 
 	priv->width = width;
@@ -326,8 +328,9 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 
 	priv->sdlflags = flags;
 
-	SDL_WM_SetCaption(title, title);
+	SDL_WM_SetCaption(title, NULL);
 	MUTEX_UNLOCK(priv->syn, 1);
+	nmsprintf(2, "SDL Video succesfully configured\n");
 
 	return 0;
 }
