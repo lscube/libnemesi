@@ -27,6 +27,7 @@
  * */
 
 #include <nemesi/etui.h>
+#include <nemesi/preferences.h>
 
 
 int parse_prompt(struct RTSP_args *rtsp_args, char *optstr)

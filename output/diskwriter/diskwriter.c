@@ -26,7 +26,10 @@
  *  
  * */
 
+#include <unistd.h>
+
 #include <nemesi/diskwriter.h>
+#include <nemesi/comm.h>
 
 int diskwriter(char *data, int len)
 {

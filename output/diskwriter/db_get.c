@@ -27,6 +27,7 @@
  * */
 
 #include <nemesi/diskwriter.h>
+#include <nemesi/comm.h>
 
 uint8 *db_get(uint32 len, ...)
 {
@@ -39,7 +40,8 @@ uint8 *db_get(uint32 len, ...)
 	} else if ( len == 0 ) {
 		/* assegnamento del puntatore al buffer per la scrittura sul disco */
 		va_start(ap, len);
-		disk_buffer = va_arg(ap, struct disk_buffer *);
+		disk_buffer = va_arg(ap, struct disk_buff *);
+		va_end(ap);
 	} else {
 		uiprintf("\nErrore in <bd_get> function\n");
 	}

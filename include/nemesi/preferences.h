@@ -56,7 +56,7 @@ PREFS_EXTERN struct Preference preferences[]
 #ifdef GLOBAL_PREFERENCES
 = {
 	/* output */ { "output", "card", "card/diskraw/diskdecoded", "Select where the stream will be written."},
-	PREFS_TABLE_END
+	{ PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END }
 }
 #endif /* GLOBAL_PREFERENCES */
 ;

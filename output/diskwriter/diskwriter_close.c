@@ -26,6 +26,8 @@
  *  
  * */
 
+#include <stdlib.h>
+
 #include <nemesi/diskwriter.h>
 
 int diskwriter_close(void)

@@ -29,9 +29,12 @@
 /* definizione per l'allocazione del buffer globale
  * questa definizione deve essere fatta solo in un file.
  *  */
-#define GLOBAL_DISK_BUFFER
 
+#include <stdlib.h>
+
+#define GLOBAL_DISK_BUFFER
 #include <nemesi/diskwriter.h>
+#include <nemesi/comm.h>
 
 struct disk_buff *db_init(void)
 {

@@ -26,6 +26,8 @@
  *  
  * */
 
+#include <unistd.h>
+
 #include <nemesi/diskwriter.h>
 
 void close_file(void)

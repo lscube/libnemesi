@@ -68,6 +68,7 @@ uint8 *ab_get(uint32 len, ...)
 		/* audio buffer pointer assignement */
 		va_start(ap, len);
 		audio_buffer = va_arg(ap, struct audio_buff *);
+		va_end(ap);
 	} else {
 		uiprintf("\nError in <ab_get> function\n");
 	}

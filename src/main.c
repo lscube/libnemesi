@@ -36,6 +36,7 @@
 #include <nemesi/preferences.h>
 
 #include <nemesi/audio.h>
+#include <nemesi/diskwriter.h>
 
 int main(int argc, char *argv[])
 {

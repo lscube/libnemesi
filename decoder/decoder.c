@@ -52,7 +52,7 @@ void *decoder(void *args)
 	double ts_elapsed;
 #ifdef TS_SCHEDULE
 	struct timeval tv_min_next;
-	double ts_min_next;
+	double ts_min_next = 0;
 #else // utilizzo lo scheduler basato su FAST CYCLES
 	struct timeval tvcheck;
 	struct timeval tvsel, tvbody;
