@@ -106,7 +106,9 @@ if test "$enable_sdl" = "yes"; then
 		AC_SUBST(SDL_LIBS) \
 		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/true) \
 		NEMESI_HAVE_SDL=yes, \
-		AC_MSG_WARN([Falling back to OSS Audio output!]))
+		AC_MSG_WARN([Falling back to OSS Audio output!]) \
+		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/false) \
+		NEMESI_HAVE_SDL=no)
 else
 	AC_MSG_WARN([SDL library disabled!])
 	AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/false)
@@ -115,12 +117,14 @@ fi
 
 dnl Check for GTK+ support
 if test "$enable_gui" = "yes"; then
-	pkg_modules="gtk+-2.0 >= 2.0.0"
+	pkg_modules="gtk+-2.0 >= 2.4.0"
 	PKG_CHECK_MODULES(PACKAGE, [$pkg_modules], \
 		AC_DEFINE([HAVE_GUI], 1, [Define if GUI is present]) \
 		AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/true) \
 		NEMESI_HAVE_GTK=yes, \
-		AC_MSG_WARN([GUI will not be compiled!]))
+		AC_MSG_WARN([GUI will not be compiled!]) \
+		AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/false) \
+		NEMESI_HAVE_GTK=no)
 else
 	AC_MSG_WARN([GUI disabled!])
 	AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/false)
@@ -136,7 +140,9 @@ if test "x$enable_avc" = "xyes"; then
 	AC_CHECK_LIB(avcodec,avcodec_open, \
 	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/true) \
 	NEMESI_HAVE_AVC=yes, \
-	AC_MSG_WARN([libavcodec not present!]))
+	AC_MSG_WARN([libavcodec not present!]) \
+	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false) \
+	NEMESI_HAVE_AVC=no)
 else
 	AC_MSG_WARN([libavcodec disabled!])
 	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false)
