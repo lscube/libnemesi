@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(nemesi, 0.4.0)
+AC_INIT(nemesi, 0.5.0)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
@@ -215,7 +215,7 @@ esac
 ARCH_DEFINES=""
 case "$host" in 
 	i386-*-* | i486-*-* | i586-*-* | i686-*-* | i86pc-*-*)
-		# CFLAGS="$CFLAGS -mcpu=i486"
+		dnl CFLAGS="$CFLAGS -mcpu=i486"
 		CFLAGS="$CFLAGS -march=i386"
 		ARCH_DEFINES="-DI386_ASSEM"
 		arch_type=ix86
