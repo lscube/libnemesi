@@ -109,7 +109,7 @@ static gint progress_timeout(gpointer data)
 			throbber->shown = -1;
 		}
 		update_toolbar();
-		nmsprintf(3, "[gui] throbber done\n");
+		nmsprintf(NMSML_DBG3, "[gui] throbber done\n");
 		return FALSE;
 	}
 	return TRUE;

@@ -33,19 +33,19 @@ int close_rtsp(struct RTSP_Ctrl *rtsp_ctrl)
 	void *ret=NULL;
 
 	/* THREAD CANCEL */	
-	nmsprintf(2, "Sending cancel signal to all threads\n");
+	nmsprintf(NMSML_DBG1, "Sending cancel signal to all threads\n");
 	if(rtsp_ctrl->rtsp_tid > 0){
-		nmsprintf(2, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_ctrl->rtsp_tid);
+		nmsprintf(NMSML_DBG1, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_ctrl->rtsp_tid);
 		if (pthread_cancel(rtsp_ctrl->rtsp_tid) != 0)
-			nmsprintf(3, "Error while sending cancelation to RTSP Thread.\n");
+			nmsprintf(NMSML_DBG2, "Error while sending cancelation to RTSP Thread.\n");
 		else
 			pthread_join(rtsp_ctrl->rtsp_tid, (void **)&ret);
 		if ( ret != PTHREAD_CANCELED ) {
-			nmsprintf(3, "Warning! RTSP Thread joined, but  not canceled!\n");
+			nmsprintf(NMSML_DBG2, "Warning! RTSP Thread joined, but  not canceled!\n");
 			return 1;
 		}
 	} else {
-		nmsprintf(2, "Cannot send cancel signal to RTSP Thread\n");
+		nmsprintf(NMSML_DBG1, "Cannot send cancel signal to RTSP Thread\n");
 		return 1;
 	}
 

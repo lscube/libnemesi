@@ -45,7 +45,7 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 	socklen_t server_len=sizeof(struct sockaddr_in);
 
 	if( (slot=bpget(&(rtp_sess->bp))) < 0) {
-		nmsprintf(1, "No more space in Playout Buffer!"BLANK_LINE);
+		nmsprintf(NMSML_VERB, "No more space in Playout Buffer!"BLANK_LINE);
 		return 1;
 	}
 	
@@ -55,7 +55,7 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 	pkt=(rtp_pkt *)&((rtp_sess->bp).bufferpool[slot]);
 
 	if ( rtp_hdr_val_chk(pkt, n) ) {
-		nmsprintf(2, "RTP header validity check FAILED!\n");
+		nmsprintf(NMSML_NORM, "RTP header validity check FAILED!\n");
 		bpfree(&(rtp_sess->bp), slot);
 		return 0;
 	}
@@ -94,11 +94,11 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 	}
 
 	if((ret=poadd(&(stm_src->po), slot, (stm_src->ssrc_stats).cycles)) == 1) {
-		nmsprintf(2, "WARNING: Duplicate pkt found... discarded\n");
+		nmsprintf(NMSML_VERB, "WARNING: Duplicate pkt found... discarded\n");
 		bpfree(&(rtp_sess->bp), slot);
 		return 0;
 	} else if (ret == 2)
-		nmsprintf(2, "WARNING: Misordered pkt found... reordered\n");
+		nmsprintf(NMSML_VERB, "WARNING: Misordered pkt found... reordered\n");
 
 	((stm_src->po).pobuff[slot]).pktlen=n;
 	

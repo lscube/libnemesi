@@ -26,7 +26,6 @@
  *  
  * */
 
-#define COMM_GLOBALS // define global variables
 #include <nemesi/comm.h>
 
 #include <nemesi/main.h>
@@ -63,18 +62,18 @@ int main(int argc, char *argv[])
 	
 #ifdef USE_UIPRINTF
 	if(pipe(uipipe) < 0)
-		exit( nmserror("Cannot create UI pipe!") );
+		exit( nmsprintf(NMSML_FATAL, "Cannot create UI pipe!\n") );
 #endif // USE_UIPRINTF
 
 	if ((n = load_plugins()) > 0)
-		exit( nmserror("Cannot load plugins: %s", strerror(n)) );
+		exit( nmsprintf(NMSML_FATAL, "Cannot load plugins: %s\n", strerror(n)) );
 
 	// output initialization
 	if (output_init(&output_hints))
-		exit( nmserror("Error initialazing output module") );
+		exit( nmsprintf(NMSML_FATAL, "Error initializing output module\n") );
 
 	if ( !(rtsp_ctrl = init_rtsp()) )
-		exit( nmserror("Cannot initialize RTSP: %s", strerror(errno)) );
+		exit( nmsprintf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)) );
 
 	// UI interface function
 	if (argv[0]) // if we are called with the initial 'g' => start gui
@@ -87,7 +86,7 @@ int main(int argc, char *argv[])
 		gui(rtsp_ctrl, &ui_hints, argc, argv);
 	else
 #else	// HAVE_GUI
-		nmserror("no GUI present: falling back to e-TUI");
+		nmsprintf(NMSML_ERR, "no GUI present: falling back to e-TUI\n");
 #endif	// HAVE_GUI
 		if ((n=ui(rtsp_ctrl, &ui_hints, argc, argv)) > 0)
 			exit(1);
@@ -105,7 +104,7 @@ int main(int argc, char *argv[])
 
 	unload_plugins();
 
-	nmsprintf(1, "\nBye bye!\n\n");
+	nmsprintf(NMSML_NORM, "\nBye bye!\n\n");
 
 	exit(0);
 }

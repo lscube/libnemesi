@@ -42,7 +42,7 @@ int send_get_request(struct RTSP_Thread *rtsp_th)
 		VERSION_NAME);
 	strcat(b, "\r\n");
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(1, "Cannot send DESCRIBE request...\n");
+		nmsprintf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
 		return 1;
 	}
 	sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);

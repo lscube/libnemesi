@@ -33,7 +33,7 @@ int handle_pause_response(struct RTSP_Thread *rtsp_th)
 	char *prev_tkn;
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
-		nmsprintf(1, "Invalid RTSP-PAUSE response\n");
+		nmsprintf(NMSML_ERR, "Invalid RTSP-PAUSE response\n");
 		// rtsp_th->busy=0;
 		return 1;
 	}

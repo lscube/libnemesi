@@ -36,19 +36,19 @@ int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char *argv[
   path = getenv(NEMESI_THROBBER_DIR_ENV);
   if (!path) {
 	  add_pixmap_directory(NEMESI_THROBBER_DIR_DEFAULT);
-	  nmsprintf(3, "NEMESI_THROBBER_DIR_DEFAULT: "NEMESI_THROBBER_DIR_DEFAULT"\n");
+	  nmsprintf(NMSML_DBG1, "NEMESI_THROBBER_DIR_DEFAULT: "NEMESI_THROBBER_DIR_DEFAULT"\n");
   } else {
 	  add_pixmap_directory(path);
-	  nmsprintf(3, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
+	  nmsprintf(NMSML_DBG1, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
   }
   // pixmaps folder
   path = getenv(NEMESI_PIXMAPS_DIR_ENV);
   if (!path) {
 	  add_pixmap_directory(NEMESI_PIXMAPS_DIR_DEFAULT);
-	  nmsprintf(3, "NEMESI_PIXMAPS_DIR_DEFAULT: "NEMESI_PIXMAPS_DIR_DEFAULT"\n");
+	  nmsprintf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_DEFAULT: "NEMESI_PIXMAPS_DIR_DEFAULT"\n");
   } else {
 	  add_pixmap_directory(path);
-	  nmsprintf(3, "NEMESI_PIXMAPS_DIR_ENV: %s\n", path);
+	  nmsprintf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_ENV: %s\n", path);
   }
 
   /*
@@ -65,11 +65,12 @@ int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char *argv[
 
 	update_toolbar();
 	if (ui_hints->url) {
-		nmsprintf(3, "Connect: Please wait, opening \"%s\"", ui_hints->url);
+		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
 		send_open(rtsp_ctrl, ui_hints->url);
 		gui_throbber(&rtsp_ctrl->busy);
-	} else
-		nmsprintf(3, "Please, enter a command or press 'h' for help\n\n");
+	}/* else
+		nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
+	*/
   gtk_widget_show (nemesi);
 
   gtk_main ();

@@ -40,7 +40,7 @@ int seturlname(struct RTSP_Thread *rtsp_th, char *urlname)
 		else
 			return 1;
 	}
-	nmsprintf(3, "server %s port %s\n", server, port);
+	nmsprintf(NMSML_DBG1, "server %s port %s\n", server, port);
 
 	if ((rtsp_th->urlname =
 	     (char *) malloc(sizeof(char) * (strlen("rtsp://") + strlen(server) + strlen(path) + 1))) == NULL)

@@ -40,7 +40,7 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 			/* Nessun altra PLAY da inviare */
 			rtsp_th->status = READY;
 			rtsp_th->busy = 0;
-			nmsprintf(1, "----- Play paused -----\n");
+			nmsprintf(NMSML_NORM, "----- Play paused -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);
@@ -58,7 +58,7 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 			rtsp_th->status = INIT;
 			reinit_rtsp(rtsp_th);
 			rtsp_th->busy = 0;
-			nmsprintf(1, "----- All Connections closed -----\n");
+			nmsprintf(NMSML_NORM, "----- All Connections closed -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);
@@ -68,6 +68,8 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 			return 1;
 		break;
 	default:
+		nmsprintf(NMSML_ERR, "Could not handle method in PLAYING state\n");
+		return 1;
 		break;
 	
 	}

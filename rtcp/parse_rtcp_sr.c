@@ -30,6 +30,7 @@
 
 int parse_rtcp_sr(struct Stream_Source *stm_src, rtcp_pkt *pkt)
 {
+	nmsprintf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
 	gettimeofday(&(stm_src->ssrc_stats.lastsr), NULL);
 	stm_src->ssrc_stats.ntplastsr[0]=ntohl(pkt->r.sr.si.ntp_seq);
 	stm_src->ssrc_stats.ntplastsr[1]=ntohl(pkt->r.sr.si.ntp_frac);

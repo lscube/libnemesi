@@ -32,6 +32,6 @@
 int parse_rtcp_bye(rtcp_pkt *pkt)
 {
 	// TODO: handle bye packet
-	nmsprintf(3, "Received RR from SSRC: %d\n", pkt->r.bye.src);
+	nmsprintf(NMSML_DBG1, "Received BYE from SSRC: %u\n", pkt->r.bye.src);
 	return 0;
 }

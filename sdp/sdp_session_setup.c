@@ -48,7 +48,7 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 		else
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
-			nmsprintf(1, "Invalid SDP description body... discarding\n");
+			nmsprintf(NMSML_ERR, "Invalid SDP description body... discarding\n");
 			error=1;
 			break;
 			// return NULL;

@@ -48,7 +48,7 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 			
 		for(tkn=argstr; tkn && (isdigit(*tkn) || (*tkn == ':')  || (*tkn == '-') || isspace(*tkn)); tkn++);
 		if (*tkn){
-			nmsprintf(3, "Mi shfiti? A che mi shfiti? A tesht' de fero?\n");
+			nmsprintf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A tesht' de fero?\n");
 			return 1;
 		}
 		
@@ -64,7 +64,7 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 			for(i=2; i>=0; i--){
 				if((tkn=strrchr(meno, ':')) != NULL){
 					if(strlen(tkn+1) > 2){
-						nmsprintf(3, "Mi shfiti? A che mi shfiti? A piet' de fero?\n");
+						nmsprintf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A piet' de fero?\n");
 						return 1;
 					}
 					if(strlen(tkn+1) < 2)
@@ -76,7 +76,7 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 					*tkn='\0';
 				} else {
 					if(strlen(meno) > 2){
-						nmsprintf(2, "Mi shfiti? A che mi shfiti? A piet' de fero?\n");
+						nmsprintf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A piet' de fero?\n");
 						return 1;
 					}
 					if(strlen(meno) < 2)
@@ -89,7 +89,7 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 				}
 			}
 			if (*zz[j][2] > '5' || *zz[j][1] > '5' || (*zz[j][0] > '1' && *(zz[j][0]+1) > '4') ){
-				nmsprintf(3, "Mi shfiti? A che mi shfiti? A panz' de fero?\n");
+				nmsprintf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A panz' de fero?\n");
 				return 1;
 			}
 			j--;
@@ -100,7 +100,7 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 			sprintf(stop, "%c%c:%c%c:%c%c", zz[1][0][0], zz[1][0][1], zz[1][1][0], zz[1][1][1], zz[1][2][0], zz[1][2][1]);
 		
 			if ( strcmp(start, stop) >= 0){
-				nmsprintf(3, "Mi shfiti? A che mi shfiti? A mano de fero?\n");
+				nmsprintf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A mano de fero?\n");
 				return 1;
 			}
 		}

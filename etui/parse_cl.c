@@ -63,7 +63,7 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			break;
 		case 'v':	/* verbose */
 			//! salvo in v il livello di "verbosity" corrente
-			v = nmsprintf(-1, NULL);
+			v = nmsverbosity_get();
 			if (optarg) {
 				if (*optarg == 'v') {
 					for(i=0;optarg[i]=='v'; i++);
@@ -94,9 +94,9 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 					v++;
 			} else
 				v++;
-			if ( v != nmsprintf(-1, NULL) )
-				nmsprintf(v, NULL);
-				// nmsprintf(0, "Verbosity level set to %d\n", nmsprintf(v, NULL));
+			if ( v != nmsverbosity_get() )
+				nmsverbosity_set(v);
+				nmsprintf(NMSML_DBG1, "Verbosity level set to %d\n", nmsverbosity_get());
 			break;
 		case 1: // audio out driver selection
 			if ( !strcmp(optarg, "help") ) {

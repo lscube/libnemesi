@@ -80,7 +80,7 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	strcat(b, "\r\n"); 
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(1, "Cannot send SETUP request...\n");
+		nmsprintf(NMSML_ERR, "Cannot send SETUP request...\n");
 		return 1;
 	}
 

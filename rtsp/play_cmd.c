@@ -45,12 +45,12 @@ int play_cmd(struct RTSP_Thread *rtsp_th, ...)
 	args = va_arg(ap, char *);
 
 	if (rtsp_th->status == INIT) {
-		nmsprintf(1, "Player not initialized!\n");
+		nmsprintf(NMSML_ERR, "Player not initialized!\n");
 		va_end(ap);
 		return 1;
 	}
 	if (rtsp_th->status == RECORDING) {
-		nmsprintf(1, "Still recording...\n");
+		nmsprintf(NMSML_ERR, "Still recording...\n");
 		va_end(ap);
 		return 1;
 	}

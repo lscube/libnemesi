@@ -35,8 +35,7 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 	if (len/4 > (ntohs((pkt->common).len) + 1)){
 		/* This is a fu**ing compound pkt */
 		if ( ( *(uint16 *)pkt & RTCP_VALID_MASK) != RTCP_VALID_VALUE) {
-			nmsprintf(2, "RTCP Header not valid: first pkt of Compound is not a SR (or RR)!\n");
-			nmsprintf(2, BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTCP Header not valid: first pkt of Compound is not a SR (or RR)!\n"BLANK_LINE);
 			return 1;
 		}
 		end = (rtcp_pkt *)((uint32 *)pkt + len/4);
@@ -44,24 +43,20 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 		while ((pkt < end) && ((pkt->common).ver == 2));
 
 		if (pkt != end) {
-			nmsprintf(2, "RTCP Header not valid: mismatching lenght!\n");
-			nmsprintf(2, BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching lenght!\n"BLANK_LINE);
 			return 1;
 		}
 	} else {
 		if ( (pkt->common).ver != RTP_VERSION ){
-			nmsprintf(2, "RTP Header not valid: mismatching version number!\n");
-			nmsprintf(2, BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching version number!\n"BLANK_LINE);
 			return 1;
 		}
 		if ( ! (((pkt->common).pt>=200) && ((pkt->common).pt<=204)) ){
-			nmsprintf(2, "RTP Header not valid: mismatching payload type!\n");
-			nmsprintf(2, BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching payload type!\n"BLANK_LINE);
 			return 1;
 		}
 		if ( ((pkt->common).pad) && ( *(((uint8 *)pkt)+len-1) > (pkt->common).len*4) ){
-			nmsprintf(2, "RTP Header not valid: mismatching lenght!\n");
-			nmsprintf(2, BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching lenght!\n"BLANK_LINE);
 			return 1;
 		}
 	}

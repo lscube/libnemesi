@@ -36,6 +36,8 @@
 
 #ifdef USE_UIPRINTF
 
+int uipipe[2];
+
 int uiprintf(const char *fmt, ...)
 {
 	va_list ap;

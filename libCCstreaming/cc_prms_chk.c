@@ -47,7 +47,7 @@ int cc_prms_chk(CCLicense *license, CCPermsMask *mask)
 	CCPermsMask parsedmsk;
 
 	if (!license) {
-		nmsprintf(2, "no CC license defined\n");
+		nmsprintf(NMSML_DBG1, "no CC license defined\n");
 		return 0;
 	}
 

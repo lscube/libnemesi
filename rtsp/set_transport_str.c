@@ -72,12 +72,12 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 
 #if 0 // we use strdup instead;
 	if ((*str=(char *)malloc(sizeof(char)*(strlen(buff)+1))) == NULL)
-		return nmserror("set_transport_str: Cannot allocate memory!");
+		return nmsprintf(NMSML_FATAL, "set_transport_str: Cannot allocate memory!\n");
 
 	strcpy(*str, buff);
 #endif
 	if (!(*str=strdup(buff)))
-		return nmserror("set_transport_str: Could not duplicate string!");
+		return nmsprintf(NMSML_FATAL, "set_transport_str: Could not duplicate string!\n");
 
 	return 0;
 }

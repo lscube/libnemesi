@@ -48,7 +48,7 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 		else
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
-			nmsprintf(1, "Invalid SDP Media description section.\n");
+			nmsprintf(NMSML_ERR, "Invalid SDP Media description section.\n");
 			return NULL;
 		}
 		switch (*tkn) {

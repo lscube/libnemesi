@@ -63,7 +63,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			str[tknb-tkna]='\0';
 
 			if(!inet_aton(str, &(rtp_sess->transport.srcaddr))){
-				nmsprintf(1, "PANIC: Source IP Address not valid!\n");
+				nmsprintf(NMSML_ERR, "PANIC: Source IP Address not valid!\n");
 				return 1;
 			}
 			continue;
@@ -76,7 +76,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			str[tknb-tkna]='\0';
 			
 			if(!inet_aton(str, &(rtp_sess->transport.dstaddr))){
-				nmsprintf(1, "PANIC: Destination IP Address not valid!\n");
+				nmsprintf(NMSML_ERR, "PANIC: Destination IP Address not valid!\n");
 				return 1;
 			}
 			continue;

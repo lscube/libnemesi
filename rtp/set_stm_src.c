@@ -76,7 +76,7 @@ int set_stm_src(struct RTP_Session *rtp_sess, struct Stream_Source **stm_src, ui
 	if ( ((*stm_src)->rtcp_to).sin_port != 0 ){
 		sprintf(port,"%d", ntohs(((*stm_src)->rtcp_to).sin_port));
 		if ( server_connect(inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port, &((*stm_src)->rtcptofd), UDP) ){
-			nmsprintf(1, "Cannot connect to remote RTCP destination %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
+			nmsprintf(NMSML_WARN, "Cannot connect to remote RTCP destination %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
 			(*stm_src)->rtcptofd=-2;
 		}
 	}

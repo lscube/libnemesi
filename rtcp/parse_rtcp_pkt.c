@@ -52,7 +52,7 @@ int parse_rtcp_pkt(struct Stream_Source *stm_src, rtcp_pkt *pkt, int len)
 				parse_rtcp_app(pkt);
 				break;
 			default:
-				nmsprintf(2, "WARNING! Received unknown RTCP pkt\n");
+				nmsprintf(NMSML_WARN, "Received unknown RTCP pkt\n");
 				return 1;
 		}
 		pkt=(rtcp_pkt *)((uint32 *)pkt + ntohs((pkt->common).len) + 1);

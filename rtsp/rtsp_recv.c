@@ -39,20 +39,20 @@ int rtsp_recv(struct RTSP_Thread *rtsp_th)
 	memset(buffer, '\0', BUFFERSIZE);
 
 	if ((n = tcp_read(rtsp_th->fd, buffer, BUFFERSIZE)) < 0) {
-		nmsprintf(1, "ERROR reading from TCP socket\n");
+		nmsprintf(NMSML_ERR, "ERROR reading from TCP socket\n");
 		return n;
 	}
 	
 	if (((rtsp_th->in_buffer).size) == 0) {
 		if (((rtsp_th->in_buffer).data = (char *) malloc((n + 1) * sizeof(char))) == NULL)
-			return nmserror("Cannot alloc memory space for received RTSP data");
+			return nmsprintf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
 
 		strcpy((rtsp_th->in_buffer).data, buffer);
 	} else {
 		if (((rtsp_th->in_buffer).data = (char *) realloc((rtsp_th->in_buffer).data,
 								  (n + (rtsp_th->in_buffer).size +
 								   1) * sizeof(char))) == NULL)
-			return nmserror("Cannot alloc memory space for received RTSP data");
+			return nmsprintf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
 			
 		strcat((rtsp_th->in_buffer).data, buffer);
 	}

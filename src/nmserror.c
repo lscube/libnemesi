@@ -45,7 +45,9 @@ int nmserror(const char *fmt, ...)
 	va_list args;
 
 	va_start(args, fmt);
+	nmscolour(stderr, NMSCLR_RED_BOLD);
 	fprintf(stderr, "error: ");
+	nmscolour(stderr, NMSCLR_DEFAULT);
 	vfprintf(stderr, fmt, args);
 	fprintf(stderr, "\n");
 	va_end(args);

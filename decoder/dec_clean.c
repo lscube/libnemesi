@@ -48,5 +48,5 @@ void dec_clean(void *args)
 	if (outc->diskwriter)
 		close_files(outc->diskwriter->fd); 
 
-	nmsprintf(2, "Decoder Thread R.I.P.\n");
+	nmsprintf(NMSML_DBG1, "Decoder Thread R.I.P.\n");
 }

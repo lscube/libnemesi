@@ -119,14 +119,14 @@ static uint32 sdl_init(const char *arg)
 #ifdef SDLENV
 	if (arg) {
 		setenv("SDL_AUDIODRIVER", arg, 1);
-		nmsprintf(1, "SDL: using %s audio driver\n", arg);
+		nmsprintf(NMSML_NORM, "SDL: using %s audio driver\n", arg);
 	}
 #endif // SDLENV
 
 	if (!flags) {
-		nmsprintf(2, "SDL Audio already initialized\n");
+		nmsprintf(NMSML_VERB, "SDL Audio already initialized\n");
 	} else {
-		nmsprintf(1, "Initializing SDL Audio output\n");
+		nmsprintf(NMSML_NORM, "Initializing SDL Audio output\n");
 		if (subsystem_init) {
 			if (SDL_InitSubSystem(flags))
 				return nmserror("Could not initialize SDL Audio");
@@ -135,7 +135,7 @@ static uint32 sdl_init(const char *arg)
 			if (SDL_Init(flags))
 				return nmserror("Could not initialize SDL Audio");
 		}
-		nmsprintf(1, "SDL Audio initialized\n");
+		nmsprintf(NMSML_NORM, "SDL Audio initialized\n");
 	}
 
 	return 0;
@@ -183,14 +183,14 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 
 	if (!buff_ms) {
 		buff_size = AUDIO_BUFF_SIZE;
-		nmsprintf(3, "Setting default audio system buffer\n");
+		nmsprintf(NMSML_DBG1, "Setting default audio system buffer\n");
 	} else
 		buff_size = buff_ms * (*rate) * (*channels) * sdl_priv.bytes_x_sample / 1000;
 	if (sdl_priv.audio_buffer)
 		free(sdl_priv.audio_buffer);
 	if ( (sdl_priv.audio_buffer=ab_init(buff_size)) == NULL )
 		return nmserror("Failed while initializing Audio Buffer\n");
-	nmsprintf(3, "Audio system buffer: %u\n", buff_size);
+	nmsprintf(NMSML_DBG1, "Audio system buffer: %u\n", buff_size);
 
 	requested_fmt.freq = *rate;
 	requested_fmt.channels = *channels;
@@ -228,11 +228,11 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 		break;
 	}
 	
-	nmsprintf(1, "SDL Audio initialization completed successfully\n\n");
-	nmsprintf(2, "FREQ: requested %d -> obtained %d\n", requested_fmt.freq, sdl_priv.aspec.freq);
-	nmsprintf(2, "FORMAT: requested %u -> obtained %u\n", requested_fmt.format, sdl_priv.aspec.format);
-	nmsprintf(2, "CHANNELS: requested %hu -> obtained %hu\n", requested_fmt.channels, sdl_priv.aspec.channels);
-	nmsprintf(2, "SAMPLE: requested %hu -> obtained %hu\n", requested_fmt.samples, sdl_priv.aspec.samples);
+	nmsprintf(NMSML_NORM, "SDL Audio initialization completed successfully\n\n");
+	nmsprintf(NMSML_VERB, "FREQ: requested %d -> obtained %d\n", requested_fmt.freq, sdl_priv.aspec.freq);
+	nmsprintf(NMSML_VERB, "FORMAT: requested %u -> obtained %u\n", requested_fmt.format, sdl_priv.aspec.format);
+	nmsprintf(NMSML_VERB, "CHANNELS: requested %hu -> obtained %hu\n", requested_fmt.channels, sdl_priv.aspec.channels);
+	nmsprintf(NMSML_VERB, "SAMPLE: requested %hu -> obtained %hu\n", requested_fmt.samples, sdl_priv.aspec.samples);
 
 
 	return 0;
@@ -309,7 +309,7 @@ static void uninit(void)
 		sdl_priv.audio_buffer = NULL;
 	}
 
-	nmsprintf(1, "SDL Audio closed\n");
+	nmsprintf(NMSML_NORM, "SDL Audio closed\n");
 
 	return;
 }

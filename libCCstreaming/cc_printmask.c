@@ -37,17 +37,17 @@ void cc_printmask(CCPermsMask mask)
 	if ( spec_l ) {
 		for (i=0; cc_spec_licenses[i].int_code; i++) {
 			if ( (cc_spec_licenses[i].int_code & spec_l) )
-				nmsprintf(1, "%s: %s\n", cc_spec_licenses[i].name, cc_spec_licenses[i].descr);
+				nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_spec_licenses[i].name, cc_spec_licenses[i].descr);
 		}
 	}
 	if ( mask.by )
-		nmsprintf(1, "%s: %s\n", cc_by.name, cc_by.descr);
+		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_by.name, cc_by.descr);
 	if ( mask.nc )
-		nmsprintf(1, "%s: %s\n", cc_nc.name, cc_nc.descr);
+		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_nc.name, cc_nc.descr);
 	if ( mask.nd )
-		nmsprintf(1, "%s: %s\n", cc_nd.name, cc_nd.descr);
+		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_nd.name, cc_nd.descr);
 	if ( mask.sa )
-		nmsprintf(1, "%s: %s\n", cc_sa.name, cc_sa.descr);
-	nmsprintf(1, "\n");
+		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_sa.name, cc_sa.descr);
+	nmsprintf(NMSML_ALWAYS, "\n");
 }
 

@@ -93,12 +93,12 @@ struct RTSP_Ctrl *init_rtsp(void)
 	// Creation of RTSP Thread
 	pthread_attr_init(&rtsp_attr);
 	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0) {
-		nmserror("Cannot set RTSP Thread attributes!");
+		nmsprintf(NMSML_FATAL, "Cannot set RTSP Thread attributes!\n");
 		return NULL;
 	}
 
 	if ((n = pthread_create(&rtsp_th->rtsp_tid, NULL, &rtsp, (void *) rtsp_th)) > 0) {
-		nmserror("Cannot create RTSP Thread: %s", strerror(n));
+		nmsprintf(NMSML_FATAL, "Cannot create RTSP Thread: %s\n", strerror(n));
 		return NULL;
 	}
 

@@ -31,18 +31,14 @@
 
 #include <stdio.h>
 
+#define NMS_COLOURED
+
 // #define USE_UIPRINTF
 #undef USE_UIPRINTF
 
 #ifdef USE_UIPRINTF
 
-#ifndef COMM_GLOBALS
-#define COMM_EXTERN extern
-#else // COMM_GLOBALS
-#define COMM_EXTERN
-#endif // COMM_GLOBALS
-
-COMM_EXTERN int uipipe[2];
+extern int uipipe[2];
 
 #define UIINPUT_FILENO uipipe[0]
 #define UIERROR_FILENO uipipe[1]
@@ -53,12 +49,73 @@ COMM_EXTERN int uipipe[2];
 #define BLANK_LINE "                                                                                \n"
 /***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
 
-/* Separators */
-#define SEPARATOR "\n<------------------------------------------------------------->\n\n"
-#define BEGIN_SEP "\n<--------------\n"
-#define END_SEP "\n-------------->\n\n"
+#ifdef NMS_COLOURED
 
-int nmsprintf(int verbosity, const char *fmt, ...);
+// COLOURS definitions
+#define NMSCLR_RED		"\033[0;31;40m"
+#define NMSCLR_GREEN		"\033[0;32;40m"
+#define NMSCLR_YELLOW		"\033[0;33;40m"
+#define NMSCLR_BLUE		"\033[0;34;40m"
+#define NMSCLR_MAGENTA		"\033[0;35;40m"
+#define NMSCLR_CYAN		"\033[0;36;40m"
+#define NMSCLR_WHITE		"\033[0;37;40m"
+#define NMSCLR_RED_BOLD		"\033[1;31;40m"
+#define NMSCLR_YELLOW_BOLD	"\033[1;33;40m"
+#define NMSCLR_BLUE_BOLD	"\033[1;34;40m"
+#define NMSCLR_DEFAULT		"\033[0m"
+
+#define nmscolour(stm, clr)	fprintf(stm, clr)
+
+#else // NMS_COLOURED
+
+#define NMSCLR_RED
+#define NMSCLR_GREEN
+#define NMSCLR_YELLOW
+#define NMSCLR_BLUE
+#define NMSCLR_MAGENTA
+#define NMSCLR_CYAN
+#define NMSCLR_WHITE
+#define NMSCLR_RED_BOLD	
+#define NMSCLR_YELLOW_BOLD
+#define NMSCLR_BLUE_BOLD
+#define NMSCLR_DEFAULT
+
+#define nmscolour(stm, clr)
+
+#endif // NMS_COLOURED
+
+/* Separators */
+#define SEPARATOR NMSCLR_CYAN"\n<------------------------------------------------------------->\n\n"NMSCLR_DEFAULT
+#define BEGIN_SEP NMSCLR_CYAN"\n<--------------\n"NMSCLR_DEFAULT
+#define END_SEP NMSCLR_CYAN"\n-------------->\n\n"NMSCLR_DEFAULT
+
+// Definition of message levels
+#define NMSML_GET_VERB	-1 // MUST BE < 0
+#define NMSML_FATAL	0
+#define NMSML_ERR	1
+#define NMSML_WARN	2
+#define NMSML_ALWAYS	3 // -v0
+#define NMSML_NORM	4 // -v1
+#define NMSML_VERB	5 // -v2
+#define NMSML_DBG1	6 // -v3
+#define NMSML_DBG2	7 // -v4
+#define NMSML_DBG3	8 // -v5
+
+#define NMSML_MAX	8
+
+#ifdef NMS_COLOURED
+#define NMSML_COLOURS	NMSCLR_RED_BOLD, \
+			NMSCLR_RED_BOLD, \
+			NMSCLR_YELLOW_BOLD, \
+			NMSCLR_DEFAULT, \
+			NMSCLR_DEFAULT, \
+			NMSCLR_DEFAULT, \
+			NMSCLR_CYAN, \
+			NMSCLR_MAGENTA, \
+			NMSCLR_GREEN
+#endif
+
+int nmsprintf_default(int level, const char *fmt, ...);
 int nmserror(const char *fmt, ...);
 
 #define NO_STATUS 0
@@ -67,14 +124,17 @@ int nmserror(const char *fmt, ...);
 #define BUFFERS_STATUS 3
 #define ELAPSED_STATUS_VERBOSITY 1
 #define BUFFERS_STATUS_VERBOSITY 2
-int nmsstatusprintf(int cmd, const char *fmt, ...);
+int nmsstatusprintf_default(int cmd, const char *fmt, ...);
+
+int nmsverbosity_set(int);
+int nmsverbosity_get(void);
+extern int (*nmsprintf)(int level, const char *fmt, ...);
+extern int (*nmsstatusprintf)(int cmd, const char *fmt, ...);
 
 #ifdef USE_UIPRINTF
 int uiprintf(const char *fmt, ...);
 int uierror(const char *fmt, ...);
 
-#undef COMM_GLOBALS
-#undef COMM_EXTERN
 #endif // USE_UIPRINTF
 
 #endif

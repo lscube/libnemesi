@@ -28,8 +28,6 @@
 
 #include <nemesi/wsocket.h>
 
-
-
 /* DOC++ */
 /**
  * Apre una connessione TCP.
@@ -43,10 +41,10 @@ int tcp_open(struct sockaddr *name, int namelen)
 	int f;
 
 	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return nmserror("socket() error in tcp_open.");
+		return nmsprintf(NMSML_ERR, "socket() error in tcp_open.\n");
 
 	if (connect(f, name, namelen) < 0)
-		return nmserror("connect() error in tcp_open.");
+		return nmsprintf(NMSML_ERR, "connect() error in tcp_open.\n");
 
 	return f;
 }

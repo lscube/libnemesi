@@ -66,7 +66,7 @@ void *rtsp(void *rtsp_thread)
 		if (rtsp_th->fd != -1)
 			FD_SET(rtsp_th->fd, &readset);
 		if (select(max(rtsp_th->fd, command_fd) + 1 , &readset, NULL, NULL, NULL) < 0){
-			nmserror("(%s) %s\n", PROG_NAME, strerror(errno));
+			nmsprintf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
 			pthread_exit(NULL);
 		}
 		if (rtsp_th->fd != -1)
@@ -76,22 +76,22 @@ void *rtsp(void *rtsp_thread)
 				else if (n > 0){
 					if (full_msg_rcvd(rtsp_th))
 						if (handle_rtsp_pkt(rtsp_th)) {
-							// nmsprintf(1, "\nError!\n");
+							// nmsprintf(NMSML_ERR, "\nError!\n");
 							reinit_rtsp(rtsp_th);
 							// rtsp_th->busy=0; // already done in reinit
 						}
 				} else {
-					nmsprintf(1, "\nServer died prematurely!\n");
+					nmsprintf(NMSML_ERR, "\nServer died prematurely!\n");
 					reinit_rtsp(rtsp_th);
 					// rtsp_th->busy=0; // alreaydone in reinit
-					nmsprintf(1, "Session closed.\n");
+					nmsprintf(NMSML_NORM, "Session closed.\n");
 				}
 			}
 		if (FD_ISSET(command_fd, &readset)) {
 			pthread_mutex_lock(&(rtsp_th->comm_mutex));
 			read(command_fd, ch, 1);
 			if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
-				nmsprintf(1, "Error handling user command.\n\n");
+				nmsprintf(NMSML_DBG3, "Error handling user command.\n\n");
 				rtsp_th->busy = 0;
 			}
 			rtsp_th->comm->opcode = NONE;

@@ -33,7 +33,7 @@ struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
 	struct RTSP_Session *rtsp_s;
 
 	if ( (rtsp_s=(struct RTSP_Session *)malloc(sizeof(struct RTSP_Session))) == NULL ) {
-		nmserror("rtsp_sess_create: Cannot allocate memory.");
+		nmsprintf(NMSML_FATAL, "rtsp_sess_create: Cannot allocate memory.\n");
 		return NULL;
 	}
 	if ( content_base == NULL ){
@@ -42,7 +42,7 @@ struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
 	} else {
 		/* shawill: using strdup insted
 		if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(sizeof(char)*(strlen(content_base)+1)))==NULL) {
-			nmserror("Cannot allocate memory!");
+			nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
 			return NULL;
 		}
 		strcpy(rtsp_s->content_base,content_base);

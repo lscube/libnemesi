@@ -47,12 +47,12 @@ void list_video_out(void)
 {
 	int i;
 
-	nmsprintf(1, "Available video out drivers are:\n");
+	nmsprintf(NMSML_NORM, "Available video out drivers are:\n");
 	for (i=0; video_out_drivers[i]; i++) {
-		nmsprintf(0, "\t%s\t%s\n", video_out_drivers[i]->info->short_name, \
+		nmsprintf(NMSML_ALWAYS, "\t%s\t%s\n", video_out_drivers[i]->info->short_name, \
 			video_out_drivers[i]->info->name);
 	}
-	nmsprintf(1, "\n");
+	nmsprintf(NMSML_ALWAYS, "\n");
 }
 
 /*!
@@ -70,7 +70,7 @@ NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
 			if (!video_out_drivers[i])
 				nmserror("Could not find video driver %s", device);
 			else {
-				nmsprintf(3, "Found video output driver %s\n", video_out_drivers[i]->info->name);
+				nmsprintf(NMSML_VERB, "Found video output driver %s\n", video_out_drivers[i]->info->name);
 				if (!video_out_drivers[i]->preinit(sub_device, sysbuff_ms)) {
 					return video_out_drivers[i];
 				}
@@ -79,7 +79,7 @@ NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
 		}
 		if (!device)
 			return NULL;
-		nmsprintf(2, "Falling Back to drivers not hinted\n");
+		nmsprintf(NMSML_NORM, "Falling Back to drivers not hinted\n");
 	}
 	for (i=0; video_out_drivers[i]; i++) {
 		if (!video_out_drivers[i]->preinit(NULL, sysbuff_ms))

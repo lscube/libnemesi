@@ -78,7 +78,7 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 			return 1;
 		break;
 	default:
-		nmsprintf(1, "Could not handle method in INIT state\n");
+		nmsprintf(NMSML_ERR, "Could not handle method in INIT state\n");
 		return 1;
 		break;
 	}

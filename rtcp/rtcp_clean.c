@@ -39,5 +39,5 @@ void rtcp_clean(void *args)
 			if( stm_src->rtcptofd > 0)
 				close(stm_src->rtcptofd);
 	
-	nmsprintf(2, "RTCP Thread R.I.P.\n");
+	nmsprintf(NMSML_DBG1, "RTCP Thread R.I.P.\n");
 }

@@ -98,7 +98,7 @@ void *decoder(void *args)
 		
 /*	
 #ifndef TS_SCHEDULE
-		nmsprintf(3, "sum: %7ld - select: %7ld - body: %7ld - diff: %7ld - offset: %7ld - sleep %7ld - cycles: %3hu \n",\
+		nmsprintf(NMSML_DBG3, "sum: %7ld - select: %7ld - body: %7ld - diff: %7ld - offset: %7ld - sleep %7ld - cycles: %3hu \n",\
 				select_usec + body_usec, select_usec, body_usec, diff_usec, offset_usec, tvdiff.tv_usec, cycles);
 #endif // TS_SCHEDULE
 */
@@ -113,13 +113,13 @@ void *decoder(void *args)
 				if(stm_src->po.potail >= 0){
 
 					pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
-				/*	
-					nmsprintf(3, "Version Number:%d\n", pkt->ver);
-					nmsprintf(3, "Payload Type:%d\n", pkt->pt);
-					nmsprintf(3, "Sequence Number:%d\n", ntohs(pkt->seq));
-					nmsprintf(3, "SSRC Number:%lu\n", ntohl(pkt->ssrc));
-					nmsprintf(3, "RTP Timestamp:%lu\n", ntohl(pkt->time));
-				*/	
+				/**/	
+					nmsprintf(NMSML_DBG3, "Version Number:%d\n", pkt->ver);
+					nmsprintf(NMSML_DBG3, "Payload Type:%d\n", pkt->pt);
+					nmsprintf(NMSML_DBG3, "Sequence Number:%d\n", ntohs(pkt->seq));
+					nmsprintf(NMSML_DBG3, "SSRC Number:%lu\n", ntohl(pkt->ssrc));
+					nmsprintf(NMSML_DBG3, "RTP Timestamp:%lu\n", ntohl(pkt->time));
+				/**/	
 					ts_elapsed=((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
 					tv_elapsed.tv_sec=(long)ts_elapsed;
 					tv_elapsed.tv_usec=(long)((ts_elapsed-tv_elapsed.tv_sec)*1000000);
@@ -179,13 +179,13 @@ void *decoder(void *args)
 							} */
 						}
 /*
-				 		nmsprintf(2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
+				 		nmsprintf(NMSML_DBG2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, len);
 */				
 /**/				
 				 		nmsstatusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
-						nmsprintf(3, " - pkt len: %d\n", len);
+						nmsprintf(NMSML_DBG2, " - pkt len: %d\n", len);
 /**/				
 						bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
 
@@ -271,7 +271,7 @@ void *decoder(void *args)
 					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
 			*/
 			/*
-	 		nmsprintf(2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - no pkt   ",\
+	 		nmsprintf(NMSML_DBG2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - no pkt   ",\
 					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0);
 			*/
 			len = 0;

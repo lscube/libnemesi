@@ -72,7 +72,7 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 				else
 					tkn=strtok(NULL, "\r\n");
 				if ( tkn==NULL ) {
-					nmsprintf(1, "Invalid RTSP-DESCRIBE body... discarding\n");
+					nmsprintf(NMSML_ERR, "Invalid RTSP-DESCRIBE body... discarding\n");
 					return 1;
 				}
 				switch (*tkn)
@@ -140,7 +140,7 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 			/* not yet implemented */
 			// break;
 		default :
-			nmsprintf(1, "Unknown decription format.\n");
+			nmsprintf(NMSML_ERR, "Unknown decription format.\n");
 			return 1;
 			break;
 	}

@@ -46,7 +46,7 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 	char *tkn, *prev_tkn;
 
 	if ( sscanf(status_line, "%s %hu ", ver, &res_state) < 2) {
-		nmsprintf(1, "invalid Status-Line in DESCRIBE Response\n");
+		nmsprintf(NMSML_ERR, "invalid Status-Line in DESCRIBE Response\n");
 		return -1;
 	}
 	reason_phrase=strchr(strchr(status_line, ' ')+1, ' ')+1;
@@ -55,11 +55,11 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 		return res_state;
 	// if ( (res_state>=300) && (res_state<400) ) {
 	if ( RTSP_IS_REDIRECT(res_state) ) {
-		nmsprintf(1, "WARNING: Redirection. reply was: %hu %s\n", res_state, reason_phrase);
+		nmsprintf(NMSML_NORM, "WARNING: Redirection. reply was: %hu %s\n", res_state, reason_phrase);
 		switch (res_state) {
 		case RTSP_FOUND:
 			if ( (prev_tkn=strtok((rtsp_th->in_buffer).data + strlen(status_line) + 1,"\n"))==NULL ) {
-				nmsprintf(1, "Could not find \"Location\" so... were I'll redirect you?\n");
+				nmsprintf(NMSML_ERR, "Could not find \"Location\" so... were I'll redirect you?\n");
 				return -1;
 			}
 			while ( ((tkn=strtok(NULL, "\n")) != NULL) && ((tkn-prev_tkn)>1) ) {
@@ -75,7 +75,7 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 				prev_tkn=tkn;
 			}
 			if (location) {
-				nmsprintf(1, "Redirecting to %s\n", location);
+				nmsprintf(NMSML_NORM, "Redirecting to %s\n", location);
 				// XXX:proving
 				pthread_mutex_lock(&(rtsp_th->comm_mutex));
 				rtsp_th->comm->opcode = OPEN;
@@ -85,15 +85,15 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 				pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 				///// XXX: end proving
 			} else
-				return -nmserror("No location string");
+				return -nmsprintf(NMSML_ERR, "No location string\n");
 			// rtsp_th->status=INIT;
 		}
 	}
 	// if ( (res_state>=400) && (res_state<500))
 	if ( RTSP_IS_CLIENT_ERROR(res_state) )
-		nmsprintf(1, "WARNING: Client error. Reply was: %hu %s\n", res_state, reason_phrase);
+		nmsprintf(NMSML_ERR, "WARNING: Client error. Reply was: %hu %s\n", res_state, reason_phrase);
 	// if ( res_state>=500 )
 	if ( RTSP_IS_SERVER_ERROR(res_state) )
-		nmsprintf(1, "WARNING; Server error. Reply was: %hu %s\n", res_state, reason_phrase);
+		nmsprintf(NMSML_ERR, "WARNING; Server error. Reply was: %hu %s\n", res_state, reason_phrase);
 	return -1;
 }

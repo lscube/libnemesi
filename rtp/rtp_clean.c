@@ -37,16 +37,16 @@ void rtp_clean(void *args)
 	void *ret;
 	int i;
 	
-	nmsprintf(2, "RTP Thread is dying suicide!\n");
+	nmsprintf(NMSML_DBG1, "RTP Thread is dying suicide!\n");
 
 	if(rtp_sess->dec_tid > 0) {
-		nmsprintf(2, "Sending cancel signal to Decoder Thread (ID: %lu)\n", rtp_sess->dec_tid);
+		nmsprintf(NMSML_DBG1, "Sending cancel signal to Decoder Thread (ID: %lu)\n", rtp_sess->dec_tid);
 		if (pthread_cancel(rtp_sess->dec_tid) != 0)
-			nmsprintf(3, "Error while sending cancelation to Decoder Thread.\n");
+			nmsprintf(NMSML_DBG2, "Error while sending cancelation to Decoder Thread.\n");
 		else
 			pthread_join(rtp_sess->dec_tid, (void **)&ret);
 		if ( ret != PTHREAD_CANCELED )
-			nmsprintf(3, "Warning! Decoder Thread joined, but  not canceled!\n");
+			nmsprintf(NMSML_DBG2, "Warning! Decoder Thread joined, but  not canceled!\n");
 	}
 	rtp_sess->dec_tid = -1;
 	while(rtp_sess != NULL) {
@@ -79,5 +79,5 @@ void rtp_clean(void *args)
 		free(prev_rtp_sess);
 	}
 	free((struct Dec_args *)args);
-	nmsprintf(2, "RTP Thread R.I.P.\n");
+	nmsprintf(NMSML_DBG1, "RTP Thread R.I.P.\n");
 }

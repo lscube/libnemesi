@@ -31,6 +31,6 @@
 int send_rtcp_bye(struct RTP_Session *rtp_sess)
 {
 	// TODO: really send bye packet
-	nmsprintf(3, "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!", rtp_sess->local_ssrc);
+	nmsprintf(NMSML_DBG1, "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!", rtp_sess->local_ssrc);
 	return 0;
 }

@@ -219,9 +219,9 @@ static uint32 preinit(const char *arg, uint32 buff_ms)
 		flags |= SDL_INIT_TIMER;
 
 	if (!flags) {
-		nmsprintf(2, "SDL Video already initialized\n");
+		nmsprintf(NMSML_VERB, "SDL Video already initialized\n");
 	} else {
-		nmsprintf(1, "Initializing SDL Video output\n");
+		nmsprintf(NMSML_NORM, "Initializing SDL Video output\n");
 		if (subsystem_init) {
 			if (SDL_InitSubSystem(flags))
 				return nmserror("Could not initialize SDL Video");
@@ -230,11 +230,11 @@ static uint32 preinit(const char *arg, uint32 buff_ms)
 			if (SDL_Init(flags))
 				return nmserror("Could not initialize SDL Video");
 		}
-		nmsprintf(1, "SDL Video initialized\n");
+		nmsprintf(NMSML_NORM, "SDL Video initialized\n");
 	}
 
 	SDL_VideoDriverName(priv->driver, 8);
-	nmsprintf(2, "SDL: Using driver: %s\n", priv->driver);	
+	nmsprintf(NMSML_VERB, "SDL: Using driver: %s\n", priv->driver);	
 
 	// TODO: X11 stuff
 
@@ -252,7 +252,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 
 	switch(format){
 		case IMGFMT_I420:
-			nmsprintf(2, "SDL: Mapping I420 to IYUV\n");
+			nmsprintf(NMSML_VERB, "SDL: Mapping I420 to IYUV\n");
 			format = SDL_IYUV_OVERLAY;
 		case IMGFMT_YV12:
 		case IMGFMT_IYUV:
@@ -278,21 +278,21 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 			// return NULL;
 			break;
 	}
-	nmsprintf(2, "SDL: Using 0x%X (%s) image format\n", format, img_format_name(format));
+	nmsprintf(NMSML_VERB, "SDL: Using 0x%X (%s) image format\n", format, img_format_name(format));
 	MUTEX_LOCK(priv->syn, 1);
 	priv->format = format;
 	
 #ifdef SDL_NOHWSURFACE
 	flags /*|*/= SDL_SWSURFACE;
-	nmsprintf(3, "SDL: using software surface\n");
+	nmsprintf(NMSML_DBG1, "SDL: using software surface\n");
 #else // SDL_NOHWSURFACE
 	flags /*|*/= SDL_HWSURFACE|SDL_HWACCEL;
-	nmsprintf(3, "SDL: using hardware surface\n");
+	nmsprintf(NMSML_DBG1, "SDL: using hardware surface\n");
 #endif // SDL_NOHWSURFACE
 	// flags |= SDL_NOFRAME; // if we want non frame window
 	if (priv->mode != YUV) {
 		flags |= SDL_ANYFORMAT;
-		nmsprintf(3, "SDL: using ANYFORMAT flag\n");
+		nmsprintf(NMSML_DBG1, "SDL: using ANYFORMAT flag\n");
 	}
 	
 	/* SDL can only scale YUV data */
@@ -309,15 +309,15 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 	if (priv->vbuffer)
 		free_vbuffer(priv->vbuffer);
 	priv->vbuffer = new_vbuffer(buff_size);
-	nmsprintf(3, "Video system buffer: %u\n", buff_size);
+	nmsprintf(NMSML_DBG1, "Video system buffer: %u\n", buff_size);
 
 	if (!(newsurface = SDL_SetVideoMode(width, height, 0, flags))) {
 		return nmserror("SDL_SetVideoMode failed: %s", SDL_GetError());
 	}
-	nmsprintf(1, "Set Video Mode: w=%d, h=%d\n", width, height);
+	nmsprintf(NMSML_NORM, "Set Video Mode: w=%d, h=%d\n", width, height);
 	if (priv->display) {
 		SDL_FreeSurface(priv->display);
-		nmsprintf(2, "Freeing previously allocated surface\n");
+		nmsprintf(NMSML_DBG1, "Freeing previously allocated surface\n");
 	}
 	priv->display = newsurface;
 
@@ -330,7 +330,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 
 	SDL_WM_SetCaption(title, NULL);
 	MUTEX_UNLOCK(priv->syn, 1);
-	nmsprintf(2, "SDL Video succesfully configured\n");
+	nmsprintf(NMSML_VERB, "SDL Video succesfully configured\n");
 
 	return 0;
 }
@@ -377,13 +377,13 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 	MUTEX_LOCK(priv->syn, 1);
 
 	if ( (bmp) && ((bmp->w != w) || (bmp->h != h)) ) {
-		nmsprintf(3, "Freeing old SDL Overlay\n");
+		nmsprintf(NMSML_DBG1, "Freeing old SDL Overlay\n");
 		SDL_FreeYUVOverlay(bmp);
 		bmp = NULL;
 	}
 	/* XXX: already freed in config()
 	else if ((bmp->w != priv->width) || (bmp->h != priv->height)) {
-		nmsprintf(3, "Freeing old SDL Overlay 2\n");
+		nmsprintf(NMSML_DBG1, "Freeing old SDL Overlay 2\n");
 		SDL_FreeYUVOverlay(bmp);
 		must_alloc = 1;
 	}
@@ -391,7 +391,7 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 
 	if (!bmp) { // We must alloc new SDL_Overlay
 		bmp = SDL_CreateYUVOverlay(priv->width, priv->height, priv->format, priv->display);
-		nmsprintf(3, "Created new SDL Overlay: w=%d, h=%d\n", priv->width, priv->height);
+		nmsprintf(NMSML_DBG1, "Created new SDL Overlay: w=%d, h=%d\n", priv->width, priv->height);
 		vbuffer->overlay[vbuffer->writepos] = bmp;
 	}
 	MUTEX_UNLOCK(priv->syn, 1);

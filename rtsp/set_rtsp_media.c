@@ -84,7 +84,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 							while ( *tkn == ' ' )
 								tkn++;
 							if ( !(ch=strchr(tkn, '/')) ){
-								nmsprintf(2, "Invalid field rtpmap.\n");
+								nmsprintf(NMSML_WARN, "Invalid field rtpmap.\n");
 								break;
 							}
 							if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){
@@ -106,7 +106,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 								rtp_pt_defs[pt].type=NA;
 						} else {
 							// shawill: should be an error or a warning?
-							nmsprintf(2, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
+							nmsprintf(NMSML_WARN, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
 						}
 					}
 				}
@@ -116,7 +116,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 			/* not yet implemented */
 			// break;
 		default :
-			nmsprintf(1, "Unknown decription format.\n");
+			nmsprintf(NMSML_ERR, "Unknown decription format.\n");
 			return 1;
 			break;
 	}
@@ -127,7 +127,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 		else
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
-			nmsprintf(1, "Invalid Media description section.\n");
+			nmsprintf(NMSML_ERR, "Invalid Media description section.\n");
 			return 1;
 		}
 		switch (*tkn) {
@@ -184,7 +184,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 						while ( *(tkn) == ' ' )
 							tkn++;
 						if ( (ch=strchr(tkn, '/')) == NULL ){
-							nmsprintf(2, "Invalid field rtpmap.\n");
+							nmsprintf(NMSML_WARN, "Invalid field rtpmap.\n");
 							break;
 						}
 						if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){

@@ -42,36 +42,36 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 
-#define header()	nmsprintf(1, "\n%s - %s -- release %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+#define header()	nmsprintf(NMSML_ALWAYS, "\n"NMSCLR_BLUE_BOLD"%s - %s -- release %s (%s)\n\n"NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 
 #if HAVE_GUI
-#define ui_usage()	nmsprintf(1, "   --gui              Use Graphical User Interface\n"); \
-			nmsprintf(1, "   --tui              Use Textual User Interface (e-tui)\n");
+#define ui_usage()	nmsprintf(NMSML_NORM, "   --gui              Use Graphical User Interface\n"); \
+			nmsprintf(NMSML_NORM, "   --tui              Use Textual User Interface (e-tui)\n");
 #else	// HAVE_GUI
 #define ui_usage()
 #endif	// HAVE_GUI
 #define usage()	{ \
-			nmsprintf(1, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
-			nmsprintf(1, "\n"); \
-			nmsprintf(1, "   -h|--help          Display this help and exit\n"); \
-			nmsprintf(1, "   -V|--version       Display version information and exit\n"); \
-			nmsprintf(1, "   -v|--verbose [n]   Set verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
+			nmsprintf(NMSML_NORM, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
+			nmsprintf(NMSML_NORM, "\n"); \
+			nmsprintf(NMSML_NORM, "   -h|--help          Display this help and exit\n"); \
+			nmsprintf(NMSML_NORM, "   -V|--version       Display version information and exit\n"); \
+			nmsprintf(NMSML_NORM, "   -v|--verbose [n]   Set verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
 			ui_usage() \
-			nmsprintf(1, "   --nostatus         Do not show buffers status and elapsed time.\n"); \
-			nmsprintf(1, "\n Output options:\n"); \
-			nmsprintf(1, "   --sysbuff <msec>   System cache of decoded milliseconds\n"); \
-			nmsprintf(1, "   --ao <drv[:dev]>   Select audio output driver (--ao help for a list)\n"); \
-			nmsprintf(1, "   --vo <drv[:opt]>   Select video output driver (--vo help for a list)\n"); \
-			nmsprintf(1, "   --noaudio          Do not inizialize audio output\n"); \
-			nmsprintf(1, "   --novideo          Do not inizialize video output\n"); \
-			nmsprintf(1, "   --nodisk           Do not inizialize diskwriter output\n"); \
-			nmsprintf(1, "\n"); \
+			nmsprintf(NMSML_NORM, "   --nostatus         Do not show buffers status and elapsed time.\n"); \
+			nmsprintf(NMSML_NORM, "\n Output options:\n"); \
+			nmsprintf(NMSML_NORM, "   --sysbuff <msec>   System cache of decoded milliseconds\n"); \
+			nmsprintf(NMSML_NORM, "   --ao <drv[:dev]>   Select audio output driver (--ao help for a list)\n"); \
+			nmsprintf(NMSML_NORM, "   --vo <drv[:opt]>   Select video output driver (--vo help for a list)\n"); \
+			nmsprintf(NMSML_NORM, "   --noaudio          Do not inizialize audio output\n"); \
+			nmsprintf(NMSML_NORM, "   --novideo          Do not inizialize video output\n"); \
+			nmsprintf(NMSML_NORM, "   --nodisk           Do not inizialize diskwriter output\n"); \
+			nmsprintf(NMSML_NORM, "\n"); \
 		}
 
 #define version() { \
-			nmsprintf(0, "Copyleft 2001 - giampaolo.mancini@polito.it\n"); \
-			nmsprintf(0, "              - francesco.varano@polito.it\n"); \
-			nmsprintf(0, "              - marco.penno@polito.it\n\n"); \
+			nmsprintf(NMSML_ALWAYS, "Copyleft 2001 - giampaolo.mancini@polito.it\n"); \
+			nmsprintf(NMSML_ALWAYS, "              - francesco.varano@polito.it\n"); \
+			nmsprintf(NMSML_ALWAYS, "              - marco.penno@polito.it\n\n"); \
 		  }
 
 #define CL_MAIN_OPTIONS	"hv::V"		/* help, verbosity, version */

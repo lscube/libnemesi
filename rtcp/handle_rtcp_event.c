@@ -73,7 +73,7 @@ struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *event)
 			send_rtcp_bye(event->rtp_sess);
 			break;
 		default:
-			nmsprintf(2, "RTCP Event not handled!\n");
+			nmsprintf(NMSML_ERR, "RTCP Event not handled!\n");
 			break;
 	}
 	return event;

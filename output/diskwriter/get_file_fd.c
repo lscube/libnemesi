@@ -51,7 +51,7 @@ int get_file_fd(NMSDiskWriter *dc, int pt)
 			nmserror("file %s in current directory cannot be created", filename);
 		if (dc->tag[pt]->hdim)
 			if ( (written=write(dc->fd[pt], dc->tag[pt]->header, dc->tag[pt]->hdim)) < dc->tag[pt]->hdim )
-				nmsprintf(2, "WARNING: only %d bytes of %d written\n", written, dc->tag[pt]->hdim);
+				nmsprintf(NMSML_DBG1, "WARNING: only %d bytes of %d written\n", written, dc->tag[pt]->hdim);
 	}
 
 	return dc->fd[pt];

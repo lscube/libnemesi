@@ -41,7 +41,7 @@ int server_create(char *host, char *port, int *sock)
 	hints.ai_socktype = SOCK_DGRAM;
 
 	if ((n = gethostinfo(&res, host, port, &hints)) != 0)
-		return nmserror("(%s) %s", PROG_NAME, gai_strerror(n));
+		return nmsprintf(NMSML_ERR, "(%s) %s\n", PROG_NAME, gai_strerror(n));
 
 	ressave = res;
 
@@ -53,7 +53,7 @@ int server_create(char *host, char *port, int *sock)
 			break;
 
 		if (close(*sock) < 0)
-			return nmserror("(%s) %s", PROG_NAME, strerror(errno));
+			return nmsprintf(NMSML_ERR, "(%s) %s\n", PROG_NAME, strerror(errno));
 
 
 	} while ((res = res->ai_next) != NULL);

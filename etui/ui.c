@@ -64,10 +64,10 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 
 	*/
 	if (urlname != NULL) {
-		nmsprintf(1, "Connect: Please wait, opening \"%s\"", urlname);
+		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", urlname);
 		send_open(rtsp_ctrl, urlname);
 	} else
-		nmsprintf(1, "Please, enter a command or press 'h' for help\n\n");
+		nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
 	
 	while (1) {
 		if(rtsp_ctrl->busy)

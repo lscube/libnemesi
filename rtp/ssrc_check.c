@@ -47,7 +47,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 		/* nuovo SSRC */
 		/* inserimento in testa */
 		pthread_mutex_lock(&rtp_sess->syn);	
-		nmsprintf(3, "nuovo SSRC\n");
+		nmsprintf(NMSML_DBG1, "new SSRC\n");
 		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0){
 			pthread_mutex_unlock(&rtp_sess->syn);	
 			return -nmserror("Error while setting new Stream Source");
@@ -87,7 +87,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 
 				sprintf(port,"%d", ntohs(((*stm_src)->rtcp_to).sin_port));
 				if ( server_connect(inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port, &((*stm_src)->rtcptofd), UDP) ){
-					nmsprintf(2, "Cannot connect to remote RTCP port %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
+					nmsprintf(NMSML_WARN, "Cannot connect to remote RTCP port %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
 					(*stm_src)->rtcptofd=-2;
 				}
 			}
@@ -99,7 +99,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			
 			if( ssrc != rtp_sess->local_ssrc ){
 				/* OPTIONAL error counter step not implemented */
-				nmsprintf(2, "Warning! An identifier collision or a loop is indicated.\n");
+				nmsprintf(NMSML_VERB, "Warning! An identifier collision or a loop is indicated.\n");
 				return 2;
 			}
 
@@ -120,7 +120,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					
 					/* New collision, change SSRC identifier */
 					
-					nmsprintf(2, "SSRC collision detected: getting new!\n");
+					nmsprintf(NMSML_VERB, "SSRC collision detected: getting new!\n");
 					
 
 					/* Send RTCP BYE pkt */
