@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/rtpptdefs.h: $Revision: 1.6 $ -- $Date: 2003/07/08 15:26:40 $
+ *  ./include/nemesi/rtpptdefs.h: $Revision: 1.7 $ -- $Date: 2003/07/08 15:58:01 $
  *  
  *  This file is part of NeMeSI
  *
@@ -102,5 +102,7 @@ RTP_DEFS_EXTERN struct rtp_pt_def rtp_pt_defs[128]
 ;
 
 RTP_DEFS_EXTERN int (*decoders[128])(char *, int, uint8 *(*)());
+
+#undef RTP_DEFS_EXTERN
 
 #endif

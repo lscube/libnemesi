@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/etui.h: $Revision: 1.5 $ -- $Date: 2003/07/08 15:26:40 $
+ *  ./include/nemesi/etui.h: $Revision: 1.6 $ -- $Date: 2003/07/08 15:58:01 $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,9 +33,9 @@
 #include <string.h>
 
 #ifndef GLOBAL_PREFERENCES
-#define PREF_EXTERN extern
+#define PREFS_EXTERN extern
 #else /* GLOBAL_PREFERENCES */
-#define PREF_EXTERN
+#define PREFS_EXTERN
 #endif /* GLOBAL_PREFERENCES */
 
 #define PREF_MAX_NAME_LEN 8
@@ -52,7 +52,7 @@ struct Preference {
 	char description[PREF_MAX_DESCR_LEN];
 };
 
-PREF_EXTERN struct Preference preferences[]
+PREFS_EXTERN struct Preference preferences[]
 #ifdef GLOBAL_PREFERENCES
 = {
 	/* output */ { "output", "card", "card/diskraw/diskdecoded", "Select where the stream will be written."},
@@ -67,6 +67,8 @@ int add_avail_pref(const char *);
 int rem_avail_pref(const char *);
 int list_prefs(void);
 char *get_pref(const char *);
+
+#undef PREFS_EXTERN
 
 #endif /* __PREFERENCES_H */
 

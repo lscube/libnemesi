@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/diskwriter.h: $Revision: 1.4 $ -- $Date: 2003/07/08 15:26:40 $
+ *  ./include/nemesi/diskwriter.h: $Revision: 1.5 $ -- $Date: 2003/07/08 15:58:01 $
  *  
  *  This file is part of NeMeSI
  *
@@ -67,6 +67,8 @@ int get_file_fd(void);
 int diskwriter(char *data, int len);
 void close_file(void);
 int diskwriter_close(void);
+
+#undef DISK_EXTERN
 
 #endif /* __DISKWRITER_H */
 

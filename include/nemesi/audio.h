@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/audio.h: $Revision: 1.6 $ -- $Date: 2003/07/08 15:26:40 $
+ *  ./include/nemesi/audio.h: $Revision: 1.7 $ -- $Date: 2003/07/08 15:58:01 $
  *  
  *  This file is part of NeMeSI
  *
@@ -100,5 +100,7 @@ int audio_pause();
 
 int empty_audio_buffer(void);
 int audio_close(void);
+
+#undef AUDIO_EXTERN
 
 #endif
