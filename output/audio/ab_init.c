@@ -26,14 +26,9 @@
  *  
  * */
 
-/* definizione per l'allocazione del buffer globale
- * questa definizione deve essere fatta solo in un file.
- *  */
-#define GLOBAL_AUDIO_BUFFER
-
 #include <nemesi/audio.h>
 
-struct audio_buff *ab_init(uint32 buff_size)
+NMSAudioBuffer *ab_init(uint32 buff_size)
 {
 	struct audio_buff *buff;
 	pthread_mutexattr_t mutex_attr;

@@ -26,30 +26,13 @@
  *  
  * */
 
-#include <nemesi/decoder.h>
-#include <nemesi/output.h>
+#include <nemesi/audio.h>
 
-void dec_clean(void *args)
+void ab_uninit(NMSAudioBuffer *ab)
 {
-	NMSOutput *outc = (NMSOutput *)args;
+	pthread_mutex_unlock(&(ab->syn));
 
-	// kill Video Thread
-	video_th_stop(outc->video);
-	// Uninit Output modules
-	if (outc->video->init) {
-		// outc->video->functions->uninit();
-		outc->video->functions->reset();
-		outc->video->init = 0;
-	}
-	if (outc->audio->init) {
-		// outc->audio->functions->uninit();
-		outc->audio->functions->reset();
-		outc->audio->init = 0;
-	}
-
-	/* chiudiamo eventualmente il file aperto per salvare lo steam invece
-	che riprodurlo */
-	close_file(); 
-
-	uiprintf("Decoder Thread R.I.P.\n");
+	free(ab->audio_data);
+	free(ab);
 }
+

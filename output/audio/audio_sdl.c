@@ -234,14 +234,12 @@ static void reset(void)
 {
 	NMSAudioBuffer *ab = sdl_priv.audio_buffer;
 
-	// SDL_PauseAudio(1);
+	SDL_PauseAudio(1);
+	if (ab) {
+		ab_uninit(ab);
+		sdl_priv.audio_buffer = NULL;
+	}
 	SDL_CloseAudio();
-
-	// reset audio buffer
-	// ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
-
-	free(ab);
-	sdl_priv.audio_buffer = NULL;
 }
 
 static void uninit(void)

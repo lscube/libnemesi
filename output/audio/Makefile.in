@@ -159,6 +159,7 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libaudio.la
 libaudio_la_SOURCES = ab_get.c \
 			ab_init.c \
+			ab_uninit.c \
 			audio_format_bits.c \
 			audio_format_name.c \
 			audio_preinit.c \
@@ -176,14 +177,16 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libaudio_la_LIBADD =
-am_libaudio_la_OBJECTS = ab_get.lo ab_init.lo audio_format_bits.lo \
-	audio_format_name.lo audio_preinit.lo audio_oss.lo audio_sdl.lo
+am_libaudio_la_OBJECTS = ab_get.lo ab_init.lo ab_uninit.lo \
+	audio_format_bits.lo audio_format_name.lo audio_preinit.lo \
+	audio_oss.lo audio_sdl.lo
 libaudio_la_OBJECTS = $(am_libaudio_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ab_get.Plo ./$(DEPDIR)/ab_init.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ab_uninit.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_format_bits.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_format_name.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_oss.Plo \
@@ -229,6 +232,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ab_get.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ab_init.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ab_uninit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_format_bits.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_format_name.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_oss.Plo@am__quote@

@@ -91,6 +91,10 @@ typedef struct {
          * Display a new RGB/BGR frame of the video to the screen.
          */
         uint32 (*update_screen)(void);
+	/*
+	 * Closes window and reset video buffer
+	 */
+	void (*reset)(void);
         /*
          * Closes driver. Should restore the original state of the system.
          */

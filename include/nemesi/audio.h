@@ -40,12 +40,6 @@
 
 #include <config.h>
 
-#ifndef GLOBAL_AUDIO_BUFFER
-#define AUDIO_EXTERN extern
-#else
-#define AUDIO_EXTERN
-#endif
-
 #ifdef HAVE_SDL
 
 #include <SDL.h>
@@ -86,15 +80,11 @@ typedef struct audio_buff {
 	pthread_cond_t cond_full;
 } NMSAudioBuffer;
 
-// AUDIO_EXTERN struct audio_buff *global_audio_buffer;
-
 NMSAudioBuffer *ab_init(uint32);
 uint8 *ab_get(uint32, ...);
+void ab_uninit(NMSAudioBuffer *);
 /* end of Audio Buffer defines */
 
 NMSAudio *audio_preinit(char *);
-
-#undef GLOBAL_AUDIO_BUFFER
-#undef AUDIO_EXTERN
 
 #endif

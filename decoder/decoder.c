@@ -86,16 +86,12 @@ void *decoder(void *args)
 	tv_sys_buff.tv_usec=AUDIO_SYS_BUFF*GRAIN*1000;
 	*/
 
+	// Audio init -- XXX: must be done here?
+	if ( !(nmsoutc->audio->init) && !(nmsoutc->audio->init=!nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0)) )
+		pthread_exit(NULL);
+
 	pthread_mutex_lock(&(dec_args->syn));
 	pthread_mutex_unlock(&(dec_args->syn));
-
-	// Audio init
-	if ( !(nmsoutc->audio->init) && !(nmsoutc->audio->init=!nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0)) )
-		return NULL; // TODO: uscire dal thread
-
-// nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0);
-	
-	// select(0, NULL, NULL, NULL, &tvsleep);
 
 	/* FV: startime ora assume il significato di istante di partenza del decoder */
 	gettimeofday(&(dec_args->startime), NULL);
@@ -153,7 +149,7 @@ void *decoder(void *args)
 
 								// AUDIO
 								if(buffering_audio) {
-									if (audio_sysbuff > AUDIO_SYS_BUFF ) {
+									if (audio_sysbuff > AUDIO_SYS_BUFF /*0.99*/ ) {
 										buffering_audio = 0;
 										// start playing audio
 										nmsoutc->audio->functions->audio_resume();
@@ -162,7 +158,8 @@ void *decoder(void *args)
 								// VIDEO
 								if((nmsoutc->video->init) && (!nmsoutc->video->tid))
 									video_th_start(nmsoutc->video);
-							} /* XXX: not supported any more
+							}
+							/* XXX: not supported any more
 							     else if ( !strcmp(output_pref, "diskdecoded") ) {
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, \
 										(uint8 *(*)(uint32))db_get);

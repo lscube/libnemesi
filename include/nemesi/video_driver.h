@@ -44,6 +44,7 @@ static void *config(uint32 width, uint32 height, char *title, uint32 format);
 static uint32 get_picture(int w, int h, NMSPicture *pict);
 static uint32 draw_picture(NMSPicture *pict);
 static uint32 update_screen(void);
+static void reset(void);
 static void uninit(void);
 
 #define NMS_LIB_VIDEO(x) NMSVFunctions nms_video_##x =\
@@ -54,6 +55,7 @@ static void uninit(void);
 	get_picture, \
 	draw_picture, \
 	update_screen, \
+	reset, \
 	uninit \
 }
 

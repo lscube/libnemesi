@@ -35,7 +35,6 @@ uint8 *ab_get(uint32 len, ...)
 {
 	static struct audio_buff *audio_buffer = NULL;
 	va_list ap;
-	struct timeval tv_sleep = {0, 1000};
 	
 	if ( (len > 0) && (audio_buffer)) {
 		while(1) {
@@ -62,12 +61,6 @@ uint8 *ab_get(uint32 len, ...)
 				return &audio_buffer->audio_data[audio_buffer->write_pos-len];
 			}
 			pthread_mutex_unlock(&(audio_buffer->syn));
-			/*
-			uiprintf("No more space in System Buffer\n");
-			tv_sleep.tv_sec = 0;
-			tv_sleep.tv_usec = WAIT_IF_FULL*1000;
-			select(0, NULL, NULL, NULL, &tv_sleep);
-			*/
 		}
 	} else if ( len == 0 ){
 		/* audio buffer pointer assignement */

@@ -426,16 +426,26 @@ static uint32 update_screen(void)
 	return 0;
 }
 
-static void uninit(void)
+static void close(void)
 {
-	uiprintf("Video Module uninit\n");
 	free_vbuffer(sdl_priv.vbuffer);
 	sdl_priv.vbuffer = NULL; // XXX: very important for next initialization;
+
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+}
+
+static void reset(void)
+{
+	close();
+	SDL_InitSubSystem(SDL_INIT_VIDEO);
+}
+
+static void uninit(void)
+{
+	close();
 #ifdef SDL_ENABLE_LOCKS
-	 // SDL_DestroyMutex(sdl_priv.syn);
+	 SDL_DestroyMutex(sdl_priv.syn);
 #endif // SDL_ENABLE_LOCKS
-	// SDL_FreeSurface(sdl_priv.display);
-	// SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
 	return;
 }
