@@ -32,9 +32,9 @@
 #define __VIDEO_DRIVERS_H
 
 #ifndef NMS_GLOBAL_VIDEO_DRIVERS
-#define EXTERN extern
+#define VDRV_EXTERN extern
 #else // NMS_GLOBAL_VIDEO_DRIVERS
-#define EXTERN
+#define VDRV_EXTERN
 #endif // NMS_GLOBAL_VIDEO_DRIVERS
 
 #include <config.h>
@@ -104,7 +104,7 @@ typedef struct {
 } NMSVFunctions;
 
 #if HAVE_SDL
-EXTERN NMSVFunctions nms_video_sdl;
+VDRV_EXTERN NMSVFunctions nms_video_sdl;
 #endif
 
 /*
@@ -118,6 +118,8 @@ void list_video_out();
 extern vo_functions_t* video_out_drivers[];
  */
 
+#undef NMS_GLOBAL_VIDEO_DRIVERS
+#undef VDRV_EXTERN
 
 #endif // __VIDEO_DRIVERS_H
 

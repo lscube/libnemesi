@@ -68,6 +68,7 @@ int diskwriter(char *data, int len);
 void close_file(void);
 int diskwriter_close(void);
 
+#undef GLOBAL_DISK_BUFFER
 #undef DISK_EXTERN
 
 #endif /* __DISKWRITER_H */

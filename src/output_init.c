@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: output_init.c 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,30 +26,19 @@
  *  
  * */
 
-#ifndef __COMM_H
-#define __COMM_H
+#include <stdlib.h>
+#include <nemesi/output.h>
+#include <nemesi/comm.h>
 
-#include <stdio.h>
+int output_init(NMSOutput **output)
+{
+	if (!(*output = malloc(sizeof(NMSOutput))))
+		return uierror("Could not alloc output struct");
 
-#ifndef COMM_GLOBALS
-#define COMM_EXTERN extern
-#else // COMM_GLOBALS
-#define COMM_EXTERN
-#endif // COMM_GLOBALS
+	// (*output)->f_type = NO_OUT;
+	(*output)->audio = NULL;
+	(*output)->video = NULL;
 
-COMM_EXTERN int uipipe[2];
+	return 0;
+}
 
-#define UIINPUT_FILENO uipipe[0]
-#define UIERROR_FILENO uipipe[1]
-
-/***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
-#define BLANK_LINE "                                                                                \n"
-/***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
-
-int uiprintf(const char *fmt, ...);
-int uierror(const char *fmt, ...);
-
-#undef COMM_GLOBALS
-#undef COMM_EXTERN
-
-#endif

@@ -15,7 +15,8 @@ libutils_la_SOURCES =	urltokenize.c \
 			add_avail_pref.c \
 			rem_avail_pref.c \
 			list_prefs.c \
-			get_pref.c
+			get_pref.c \
+			uierror.c
 
 libutils_la_LDFLAGS = -static
 
@@ -27,7 +28,8 @@ libplugins_la_LIBADD = @LIBLTDL@
 bin_PROGRAMS = nemesi
 
 nemesi_SOURCES =	main.c \
-			init_rtsp_args.c
+			init_rtsp_args.c \
+			output_init.c
 
 
 nemesi_LDADD =	@DLOPEN@ \

@@ -68,6 +68,7 @@ int rem_avail_pref(const char *);
 int list_prefs(void);
 char *get_pref(const char *);
 
+#undef GLOBAL_PREFERENCES
 #undef PREFS_EXTERN
 
 #endif /* __PREFERENCES_H */

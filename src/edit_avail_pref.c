@@ -31,8 +31,10 @@
 int edit_avail_pref(const char *argstr)
 {
 	char *name, *available, tmp_argstr[PREF_MAX_NAME_LEN + PREF_MAX_AVAIL_LEN];
+	// TODO: controllare l'inizializzazione di tmp_argstr
 	int i=0;
 	
+	strcpy(tmp_argstr, argstr);
 	if ( (name = strtok(tmp_argstr, " ")) == NULL ) {
 		fprintf(stderr, "\nError, preference name not valid\n");
 		return 1;

@@ -158,6 +158,7 @@ nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libvideo.la
 libvideo_la_SOURCES = img_format_name.c \
+			video_init.c \
 			video_sdl.c
 
 
@@ -171,13 +172,14 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libvideo_la_LIBADD =
-am_libvideo_la_OBJECTS = img_format_name.lo video_sdl.lo
+am_libvideo_la_OBJECTS = img_format_name.lo video_init.lo video_sdl.lo
 libvideo_la_OBJECTS = $(am_libvideo_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/img_format_name.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/video_init.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/video_sdl.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -218,6 +220,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/img_format_name.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_init.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_sdl.Plo@am__quote@
 
 .c.o:

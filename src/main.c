@@ -26,6 +26,9 @@
  *  
  * */
 
+#define COMM_GLOBALS // define global variables
+#include <nemesi/comm.h>
+
 #include <nemesi/main.h>
 #include <nemesi/etui.h>
 

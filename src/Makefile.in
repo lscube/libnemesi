@@ -171,7 +171,8 @@ libutils_la_SOURCES = urltokenize.c \
 			add_avail_pref.c \
 			rem_avail_pref.c \
 			list_prefs.c \
-			get_pref.c
+			get_pref.c \
+			uierror.c
 
 
 libutils_la_LDFLAGS = -static
@@ -184,7 +185,8 @@ libplugins_la_LIBADD = @LIBLTDL@
 bin_PROGRAMS = nemesi
 
 nemesi_SOURCES = main.c \
-			init_rtsp_args.c
+			init_rtsp_args.c \
+			output_init.c
 
 
 nemesi_LDADD = @DLOPEN@ \
@@ -219,12 +221,14 @@ libutils_la_LIBADD =
 am_libutils_la_OBJECTS = urltokenize.lo strstrcase.lo strncmpcase.lo \
 	uiprintf.lo statustostr.lo random32.lo timeval_subtract.lo \
 	timeval_add.lo edit_pref.lo edit_avail_pref.lo \
-	add_avail_pref.lo rem_avail_pref.lo list_prefs.lo get_pref.lo
+	add_avail_pref.lo rem_avail_pref.lo list_prefs.lo get_pref.lo \
+	uierror.lo
 libutils_la_OBJECTS = $(am_libutils_la_OBJECTS)
 bin_PROGRAMS = nemesi$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
-am_nemesi_OBJECTS = main.$(OBJEXT) init_rtsp_args.$(OBJEXT)
+am_nemesi_OBJECTS = main.$(OBJEXT) init_rtsp_args.$(OBJEXT) \
+	output_init.$(OBJEXT)
 nemesi_OBJECTS = $(am_nemesi_OBJECTS)
 nemesi_DEPENDENCIES = $(top_srcdir)/rtsp/librtsp.la \
 	$(top_srcdir)/rtcp/librtcp.la $(top_srcdir)/rtp/librtp.la \
@@ -248,14 +252,14 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/init_rtsp_args.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/list_prefs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/load_plugins.Plo ./$(DEPDIR)/main.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/random32.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/output_init.Po ./$(DEPDIR)/random32.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/rem_avail_pref.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/statustostr.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/strncmpcase.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/strstrcase.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/timeval_add.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/timeval_subtract.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/uiprintf.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/uierror.Plo ./$(DEPDIR)/uiprintf.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/urltokenize.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -338,6 +342,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list_prefs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load_plugins.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/output_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rem_avail_pref.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statustostr.Plo@am__quote@
@@ -345,6 +350,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strstrcase.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeval_add.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeval_subtract.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uierror.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uiprintf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/urltokenize.Plo@am__quote@
 

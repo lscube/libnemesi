@@ -103,6 +103,7 @@ RTP_DEFS_EXTERN struct rtp_pt_def rtp_pt_defs[128]
 
 RTP_DEFS_EXTERN int (*decoders[128])(char *, int, uint8 *(*)());
 
+#undef GLOBAL_RTP_DEFS
 #undef RTP_DEFS_EXTERN
 
 #endif

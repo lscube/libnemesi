@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: uierror.c 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,30 +26,40 @@
  *  
  * */
 
-#ifndef __COMM_H
-#define __COMM_H
-
 #include <stdio.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <string.h>
+#include <ctype.h>
 
-#ifndef COMM_GLOBALS
-#define COMM_EXTERN extern
-#else // COMM_GLOBALS
-#define COMM_EXTERN
-#endif // COMM_GLOBALS
+#include <nemesi/comm.h>
 
-COMM_EXTERN int uipipe[2];
 
-#define UIINPUT_FILENO uipipe[0]
-#define UIERROR_FILENO uipipe[1]
+/*!
+  return 1, error
+ */
+int uierror(const char *fmt, ...)
+{
+	va_list ap;
+	int fd;
+	FILE *uistderr;
+	
+	if( (fd=dup(UIERROR_FILENO)) < 0 ){
+		fprintf(stderr, "\nfailed duplicating UIERROR_FILENO\n");
+		return -1;
+	}
+	if( !(uistderr=fdopen(fd, "a")) ){
+		fprintf(stderr, "\nfailed opening uistderr stream.\n");
+		return -1;
+	}
 
-/***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
-#define BLANK_LINE "                                                                                \n"
-/***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
+	va_start(ap, fmt);
 
-int uiprintf(const char *fmt, ...);
-int uierror(const char *fmt, ...);
+	vfprintf(uistderr, fmt, ap);
 
-#undef COMM_GLOBALS
-#undef COMM_EXTERN
+	va_end(ap);
+	fclose(uistderr);
+	close(fd);
 
-#endif
+	return 1;
+}

@@ -104,6 +104,7 @@ int audio_pause();
 int empty_audio_buffer(void);
 int audio_close(void);
 
+#undef GLOBAL_AUDIO_BUFFER
 #undef AUDIO_EXTERN
 
 #endif

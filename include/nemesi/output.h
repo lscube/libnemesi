@@ -29,8 +29,11 @@
 #ifndef __NEMESI_OUTPUT_H
 #define __NEMESI_OUTPUT_H
 
+#include <nemesi/video.h>
+
 typedef struct {
 	// NMSAudio *audio;
+	char *audio; // XXX assolutamente temporanea;
 	NMSVideo *video;
 } NMSOutput;
 

@@ -49,6 +49,7 @@ int uiprintf(const char *fmt, ...)
 		fprintf(stderr, "\nfailed opening uistderr stream.\n");
 		return 1;
 	}
+
 	va_start(ap, fmt);
 
 	vfprintf(uistderr, fmt, ap);
