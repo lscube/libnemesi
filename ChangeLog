@@ -1,21 +1,47 @@
 ------------------------------------------------------------------------
-r153 | shawill | 2005-01-31 17:28:51 +0100 (Mon, 31 Jan 2005) | 2 lines
+r158 | mancho | 2005-02-28 16:29:06 +0100 (lun, 28 feb 2005) | 4 lines
+
+Fixing email address.
+Updating releas number.
+
+
+------------------------------------------------------------------------
+r157 | mancho | 2005-02-28 15:50:16 +0100 (lun, 28 feb 2005) | 2 lines
+
+Merging Debian-package build directory to the official source-tree.
+
+------------------------------------------------------------------------
+r156 | shawill | 2005-02-28 15:46:34 +0100 (lun, 28 feb 2005) | 4 lines
+
+Some code cleaning with valgrind help:
+- free some memory area,
+- close some descriptors.
+
+------------------------------------------------------------------------
+r155 | mancho | 2005-02-03 12:10:57 +0100 (gio, 03 feb 2005) | 4 lines
+
+Corrections in the man page
+Updated descriptions in nemesi.spec
+Updates in AUTHORS, ChangeLog, NEWS
+
+------------------------------------------------------------------------
+r153 | shawill | 2005-01-31 17:28:51 +0100 (lun, 31 gen 2005) | 2 lines
 
 releasing 0.5.0
 
 ------------------------------------------------------------------------
-r152 | shawill | 2005-01-28 19:10:02 +0100 (Fri, 28 Jan 2005) | 3 lines
+r152 | shawill | 2005-01-28 19:10:02 +0100 (ven, 28 gen 2005) | 3 lines
 
 some changes in etui, to support internal changes in rtsp module status
 code cleaning.
 
 ------------------------------------------------------------------------
-r151 | shawill | 2005-01-27 19:19:24 +0100 (Thu, 27 Jan 2005) | 2 lines
+r151 | shawill | 2005-01-27 19:19:24 +0100 (gio, 27 gen 2005) | 2 lines
 
 reply status defines added in methods.h
 
 ------------------------------------------------------------------------
-r150 | shawill | 2005-01-26 18:59:39 +0100 (Wed, 26 Jan 2005) | 6 lines
+r150 | shawill | 2005-01-26 18:59:39 +0100 (mer, 26 gen 2005) | 6 lines
 
 RTSP redirect 3xx done.
 Changed RTSP_Thread struct
@@ -24,46 +50,816 @@ Removed RTSP_args from main.h
 Someting changed in etui: scanf->fgets.
 
 ------------------------------------------------------------------------
-r149 | shawill | 2005-01-25 20:31:52 +0100 (Tue, 25 Jan 2005) | 3 lines
+r149 | shawill | 2005-01-25 20:31:52 +0100 (mar, 25 gen 2005) | 3 lines
 
 Some modifications to RTSP achitecture in order to support redirections
 and... do some philosophy... :-)
 
 ------------------------------------------------------------------------
-r148 | mancho | 2005-01-25 18:32:48 +0100 (Tue, 25 Jan 2005) | 2 lines
+r148 | mancho | 2005-01-25 18:32:48 +0100 (mar, 25 gen 2005) | 2 lines
 
 Other changes to AutoTools scripts.
 
 ------------------------------------------------------------------------
-r147 | mancho | 2005-01-24 19:56:12 +0100 (Mon, 24 Jan 2005) | 2 lines
+r147 | mancho | 2005-01-24 19:56:12 +0100 (lun, 24 gen 2005) | 2 lines
 
 Minor changes to AutoTools scripts
 
 ------------------------------------------------------------------------
-r146 | shawill | 2005-01-07 17:45:03 +0100 (Fri, 07 Jan 2005) | 2 lines
+r146 | shawill | 2005-01-07 17:45:03 +0100 (ven, 07 gen 2005) | 2 lines
 
 Audio resampe in libffmp3 done.
 
 ------------------------------------------------------------------------
-r145 | shawill | 2004-12-17 19:26:57 +0100 (Fri, 17 Dec 2004) | 2 lines
+r145 | shawill | 2004-12-17 19:26:57 +0100 (ven, 17 dic 2004) | 2 lines
 
 mp3 resample almost done.
 
 ------------------------------------------------------------------------
-r144 | shawill | 2004-12-17 13:34:34 +0100 (Fri, 17 Dec 2004) | 3 lines
+r144 | shawill | 2004-12-17 13:34:34 +0100 (ven, 17 dic 2004) | 3 lines
 
 New audio output modules API
 First tries for resample capabilities in libffmp3.
 
 ------------------------------------------------------------------------
-r143 | shawill | 2004-11-25 17:43:28 +0100 (Thu, 25 Nov 2004) | 3 lines
+r143 | shawill | 2004-11-25 17:43:28 +0100 (gio, 25 nov 2004) | 3 lines
 
 SDL AVC GTK configure checks fixed.
 Now GUI needs gtk+-2.4
 
 ------------------------------------------------------------------------
-r142 | shawill | 2004-11-17 11:48:20 +0100 (Wed, 17 Nov 2004) | 2 lines
+r142 | shawill | 2004-11-17 11:48:20 +0100 (mer, 17 nov 2004) | 2 lines
 
 man page buxfix!!! :-)
+
+------------------------------------------------------------------------
+r141 | mancho | 2004-11-16 18:31:28 +0100 (mar, 16 nov 2004) | 2 lines
+
+Version number e release name updated.
+
+------------------------------------------------------------------------
+r140 | mancho | 2004-11-16 16:32:39 +0100 (mar, 16 nov 2004) | 6 lines
+
+Some adjustements to prepare the release.
+
+* Version number updated.
+* Now you can succesfully build nemesi with 'make -j'.
+
+
+------------------------------------------------------------------------
+r139 | shawill | 2004-11-16 10:52:32 +0100 (mar, 16 nov 2004) | 2 lines
+
+NeMeSI is releasable with CC.
+
+------------------------------------------------------------------------
+r138 | shawill | 2004-11-15 19:39:51 +0100 (lun, 15 nov 2004) | 2 lines
+
+CC GUI toggle button
+
+------------------------------------------------------------------------
+r137 | shawill | 2004-11-12 19:26:20 +0100 (ven, 12 nov 2004) | 2 lines
+
+GUI CC...
+
+------------------------------------------------------------------------
+r136 | shawill | 2004-11-09 19:23:56 +0100 (mar, 09 nov 2004) | 2 lines
+
+Bugfix on audio for Bigendian machines.
+
+------------------------------------------------------------------------
+r135 | shawill | 2004-11-05 19:56:18 +0100 (ven, 05 nov 2004) | 2 lines
+
+tags TIT2 TPE1 TCOP.
+
+------------------------------------------------------------------------
+r134 | shawill | 2004-11-04 13:24:38 +0100 (gio, 04 nov 2004) | 2 lines
+
+id3 tagging
+
+------------------------------------------------------------------------
+r133 | shawill | 2004-11-02 18:05:17 +0100 (mar, 02 nov 2004) | 2 lines
+
+CCTag struct added
+
+------------------------------------------------------------------------
+r132 | shawill | 2004-10-29 10:15:40 +0200 (ven, 29 ott 2004) | 2 lines
+
+libCC diskwriting. work in progress.
+
+------------------------------------------------------------------------
+r131 | shawill | 2004-10-15 18:19:54 +0200 (ven, 15 ott 2004) | 2 lines
+
+print what licenses conflict with user choises
+
+------------------------------------------------------------------------
+r130 | shawill | 2004-10-15 12:31:21 +0200 (ven, 15 ott 2004) | 2 lines
+
+Little bugfix for non-licensed resources
+
+------------------------------------------------------------------------
+r129 | shawill | 2004-10-14 17:42:44 +0200 (gio, 14 ott 2004) | 2 lines
+
+CC check missinig preferences.
+
+------------------------------------------------------------------------
+r128 | shawill | 2004-10-12 18:39:09 +0200 (mar, 12 ott 2004) | 2 lines
+
+parse of uriLicense.
+
+------------------------------------------------------------------------
+r127 | shawill | 2004-10-07 19:06:38 +0200 (gio, 07 ott 2004) | 2 lines
+
+CC.
+
+------------------------------------------------------------------------
+r126 | shawill | 2004-10-06 19:04:06 +0200 (mer, 06 ott 2004) | 3 lines
+
+bug fixes and cc licenses lib definition.
+!!! Work in Progress !!!
+
+------------------------------------------------------------------------
+r125 | shawill | 2004-10-04 10:18:24 +0200 (lun, 04 ott 2004) | 2 lines
+
+I forgot to add this file last time I committed.
+
+------------------------------------------------------------------------
+r124 | shawill | 2004-09-30 18:44:17 +0200 (gio, 30 set 2004) | 2 lines
+
+CC licenses setup.
+
+------------------------------------------------------------------------
+r123 | shawill | 2004-09-29 18:06:09 +0200 (mer, 29 set 2004) | 2 lines
+
+libCCstreaming startup.
+
+------------------------------------------------------------------------
+r122 | shawill | 2004-09-28 19:21:40 +0200 (mar, 28 set 2004) | 3 lines
+
+Protocol SDP splitted from RTSP
+CC licensing library started
+
+------------------------------------------------------------------------
+r121 | shawill | 2004-09-06 17:32:29 +0200 (lun, 06 set 2004) | 2 lines
+
+Bux fixes in thread cleaning.
+
+------------------------------------------------------------------------
+r120 | shawill | 2004-09-06 13:42:12 +0200 (lun, 06 set 2004) | 2 lines
+
+Endianess check fixed.
+
+------------------------------------------------------------------------
+r119 | shawill | 2004-07-15 17:53:00 +0200 (gio, 15 lug 2004) | 5 lines
+
+Added --eneble-efence in configure script.
+This option will allow the developer to link
+NeMeSI against the Electric Fence library for
+malloc debug.
+
+------------------------------------------------------------------------
+r118 | mancho | 2004-06-30 14:17:20 +0200 (mer, 30 giu 2004) | 10 lines
+
+autotools:
+	- Various changes and fixes bringing to DESTDIR compliance.
+	  Now you can test your installation process in user-land.
+
+		$ make DESTDIR=/your/local/install/dir install
+
+nemesi.spec:
+	- Simplified nemesi.spec file and RPM build process.
+
+
+------------------------------------------------------------------------
+r117 | shawill | 2004-06-09 17:38:42 +0200 (mer, 09 giu 2004) | 2 lines
+
+bug fix in video_th.c
+
+------------------------------------------------------------------------
+r116 | mancho | 2004-06-08 18:37:55 +0200 (mar, 08 giu 2004) | 2 lines
+
+svn:ignore changes
+
+------------------------------------------------------------------------
+r115 | mancho | 2004-06-08 18:37:03 +0200 (mar, 08 giu 2004) | 3 lines
+
+Renaming boostrap to autogen.sh
+Setting svn:ignore list
+
+------------------------------------------------------------------------
+r114 | mancho | 2004-05-20 16:06:31 +0200 (gio, 20 mag 2004) | 3 lines
+
+POSIX-compliant {ps,sleep} invocation
+
+
+------------------------------------------------------------------------
+r113 | shawill | 2004-05-03 18:10:28 +0200 (lun, 03 mag 2004) | 2 lines
+
+Controlli sulla presenza dell'interfaccia grafica e aggirnamento della funzione usage().
+
+------------------------------------------------------------------------
+r112 | shawill | 2004-05-03 17:14:11 +0200 (lun, 03 mag 2004) | 2 lines
+
+Aggiornamento della man page e bugfixes dei file di configurazione automatica.
+
+------------------------------------------------------------------------
+r111 | mancho | 2004-04-05 20:21:24 +0200 (lun, 05 apr 2004) | 2 lines
+
+Ultimissimma correzione (?)
+
+------------------------------------------------------------------------
+r110 | shawill | 2004-04-05 20:19:27 +0200 (lun, 05 apr 2004) | 2 lines
+
+debug
+
+------------------------------------------------------------------------
+r109 | shawill | 2004-04-05 20:17:24 +0200 (lun, 05 apr 2004) | 2 lines
+
+Correzione bug... --novideo,  --noaudio
+
+------------------------------------------------------------------------
+r108 | shawill | 2004-04-05 10:37:09 +0200 (lun, 05 apr 2004) | 2 lines
+
+rimossa linea di stato su terminale se lanciato con gnemesi
+
+------------------------------------------------------------------------
+r107 | mancho | 2004-04-05 10:35:20 +0200 (lun, 05 apr 2004) | 2 lines
+
+Aggiunto il phony tag 'svnclean' da usare al posto di maintainer-clean.
+
+------------------------------------------------------------------------
+r106 | shawill | 2004-04-02 19:55:39 +0200 (ven, 02 apr 2004) | 2 lines
+
+About window...
+
+------------------------------------------------------------------------
+r105 | mancho | 2004-04-02 12:14:53 +0200 (ven, 02 apr 2004) | 3 lines
+
+Aggiunte e installate le pixmaps
+Aggiunta la creazione del symlink per la gui
+
+------------------------------------------------------------------------
+r104 | shawill | 2004-04-02 12:08:14 +0200 (ven, 02 apr 2004) | 2 lines
+
+gnemesi.
+
+------------------------------------------------------------------------
+r103 | mancho | 2004-04-01 20:18:15 +0200 (gio, 01 apr 2004) | 8 lines
+
+Passaggio al nuovo numero di versione: nemesi-0.2.99
+Cambiata la dir di installazione dei doc in $prefix/share/doc.
+Aggiunti gli hook per l'installazione del throbber.
+Aggiornati i tag per il 'make dist'
+Aggiornato lo .spec file per la generazione degli RPM
+Corretti alcuni errori negli script di (dis)installazione.
+
+
+------------------------------------------------------------------------
+r102 | mancho | 2004-04-01 17:17:51 +0200 (gio, 01 apr 2004) | 3 lines
+
+Corretto un piccolo bug in bootstrap
+Un po' di pulizia in configure.in
+
+------------------------------------------------------------------------
+r101 | mancho | 2004-04-01 17:13:51 +0200 (gio, 01 apr 2004) | 29 lines
+
+Allora, un sacco di cose, tutte relative agli AutoTools:
+
+LibTool:
+
+Eliminata la dir 'libltdl', che non viene piu' compilata.
+Viene utilizzato 'libtool' creato da 'bootstrap' e la libreria statica per i plugin
+viene linkata con 'libltdl' di sistema che, quindi, deve essere installato:
+configure controlla che 'libltdl' sia presente altrimenti abortisce.
+Gli sviluppatori devono avere 'libtool' e 'libtool-libs' installati, altrimenti
+non riusciranno a compilare.
+
+Maintainer mode:
+
+Il comando 'make maintainer-clean' cancella tutto quello che non serve agli
+sviluppatori, ovvero tutto quello che non va su SVN, ovvero tutto quello creato da
+'bootstrap'. Prima di fare un 'commit', utilizzate 'make maintainer-clean'.
+
+Autoconf & Co.:
+
+* Corretto il controllo per LibSDL: i relativi flag vengono usati solo quando
+  servono e il supporto viene compilato condizionalmente.
+* Corretto il controllo per LibAVCodec: il supporto viene compilato condizionalmente.
+* Aggiunto il controllo per GTK+, con compliazione condizionale della GUI.
+* Aggiunte le DEFINE per il Throbber della GUI.
+* Corretto un hook di installazione dei manuali.
+* Cambiata la dir di default dei plugin: la nuova e' $prefix/lib/nemesi/plugins.
+* Aggiunta la schermata di riassunto alla fine del configure.
+
+
+------------------------------------------------------------------------
+r100 | shawill | 2004-04-01 13:35:24 +0200 (gio, 01 apr 2004) | 2 lines
+
+Throbber per l'interfaccia grafica.
+
+------------------------------------------------------------------------
+r99 | shawill | 2004-03-31 19:41:00 +0200 (mer, 31 mar 2004) | 2 lines
+
+Manca il throbber...
+
+------------------------------------------------------------------------
+r98 | shawill | 2004-03-30 19:35:49 +0200 (mar, 30 mar 2004) | 2 lines
+
+Almeno adesso si ferma!!!
+
+------------------------------------------------------------------------
+r97 | shawill | 2004-03-29 20:33:12 +0200 (lun, 29 mar 2004) | 2 lines
+
+Play da interfaccia grafica... e poi chi lo ferma?!?
+
+------------------------------------------------------------------------
+r96 | shawill | 2004-03-29 19:05:25 +0200 (lun, 29 mar 2004) | 3 lines
+
+Modifiche al parsing della linea di comando
+
+
+------------------------------------------------------------------------
+r95 | shawill | 2004-03-26 20:01:03 +0100 (ven, 26 mar 2004) | 3 lines
+
+Primo abbozzo di interfaccia grafica.
+Miglioramenti all'interfaccia testuale.
+
+------------------------------------------------------------------------
+r94 | mancho | 2004-03-26 18:35:28 +0100 (ven, 26 mar 2004) | 2 lines
+
+Correzione errori AutoTools & Libtool
+
+------------------------------------------------------------------------
+r93 | shawill | 2004-03-24 18:15:59 +0100 (mer, 24 mar 2004) | 2 lines
+
+Video elapsed time
+
+------------------------------------------------------------------------
+r92 | shawill | 2004-03-23 19:17:56 +0100 (mar, 23 mar 2004) | 6 lines
+
+Aggiunta opzione da riga di comando --sysbuff per impostare
+il buffer di dati decodificati.
+Buffer di sistema audio e video uguali in termini di msec.
+Ancora sincronizzazione A-V.
+Aggiornamento della man page.
+
+------------------------------------------------------------------------
+r91 | shawill | 2004-03-22 19:16:19 +0100 (lun, 22 mar 2004) | 2 lines
+
+sincronizzazione
+
+------------------------------------------------------------------------
+r90 | shawill | 2004-03-19 19:15:44 +0100 (ven, 19 mar 2004) | 2 lines
+
+Versione preliminare con audio e video ben sincronizzati
+
+------------------------------------------------------------------------
+r89 | shawill | 2004-03-15 19:36:59 +0100 (lun, 15 mar 2004) | 3 lines
+
+Aggiunta selezione da command line dei driver di output audio e video.
+Aggiornato la man page.
+
+------------------------------------------------------------------------
+r88 | shawill | 2004-03-13 13:00:40 +0100 (sab, 13 mar 2004) | 2 lines
+
+Bugfix per audio oss
+
+------------------------------------------------------------------------
+r87 | shawill | 2004-03-12 22:11:28 +0100 (ven, 12 mar 2004) | 2 lines
+
+aggiunti file parse_main_cl.c parse_ui_cl.c precentemente dimenticati... scusate
+
+------------------------------------------------------------------------
+r86 | shawill | 2004-03-12 19:46:20 +0100 (ven, 12 mar 2004) | 2 lines
+
+Inserito il parsing delle opzioni da riga di comando.
+
+------------------------------------------------------------------------
+r85 | shawill | 2004-03-10 18:51:33 +0100 (mer, 10 mar 2004) | 2 lines
+
+main.c crea la "uipipe" se definita USE_UIPRINTF
+
+------------------------------------------------------------------------
+r84 | shawill | 2004-03-10 18:24:11 +0100 (mer, 10 mar 2004) | 7 lines
+
+Eliminato il sistema di scrittura a video tramite la uiprintf e uierror.
+Aggiunte le nuove funzioni nmsprintf e nmserror che scrivono direttamente
+su "stderr".
+Mantenute per ora le vecchie funzioni ui... che possono essere compilate
+definendo USE_UIPRINTF nell'header comm.h. Sono, comunque, da oggi obsolete,
+in quanto rallentano l'esecuzione e creano output non coerente.
+
+------------------------------------------------------------------------
+r83 | shawill | 2004-03-05 18:13:48 +0100 (ven, 05 mar 2004) | 4 lines
+
+Aggiunta una variabile condizionale al bufferpool,
+in modo che non riceva altri pacchetti se il buffer
+di rete e` pieno.
+
+------------------------------------------------------------------------
+r82 | shawill | 2004-03-03 19:40:06 +0100 (mer, 03 mar 2004) | 4 lines
+
+Il modulo diskwriter funziona.
+NeMeSI creera` un file per ogni payload type che arrivera`
+Inoltre, aggiornamento del modulo delle preferenze
+
+------------------------------------------------------------------------
+r81 | shawill | 2004-03-03 19:09:17 +0100 (mer, 03 mar 2004) | 3 lines
+
+Modifiche all'interfaccia del modulo audio
+Ripristino del modulo diskwriter
+
+------------------------------------------------------------------------
+r80 | sbiro | 2004-03-03 18:07:25 +0100 (mer, 03 mar 2004) | 1 line
+
+Corretto parse del campo source
+------------------------------------------------------------------------
+r79 | shawill | 2004-03-02 18:26:21 +0100 (mar, 02 mar 2004) | 2 lines
+
+Reinizializzazione dei moduli audio e video dopo la chiusura dello stream
+
+------------------------------------------------------------------------
+r78 | shawill | 2004-03-01 18:45:43 +0100 (lun, 01 mar 2004) | 2 lines
+
+System buffer bug fixed
+
+------------------------------------------------------------------------
+r77 | shawill | 2004-02-27 19:12:28 +0100 (ven, 27 feb 2004) | 2 lines
+
+Pulizia dei thread in fase di chiusura di stream
+
+------------------------------------------------------------------------
+r76 | sbiro | 2004-02-06 18:03:17 +0100 (ven, 06 feb 2004) | 1 line
+
+corretto Millenium Bug
+------------------------------------------------------------------------
+r75 | shawill | 2004-02-05 16:37:03 +0100 (gio, 05 feb 2004) | 2 lines
+
+Register di tutti i codec ffmpeg, in modo da poter utilizzare audio e video insieme.
+
+------------------------------------------------------------------------
+r74 | sbiro | 2004-02-05 10:45:57 +0100 (gio, 05 feb 2004) | 1 line
+
+corretta richiesta di SETUP nel caso di controllo aggregato
+------------------------------------------------------------------------
+r73 | shawill | 2004-02-05 10:34:12 +0100 (gio, 05 feb 2004) | 2 lines
+
+Ancors qualche piccolo aggiustamento per get_curr_sess
+
+------------------------------------------------------------------------
+r72 | shawill | 2004-02-04 19:11:41 +0100 (mer, 04 feb 2004) | 2 lines
+
+Corretti alcuni errori a livello di sessione RTSP: gestisce bene i tipi aggregati
+
+------------------------------------------------------------------------
+r71 | shawill | 2004-02-02 19:00:58 +0100 (lun, 02 feb 2004) | 2 lines
+
+Modifiche al buffer video
+
+------------------------------------------------------------------------
+r70 | shawill | 2004-01-30 18:37:30 +0100 (ven, 30 gen 2004) | 2 lines
+
+Messa a punto del video SDL
+
+------------------------------------------------------------------------
+r69 | sbiro | 2004-01-30 16:27:46 +0100 (ven, 30 gen 2004) | 1 line
+
+corretto bug su inserimento in coda nel buffer
+------------------------------------------------------------------------
+r68 | shawill | 2004-01-29 19:30:47 +0100 (gio, 29 gen 2004) | 2 lines
+
+Video SDL.
+
+------------------------------------------------------------------------
+r67 | shawill | 2004-01-29 10:54:16 +0100 (gio, 29 gen 2004) | 2 lines
+
+Spostata bufferizzazione a livello RTP Thread, invece che a livello Decoder.
+
+------------------------------------------------------------------------
+r66 | shawill | 2004-01-28 19:33:34 +0100 (mer, 28 gen 2004) | 3 lines
+
+Modulo video.
+N.B. Non ancora funzionante.
+
+------------------------------------------------------------------------
+r65 | shawill | 2004-01-27 18:11:08 +0100 (mar, 27 gen 2004) | 2 lines
+
+Messa a punto dei moduli Audio SDL e OSS
+
+------------------------------------------------------------------------
+r64 | shawill | 2004-01-27 15:32:44 +0100 (mar, 27 gen 2004) | 2 lines
+
+Impostazione delle proprietà dei tag di SVN nell'intestazione del file.
+
+------------------------------------------------------------------------
+r63 | shawill | 2004-01-27 15:21:45 +0100 (mar, 27 gen 2004) | 2 lines
+
+Impostazione delle proprietà dei tag di SVN nell'intestazione del file.
+
+------------------------------------------------------------------------
+r62 | shawill | 2004-01-27 12:46:15 +0100 (mar, 27 gen 2004) | 2 lines
+
+Messa a punto moduli audio
+
+------------------------------------------------------------------------
+r61 | shawill | 2004-01-26 19:51:04 +0100 (lun, 26 gen 2004) | 3 lines
+
+Moduli audio e video aggiornati.
+P.S. audio oss temporaneamente non funzionante
+
+------------------------------------------------------------------------
+r60 | shawill | 2004-01-23 19:12:44 +0100 (ven, 23 gen 2004) | 2 lines
+
+Libreria video sdl. Inizio sistemazione libreria audio.
+
+------------------------------------------------------------------------
+r59 | shawill | 2004-01-22 18:22:48 +0100 (gio, 22 gen 2004) | 2 lines
+
+inizializzazione dell'output dal main
+
+------------------------------------------------------------------------
+r58 | shawill | 2004-01-21 19:28:42 +0100 (mer, 21 gen 2004) | 3 lines
+
+Aggiunta della funzioni uierror, video_init (versione iniziale), output_init.
+Sistemazione di alcuni header che dichiaravanoi variabili globali
+
+------------------------------------------------------------------------
+r57 | shawill | 2004-01-21 11:42:29 +0100 (mer, 21 gen 2004) | 2 lines
+
+libltdl
+
+------------------------------------------------------------------------
+r56 | shawill | 2004-01-21 10:33:48 +0100 (mer, 21 gen 2004) | 4 lines
+
+Cancllazione della dir libltdl.
+Questa directory dava problemi lavorando con versioni diverse di libtools, per questo motivo si è deciso di lasciarla fuori dal progetto e generarla localmente ogni volta che si fa il checkout del progetto.
+La directory verrà poi generata al momento di creare la distribuzione.
+
+------------------------------------------------------------------------
+r55 | shawill | 2004-01-20 18:43:11 +0100 (mar, 20 gen 2004) | 2 lines
+
+Aggiunta header e prime funzioni per il video
+
+------------------------------------------------------------------------
+r54 | shawill | 2004-01-20 18:41:56 +0100 (mar, 20 gen 2004) | 3 lines
+
+modifiche
+
+
+------------------------------------------------------------------------
+r53 | shawill | 2004-01-16 18:45:52 +0100 (ven, 16 gen 2004) | 2 lines
+
+Sistemazione alcuni warning
+
+------------------------------------------------------------------------
+r52 | shawill | 2004-01-14 12:21:51 +0100 (mer, 14 gen 2004) | 2 lines
+
+Recupero della prematuramente scomparsa della dir plugins/plugins
+
+------------------------------------------------------------------------
+r51 | shawill | 2004-01-12 19:55:14 +0100 (lun, 12 gen 2004) | 4 lines
+
+Aggiunta di una variabile di mutua esculsione anche nel buffer di playout.
+N.B.
+C'e` ancora da controllarne l'effettiva necessita`
+
+------------------------------------------------------------------------
+r50 | shawill | 2004-01-12 11:48:36 +0100 (lun, 12 gen 2004) | 2 lines
+
+Aggiunta di un piccolo scriptino per evidenziare gli errori e i warning alla fine della compilazione. Crea un file error.log.
+
+------------------------------------------------------------------------
+r49 | shawill | 2004-01-09 15:08:29 +0100 (ven, 09 gen 2004) | 4 lines
+
+Sistemazione di alcuni messaggi di warning.
+Principalmente per inclusioni dimenticate.
+Inoltre, in decode.c non era inizializzata una variabile.
+
+------------------------------------------------------------------------
+r48 | mancho | 2003-11-10 17:01:50 +0100 (lun, 10 nov 2003) | 2 lines
+
+Added NEW revision tag based on Subversion properties keywords (svn:keywords)
+
+------------------------------------------------------------------------
+r47 | mancho | 2003-11-09 19:09:26 +0100 (dom, 09 nov 2003) | 3 lines
+
+More Autotools Cleaning
+LibLTDL Cleaning
+
+------------------------------------------------------------------------
+r46 | mancho | 2003-11-09 19:04:42 +0100 (dom, 09 nov 2003) | 2 lines
+
+Autotools cleaning
+
+------------------------------------------------------------------------
+r45 | mancho | 2003-11-06 22:41:44 +0100 (gio, 06 nov 2003) | 2 lines
+
+Deleted autom4te cache files
+
+------------------------------------------------------------------------
+r42 | mancho | 2003-07-24 17:34:29 +0200 (gio, 24 lug 2003) | 2 lines
+
+Errore
+
+------------------------------------------------------------------------
+r41 | shawill | 2003-07-24 17:33:38 +0200 (gio, 24 lug 2003) | 2 lines
+
+Correzione alla parte finale di decoder.c per la sleep in mancanza di pacchetti dal buffer di playout di rete
+
+------------------------------------------------------------------------
+r40 | mancho | 2003-07-24 16:04:57 +0200 (gio, 24 lug 2003) | 2 lines
+
+Necessari per la nuova versione degli AutoTools
+
+------------------------------------------------------------------------
+r39 | mancho | 2003-07-24 16:02:26 +0200 (gio, 24 lug 2003) | 2 lines
+
+Obsoleto con le nuove versioni degli AutoTools
+
+------------------------------------------------------------------------
+r38 | mancho | 2003-07-24 16:01:25 +0200 (gio, 24 lug 2003) | 2 lines
+
+Fixes varie per la distribuzione.
+
+------------------------------------------------------------------------
+r37 | shawill | 2003-07-24 13:21:32 +0200 (gio, 24 lug 2003) | 2 lines
+
+Creazione nuovo scheduler basato su timestamp RTP
+
+------------------------------------------------------------------------
+r36 | shawill | 2003-07-08 17:58:01 +0200 (mar, 08 lug 2003) | 2 lines
+
+*** empty log message ***
+
+------------------------------------------------------------------------
+r35 | shawill | 2003-07-08 17:26:40 +0200 (mar, 08 lug 2003) | 3 lines
+
+BugFix: ifdef -> ifndef;
+Definizioni di EXTERN differenziate per evitare ridefinizioni.
+
+------------------------------------------------------------------------
+r34 | shawill | 2003-07-08 14:30:24 +0200 (mar, 08 lug 2003) | 2 lines
+
+altra minkiata - ifdef -> ifndef
+
+------------------------------------------------------------------------
+r33 | shawill | 2003-07-02 17:12:13 +0200 (mer, 02 lug 2003) | 2 lines
+
+minkiata: ifdef --> ifndef
+
+------------------------------------------------------------------------
+r32 | sbiro | 2003-04-14 19:26:22 +0200 (lun, 14 apr 2003) | 2 lines
+
+aggiunta di commenti
+
+------------------------------------------------------------------------
+r31 | sbiro | 2003-04-03 12:43:55 +0200 (gio, 03 apr 2003) | 2 lines
+
+Pulitura dei commenti e aggiunta della licenza GPL
+
+------------------------------------------------------------------------
+r30 | shawill | 2003-04-03 12:41:08 +0200 (gio, 03 apr 2003) | 2 lines
+
+Pulizia del plugin mp3stub (anche se ormai non utilizzato)
+
+------------------------------------------------------------------------
+r29 | shawill | 2003-04-03 12:37:53 +0200 (gio, 03 apr 2003) | 2 lines
+
+Aggiunta della licenza in cime al file
+
+------------------------------------------------------------------------
+r28 | sbiro | 2003-04-02 18:57:46 +0200 (mer, 02 apr 2003) | 2 lines
+
+Plugin mp3 di libavcodec
+
+------------------------------------------------------------------------
+r27 | sbiro | 2003-04-02 18:53:09 +0200 (mer, 02 apr 2003) | 2 lines
+
+Sostiuzione del plugin mp3. Passaggio a libavcodec.
+
+------------------------------------------------------------------------
+r26 | mancho | 2003-02-21 17:43:31 +0100 (ven, 21 feb 2003) | 2 lines
+
+Correzioni varie per la generazione delle distribuzioni -- mancho
+
+------------------------------------------------------------------------
+r25 | shawill | 2003-02-03 16:05:38 +0100 (lun, 03 feb 2003) | 2 lines
+
+define SKIP added temporary
+
+------------------------------------------------------------------------
+r24 | shawill | 2003-02-03 15:45:38 +0100 (lun, 03 feb 2003) | 2 lines
+
+piccola patch
+
+------------------------------------------------------------------------
+r23 | shawill | 2003-01-22 17:17:36 +0100 (mer, 22 gen 2003) | 2 lines
+
+Piccoli bug fix nel modulo diskwriter
+
+------------------------------------------------------------------------
+r22 | shawill | 2003-01-16 16:47:57 +0100 (gio, 16 gen 2003) | 2 lines
+
+Un po' di ordine...
+
+------------------------------------------------------------------------
+r21 | shawill | 2003-01-16 14:02:02 +0100 (gio, 16 gen 2003) | 2 lines
+
+Aggiunta funzioni add_avail_pref e rem_avail_pref
+
+------------------------------------------------------------------------
+r20 | shawill | 2003-01-16 14:00:56 +0100 (gio, 16 gen 2003) | 3 lines
+
+Aggiunta a rimozione delle preferenze
+NeMeSI funziona anche senza scheda audio
+
+------------------------------------------------------------------------
+r19 | shawill | 2003-01-15 18:57:40 +0100 (mer, 15 gen 2003) | 2 lines
+
+*** empty log message ***
+
+------------------------------------------------------------------------
+r18 | shawill | 2003-01-15 18:40:26 +0100 (mer, 15 gen 2003) | 2 lines
+
+Aggiunta file del modulo "Disk Writer"
+
+------------------------------------------------------------------------
+r17 | shawill | 2003-01-15 18:39:13 +0100 (mer, 15 gen 2003) | 2 lines
+
+Aggiunta modulo "Disk Writer" per l'output su disco invece che su scheda
+
+------------------------------------------------------------------------
+r16 | shawill | 2003-01-15 12:48:20 +0100 (mer, 15 gen 2003) | 2 lines
+
+Modifiche al decoder per supportare il modulo "diskwriter"
+
+------------------------------------------------------------------------
+r15 | shawill | 2003-01-15 12:24:27 +0100 (mer, 15 gen 2003) | 2 lines
+
+Aggiunta del modulo di ouput "diskwriter"
+
+------------------------------------------------------------------------
+r14 | shawill | 2003-01-15 12:21:52 +0100 (mer, 15 gen 2003) | 2 lines
+
+*** empty log message ***
+
+------------------------------------------------------------------------
+r13 | shawill | 2003-01-15 12:18:01 +0100 (mer, 15 gen 2003) | 2 lines
+
+Modifiche al gestore delle preferenze
+
+------------------------------------------------------------------------
+r12 | shawill | 2003-01-13 17:49:48 +0100 (lun, 13 gen 2003) | 2 lines
+
+Aggiunta files per la gestione delle preferenze
+
+------------------------------------------------------------------------
+r11 | shawill | 2003-01-13 17:47:27 +0100 (lun, 13 gen 2003) | 2 lines
+
+Inserimento dei comandi nella e-tui per modificare le preferenze
+
+------------------------------------------------------------------------
+r10 | shawill | 2002-11-28 13:00:49 +0100 (gio, 28 nov 2002) | 2 lines
+
+Aggiunta della documentazione in alcune parti del codice
+
+------------------------------------------------------------------------
+r9 | shawill | 2002-11-25 17:04:07 +0100 (lun, 25 nov 2002) | 2 lines
+
+Modifiche alla mpglib
+
+------------------------------------------------------------------------
+r8 | mancho | 2002-11-08 16:44:15 +0100 (ven, 08 nov 2002) | 2 lines
+
+sgnezz
+
+------------------------------------------------------------------------
+r7 | mancho | 2002-11-08 12:40:45 +0100 (ven, 08 nov 2002) | 2 lines
+
+*** empty log message ***
+
+------------------------------------------------------------------------
+r6 | mancho | 2002-11-08 12:39:42 +0100 (ven, 08 nov 2002) | 2 lines
+
+Uazz
+
+------------------------------------------------------------------------
+r5 | mancho | 2002-11-07 15:12:27 +0100 (gio, 07 nov 2002) | 2 lines
+
+Sgnack
+
+------------------------------------------------------------------------
+r4 | mancho | 2002-11-07 13:13:40 +0100 (gio, 07 nov 2002) | 2 lines
+
+Nuovo plugin per Audio MPEG
+
+------------------------------------------------------------------------
+r3 | mancho | 2002-11-07 13:12:15 +0100 (gio, 07 nov 2002) | 2 lines
+
+Primo import 0.2.1
+
+------------------------------------------------------------------------
+r1 | mancho | 2002-10-29 13:43:13 +0100 (mar, 29 ott 2002) | 2 lines
+
+Initial revision
 
 ------------------------------------------------------------------------
