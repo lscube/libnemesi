@@ -58,6 +58,7 @@ AC_C_BIGENDIAN
 
 dnl Checks for libraries.
 AC_CHECK_LIB(pthread,pthread_create)
+AC_CHECK_LIB(avcodec,avcodec_open)
 
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
@@ -67,6 +68,7 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
 AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.hlimits.h malloc.h sys/ioctl.h)
+AC_CHECK_HEADERS(ffmpeg/common.h ffmpeg/avcodec.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

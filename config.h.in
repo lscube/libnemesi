@@ -31,6 +31,12 @@
 /* Define to 1 if you have the <fcntl.hlimits.h> header file. */
 #undef HAVE_FCNTL_HLIMITS_H
 
+/* Define to 1 if you have the <ffmpeg/avcodec.h> header file. */
+#undef HAVE_FFMPEG_AVCODEC_H
+
+/* Define to 1 if you have the <ffmpeg/common.h> header file. */
+#undef HAVE_FFMPEG_COMMON_H
+
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
@@ -45,6 +51,9 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `avcodec' library (-lavcodec). */
+#undef HAVE_LIBAVCODEC
 
 /* Define to 1 if you have the `m' library (-lm). */
 #undef HAVE_LIBM
@@ -192,11 +201,3 @@
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef uid_t
-/* Define the default directory which
- * NeMeSI will look for plugins. */
-#undef NEMESI_PLUGIN_DIR_DEFAULT
-
-/* Define the name for the environment
- * variable that holds an alternative
- * path to NeMeSI plugins directory. */
-#undef NEMESI_PLUGIN_DIR_ENV

@@ -10,6 +10,8 @@ Source: http://streaming.polito.it/download/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires: SDL >= 1.2.2
 BuildRequires: SDL-devel >= 1.2.2
+Requires: ffmepg >= 0.4.6
+BuildRequires: ffmpeg-devel >= 0.4.6
 
 %description
 
@@ -53,17 +55,20 @@ rm -rf %{buildroot}
 %{_bindir}/%{name}
 %{_mandir}/man1/%{name}.1*
 
-%{_datadir}/%{name}/plugins/mpglib.so
+# %{_datadir}/%{name}/plugins/mp3stub.so
+# %{_datadir}/%{name}/plugins/mpglib.so
+%{_datadir}/%{name}/plugins/libffmp3.so
 %{_datadir}/%{name}/plugins/gsm_amr_float.so
 %{_datadir}/%{name}/plugins/L16_8k_m.so
-# %{_datadir}/%{name}/plugins/mp3stub.so
-%{_datadir}/%{name}/plugins/mpglib.la
+# %{_datadir}/%{name}/plugins/mp3stub.la
+# %{_datadir}/%{name}/plugins/mpglib.la
+%{_datadir}/%{name}/plugins/libffmp3.la
 %{_datadir}/%{name}/plugins/gsm_amr_float.la
 %{_datadir}/%{name}/plugins/L16_8k_m.la
-# %{_datadir}/%{name}/plugins/mp3stub.la
-%{_datadir}/%{name}/plugins/mpglib.a
+# %{_datadir}/%{name}/plugins/mp3stub.a
+# %{_datadir}/%{name}/plugins/mpglib.a
+%{_datadir}/%{name}/plugins/libffmp3.a
 %{_datadir}/%{name}/plugins/gsm_amr_float.a
 %{_datadir}/%{name}/plugins/L16_8k_m.a
-# %{_datadir}/%{name}/plugins/mp3stub.a
 
 %doc README TODO COPYING ChangeLog docs/%{name}.1.*
