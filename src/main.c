@@ -89,8 +89,10 @@ int main(int argc, char *argv[])
 
 	// UI interface function
 	if (argv[0]) // if we are called with the initial 'g' => start gui
-		if ((*argv[0]=='g') || ((slash=strrchr(argv[0],'/')) && (*(slash + 1) == 'g')))
+		if ((*argv[0]=='g') || ((slash=strrchr(argv[0],'/')) && (*(slash + 1) == 'g'))) {
 			ui_hints.gui = 1;
+			nmsstatusprintf(NO_STATUS, NULL);
+		}
 	if (ui_hints.gui)
 		gui(rtsp_args, &ui_hints, argc, argv);
 	else
