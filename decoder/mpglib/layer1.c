@@ -8,7 +8,7 @@
  *
  */
 
-/* $Id: layer1.c,v 1.2 2002/11/08 15:44:15 mancho Exp $ */
+/* $Id$ */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>

@@ -1,5 +1,5 @@
 /* * 
- *  ./rtsp/check_response.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:48 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

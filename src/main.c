@@ -1,5 +1,5 @@
 /* * 
- *  ./src/main.c: $Revision: 1.8 $ -- $Date: 2003/01/16 15:47:57 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

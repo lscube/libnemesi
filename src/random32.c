@@ -1,5 +1,5 @@
 /* * 
- *  ./src/random32.c: $Revision: 1.3 $ -- $Date: 2002/11/28 12:00:49 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/L16_8k_m/L16-8k-m.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:09 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

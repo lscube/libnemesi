@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/mp3stub/check_head.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:09 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

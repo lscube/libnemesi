@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/db_get.c: $Revision: 1.1 $ -- $Date: 2003/01/15 17:40:26 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

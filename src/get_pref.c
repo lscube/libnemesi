@@ -1,5 +1,5 @@
 /* * 
- *  ./src/get_pref.c: $Revision: 1.3 $ -- $Date: 2003/01/16 13:00:56 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

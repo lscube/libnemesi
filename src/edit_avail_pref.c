@@ -1,5 +1,5 @@
 /* * 
- *  ./src/edit_avail_pref.c: $Revision: 1.1 $ -- $Date: 2003/01/16 13:02:02 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  ./E-gui/nemesi/init_rtsp_args.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:05 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

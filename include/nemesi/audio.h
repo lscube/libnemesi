@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/audio.h: $Revision: 1.8 $ -- $Date: 2003/07/24 11:21:32 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

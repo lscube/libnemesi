@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/mp3/mp3.c: $Revision: 1.2 $ -- $Date: 2003/04/03 10:37:53 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

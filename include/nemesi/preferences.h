@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/etui.h: $Revision: 1.6 $ -- $Date: 2003/07/08 15:58:01 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

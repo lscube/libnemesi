@@ -19,7 +19,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* $Id: VbrTag.c,v 1.1 2002/11/25 16:04:07 shawill Exp $ */
+/* $Id$ */
 
 #if 0
 #ifdef HAVE_CONFIG_H

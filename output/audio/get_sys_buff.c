@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/get_sys_buff.c: $Revision: 1.4 $ -- $Date: 2003/07/24 11:21:32 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/bufferpool.h: $Revision: 1.4 $ -- $Date: 2003/02/03 14:45:38 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,4 +1,4 @@
-/* $Id: interface.c,v 1.4 2002/11/25 16:01:51 shawill Exp $ */
+/* $Id$ */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>

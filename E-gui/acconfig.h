@@ -1,5 +1,5 @@
 /* * 
- *  ./E-gui/acconfig.h: $Revision: 1.3 $ -- $Date: 2002/11/08 11:39:40 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/libffmpeg/ffmpeg.c: $Revision: 1.2 $ -- $Date: 2003/04/03 10:43:55 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

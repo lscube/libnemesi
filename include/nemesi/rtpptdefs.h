@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/rtpptdefs.h: $Revision: 1.7 $ -- $Date: 2003/07/08 15:58:01 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

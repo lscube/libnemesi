@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/SDL_mixaudio.c: $Revision: 1.2 $ -- $Date: 2003/01/15 11:18:00 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/get_file_fd.c: $Revision: 1.4 $ -- $Date: 2003/01/22 16:17:36 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

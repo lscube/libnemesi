@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/close_file.c: $Revision: 1.2 $ -- $Date: 2003/01/22 16:17:36 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

@@ -1,5 +1,5 @@
 /* * 
- *  ./E-gui/nemesi/gui_play_throbber.c: $Revision: 1.2 $ -- $Date: 2002/11/07 12:12:05 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

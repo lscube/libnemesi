@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/decoder.h: $Revision: 1.4 $ -- $Date: 2003/01/15 11:17:59 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

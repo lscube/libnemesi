@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/ab_get.c: $Revision: 1.6 $ -- $Date: 2003/07/24 11:21:32 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

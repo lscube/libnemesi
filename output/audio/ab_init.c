@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/ab_init.c: $Revision: 1.5 $ -- $Date: 2003/01/15 17:39:13 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *

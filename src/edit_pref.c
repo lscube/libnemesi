@@ -1,5 +1,5 @@
 /* * 
- *  ./src/edit_pref.c: $Revision: 1.2 $ -- $Date: 2003/01/16 13:00:56 $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
