@@ -63,8 +63,8 @@ int decode(char *data, int len, NMSOutput *outc)
 
 	if (!c){
 
-		register_avcodec(&mp3_decoder);
-		//avcodec_register_all();
+		// register_avcodec(&mp3_decoder);
+		avcodec_register_all();
 	
 		/* find the mpeg audio decoder */
 		codec = avcodec_find_decoder(CODEC_ID_MP3LAME);
