@@ -68,7 +68,7 @@ dnl Check for pthread libraries.
 AC_CHECK_LIB(pthread,pthread_create)
 
 dnl Check for Endianess
-AC_C_BIGENDIAN([BIGENDIAN="Big Endian"],[BIGENDIAN="Little Endian"])
+AC_C_BIGENDIAN([BIGENDIAN="Big Endian"] AC_DEFINE([WORDS_BIGENDIAN], 1, [Define if manchine is big-endian]),[BIGENDIAN="Little Endian"] )
 
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
