@@ -46,3 +46,5 @@ maintainer-clean-local:
 		test -d $$mdir && rm -rf $$mdir; \
 	done;\
 	find -iname Makefile.in -exec rm \{} \;
+
+svnclean: maintainer-clean
