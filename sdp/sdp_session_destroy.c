@@ -26,33 +26,20 @@
  *  
  * */
 
-#ifndef _LIB_CC_STREAMING
-#define _LIB_CC_STREAMING
+#include <stdlib.h>
 
-//! definition of couples containing name and description for each valid cc license
-#define CC_LICENSES { \
-			{ "uriLicense", "License URI" }, \
-			{ "uriMetadata", "Validation URL" }, \
-			{ "title", "Title of the presentation" }, \
-			{ "creator", "Author of the presentation" } \
-		    }
+#include <nemesi/sdp.h>
 
-#define CC_NAME 0
-#define CC_DESCR 1
+void sdp_session_destroy(SDP_Session_info *session)
+{
+	SDP_attr *sdp_attr, *sdp_attr_prev;
 
-/*!
- * Warning: the fields of the struct MUST be in ordered woth initilzation strings in the define CC_LICENSES
- */
-typedef struct {
-	char *uriLicense;	//!< License URI
-	char *uriMetadata;	//!< Validation URL
-	char *title;		//!< Title of the presentation
-	char *creator;		//!< Author of the presentation
-} CCLicense;
+	if (session) {
+		sdp_media_destroy(session->media_info_queue);
+		// destroy session attributes
+		for(sdp_attr=session->attr_list; sdp_attr; sdp_attr_prev=sdp_attr, sdp_attr=sdp_attr->next, free(sdp_attr_prev));
 
-int issdplicense(char *sdp_a);
-CCLicense *cc_newlicense(void);
-int cc_set_sdplicense(CCLicense *, char *);
-
-#endif // _LIB_CC_STREAMING
+		free(session);
+	}
+}
 

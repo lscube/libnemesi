@@ -26,33 +26,21 @@
  *  
  * */
 
-#ifndef _LIB_CC_STREAMING
-#define _LIB_CC_STREAMING
+#include <stdlib.h>
 
-//! definition of couples containing name and description for each valid cc license
-#define CC_LICENSES { \
-			{ "uriLicense", "License URI" }, \
-			{ "uriMetadata", "Validation URL" }, \
-			{ "title", "Title of the presentation" }, \
-			{ "creator", "Author of the presentation" } \
-		    }
+#include <nemesi/cc.h>
 
-#define CC_NAME 0
-#define CC_DESCR 1
+CCLicense *cc_newlicense(void)
+{
+	/* if we need some other initializations:
+	CCLicense *new;
 
-/*!
- * Warning: the fields of the struct MUST be in ordered woth initilzation strings in the define CC_LICENSES
- */
-typedef struct {
-	char *uriLicense;	//!< License URI
-	char *uriMetadata;	//!< Validation URL
-	char *title;		//!< Title of the presentation
-	char *creator;		//!< Author of the presentation
-} CCLicense;
+	if (!(new=(CCLicense *)calloc(1, sizeof(CCLicense))))
+		return NULL;
 
-int issdplicense(char *sdp_a);
-CCLicense *cc_newlicense(void);
-int cc_set_sdplicense(CCLicense *, char *);
-
-#endif // _LIB_CC_STREAMING
+	return new;
+	*/ // else:
+	// we use calloc for initialization tu NULL of all fields
+	return (CCLicense *)calloc(1, sizeof(CCLicense));
+}
 

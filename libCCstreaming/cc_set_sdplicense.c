@@ -26,33 +26,24 @@
  *  
  * */
 
-#ifndef _LIB_CC_STREAMING
-#define _LIB_CC_STREAMING
+#include <nemesi/cc.h>
+#include <nemesi/utils.h>
 
-//! definition of couples containing name and description for each valid cc license
-#define CC_LICENSES { \
-			{ "uriLicense", "License URI" }, \
-			{ "uriMetadata", "Validation URL" }, \
-			{ "title", "Title of the presentation" }, \
-			{ "creator", "Author of the presentation" } \
-		    }
+#include <nemesi/comm.h>
 
-#define CC_NAME 0
-#define CC_DESCR 1
+int cc_set_sdplicense(CCLicense *cc, char *sdp_l)
+{
+	char *cclicenses[][2] = CC_LICENSES;
+	unsigned int i;
 
-/*!
- * Warning: the fields of the struct MUST be in ordered woth initilzation strings in the define CC_LICENSES
- */
-typedef struct {
-	char *uriLicense;	//!< License URI
-	char *uriMetadata;	//!< Validation URL
-	char *title;		//!< Title of the presentation
-	char *creator;		//!< Author of the presentation
-} CCLicense;
+	// shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
+	for(i=0; i<sizeof(cclicenses)/sizeof(*cclicenses); i++) {
+		if (!strncmpcase(sdp_l, cclicenses[i][CC_NAME], strlen(cclicenses[i][CC_NAME]))) {
+			((char **)cc)[i] = sdp_l; // set the correct field using CCLicense struct like an array of strings
+			return 0;
+		}
+	}
 
-int issdplicense(char *sdp_a);
-CCLicense *cc_newlicense(void);
-int cc_set_sdplicense(CCLicense *, char *);
-
-#endif // _LIB_CC_STREAMING
+	return 1;
+}
 

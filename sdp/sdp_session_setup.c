@@ -36,6 +36,7 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 {
 	SDP_Session_info *new;
 	char *tkn=NULL;
+	char error=0; // error flag
 
 	// we use calloc, so it's all already initialized to NULL
 	if (!(new=(SDP_Session_info *)calloc(1, sizeof(SDP_Session_info))))
@@ -48,7 +49,9 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
 			nmsprintf(1, "Invalid SDP description body... discarding\n");
-			return NULL;
+			error=1;
+			break;
+			// return NULL;
 		}
 		switch (*tkn) {
 			case 'v':
@@ -94,16 +97,26 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 				tkn+=2;
 				if (sdp_set_attr(&(new->attr_list), tkn)) {
 					nmserror("Error setting SDP session atrtibute");
-					return NULL;
+					error=1;
+					break;
+					// return NULL;
 				}
 				break;
 			case 'm':
 				tkn[strlen(tkn)]='\n';
-				if (!(new->media_info_queue=sdp_media_setup(&tkn, descr_len-(tkn-descr))))
-					return NULL;
+				if (!(new->media_info_queue=sdp_media_setup(&tkn, descr_len-(tkn-descr)))) {
+					error=1;
+					break;
+					// return NULL;
+				}
 				break;
 		}
 	} while ( (tkn+strlen(tkn)-descr+2)<descr_len );
+
+	if (error) { // there was an error?
+		sdp_session_destroy(new);
+		return NULL;
+	}
 
 	return new;
 }

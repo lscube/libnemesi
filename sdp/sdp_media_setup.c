@@ -36,6 +36,7 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 {
 	SDP_Medium_info *queue=NULL, *curr_sdp_m=NULL;
 	char *tkn=NULL;
+	char error=0; // error flag
 
 	do {
 		if ( tkn==NULL )
@@ -54,8 +55,11 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 						return NULL;
 				} else { // not first medium in sdp session
 					// we use calloc, so it's all already initialized to NULL
-					if (!(curr_sdp_m->next=(SDP_Medium_info *)calloc(1, sizeof(SDP_Medium_info))))
-						return NULL;
+					if (!(curr_sdp_m->next=(SDP_Medium_info *)calloc(1, sizeof(SDP_Medium_info)))) {
+						error=1;
+						break;
+						// return NULL;
+					}
 					curr_sdp_m=curr_sdp_m->next;
 				}
 				curr_sdp_m->m=tkn+2;
@@ -76,14 +80,33 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 				tkn+=2;
 				if (sdp_set_attr(&(curr_sdp_m->attr_list), tkn)) {
 					nmserror("Error setting SDP media atrtibute");
-					return NULL;
+					error=1;
+					break;
+					// return NULL;
 				}
-				if (issdplicense(tkn)) // TODO set license
-					nmsprintf(2,"found cc\n");
+				if (issdplicense(tkn)) {
+					if (!curr_sdp_m->cc)
+						if (!(curr_sdp_m->cc=cc_newlicense())) {
+							nmserror("Could not get new CC license struct");
+							error=1;
+							break;
+							// return NULL;
+						}
+					if (cc_set_sdplicense(curr_sdp_m->cc, tkn)) {
+						error=1;
+						break;
+						// return NULL;
+					}
+				}
 				break;
 		}
-	} while ( (tkn+strlen(tkn)-*descr+2)<descr_len );
+	} while ( (!error) && ((tkn+strlen(tkn)-*descr+2) < descr_len) );
 	*descr=tkn;
+
+	if (error) { // there was an error?
+		sdp_media_destroy(queue);
+		return NULL;
+	}
 
 	return queue;
 }

@@ -26,36 +26,24 @@
  *  
  * */
 
-#include <stdlib.h>
+#include <nemesi/cc.h>
+#include <nemesi/utils.h>
 
-#include <nemesi/sdp.h>
+#include <nemesi/comm.h>
 
-int sdp_session_close(SDP_Session_info *session)
+int issdplicense(char *sdp_a)
 {
-	SDP_Medium_info *sdp_m, *sdp_m_prev;
-	SDP_attr *sdp_attr, *sdp_attr_prev;
+	char *cclicenses[][2] = CC_LICENSES;
+	unsigned int i;
 
-	if (session) {
-		for(sdp_m=session->media_info_queue; sdp_m; sdp_m_prev=sdp_m, sdp_m=sdp_m->next, free(sdp_m_prev))
-			for(sdp_attr=sdp_m->attr_list; sdp_attr; sdp_attr_prev=sdp_attr, sdp_attr=sdp_attr->next, free(sdp_attr_prev));
-
-		/* the last two lines are equivalent to these, but aren't they more beautiful ? ;-)
-		sdp_m=session->media_info_queue;
-		while (sdp_m) {
-			sdp_attr=sdp_m->attr_list;
-			while(sdp_attr) {
-				sdp_attr_prev=sdp_attr;
-				sdp_attr=sdp_attr->next;
-				free(sdp_attr_prev);
-			}
-			sdp_m_prev=sdp_m;
-			sdp_m=sdp_m->next;
-			free(sdp_m_prev);
+	// shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
+	for(i=0; i<sizeof(cclicenses)/sizeof(*cclicenses); i++) {
+		if (!strncmpcase(sdp_a, cclicenses[i][CC_NAME], strlen(cclicenses[i][CC_NAME]))) {
+			nmsprintf(3, "found valid cc field in SDP description (%s - %s)\n", cclicenses[i][CC_NAME], cclicenses[i][CC_DESCR]);
+			return 1;
 		}
-		*/
-
-		free(session);
 	}
+
 	return 0;
 }
 

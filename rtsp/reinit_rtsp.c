@@ -59,7 +59,7 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 	}
 #endif
 	while(sess != NULL){
-		sdp_session_close(sess->info); //!< free sdp description info
+		sdp_session_destroy(sess->info); //!< free sdp description info
 		free(sess->body);
 		free(sess->content_base);
 		for(med=sess->media_queue; med; pmed=med, med=med->next, free(pmed));

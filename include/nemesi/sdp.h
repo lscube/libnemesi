@@ -86,7 +86,7 @@ typedef struct _SDP_Medium_info {
 	char *k;		/*!< encryption key */
 	SDP_attr *attr_list;	/*!< zero or more medium attribute lines */
 
-	cc_license cc;		/*!< Creative Commons License struct*/
+	CCLicense *cc;		/*!< Creative Commons License struct*/
 
 	struct _SDP_Medium_info *next;	/*!< Next medium informatioin struct */
 } SDP_Medium_info;
@@ -131,7 +131,7 @@ typedef struct {
 
 	SDP_attr *attr_list;	/*!< zero or more session attribute lines */
 
-	cc_license cc;		/*!< Creative Commons License struct */
+	CCLicense cc;		/*!< Creative Commons License struct */
 
 	SDP_Medium_info *media_info_queue; /*!< Media information queue */
 } SDP_Session_info;
@@ -140,7 +140,8 @@ SDP_Session_info *sdp_session_new(void);
 SDP_Session_info *sdp_session_setup(char *descr, int descr_len);
 SDP_Medium_info *sdp_media_setup(char **descr, int descr_len);
 int sdp_set_attr(SDP_attr **attr_list, char *a);
-int sdp_session_close(SDP_Session_info *);
+void sdp_session_destroy(SDP_Session_info *);
+void sdp_media_destroy(SDP_Medium_info *);
 
 #endif // __SDP_H
 /* @} */
