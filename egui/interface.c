@@ -165,7 +165,7 @@ create_nemesi (void)
 
   open_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
                                 "gtk-open",
-                                NULL,
+                                "gtk-open",
                                 NULL, NULL, NULL, -1);
   gtk_widget_set_name (open_cmd, "open_cmd");
   gtk_widget_show (open_cmd);
@@ -177,7 +177,7 @@ create_nemesi (void)
                                 GTK_TOOLBAR_CHILD_TOGGLEBUTTON,
                                 NULL,
                                 "_Play",
-                                NULL, NULL,
+                                "play/pause streaming", NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_label_set_use_underline (GTK_LABEL (((GtkToolbarChild*) (g_list_last (GTK_TOOLBAR (toolbar)->children)->data))->label), TRUE);
   gtk_widget_set_name (toggle_play_pause, "toggle_play_pause");
@@ -185,7 +185,7 @@ create_nemesi (void)
 
   stop_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
                                 "gtk-stop",
-                                NULL,
+                                "gtk-stop",
                                 NULL, NULL, NULL, -1);
   gtk_widget_set_name (stop_cmd, "stop_cmd");
   gtk_widget_show (stop_cmd);
@@ -194,7 +194,7 @@ create_nemesi (void)
 
   close_cmd = gtk_toolbar_insert_stock (GTK_TOOLBAR (toolbar),
                                 "gtk-close",
-                                NULL,
+                                "gtk-close",
                                 NULL, NULL, NULL, -1);
   gtk_widget_set_name (close_cmd, "close_cmd");
   gtk_widget_show (close_cmd);
@@ -332,38 +332,91 @@ create_aboutdialog (void)
 {
   GtkWidget *aboutdialog;
   GtkWidget *dialogvbox;
+  GtkWidget *aboutlabel;
+  GtkWidget *creditscroller;
+  GtkWidget *creditsview;
   GtkWidget *dialog_action_area2;
-  GtkWidget *closebutton1;
+  GtkWidget *credits;
+  GtkWidget *backabout;
+  GtkWidget *closeabout;
 
   aboutdialog = gtk_dialog_new ();
   gtk_widget_set_name (aboutdialog, "aboutdialog");
-  gtk_window_set_title (GTK_WINDOW (aboutdialog), "dialog1");
+  gtk_window_set_title (GTK_WINDOW (aboutdialog), "about NeMeSI");
+  gtk_window_set_resizable (GTK_WINDOW (aboutdialog), FALSE);
 
   dialogvbox = GTK_DIALOG (aboutdialog)->vbox;
   gtk_widget_set_name (dialogvbox, "dialogvbox");
   gtk_widget_show (dialogvbox);
 
+  aboutlabel = gtk_label_new ("");
+  gtk_widget_set_name (aboutlabel, "aboutlabel");
+  gtk_widget_show (aboutlabel);
+  gtk_box_pack_end (GTK_BOX (dialogvbox), aboutlabel, TRUE, TRUE, 0);
+  GTK_WIDGET_SET_FLAGS (aboutlabel, GTK_CAN_FOCUS);
+  gtk_label_set_use_markup (GTK_LABEL (aboutlabel), TRUE);
+  gtk_label_set_justify (GTK_LABEL (aboutlabel), GTK_JUSTIFY_LEFT);
+  gtk_label_set_line_wrap (GTK_LABEL (aboutlabel), TRUE);
+  gtk_label_set_selectable (GTK_LABEL (aboutlabel), TRUE);
+
+  creditscroller = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_set_name (creditscroller, "creditscroller");
+  gtk_box_pack_end (GTK_BOX (dialogvbox), creditscroller, TRUE, TRUE, 0);
+
+  creditsview = gtk_text_view_new ();
+  gtk_widget_set_name (creditsview, "creditsview");
+  gtk_widget_show (creditsview);
+  gtk_container_add (GTK_CONTAINER (creditscroller), creditsview);
+  gtk_text_view_set_editable (GTK_TEXT_VIEW (creditsview), FALSE);
+  gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (creditsview), FALSE);
+
   dialog_action_area2 = GTK_DIALOG (aboutdialog)->action_area;
   gtk_widget_set_name (dialog_action_area2, "dialog_action_area2");
   gtk_widget_show (dialog_action_area2);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area2), GTK_BUTTONBOX_END);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area2), GTK_BUTTONBOX_EDGE);
 
-  closebutton1 = gtk_button_new_from_stock ("gtk-close");
-  gtk_widget_set_name (closebutton1, "closebutton1");
-  gtk_widget_show (closebutton1);
-  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), closebutton1, GTK_RESPONSE_CLOSE);
-  GTK_WIDGET_SET_FLAGS (closebutton1, GTK_CAN_DEFAULT);
+  credits = gtk_button_new_with_mnemonic ("credits");
+  gtk_widget_set_name (credits, "credits");
+  gtk_widget_show (credits);
+  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), credits, 0);
+  GTK_WIDGET_SET_FLAGS (credits, GTK_CAN_DEFAULT);
+  gtk_button_set_relief (GTK_BUTTON (credits), GTK_RELIEF_NONE);
 
-  g_signal_connect ((gpointer) closebutton1, "clicked",
-                    G_CALLBACK (on_closebutton1_clicked),
+  backabout = gtk_button_new_from_stock ("gtk-go-back");
+  gtk_widget_set_name (backabout, "backabout");
+  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), backabout, 0);
+  GTK_WIDGET_SET_FLAGS (backabout, GTK_CAN_DEFAULT);
+  gtk_button_set_relief (GTK_BUTTON (backabout), GTK_RELIEF_NONE);
+
+  closeabout = gtk_button_new_from_stock ("gtk-close");
+  gtk_widget_set_name (closeabout, "closeabout");
+  gtk_widget_show (closeabout);
+  gtk_dialog_add_action_widget (GTK_DIALOG (aboutdialog), closeabout, GTK_RESPONSE_CLOSE);
+  GTK_WIDGET_SET_FLAGS (closeabout, GTK_CAN_DEFAULT);
+  gtk_button_set_relief (GTK_BUTTON (closeabout), GTK_RELIEF_NONE);
+
+  g_signal_connect ((gpointer) credits, "clicked",
+                    G_CALLBACK (on_credits_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) backabout, "clicked",
+                    G_CALLBACK (on_backabout_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) closeabout, "clicked",
+                    G_CALLBACK (on_closeabout_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog, aboutdialog, "aboutdialog");
   GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog, dialogvbox, "dialogvbox");
+  GLADE_HOOKUP_OBJECT (aboutdialog, aboutlabel, "aboutlabel");
+  GLADE_HOOKUP_OBJECT (aboutdialog, creditscroller, "creditscroller");
+  GLADE_HOOKUP_OBJECT (aboutdialog, creditsview, "creditsview");
   GLADE_HOOKUP_OBJECT_NO_REF (aboutdialog, dialog_action_area2, "dialog_action_area2");
-  GLADE_HOOKUP_OBJECT (aboutdialog, closebutton1, "closebutton1");
+  GLADE_HOOKUP_OBJECT (aboutdialog, credits, "credits");
+  GLADE_HOOKUP_OBJECT (aboutdialog, backabout, "backabout");
+  GLADE_HOOKUP_OBJECT (aboutdialog, closeabout, "closeabout");
 
+  gtk_widget_grab_default (backabout);
   return aboutdialog;
 }
 

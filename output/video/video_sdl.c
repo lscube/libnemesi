@@ -388,8 +388,7 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 
 	if (!bmp) { // We must alloc new SDL_Overlay
 		bmp = SDL_CreateYUVOverlay(priv->width, priv->height, priv->format, priv->display);
-		nmsprintf(3, "Creating new SDL Overlay: w=%d, h=%d\n", \
-				priv->width, priv->height);
+		nmsprintf(3, "Created new SDL Overlay: w=%d, h=%d\n", priv->width, priv->height);
 		vbuffer->overlay[vbuffer->writepos] = bmp;
 	}
 	MUTEX_UNLOCK(priv->syn, 1);

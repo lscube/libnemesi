@@ -62,25 +62,26 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 	
 	item = (rtcp_sdes_item_t *)((char *)item + strlen((char *)item));
 
-	/* SDES NAME */
-	strcpy(str, pwitem->pw_gecos);
-	if ( ((strlen(str) + sizeof(rtcp_sdes_item_t) - 1 + sizeof(rtcp_common_t) + 1) >> 2) > (unsigned int)left ){
-		/* No space left in UDP pkt */
-		pad = 4 - len % 4;
-		len += pad/4;
-		while (pad--)
-			*(((char *)item)++)=0;
-		pkt->common.len=htons(len);
-		return len;
-	}
+	/* SDES NAME: real name, if it exists */
+	if (strlen(strcpy(str, pwitem->pw_gecos))) {
+		if ( ((strlen(str) + sizeof(rtcp_sdes_item_t) - 1 + sizeof(rtcp_common_t) + 1) >> 2) > (unsigned int)left ){
+			/* No space left in UDP pkt */
+			pad = 4 - len % 4;
+			len += pad/4;
+			while (pad--)
+				*(((char *)item)++)=0;
+			pkt->common.len=htons(len);
+			return len;
+		}
 	
-	len += (strlen(str) + sizeof(rtcp_sdes_item_t) - 1 + sizeof(rtcp_common_t) + 1) >> 2;
+		len += (strlen(str) + sizeof(rtcp_sdes_item_t) - 1 + sizeof(rtcp_common_t) + 1) >> 2;
 
-	item->type=RTCP_SDES_NAME;
-	item->len=strlen(str);
-	strcpy((char *)item->data, str);
+		item->type=RTCP_SDES_NAME;
+		item->len=strlen(str);
+		strcpy((char *)item->data, str);
 	
-	item = (rtcp_sdes_item_t *)((char *)item + strlen((char *)item));
+		item = (rtcp_sdes_item_t *)((char *)item + strlen((char *)item));
+	}
 
 	/* SDES TOOL */
 	sprintf(str, "%s - %s", PROG_NAME, PROG_DESCR);
@@ -94,7 +95,7 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 		return len;
 	}
 	
-	len += (strlen(str) + sizeof(rtcp_sdes_item_t) - 1 + sizeof(rtcp_common_t)) >> 2;
+	len += (strlen(str) + sizeof(rtcp_sdes_item_t) - 1 + sizeof(rtcp_common_t) + 1) >> 2;
 
 	item->type=RTCP_SDES_TOOL;
 	item->len=strlen(str);

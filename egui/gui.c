@@ -29,15 +29,26 @@ int gui(struct RTSP_args *rtsp_args, NMSUiHints *ui_hints, int argc, char *argv[
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
-  add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
+  // add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
   // add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/throbber");
-  path=getenv(NEMESI_THROBBER_DIR_ENV);
+
+  // throbber folder
+  path = getenv(NEMESI_THROBBER_DIR_ENV);
   if (!path) {
-  	add_pixmap_directory(NEMESI_THROBBER_DIR_DEFAULT);
-	nmsprintf(3, "NEMESI_THROBBER_DIR_DEFAULT: "NEMESI_THROBBER_DIR_DEFAULT"\n");
+	  add_pixmap_directory(NEMESI_THROBBER_DIR_DEFAULT);
+	  nmsprintf(3, "NEMESI_THROBBER_DIR_DEFAULT: "NEMESI_THROBBER_DIR_DEFAULT"\n");
   } else {
-  	add_pixmap_directory(path);
-	nmsprintf(3, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
+	  add_pixmap_directory(path);
+	  nmsprintf(3, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
+  }
+  // pixmaps folder
+  path = getenv(NEMESI_PIXMAPS_DIR_ENV);
+  if (!path) {
+	  add_pixmap_directory(NEMESI_PIXMAPS_DIR_DEFAULT);
+	  nmsprintf(3, "NEMESI_PIXMAPS_DIR_DEFAULT: "NEMESI_PIXMAPS_DIR_DEFAULT"\n");
+  } else {
+	  add_pixmap_directory(path);
+	  nmsprintf(3, "NEMESI_PIXMAPS_DIR_ENV: %s\n", path);
   }
 
   /*

@@ -46,5 +46,13 @@ on_aboutdialog_realize                 (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
-on_closebutton1_clicked                (GtkButton       *button,
+on_closeabout_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_credits_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_backabout_clicked                   (GtkButton       *button,
                                         gpointer         user_data);

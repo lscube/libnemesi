@@ -12,6 +12,14 @@
 #include <nemesi/egui.h>
 #include <nemesi/etui.h>
 
+#define CREDITS	"NeMeSI -- Network Media Streamer I\n\n"\
+		"\tCopyleft 2001\n"\
+		"Lead Developers:\n"\
+		"\tGiampaolo Mancini - <giampaolo.mancini@polito.it>\n"\
+		"\tFrancesco Varano - <francesco.varano@polito.it>\n"\
+		"Graduate Developers:\n"\
+		"\tMarco Penno - <marco.penno@polito.it>"
+
 static GtkWidget *nemesi;
 static GtkWidget *opendialog=NULL;
 static GtkWidget *aboutdialog=NULL;
@@ -94,12 +102,19 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	GtkWidget *aboutimage;
+	GtkWidget *aboutlabel;
 
 	if (!aboutdialog)
 		aboutdialog = create_aboutdialog();
-	gtk_widget_show(aboutdialog);
 	aboutimage = create_pixmap(NULL, "about-nemesi.png");
+	gtk_widget_set_name(aboutimage, "aboutimage");
+	g_object_set_data_full (G_OBJECT (aboutdialog), "aboutimage", gtk_widget_ref (aboutimage), (GDestroyNotify) gtk_widget_unref);
 	gtk_box_pack_start (GTK_BOX (lookup_widget(aboutdialog, "dialogvbox")), aboutimage, FALSE, FALSE, 0);
+	gtk_widget_show(aboutimage);
+	// aboutlabel
+	aboutlabel = lookup_widget(aboutdialog, "aboutlabel");
+	gtk_label_set_markup (GTK_LABEL(aboutlabel), "Release "VERSION"\n");
+	gtk_widget_show(aboutdialog);
 }
 
 
@@ -167,12 +182,44 @@ on_okbutton1_clicked                   (GtkButton       *button,
 	gui_throbber(&rtsp_args->rtsp_th->busy);
 }
 
-
 void
-on_closebutton1_clicked                (GtkButton       *button,
+on_closeabout_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
 	gtk_widget_destroy(aboutdialog);
 	aboutdialog = NULL;
+}
+
+
+void
+on_credits_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *aboutimage;
+	GtkWidget *credits;
+	GtkWidget *creditsview;
+	GtkRequisition requisition;
+
+	aboutimage = lookup_widget(aboutdialog, "aboutimage");
+	credits = lookup_widget(aboutdialog, "creditscroller");
+	creditsview = lookup_widget(aboutdialog, "creditsview");
+	gtk_widget_size_request(aboutimage, &requisition);
+	gtk_widget_set_size_request(credits, requisition.width, requisition.height);
+	gtk_text_buffer_set_text(gtk_text_view_get_buffer (GTK_TEXT_VIEW (creditsview)), CREDITS, -1);
+	gtk_widget_hide(aboutimage);
+	gtk_widget_show(credits);
+	gtk_widget_hide(GTK_WIDGET(button));
+	gtk_widget_show(lookup_widget(aboutdialog, "backabout"));
+}
+
+
+void
+on_backabout_clicked                   (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	gtk_widget_hide(lookup_widget(aboutdialog, "creditscroller"));
+	gtk_widget_show(lookup_widget(aboutdialog, "aboutimage"));
+	gtk_widget_hide(GTK_WIDGET(button));
+	gtk_widget_show(lookup_widget(aboutdialog, "credits"));
 }
 
