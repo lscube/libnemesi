@@ -33,6 +33,7 @@
 
 /* define to enable surface locks, this might be needed on SMP machines */
 #undef SDL_ENABLE_LOCKS
+// #define SDL_ENABLE_LOCKS
 
 //#define BUGGY_SDL //defined by configure
 
@@ -46,6 +47,7 @@
 #include <nemesi/video_drivers.h>
 #include <nemesi/video_driver.h>
 
+#ifdef SDL_ENABLE_LOCKS
 #define MUTEX_LOCK(mtx, x)	if (SDL_LockMutex(mtx)) { \
 					uierror("Cannot lock mutex"); \
 					return x; \
@@ -55,8 +57,7 @@
 					uierror("Cannot unlock mutex"); \
 					return x; \
 				}
-#ifdef SDL_ENABLE_LOCKS
-#define	SDL_OVR_LOCK(orv, x)	if (SDL_LockYUVOverlay (ovr)) { \
+#define	SDL_OVR_LOCK(ovr, x)	if (SDL_LockYUVOverlay (ovr)) { \
 					uierror("SDL: Couldn't lock YUV overlay\n"); \
 					return x; \
 				}
@@ -71,12 +72,17 @@
 
 #define SDL_SRF_UNLOCK(srf)	if(SDL_MUSTLOCK(srf)) \
 					SDL_UnlockSurface (srf);
-#else // SDL_ENABLE_LOCKS
+#else // NOT SDL_ENABLE_LOCKS
+#define MUTEX_LOCK(mtx, x)
+#define MUTEX_UNLOCK(mtx, x)
 #define	SDL_OVR_LOCK(orv, x)
 #define SDL_OVR_UNLOCK(ovr)
 #define SDL_SRF_LOCK(srf, x)
 #define SDL_SRF_UNLOCK(srf)
 #endif // SDL_ENABLE_LOCKS
+
+//! define this if you want to choose the audio subdevice for SDL lib. According to SDL documentation: "Using these variables isn't recommened and the names and presence of these variables aren't guaranteed from one release to the next". However... they are useful.
+#define SDLENV 1
 
 static NMSVDrvInfo info = {
 	"SDL YUV/RGB/BGR renderer (SDL v1.2.5)",
@@ -91,16 +97,74 @@ NMS_LIB_VIDEO(sdl);
 #define RGB 1
 #define BGR 2
 
+#define VBUFFER_SIZE 3
+
+struct sdl_vbuffer {
+	SDL_Overlay *overlay[VBUFFER_SIZE];
+	SDL_Surface *surface[VBUFFER_SIZE];
+	int readpos;
+	int writepos;
+	int size;
+	SDL_mutex *syn;
+	SDL_cond *cond_full;
+};
+
 static struct sdl_priv_s {
+	char driver[8]; //! video driver used by SDL
 	SDL_Surface *display;
 	SDL_Overlay *overlay;
+	struct sdl_vbuffer *vbuffer;
 	int width, height;
 	int d_width, d_height;
 	uint8 mode; /* RGB or YUV? */
 	uint32 format;
 	uint32 sdlflags;
+#ifdef SDL_ENABLE_LOCKS
 	SDL_mutex *syn;
+#endif // SDL_ENABLE_LOCKS
 } sdl_priv;
+
+//--- Video buffer ---------------//
+static struct sdl_vbuffer *new_vbuffer()
+{
+	int i; // index
+	struct sdl_vbuffer *vbuffer;
+
+	if ((vbuffer = malloc(sizeof(struct sdl_vbuffer))) == NULL) {
+		uiprintf("SDL: could not alloc memory for video buffer\n");
+		return NULL;
+	}
+
+	vbuffer->syn = SDL_CreateMutex();
+	vbuffer->cond_full = SDL_CreateCond();
+
+	for (i=0;i<VBUFFER_SIZE;i++) {
+		vbuffer->overlay[i] = NULL;
+		vbuffer->surface[i] = NULL;
+	}
+	vbuffer->readpos = vbuffer->writepos = vbuffer->size = 0;
+	
+	return vbuffer;
+}
+
+static void free_vbuffer(struct sdl_vbuffer *vbuffer)
+{
+	int i; // index
+
+	for(i=0;i<VBUFFER_SIZE;i++) {
+		if (vbuffer->overlay[i])
+			SDL_FreeYUVOverlay(vbuffer->overlay[i]);
+		if (vbuffer->surface[i])
+			SDL_FreeSurface(vbuffer->surface[i]);
+	}
+
+	SDL_DestroyMutex(vbuffer->syn);
+	SDL_DestroyCond(vbuffer->cond_full);
+
+	free(vbuffer);
+	return;
+}
+//--- Video buffer ---------------//
 
 static uint32 preinit(const char *arg)
 {
@@ -109,11 +173,14 @@ static uint32 preinit(const char *arg)
 	Uint32 flags=0;
 
 	// private struct initialization
-	priv->display = NULL;
-	priv->overlay = NULL;
+	priv->display = NULL; // XXX to be removed
+	priv->overlay = NULL; // XXX to be removed
+	priv->vbuffer = NULL;
 	priv->width = priv->height = 0;
 	priv->sdlflags = 0;
+#ifdef SDL_ENABLE_LOCKS
 	priv->syn = SDL_CreateMutex();
+#endif // SDL_ENABLE_LOCKS
 
 	subsystem_init = SDL_WasInit(SDL_INIT_EVERYTHING);
 
@@ -121,6 +188,11 @@ static uint32 preinit(const char *arg)
 		flags |= SDL_INIT_VIDEO;
 	if (!(subsystem_init & SDL_INIT_TIMER))
 		flags |= SDL_INIT_TIMER;
+
+#ifdef SDLENV
+	if (arg)
+		setenv("SDL_VIDEODRIVER", arg, 1);
+#endif // SDLENV
 
 	if (!flags) {
 		uiprintf("SDL Video already initialized\n");
@@ -136,6 +208,10 @@ static uint32 preinit(const char *arg)
 		}
 		uiprintf("SDL Video initialized\n");
 	}
+
+	SDL_VideoDriverName(priv->driver, 8);
+	uiprintf("SDL: Using driver: %s\n", priv->driver);	
+
 	// TODO: X11 stuff
 
 	return 0;
@@ -148,9 +224,6 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 	struct sdl_priv_s *priv = &sdl_priv;
 
 	uint32 flags=0;
-	// int newwidth;
-	// int newheight = height;
-	// SDL_Rect *rect;
 
 	switch(format){
 		case IMGFMT_I420:
@@ -188,30 +261,36 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 
 #ifdef SDL_NOHWSURFACE
 	flags /*|*/= SDL_SWSURFACE;
+	uiprintf("SDL: using software surface\n");
 #else // SDL_NOHWSURFACE
-	flags /*|*/= SDL_HWSURFACE;
+	flags /*|*/= SDL_HWSURFACE|SDL_HWACCEL;
+	uiprintf("SDL: using hardware surface\n");
 #endif // SDL_NOHWSURFACE
 	// flags |= SDL_NOFRAME; // if we want non frame window
-	if (priv->mode != YUV)
+	if (priv->mode != YUV) {
 		flags |= SDL_ANYFORMAT;
+		uiprintf("SDL: using ANYFORMAT flag\n");
+	}
+	
+	/* SDL can only scale YUV data */
+	if(priv->mode == RGB || priv->mode == BGR) {
+		d_width = width;
+		d_height = height;
+	}
 
+
+	// TODO: to be removed
 	if (priv->overlay)
 		SDL_FreeYUVOverlay(priv->overlay);
 	priv->overlay = NULL;
+	// TODO: END to be removed
+	
+	if (priv->vbuffer)
+		free_vbuffer(priv->vbuffer);
+	priv->vbuffer = new_vbuffer();
 
-	/* ViCoTrA's stuff
-	if (priv->display)
-		newheight += priv->display->h;
-	if (!(rect = new_rect(width, height))) {
-		uiprintf("Cannot init new rect");
-		return NULL;
-	}
-	*/
-
-	// if (!(newsurface = SDL_SetVideoMode(width, newheight, 0, flags))) {
 	if (!(newsurface = SDL_SetVideoMode(width, height, 0, flags))) {
 		return uierror("SDL_SetVideoMode failed: %s", SDL_GetError());
-		// return NULL;
 	}
 	// uiprintf("Set Video Mode: w=%d, h=%d\n", width, newheight);
 	uiprintf("Set Video Mode: w=%d, h=%d\n", width, height);
@@ -220,8 +299,10 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 	priv->display = newsurface;
 
 	priv->width = width;
-	// priv->height = newheight;
 	priv->height = height;
+	priv->d_width  = d_width ? d_width : width;
+	priv->d_height = d_height ? d_height : height;
+
 	priv->sdlflags = flags;
 
 	SDL_WM_SetCaption(title, title);
@@ -233,20 +314,27 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 static uint32 get_picture(int w, int h, NMSPicture *pict)
 {
 	struct sdl_priv_s *priv = &sdl_priv;
+	struct sdl_vbuffer *vbuffer = priv->vbuffer;
 	// SDL_Rect *rect = (SDL_Rect *)rect_pt;
-	SDL_Overlay *bmp = sdl_priv.overlay;
+	// SDL_Overlay *bmp = sdl_priv.overlay;
+	SDL_Overlay *bmp = vbuffer->overlay[vbuffer->writepos];
 	char must_alloc=0;
+
+	SDL_LockMutex(vbuffer->syn);
+	while(vbuffer->size == VBUFFER_SIZE)
+		SDL_CondWait(vbuffer->cond_full, vbuffer->syn);
+	SDL_UnlockMutex(vbuffer->syn);
 
 	MUTEX_LOCK(priv->syn, 1);
 
 	if (!bmp) // must alloc
 		must_alloc = 1;
-	/* XXX: already freed in config()
-	else if ((rect->w != w) || (rect->h != h)) {
+	else if ((bmp->w != w) || (bmp->h != h)) {
 		uiprintf("Freeing old SDL Overlay 1\n");
 		SDL_FreeYUVOverlay(bmp);
 		must_alloc = 1;
 	}
+	/* XXX: already freed in config()
 	else if ((bmp->w != priv->width) || (bmp->h != priv->height)) {
 		uiprintf("Freeing old SDL Overlay 2\n");
 		SDL_FreeYUVOverlay(bmp);
@@ -258,7 +346,8 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 		bmp = SDL_CreateYUVOverlay(priv->width, priv->height, priv->format, priv->display);
 		uiprintf("Creating new SDL Overlay: w=%d, h=%d\n", \
 				priv->width, priv->height);
-		sdl_priv.overlay = bmp;
+		// sdl_priv.overlay = bmp;
+		vbuffer->overlay[vbuffer->writepos] = bmp;
 	}
 	MUTEX_UNLOCK(priv->syn, 1);
 
@@ -291,9 +380,15 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 
 static uint32 draw_picture(NMSPicture *pict)
 {
-	SDL_Overlay *bmp = sdl_priv.overlay;
+	struct sdl_vbuffer *vbuffer = sdl_priv.vbuffer;
+	// SDL_Overlay *bmp = sdl_priv.overlay;
+	SDL_Overlay *bmp = vbuffer->overlay[vbuffer->writepos++];
 
 	SDL_OVR_UNLOCK(bmp);
+	vbuffer->writepos %= VBUFFER_SIZE;
+	SDL_LockMutex(vbuffer->syn);
+	vbuffer->size++;
+	SDL_UnlockMutex(vbuffer->syn);
 
 	return 0;
 }
@@ -301,11 +396,15 @@ static uint32 draw_picture(NMSPicture *pict)
 static uint32 update_screen(void)
 {
 	struct sdl_priv_s *priv = &sdl_priv;
+	struct sdl_vbuffer *vbuffer = priv->vbuffer;
 	SDL_Overlay *bmp;
 
+	if (vbuffer->size < (VBUFFER_SIZE / 2) + 1) // no frame to show
+		return 0;
 	MUTEX_LOCK(priv->syn, 1);
 
-	bmp = sdl_priv.overlay;
+	// bmp = sdl_priv.overlay;
+	bmp = vbuffer->overlay[vbuffer->readpos++];
 	if (!bmp) {
 		MUTEX_UNLOCK(priv->syn, 1);
 		return 0;
@@ -314,12 +413,23 @@ static uint32 update_screen(void)
 	SDL_DisplayYUVOverlay(bmp, &(sdl_priv.display->clip_rect));
 	SDL_SRF_UNLOCK(priv->display);
 
+	vbuffer->readpos %= VBUFFER_SIZE;
+	SDL_LockMutex(vbuffer->syn);
+	if(vbuffer->size == VBUFFER_SIZE)
+		SDL_CondSignal(vbuffer->cond_full);
+	vbuffer->size--;
+	SDL_UnlockMutex(vbuffer->syn);
+
 	MUTEX_UNLOCK(priv->syn, 1);
 	
 	return 0;
 }
 static void uninit(void)
 {
+	free_vbuffer(sdl_priv.vbuffer);
+#ifdef SDL_ENABLE_LOCKS
+	 SDL_DestroyMutex(sdl_priv.syn);
+#endif // SDL_ENABLE_LOCKS
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
 	return;

@@ -100,6 +100,7 @@ int decode(char *data, int len, NMSOutput *outc)
 				// vc->format = IMGFMT_I420;
 				vc->width = ff->context->width;
 				vc->height = ff->context->height;
+				vc->fps = ff->context->frame_rate;
 				if (funcs->config(vc->width, vc->height, vc->width, vc->height, \
 							0, "NeMeSI (SDL)", vc->format))
 					return 1;

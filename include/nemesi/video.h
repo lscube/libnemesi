@@ -48,6 +48,8 @@ typedef struct {
 	uint32 width;
 	// window height
 	uint32 height;
+	// frame rate
+	float fps;
 	//! functions for the specific video output driver
 	NMSVFunctions *functions;
 	// void *functions;

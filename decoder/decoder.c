@@ -221,12 +221,11 @@ void *decoder(void *args)
 		if ( !strcmp(get_pref("output"), "card") ) {
 			// cycles+=get_sys_buff();
 			// VF: new audio sysbuff len request
-			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUFF, &audio_sysbuff);
+			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
 			if (audio_sysbuff < MIN_AUDIO_SYS_BUFF)
 				cycles += 2;
 		}
 #else // TS_SCHEDULE DEFINED --> utilizzo scheduler basato sui Timestamp
-		// get_sys_buff(); // aggiornamento delle variabili sullo stato di riempimento del buffer di sistema
 		if (ts_min_next >= 0) { // esiste un pacchetto successivo?
 			tv_min_next.tv_sec=(long)ts_min_next;
 			tv_min_next.tv_usec=(long)((ts_min_next-tv_min_next.tv_sec)*1000000);
@@ -240,14 +239,6 @@ void *decoder(void *args)
 			}
 			ts_min_next = -1;
 
-			/* eventuale richiesta di cicli veloci
-			if ( !strcmp(get_pref("output"), "card") ) {
-				// cycles+=get_sys_buff();
-				nmsoutc->audio->functions->control(ACTRL_GET_SYSBUFF, &audio_sysbuff);
-				if (audio_sysbuff < MIN_AUDIO_SYS_BUFF)
-					cycles += 2;
-			}
-			*/
 		} else { // Buffer di Rete vuoto => dormiamo un po'
 			tvsleep.tv_sec = 0;
 			tvsleep.tv_usec = GRAIN * 1000;

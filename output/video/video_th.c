@@ -31,13 +31,17 @@
 
 #include <nemesi/video.h>
 #include <nemesi/comm.h>
+#include <nemesi/utils.h>
 
 #define SLEEP_MS 40
+#define DEF_FPS 25.0 // must be float
 
 void *video_th(void *vc)
 {
-	NMSVFunctions *funcs = ((NMSVideo *)vc)->functions;
-	struct timeval tvsleep;
+	NMSVideo *videoc = (NMSVideo *)vc;
+	NMSVFunctions *funcs = videoc->functions;
+	struct timeval tvsleep, tvstart, tvstop;
+	float fps=DEF_FPS;
 
 	// pthread cancel attributes
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -45,12 +49,25 @@ void *video_th(void *vc)
 	// set cancel function
 	// pthread_cleanup_push(video_close, (void *)vc);
 
+	if (videoc->fps) {
+		fps = videoc->fps;
+		uiprintf("Video Thread Started: fps = %f\n", fps);
+	} else {
+		uiprintf("Video Thread Started: using default fps = %f\n", fps);
+	}
+	tvsleep.tv_sec = 1/fps;// SLEEP_MS / 1000;
+	tvsleep.tv_usec = (long)(1000000/fps) % 1000000; //(SLEEP_MS % 1000) * 1000;
+	gettimeofday(&tvstart, NULL);
+	tvstop.tv_sec = tvstart.tv_sec;
+	tvstop.tv_usec = tvstart.tv_usec;
 
 	for (;;) {
-		tvsleep.tv_sec = SLEEP_MS / 1000;
-		tvsleep.tv_usec = (SLEEP_MS % 1000) * 1000;
-		select(0, NULL, NULL, NULL, &tvsleep);
+		timeval_add(&tvstart, &tvstart, &tvsleep);
+		timeval_subtract(&tvstop, &tvstart, &tvstop);
+		select(0, NULL, NULL, NULL, &tvstop);
 		funcs->update_screen();
+		gettimeofday(&tvstop, NULL);
+		// uiprintf("\n\tupdate time: %ld.%ld\n", tvstop.tv_sec, tvstop.tv_usec);
 		// uiprintf("\nUpdate screen!!!\n");
 	}
 

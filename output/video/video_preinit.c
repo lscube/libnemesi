@@ -51,6 +51,7 @@ NMSVideo *video_preinit(char *drv_hint)
 
 	vc->init = 0;
 	vc->tid = 0;
+	vc->fps = 0;
 
 	// Video Output Driver selection
 	vc->functions = &nms_video_sdl; // XXX: very very temporanea
