@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.8 $ -- $Date: 2003/02/03 14:45:38 $
+ *  ./decoder/decoder.c: $Revision: 1.9 $ -- $Date: 2003/02/03 15:05:38 $
  *  
  *  This file is part of NeMeSI
  *
@@ -105,8 +105,8 @@ void *decoder(void *args)
 							((void *)(pkt->data)-(void *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
 						strcpy(output_pref, get_pref("output"));
 						
-						if ( !strcmp(output_pref, "diskraw") )
-							diskwriter( ((uint8 *)pkt->data + pkt->cc + SKIP), len );
+						if ( (len != 0) && (!strcmp(output_pref, "diskraw")) )
+							diskwriter( ((uint8 *)pkt->data + pkt->cc + SKIP), len - SKIP );
 							/* impostato per il payload mp3
 							diskwriter(((uint8 *)pkt->data + pkt->cc + 4), len -4);
 							*/
