@@ -61,6 +61,7 @@ void *decoder(void *args)
 	long int select_usec, body_usec, diff_usec, offset_usec=0;
 #endif // TS_SCHEDULE
 	char buffering_audio=1;
+	float audio_sysbuff;
 	unsigned short cycles=0;/*AUDIO_SYS_BUFF;*/
 	struct Stream_Source *stm_src;
 	rtp_pkt *pkt;
@@ -159,8 +160,9 @@ void *decoder(void *args)
 									sys_buff--;
 								}
 								*/
+								nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
 								if(buffering_audio) {
-									if (sys_buff_size(NULL) > AUDIO_SYS_BUFF ) {
+									if (audio_sysbuff > AUDIO_SYS_BUFF ) {
 										buffering_audio = 0;
 										audio_play();
 									}
@@ -175,7 +177,7 @@ void *decoder(void *args)
 						}
 /**/
 				 		uiprintf("\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
-								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), sys_buff_size(NULL)*100.0, len);
+								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, len);
 /**/				
 						bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
 
@@ -224,10 +226,15 @@ void *decoder(void *args)
 			}
 				offset_usec=(select_usec-diff_usec)%(GRAIN*1000);
 		}
-		if ( !strcmp(get_pref("output"), "card") )
-			cycles+=get_sys_buff();
+		if ( !strcmp(get_pref("output"), "card") ) {
+			// cycles+=get_sys_buff();
+			// VF: new audio sysbuff len request
+			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUFF, &audio_sysbuff);
+			if (audio_sysbuff < MIN_AUDIO_SYS_BUFF)
+				cycles += 2;
+		}
 #else // TS_SCHEDULE DEFINED --> utilizzo scheduler basato sui Timestamp
-		get_sys_buff(); // aggiornamento delle variabili sullo stato di riempimento del buffer di sistema
+		// get_sys_buff(); // aggiornamento delle variabili sullo stato di riempimento del buffer di sistema
 		if (ts_min_next) { // esiste un pacchetto successivo?
 			tv_min_next.tv_sec=(long)ts_min_next;
 			tv_min_next.tv_usec=(long)((ts_min_next-tv_min_next.tv_sec)*1000000);
@@ -240,16 +247,21 @@ void *decoder(void *args)
 
 			ts_min_next = 0;
 			/* eventuale richiesta di cicli veloci
-			if ( !strcmp(get_pref("output"), "card") )
-				cycles+=get_sys_buff();
+			if ( !strcmp(get_pref("output"), "card") ) {
+				// cycles+=get_sys_buff();
+				nmsoutc->audio->functions->control(ACTRL_GET_SYSBUFF, &audio_sysbuff);
+				if (audio_sysbuff < MIN_AUDIO_SYS_BUFF)
+					cycles += 2;
+			}
 			*/
 		} else { // Buffer di Rete vuoto => dormiamo 1 sec.
 			tvsleep.tv_sec = 0;
 			tvsleep.tv_usec = GRAIN * 1000;
 			select(0, NULL, NULL, NULL, &tvsleep);
 /**/
+			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
 	 		uiprintf("\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
-					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), sys_buff_size(NULL)*100.0, len);
+					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, len);
 			len = 0;
 /**/				
 		}

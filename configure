@@ -19827,7 +19827,9 @@ fi
 
 
 
-for ac_header in sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h sys/ioctl.h
+
+
+for ac_header in sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h sys/ioctl.h sys/soundcard.h soundcard.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then

@@ -187,6 +187,21 @@ static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags)
 	return 0;
 }
 
+static uint32 control(uint32 cmd, void *arg)
+{
+	switch(cmd) {
+		case ACTRL_GET_SYSBUF:
+			*((float *)arg) = (float)(sdl_priv.audio_buffer->len)/(float)AUDIO_BUFF_SIZE;
+			return 0;
+			break;
+		default:
+			return -1;
+			break;
+	}
+
+	return 0;
+}
+
 static uint8 *get_buff(uint32 len)
 {
 

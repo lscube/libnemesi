@@ -35,8 +35,7 @@
 
 static uint32 preinit(const char *arg);
 static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags);
-// TODO function "control" for volume
-// static int control(int cmd, void *arg);
+static uint32 control(uint32 cmd, void *arg);
 static uint8 *get_buff(uint32 len);
 static uint32 play_buff(uint8 *data, uint32 len);
 static void pause(void);
@@ -48,6 +47,7 @@ static void uninit(void);
 	&info, \
 	preinit, \
 	config, \
+	control, \
 	get_buff, \
 	play_buff, \
 	pause, \

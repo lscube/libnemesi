@@ -107,9 +107,6 @@ int oss_play(void);
 void enable_output(int);
 // #endif
 
-int get_sys_buff(void);
-float sys_buff_size(float *);
-
 int audio_play();
 int audio_pause();
 

@@ -68,9 +68,9 @@ int output_init(void)
 		if ( strcmp("card", get_pref("output")) ) {
 			fprintf(stderr, "\nNo output device available\n Cannot continue.\n");
 			return 1;
-		} else
-			fprintf(stderr, "Diskwriter succesfully initialized\n");
-	}
+		}
+	} else
+		uiprintf("Diskwriter succesfully initialized\n");
 	uiprintf(SEPARATOR);
 
 	return 0;

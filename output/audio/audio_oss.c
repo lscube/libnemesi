@@ -27,10 +27,12 @@
  * */
 
 #include <stdlib.h>
+#include <sys/ioctl.h>
 
 #include <nemesi/comm.h>
 #include <nemesi/audio_drivers.h>
 #include <nemesi/audio_driver.h>
+#include <nemesi/audio_format.h>
 
 static NMSADrvInfo info = {
 	"Open Sound System audio driver",
@@ -41,6 +43,8 @@ static NMSADrvInfo info = {
 
 NMS_LIB_AUDIO(oss);
 
+static int audiofd;
+
 static uint32 preinit(const char *arg)
 {
 	return 0;
@@ -48,6 +52,24 @@ static uint32 preinit(const char *arg)
 
 static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags)
 {
+	return 0;
+}
+
+static uint32 control(uint32 cmd, void *arg)
+{
+	audio_buf_info info;
+
+	switch(cmd) {
+		case ACTRL_GET_SYSBUF:
+			ioctl(audiofd, SNDCTL_DSP_GETOSPACE, &info);
+			*((float *)arg) = (1.0-((float)info.bytes/(float)(info.fragsize*info.fragstotal)));
+			return 0;
+			break;
+		default:
+			return -1;
+			break;
+	}
+
 	return 0;
 }
 

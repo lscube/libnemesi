@@ -30,6 +30,8 @@
 
 /* Defines that AFMT_ stuff */
 
+#include <config.h> /* for native endianness */
+
 #ifdef	HAVE_SYS_SOUNDCARD_H
 #include <sys/soundcard.h>	/* For AFMT_* on linux */
 #else 
@@ -37,8 +39,6 @@
 #include <soundcard.h> /* OpenBSD have this instead of <sys/soundcard> */
 #endif
 #endif
-
-#include "../config.h" /* for native endianness */
 
 /* standard, old OSS audio formats */
 #ifndef AFMT_MU_LAW

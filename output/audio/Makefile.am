@@ -13,10 +13,8 @@ libaudio_la_SOURCES =	ab_get.c \
 			audio_sdl.c \
 			empty_audio_buffer.c \
 			enable_output.c \
-			get_sys_buff.c \
 			oss_play.c \
-			set_audiodev.c \
-			sys_buff_size.c
+			set_audiodev.c
 
 libaudio_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

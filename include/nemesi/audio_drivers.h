@@ -34,6 +34,8 @@
 #include <config.h>
 #include <nemesi/types.h>
 
+#define ACTRL_GET_SYSBUF 0
+
 typedef struct {
         /* driver name */
         const char *name;
@@ -62,6 +64,13 @@ typedef struct {
          */
         uint32 (*config)(uint32 rate, uint8 channels, uint32 format, uint32 flags);
 	/*
+	 * Control interface
+	 * params:
+	 *	cmd: commnand to exec
+	 *	arg: argument for command
+	 */
+	 uint32 (*control)(uint32 cmd, void *arg);
+	/*
 	 * allocs buffer for new decoded data.
 	 * params:
 	 *	len: length of requested buffer
@@ -77,7 +86,6 @@ typedef struct {
 	 * retuns 1 on error, 0 otherwise
 	 */
 	uint32 (*play_buff)(uint8 *data, uint32 len);
-
         /*
          * Pauses the driver
          */
