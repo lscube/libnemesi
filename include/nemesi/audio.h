@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/audio.h: $Revision: 1.7 $ -- $Date: 2003/07/08 15:58:01 $
+ *  ./include/nemesi/audio.h: $Revision: 1.8 $ -- $Date: 2003/07/24 11:21:32 $
  *  
  *  This file is part of NeMeSI
  *
@@ -49,8 +49,8 @@
 
 #include <SDL.h>
 
-/* #define SAMPLES 2048 */
-#define SAMPLES 512
+#define SAMPLES 2048
+/* #define SAMPLES 512 */
 
 #endif
 
@@ -61,6 +61,9 @@
 /* Audio Buffer defines */
 #define SECONDS 1
 #define AUDIO_BUFF_SIZE (unsigned long)(FREQ*SECONDS*CHANNELS*BYTES_X_SAMPLE)
+#define AUDIO_SYS_BUFF 0.5 /* Buffer fist fill percentage */
+#define MIN_AUDIO_SYS_BUFF 0.2 /* min buffer percentage to request fast cycles */
+#define MAX_AUDIO_SYS_BUFF 0.9 /* max buffer percentage */
 
 struct audio_buff {
 /*	uint8 *audio_data; */

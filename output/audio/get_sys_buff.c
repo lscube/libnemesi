@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/get_sys_buff.c: $Revision: 1.3 $ -- $Date: 2003/01/15 11:18:00 $
+ *  ./output/audio/get_sys_buff.c: $Revision: 1.4 $ -- $Date: 2003/07/24 11:21:32 $
  *  
  *  This file is part of NeMeSI
  *
@@ -48,7 +48,8 @@ int get_sys_buff(void)
 /*	fprintf(stderr, "System buffer: %4.1f %% \r", (100.0*sys_buff) ); */
 
 	sys_buff=sys_buff_size(&sys_buff);
-	if(sys_buff<0.2) {
+	if(sys_buff<MIN_AUDIO_SYS_BUFF) {
+		// fprintf(stderr, "\n***\tSystem buffer empty: %f -> required 2 Fast Cicles\n", sys_buff );
 		/* fprintf(stderr, "\n***\tSystem buffer empty: %f -> required %d Fast Cicles\n", sys_buff, (int)((0.2-sys_buff)*50)); */
 		/* return (int)((0.5-sys_buff)*50); / 0.5-sys_buff/0.02 -> 0.5-sys_buff/20ms */
 		return 2;
@@ -59,9 +60,10 @@ int get_sys_buff(void)
 	sys_buff=(1.0-((float)info.bytes/(float)(info.fragsize*info.fragstotal)));
 	sys_buff=sys_buff_size(&sys_buff);
 
-	if((info.fragsize*info.fragstotal-info.bytes < 2*info.fragsize)){
+	/* if((info.fragsize*info.fragstotal-info.bytes < 2*info.fragsize)){*/
+	if((info.fragsize*info.fragstotal-info.bytes < info.fragsize*info.fragstotal*MIN_AUDIO_SYS_BUFF)){
 	/*if((info.bytes > 2*info.fragsize)){*/
-		fprintf(stderr, "\nfast cycle !!!%d\n", (info.bytes/info.fragsize)/2);
+		// fprintf(stderr, "\nfast cycle !!!%d\n", (info.bytes/info.fragsize)/2);
 		return 2;
 	}
 #endif

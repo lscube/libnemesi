@@ -1,5 +1,5 @@
 /* * 
- *  ./output/audio/ab_get.c: $Revision: 1.5 $ -- $Date: 2003/01/15 17:39:13 $
+ *  ./output/audio/ab_get.c: $Revision: 1.6 $ -- $Date: 2003/07/24 11:21:32 $
  *  
  *  This file is part of NeMeSI
  *
@@ -27,6 +27,8 @@
  * */
 
 #include <nemesi/audio.h>
+
+#define WAIT_IF_FULL 10 /* millisecondi di sleep se il buffer è pieno */
 
 uint8 *ab_get(uint32 len, ...)
 {
@@ -59,7 +61,7 @@ uint8 *ab_get(uint32 len, ...)
 			pthread_mutex_unlock(&(audio_buffer->syn));
 			uiprintf("No more space in System Buffer\n");
 			tv_sleep.tv_sec = 0;
-			tv_sleep.tv_usec = 1000;
+			tv_sleep.tv_usec = WAIT_IF_FULL*1000;
 			select(0, NULL, NULL, NULL, &tv_sleep);
 		}
 	} else if ( len == 0 ){

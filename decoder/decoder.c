@@ -1,5 +1,5 @@
 /* * 
- *  ./decoder/decoder.c: $Revision: 1.10 $ -- $Date: 2003/04/14 17:26:22 $
+ *  ./decoder/decoder.c: $Revision: 1.11 $ -- $Date: 2003/07/24 11:21:32 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,12 +26,19 @@
  *  
  * */
 
+/* FV: utilizzo scheduler basato sui timestamp */
+/* commentare la definizione per utilizzare lo */
+/* scheduler basato su FAST CYCLES.            */
+#define TS_SCHEDULE
+
 #include <nemesi/decoder.h>
 #include <nemesi/rtpptdefs.h>
 #include <nemesi/preferences.h>
 
-#define SYS_BUFF 5 /*system buffer in num of packets*/
+// #define SYS_BUFF 5 /*system buffer in num of packets*/
+#ifdef TS_SCHEDULE
 #define GRAIN 20
+#endif // TS_SCHEDULE
 
 #define SKIP 4
 
@@ -41,47 +48,62 @@ void *decoder(void *args)
 	struct RTP_Session *rtp_sess_head=dec_args->rtp_sess_head;
 	struct RTP_Session *rtp_sess;
 	struct timeval tvsleep, tvdiff; 
-	struct timeval tvstart, tvcheck, tvstop;
-	struct timeval tvsel, tvbody;
+	struct timeval tvstart, tvstop;
 	struct timeval tv_elapsed;
-	struct timeval tv_sys_buff;
+	// struct timeval tv_sys_buff;
 	double ts_elapsed;
+#ifdef TS_SCHEDULE
+	struct timeval tv_min_next;
+	double ts_min_next;
+#else // utilizzo lo scheduler basato su FAST CYCLES
+	struct timeval tvcheck;
+	struct timeval tvsel, tvbody;
 	long int select_usec, body_usec, diff_usec, offset_usec=0;
-	unsigned short cycles=SYS_BUFF;
+#endif // TS_SCHEDULE
+	char buffering_audio=1;
+	unsigned short cycles=0;/*AUDIO_SYS_BUFF;*/
 	struct Stream_Source *stm_src;
 	rtp_pkt *pkt;
 	int len=0;
-	int sys_buff=SYS_BUFF;
+	// int sys_buff=AUDIO_SYS_BUFF;
 	struct audio_buff *audio_buffer = global_audio_buffer;
 	char output_pref[PREF_MAX_VALUE_LEN];
 
-	/*by sbiro: abilita la cancellazione del thread corrente*/
+	/* by sbiro: abilita la cancellazione del thread corrente */
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	
-	/*by sbiro: rende possibile la cancellazione del thread corrente in qualunque punto della sua esecuzione*/
+	/* by sbiro: rende possibile la cancellazione del thread corrente in qualunque punto della sua esecuzione */
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-/*	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
+	/* pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
 
-	/*by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente"*/
+	/* by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente" */
 	pthread_cleanup_push(dec_clean, (void *)audio_buffer);
 	
 	tvdiff.tv_sec=tvsleep.tv_sec=dec_args->startime.tv_sec;
 	tvdiff.tv_usec=tvsleep.tv_usec=dec_args->startime.tv_usec;
 
+	/*
 	tv_sys_buff.tv_sec=0;
-	tv_sys_buff.tv_usec=SYS_BUFF*GRAIN*1000;
+	tv_sys_buff.tv_usec=AUDIO_SYS_BUFF*GRAIN*1000;
+	*/
 
 	pthread_mutex_lock(&(dec_args->syn));
 	pthread_mutex_unlock(&(dec_args->syn));
 	
 	select(0, NULL, NULL, NULL, &tvsleep);
 
+	/* FV: startime ora assume il significato di istante di partenza del decoder */
+	gettimeofday(&(dec_args->startime), NULL);
+
 	while(1) {
 
 		gettimeofday(&tvstart, NULL);
 		
-/*		printf("  sum: %7ld - select: %7ld - body: %7ld - diff: %7ld - offset: %7ld - sleep %7ld - cycles: %3hu \n",\
+/*	
+#ifndef TS_SCHEDULE
+		printf("  sum: %7ld - select: %7ld - body: %7ld - diff: %7ld - offset: %7ld - sleep %7ld - cycles: %3hu \n",\
 				select_usec + body_usec, select_usec, body_usec, diff_usec, offset_usec, tvdiff.tv_usec, cycles);
+#endif // TS_SCHEDULE
 */
 		do { 
 			/*by sbiro: ciclo per ogni sessione rtp*/
@@ -103,9 +125,9 @@ void *decoder(void *args)
 					tv_elapsed.tv_sec=(long)ts_elapsed;
 					tv_elapsed.tv_usec=(long)((ts_elapsed-tv_elapsed.tv_sec)*1000000);
 
-					timeval_add(&tv_elapsed, &(stm_src->ssrc_stats.firsttv), &tv_elapsed);
+					// timeval_add(&tv_elapsed, &(stm_src->ssrc_stats.firsttv), &tv_elapsed);
 					timeval_add(&tv_elapsed, &tv_elapsed, &(dec_args->startime));
-					timeval_subtract(&tv_elapsed, &tv_elapsed, &tv_sys_buff);
+					// timeval_subtract(&tv_elapsed, &tv_elapsed, &tv_sys_buff);
 					
 					if(cycles || timeval_subtract(NULL, &tv_elapsed, &tvstart) ){
 					
@@ -126,12 +148,20 @@ void *decoder(void *args)
 #ifndef HAVE_SDL
 								oss_play();
 #endif
+								/*
 								if(!sys_buff) {
 									audio_play();
 									sys_buff--;
 								}
 								else if(sys_buff > 0){
 									sys_buff--;
+								}
+								*/
+								if(buffering_audio) {
+									if (sys_buff_size(NULL) > AUDIO_SYS_BUFF ) {
+										buffering_audio = 0;
+										audio_play();
+									}
 								}
 							} else if ( !strcmp(output_pref, "diskdecoded") ) {
 								decoders[pkt->pt](((uint8 *)pkt->data + pkt->cc), len, \
@@ -145,13 +175,27 @@ void *decoder(void *args)
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), sys_buff_size(NULL)*100.0, len);
 /**/				
 						bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
+
 					}
 				}
+#ifdef TS_SCHEDULE
+				/* FV: controlli sul timestamp */
+				if(stm_src->po.potail >= 0){
+					pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail); // pacchetto successivo
+					if ( !ts_min_next) {
+					//	uiprintf("\nNuovo min\n");
+						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
+					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
+						ts_min_next = min(ts_min_next, \
+								((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
+				}
+#endif // TS_SCHEDULE
 			}
 		} while( cycles-- > 0);
 		cycles=0;
 		
 		gettimeofday(&tvstop, NULL);
+#ifndef TS_SCHEDULE // FV: scheduler FAST CYCLES
 		
 		timeval_subtract(&tvbody, &tvstop, &tvstart);
 		
@@ -179,6 +223,35 @@ void *decoder(void *args)
 		}
 		if ( !strcmp(get_pref("output"), "card") )
 			cycles+=get_sys_buff();
+#else // TS_SCHEDULE DEFINED --> utilizzo scheduler basato sui Timestamp
+		get_sys_buff(); // aggiornamento delle variabili sullo stato di riempimento del buffer di sistema
+		if (ts_min_next) { // esiste un pacchetto successivo?
+			tv_min_next.tv_sec=(long)ts_min_next;
+			tv_min_next.tv_usec=(long)((ts_min_next-tv_min_next.tv_sec)*1000000);
+
+			timeval_add(&tv_min_next, &tv_min_next, &(dec_args->startime));
+			// timeval_subtract(&tv_min_next, &tv_min_next, &tv_sys_buff);
+
+			if ( !timeval_subtract(&tvsleep, &tv_min_next, &tvstop) && (tvsleep.tv_usec > 10000) )
+				select(0, NULL, NULL, NULL, &tvsleep);
+
+			ts_min_next = 0;
+			/* eventuale richiesta di cicli veloci
+			if ( !strcmp(get_pref("output"), "card") )
+				cycles+=get_sys_buff();
+			*/
+		} else { // Buffer di Rete vuoto => dormiamo 1 sec.
+			tvsleep.tv_sec = 1;
+			tvsleep.tv_usec = 0;
+			select(0, NULL, NULL, NULL, &tvsleep);
+/**/
+	 		uiprintf("\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
+					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), sys_buff_size(NULL)*100.0, len);
+			len = 0;
+/**/				
+		}
+
+#endif // TS_SCHEDULE
 
 		
 	}
