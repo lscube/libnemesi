@@ -18,8 +18,11 @@ fi
 if which libtoolize >/dev/null 2>&1 ; then
 	echo -n "Running libtoolize..."
 	libtoolize --force --copy --automake &
-#	libtoolize --automake &
 	echo " done."
+else
+	echo "WARNING! NeMeSI SVN needs LibTool!"
+	echo "Please, install it."
+	echo "Aborting."
 fi
 if which aclocal >/dev/null 2>&1 ; then
 	echo -n "Running aclocal..."
