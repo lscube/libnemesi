@@ -82,7 +82,6 @@ DLPREOPEN = @DLPREOPEN@
 ECHO = @ECHO@
 INCLTDL = @INCLTDL@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-LIBADD_DL = @LIBADD_DL@
 LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
@@ -300,6 +299,7 @@ clean:
 	echo " done"
 
 distclean: clean
+maintainer-clean: clean
 
 install-data-local:
 

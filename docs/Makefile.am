@@ -21,7 +21,7 @@ clean:
 	echo " done"
 
 distclean: clean
-
+maintainer-clean: clean
 
 install-data-local:
 	
