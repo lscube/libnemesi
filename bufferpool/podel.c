@@ -45,8 +45,11 @@
 * \see bprmv
 * \see bufferpool.h
 * */
-int podel(playout_buff * po, int index)
+int podel(playout_buff *po, int index)
 {
+
+	pthread_mutex_lock(&(po->po_mutex));
+
 	if (po->pobuff[index].next != -1)
 		po->pobuff[po->pobuff[index].next].prev = po->pobuff[index].prev;
 	else
@@ -55,6 +58,8 @@ int podel(playout_buff * po, int index)
 		po->pobuff[po->pobuff[index].prev].next = po->pobuff[index].next;
 	else
 		po->pohead = po->pobuff[index].next;
+
+	pthread_mutex_unlock(&(po->po_mutex));
 
 	return 0;
 }

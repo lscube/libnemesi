@@ -42,7 +42,7 @@ int handle_setup_response(struct RTSP_Thread *rtsp_th)
 		return 1;
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
-		uiprintf("Invalid RTSP-DESCRIBE response\n");
+		uiprintf("Invalid RTSP-SETUP response\n");
 		rtsp_th->busy=0;
 		return 1;
 	}

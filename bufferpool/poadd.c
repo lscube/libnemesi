@@ -44,10 +44,12 @@
 * \see podel
 * \see bufferpool.h
 * */
-int poadd(playout_buff * po, int index, uint32 cycles)
+int poadd(playout_buff *po, int index, uint32 cycles)
 {
 	int i;
 	uint32 cseq;
+
+	pthread_mutex_lock(&(po->po_mutex));
 
 	i = po->pohead;
 	cseq = (uint32)ntohs(((rtp_pkt *) (*(po->bufferpool) + index))->seq) + cycles;
@@ -55,8 +57,10 @@ int poadd(playout_buff * po, int index, uint32 cycles)
 	while ((i != -1) && ((uint32)ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) + po->cycles > cseq)) {
 		i = po->pobuff[i].next;
 	}
-	if ( (i != -1) && (cseq == ((uint32)ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) + po->cycles)) )
+	if ( (i != -1) && (cseq == ((uint32)ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) + po->cycles)) ) {
+		pthread_mutex_unlock(&(po->po_mutex));
 		return 1;
+	}
 	if (i == po->pohead) {	/* inserimento in testa */
 		po->pobuff[index].next = i;
 		po->pohead = index;
@@ -74,7 +78,12 @@ int poadd(playout_buff * po, int index, uint32 cycles)
 			po->potail = index;
 		else
 			po->pobuff[po->pobuff[index].next].prev = index;
+
+		pthread_mutex_unlock(&(po->po_mutex));
 		return 2;
 	}
+
+	pthread_mutex_unlock(&(po->po_mutex));
+
 	return 0;
 }

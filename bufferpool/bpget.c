@@ -40,7 +40,7 @@
 * \see bprmv
 * \see bufferpool.h
 * */
-int bpget(buffer_pool * bp)
+int bpget(buffer_pool *bp)
 {
 	int offset;
 

@@ -39,7 +39,7 @@
 * \see bpinit
 * \see bufferpool.h
 * */
-int bpkill(buffer_pool * bp)
+int bpkill(buffer_pool *bp)
 {
 	free(bp->bufferpool);
 	bp->bufferpool=NULL;

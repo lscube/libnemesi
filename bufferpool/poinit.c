@@ -40,8 +40,21 @@
  * */
 int poinit(playout_buff *po, buffer_pool *bp)
 {
+	pthread_mutexattr_t mutex_attr;
+	int i;
+
 	po->bufferpool=&(bp->bufferpool);
 	po->pohead = po->potail = -1;
 	po->cycles = 0;
+
+	if ((i = pthread_mutexattr_init(&mutex_attr)) > 0)
+		return i;
+#ifdef	_POSIX_THREAD_PROCESS_SHARED
+	if ((i = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
+		return i;
+#endif
+	if ((i = pthread_mutex_init(&(po->po_mutex), &mutex_attr)) > 0)
+		return i;
+
 	return 0;
 }

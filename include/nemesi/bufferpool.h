@@ -138,6 +138,9 @@ typedef struct {
 	poitem pobuff[BP_SLOT_NUM]; /*!< Vettore che manterrà la lista ordinata
 				      degli slot contenenti i pacchetti da
 				      processare. */
+	pthread_mutex_t po_mutex; /*!< Variabile di mutua esclusione per il
+				    controllo di accesso alle strutture
+				    sensibili del buffer di playout. */
 	int pohead; /*!< Testa della lista. */
 	int potail; /*!< Coda della lista. */
 	uint32 cycles; /*!< Indice che tiene memoria dei cicli del campo \c
@@ -158,7 +161,7 @@ typedef struct {
 			       il Bufferpool. \see bpinit */
 	pthread_mutex_t fl_mutex; /*!< Variabile di mutua esclusione per il
 				    controllo di accesso alle strutture
-				    sensibili del Buffepool. */
+				    sensibili del Bufferpool. */
 	int freelist[BP_SLOT_NUM]; /*!< Lista degli slot liberi. */
 	int flhead; /*!< Indice della testa della Free List. */
 	int flcount; /*!< Contatore degli elementi presenti nella Free List. */
