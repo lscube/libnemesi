@@ -62,6 +62,7 @@ AC_MSG_ERROR([
  *********************************************************************]))
 
 AC_PROG_LIBTOOL
+LIBTOOL="$LIBTOOL --silent"
 AC_SUBST([LIBTOOL_DEPS])
 
 dnl Check for pthread libraries.

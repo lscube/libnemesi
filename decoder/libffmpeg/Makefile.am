@@ -2,7 +2,7 @@ nemesiincludedir=$(top_srcdir)/include
 
 lib_LTLIBRARIES = libffmpeg.la
 
-libdir = $(nemesi_plugindir)
+libdir = $(DESTDIR)$(nemesi_plugindir)
 
 libffmpeg_la_SOURCES =	ffmpeg.c \
 			init_ffmpeg.c

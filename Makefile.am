@@ -21,6 +21,11 @@ EXTRA_DIST = 	config \
 		include
 
 
+install-exec-hook:
+	@echo -n "Removing static libraries..."; \
+	rm -f $(DESTDIR)$(nemesi_plugindir)/*.a; \
+	echo " done.";
+
 dist-hook:
 	@for plugin in $(distdir)/plugins/plugins/*; do \
 		rm -rf $$plugin; \

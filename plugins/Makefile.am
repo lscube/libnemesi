@@ -9,16 +9,13 @@ all:
 		cp $$PLUGIN $(LOCAL_PLUGINS_DIR)/; \
 		DIR=`dirname $$PLUGIN`; \
 		NAME=`basename $$PLUGIN | cut -d. -f1`; \
-		NUNAME=$$DIR/$$NAME.la; \
-		cp $$NUNAME $(LOCAL_PLUGINS_DIR)/; \
+		cp $${PLUGIN%%so}la $(LOCAL_PLUGINS_DIR)/; \
 		chmod +x $(LOCAL_PLUGINS_DIR)/$$NAME.la; \
-		NUNAME=$$DIR/$$NAME.a; \
-		cp $$NUNAME $(LOCAL_PLUGINS_DIR)/; \
 	done; \
 	echo " done"
 
 clean:
-	@LIST_LOCAL_PLUGINS=`find $(LOCAL_PLUGINS_DIR) \( -name \*.so -or -name \*.la -or -name \*.a \)`; \
+	@LIST_LOCAL_PLUGINS=`find $(LOCAL_PLUGINS_DIR) \( -name \*.so -or -name \*.la \)`; \
 	echo -n "Removing plugins..."; \
 	for PLUGIN in $$LIST_LOCAL_PLUGINS; do \
 		rm $$PLUGIN; \

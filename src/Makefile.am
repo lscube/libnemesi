@@ -78,3 +78,6 @@ install-exec-local:
 	@cd $(DESTDIR)$(exec_prefix)/bin; \
 	ln -s $(NEMESI_BIN) $(NEMESI_GUI); \
 	cd -
+
+uninstall-local:
+	rm -f $(DESTDIR)$(exec_prefix)/bin/$(NEMESI_GUI);

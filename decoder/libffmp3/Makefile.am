@@ -2,7 +2,7 @@ nemesiincludedir=$(top_srcdir)/include
 
 lib_LTLIBRARIES = libffmp3.la
 
-libdir = $(nemesi_plugindir)
+libdir = $(DESTDIR)$(nemesi_plugindir)
 
 libffmp3_la_SOURCES = ffmp3.c
 
