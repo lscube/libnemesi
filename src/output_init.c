@@ -32,17 +32,19 @@
 #define NMS_GLOBAL_OUTPUT
 #include <nemesi/output.h>
 
+#include <nemesi/main.h>
 #include <nemesi/preferences.h>
 #include <nemesi/comm.h>
 
-int output_init(void)
+int output_init(NMSOutputHints *hints)
 {
 	if (!(nmsoutc = malloc(sizeof(NMSOutput))))
 		nmserror("Could not alloc output struct");
 
 	nmsprintf(1, SEPARATOR);
 	// AUDIO MODULE INIT
-	if ((nmsoutc->audio=audio_init("oss")) == NULL) {
+	// if ((nmsoutc->audio=audio_init("sdl")) == NULL) {
+	if ((nmsoutc->audio=audio_init(hints ? hints->audio : NULL)) == NULL) {
 		nmserror("Audio module not available");
 		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
 		// rem_avail_pref("output card");
@@ -51,7 +53,7 @@ int output_init(void)
 
 	nmsprintf(1, SEPARATOR);
 	// VIDEO MODULE INIT
-	if ((nmsoutc->video=video_preinit("sdl")) == NULL) {
+	if ((nmsoutc->video=video_preinit(hints ? hints->video : NULL)) == NULL) {
 		if (!nmsoutc->audio) {
 			nmserror("Video module not available: setting \"output\" to \"null\"");
 			rem_avail_pref("output card");
@@ -62,7 +64,7 @@ int output_init(void)
 
 	nmsprintf(1, SEPARATOR);
 	// DISKWRITER MODULE INIT
-	if ( (nmsoutc->diskwriter=diskwriter_init(DEFAULT_FILENAME)) == NULL ) {
+	if ( (nmsoutc->diskwriter=diskwriter_init(hints ? hints->diskwriter : NULL)) == NULL ) {
 		fprintf(stderr, "Disk Writer module not available\n");
 		rem_avail_pref("output disk");
 		if ( strcmp("card", get_pref("output")) )

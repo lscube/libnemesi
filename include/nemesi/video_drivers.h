@@ -101,15 +101,19 @@ typedef struct {
         void (*uninit)(void);
 } NMSVFunctions;
 
+#if 0
 #if HAVE_SDL
 extern NMSVFunctions nms_video_sdl;
 #endif
+#endif
+
+void list_video_out(void);
+NMSVFunctions *init_best_video_out(char *);
 
 /*
 char *vo_format_name(int format);
 int vo_init(void);
 
-vo_functions_t* init_best_video_out(char** vo_list);
 void list_video_out();
 
 // NULL terminated array of all drivers

@@ -99,17 +99,19 @@ typedef struct {
         void (*uninit)(void);
 } NMSAFunctions;
 
+#if 0
 extern NMSAFunctions nms_audio_oss;
 #if HAVE_SDL
 extern NMSAFunctions nms_audio_sdl;
 #endif
+#endif
 
-NMSAFunctions *init_best_audio_out(const char *);
+void list_audio_out(void);
+NMSAFunctions *init_best_audio_out(char *);
 /*
 char *ao_format_name(int format);
 int ao_init(void);
 
-ao_functions_t* init_best_audio_out(char** ao_list);
 void list_audio_out();
 
 // NULL terminated array of all drivers

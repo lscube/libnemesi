@@ -47,9 +47,13 @@
 #define usage()	{ \
 			nmsprintf(1, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
 			nmsprintf(1, "\n"); \
-			nmsprintf(1, "\t-h|--help\tdisplay this help and exit\n"); \
-			nmsprintf(1, "\t-V|--version\tdisplay version information and exit\n"); \
-			nmsprintf(1, "\t-v [n]\t\tset verbose level to 'n'. Without 'n' the level will be incremented.\n\n"); \
+			nmsprintf(1, "\t-h|--help\t\tdisplay this help and exit\n"); \
+			nmsprintf(1, "\t-V|--version\t\tdisplay version information and exit\n"); \
+			nmsprintf(1, "\t-v [n]\t\t\tset verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
+			nmsprintf(1, "\n   Output options:\n"); \
+			nmsprintf(1, "\t--ao <drv[:dev]>\tselect audio output driver (--ao help for a list)\n"); \
+			nmsprintf(1, "\t--vo <drv[:opt]>\tselect video output driver (--vo help for a list)\n"); \
+			nmsprintf(1, "\n"); \
 		}
 
 #define version() { \
@@ -59,9 +63,10 @@
 		  }
 
 #define CL_MAIN_OPTIONS	"hv::V"		/* help, verbosity, version */
-#define CL_MAIN_LONG_OPTIONS	{"version", 0, 0, 'V'}, \
-				{"help", 0, 0, 'h'}, \
-				{"ao", 1, 0, 1}
+#define CL_MAIN_LONG_OPTIONS	{"version", 0, NULL, 'V'}, \
+				{"help", 0, NULL, 'h'}, \
+				{"ao", 1, NULL, 1}, \
+				{"vo", 1, NULL, 2}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS
@@ -69,7 +74,7 @@
 
 int ui(struct RTSP_args *, int, char **);
 int parse_cl(int, char **, char **);
-int parse_main_cl(int, char **);
+int parse_main_cl(int, char **, NMSOutputHints *);
 int parse_ui_cl(int, char **, char **);
 int parse_prompt(struct RTSP_args *, char *);
 int seturlname(struct RTSP_args *, char *);

@@ -3,9 +3,17 @@
 nemesi \- NEtwork MEdia Streamer I
 .SH SYNOPSIS
 .B nemesi 
-.RB [ " -hV " ]
+.RB [ " options " ]
 .RB [ " media URL " ]
-.SH OPTIONS
+.SS media URL
+The URL of the multimedia file that you want enjoy.
+.RS
+.I Example:
+.RS
+nemesi rtsp://remotehost:port/media
+.RE
+.PP
+.SH GENERAL OPTIONS
 .TP
 .B -h
 List command-line options.
@@ -15,9 +23,45 @@ Print version.
 .TP
 .B -v [n]
 Set verbosity level
+.SH AUDIO OUTPUT OPTIONS
+.B --ao <driver1[:device],driver2,...,[...]>
+.RS
+Specify a list of audio output drivers.
+.RE
+If the list ends with "..." then
+.B NeMeSI
+will also try the other present drivers, not listed on the command line, if no
+given driver can work.
+.BR
+.I NOTE:
+Use --ao help to view the list of available audio drivers.
+.
+Available audio output drivers are:
 .TP
-.B media URL
-The URL of the multimedia file that you want enjoy.
+.B sdl\ \ \ \ 
+Highly platform independent SDL (Simple Directmedia Layer) library
+output driver.
+.TP
+.B oss\ \ \ \ 
+Open Sound System audio driver
+.SH VIDEO OUTPUT OPTIONS
+.B --vo <driver1[:option],driver2,...,[...]>
+.RS
+Specify a list of video output drivers.
+.RE
+If the list ends with "..." then
+.B NeMeSI
+will also try the other present drivers, not listed on the command line, if no
+given driver can work.
+.BR
+.I NOTE:
+Use --vo help to view the list of available video drivers.
+.
+Available video output drivers are:
+.TP
+.B sdl\ \ \ \ 
+Highly platform independent SDL (Simple Directmedia Layer) library
+output driver.
 .SH DESCRIPTION
 .B NeMeSI \-\- NEtwork MEdia Streamer I
 is a streaming client that allows user to enjoy playback of multimedia files

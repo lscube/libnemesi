@@ -77,6 +77,6 @@ uint8 *ab_get(uint32, ...);
 void ab_uninit(NMSAudioBuffer *);
 /* end of Audio Buffer defines */
 
-NMSAudio *audio_init(const char *);
+NMSAudio *audio_init(char *);
 
 #endif

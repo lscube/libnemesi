@@ -9,7 +9,7 @@ libaudio_la_SOURCES =	ab_get.c \
 			audio_init.c \
 			audio_oss.c \
 			audio_sdl.c \
-			init_best_audio_out.c
+			audio_utils.c
 
 libaudio_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

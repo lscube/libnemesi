@@ -39,7 +39,7 @@
 /*!
   Init audio
   */
-NMSAudio *audio_init(const char *drv_hint)
+NMSAudio *audio_init(char *drv_hint)
 {
 	NMSAudio *ac;
 	// NMSAFunctions *funcs;

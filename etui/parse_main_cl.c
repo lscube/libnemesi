@@ -30,8 +30,10 @@
 #include <getopt.h>
 
 #include <nemesi/etui.h>
+#include <nemesi/video_drivers.h>
+#include <nemesi/audio_drivers.h>
 
-int parse_main_cl(int argc, char **argv)
+int parse_main_cl(int argc, char **argv, NMSOutputHints *hints)
 {
 	int ret = 0;
 	char usage = 0; // printf usage at the end of function
@@ -45,7 +47,7 @@ int parse_main_cl(int argc, char **argv)
 
 	opterr = 0;
 	optind = 1;
-	while (((ch = getopt_long(argc, argv, CL_OPTIONS, long_options, &option_index)) != -1))
+	while (((ch = getopt_long(argc, argv, ":"CL_OPTIONS, long_options, &option_index)) != -1))
 		switch (ch) {
 		case 'h':	/* help */
 			usage = 1;
@@ -91,8 +93,24 @@ int parse_main_cl(int argc, char **argv)
 				nmsprintf(v, NULL);
 				// nmsprintf(0, "Verbosity level set to %d\n", nmsprintf(v, NULL));
 			break;
-		case 1:
-			nmsprintf(3, "Audio module chosen\n");
+		case 1: // audio out driver selection
+			if ( !strcmp(optarg, "help") ) {
+				list_audio_out();
+				ret = 1;
+			} else
+				hints->audio = strdup(optarg);
+			break;
+		case 2: // video out driver selection
+			if ( !strcmp(optarg, "help") ) {
+				list_video_out();
+				ret = 1;
+			} else
+				hints->video = strdup(optarg);
+			break;
+		case ':':
+			nmserror("Missing argument for option \"%s\"\n", argv[optind-1]);
+			usage = 1;
+			ret = -1;
 			break;
 		case '?':
 			if (isprint(optopt))

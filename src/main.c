@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 	struct RTSP_args *rtsp_args;
 	pthread_t rtsp_tid;
 	pthread_attr_t rtsp_attr;
+	NMSOutputHints hints = {NULL, NULL, NULL};
 	int n;
 	void *ret;
 	
@@ -51,7 +52,8 @@ int main(int argc, char *argv[])
 	// nmsprintf(0, "\nWelcome! This is %s - %s -- version %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 	header();
 
-	if ( (n=parse_main_cl(argc, argv)) )
+	// command line parsing
+	if ( (n=parse_main_cl(argc, argv, &hints)) )
 		exit((n<0) ? 1 : 0);
 
 	memset(decoders, 0, 128*sizeof(int (*)()));
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
 		exit( nmserror("Cannot load plugins: %s", strerror(n)) );
 
 	// output initialization
-	if (output_init())
+	if (output_init(&hints))
 		exit( nmserror("Error initialazing output module") );
 
 	// Creation of RTSP Thread
@@ -99,6 +101,13 @@ int main(int argc, char *argv[])
 		nmsprintf(2, "Cannot send cancel signal to RTSP Thread\n");
 
 	output_uninit();
+
+	if (hints.audio)
+		free(hints.audio);
+	if (hints.video)
+		free(hints.video);
+	if (hints.diskwriter)
+		free(hints.diskwriter);
 
 	nmsprintf(1, "\nBye bye!\n\n");
 

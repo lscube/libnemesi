@@ -162,7 +162,8 @@ libvideo_la_SOURCES = img_format_name.c \
 			video_sdl.c \
 			video_th.c \
 			video_th_start.c \
-			video_th_stop.c
+			video_th_stop.c \
+			video_utils.c
 
 
 libvideo_la_LDFLAGS = -static
@@ -176,7 +177,8 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libvideo_la_LIBADD =
 am_libvideo_la_OBJECTS = img_format_name.lo video_preinit.lo \
-	video_sdl.lo video_th.lo video_th_start.lo video_th_stop.lo
+	video_sdl.lo video_th.lo video_th_start.lo video_th_stop.lo \
+	video_utils.lo
 libvideo_la_OBJECTS = $(am_libvideo_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -186,7 +188,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/video_preinit.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/video_sdl.Plo ./$(DEPDIR)/video_th.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/video_th_start.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/video_th_stop.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/video_th_stop.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/video_utils.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -231,6 +234,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_th.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_th_start.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_th_stop.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_utils.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \

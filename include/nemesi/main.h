@@ -40,6 +40,12 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/output.h>
 
+typedef struct {
+	char *audio;
+	char *video;
+	char *diskwriter;
+} NMSOutputHints;
+
 struct RTSP_args {
 	int pipefd[2];
 	pthread_mutex_t comm_mutex;
@@ -48,7 +54,7 @@ struct RTSP_args {
 };
 
 int init_rtsp_args(struct RTSP_args **);
-int output_init(void);
+int output_init(NMSOutputHints *);
 int output_uninit(void);
 int load_plugins(void);
 

@@ -39,10 +39,9 @@
 /*!
   Init video
   */
-NMSVideo *video_preinit(const char *drv_hint)
+NMSVideo *video_preinit(char *drv_hint)
 {
 	NMSVideo *vc;
-	NMSVFunctions *funcs;
 
 	if ((vc=malloc(sizeof(NMSVideo))) == NULL) {
 		nmserror("Could not alloc video structure");
@@ -54,6 +53,7 @@ NMSVideo *video_preinit(const char *drv_hint)
 	vc->fps = 0;
 
 	// Video Output Driver selection
+#if 0
 	vc->functions = &nms_video_sdl; // XXX: very very temporanea
 	funcs = vc->functions;
 
@@ -62,8 +62,11 @@ NMSVideo *video_preinit(const char *drv_hint)
 	// video init
 	if (funcs->preinit(NULL)) // TODO: send subdriver hint
 		return NULL;
+#endif
+	if ( !(vc->functions = init_best_video_out(drv_hint)) )
+		return NULL;
 	
-	nmsprintf(1, "Video driver: %s\n", funcs->info->name);
+	nmsprintf(1, "Video driver: %s\n", vc->functions->info->name);
 
 	return vc;
 }
