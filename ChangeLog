@@ -1,5 +1,249 @@
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
+NEMESI 0.5.2
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r171 | shawill | 2005-03-18 10:08:46 +0100 (Fri, 18 Mar 2005) | 2 lines
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/include/nemesi/rtsp.h
+   M /trunk/rtsp/send_get_request.c
+   M /trunk/rtsp/send_pause_request.c
+   M /trunk/rtsp/send_play_request.c
+   M /trunk/rtsp/send_setup_request.c
+   M /trunk/rtsp/send_teardown_request.c
+
+RTSP message lines end with CRLF now: better adherence to rfc.
+
+------------------------------------------------------------------------
+r170 | mancho | 2005-03-17 12:12:57 +0100 (Thu, 17 Mar 2005) | 4 lines
+Changed paths:
+   M /trunk/00pl
+   M /trunk/INSTALL
+   M /trunk/NEWS
+   M /trunk/configure.ac
+   M /trunk/debian/changelog
+   M /trunk/nemesi.spec
+
+Updating version number to 0.5.2.
+Next to be released.
+
+
+------------------------------------------------------------------------
+r169 | shawill | 2005-03-17 12:12:16 +0100 (Thu, 17 Mar 2005) | 2 lines
+Changed paths:
+   M /trunk/egui/Makefile.am
+   M /trunk/egui/callbacks.c
+   M /trunk/egui/callbacks.h
+   A /trunk/egui/gui_url.c
+   A /trunk/egui/gui_url.h
+   M /trunk/egui/interface.c
+   M /trunk/egui/nemesi-gui.glade
+
+GUI improvements.
+
+------------------------------------------------------------------------
+r168 | shawill | 2005-03-15 19:20:48 +0100 (Tue, 15 Mar 2005) | 2 lines
+Changed paths:
+   M /trunk/egui/Makefile.am
+   M /trunk/egui/callbacks.c
+   M /trunk/egui/callbacks.h
+   M /trunk/egui/gnmsprint.c
+   M /trunk/egui/gnmsprint.h
+   M /trunk/egui/interface.c
+   M /trunk/egui/nemesi-gui.glade
+
+completion for open dialog.
+
+------------------------------------------------------------------------
+r167 | shawill | 2005-03-14 15:05:35 +0100 (Mon, 14 Mar 2005) | 2 lines
+Changed paths:
+   M /trunk/egui/Makefile.am
+   M /trunk/egui/callbacks.c
+   M /trunk/egui/callbacks.h
+   A /trunk/egui/gnmsprint.c
+   A /trunk/egui/gnmsprint.h
+   M /trunk/egui/gui.c
+   M /trunk/egui/gui_statusbar.c
+   M /trunk/egui/interface.c
+   M /trunk/egui/nemesi-gui.glade
+   M /trunk/include/nemesi/comm.h
+   M /trunk/output/video/video_th_stop.c
+   M /trunk/rtsp/check_status.c
+   M /trunk/src/nmsprint.c
+
+new open dialog for GUI. A combo replaces the old text entry, so that the previous opens will be remembered and available for re-selection.
+
+------------------------------------------------------------------------
+r166 | shawill | 2005-03-09 13:22:25 +0100 (Wed, 09 Mar 2005) | 2 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+
+sorry... I forgot to remove "nmserror.c" line...
+
+------------------------------------------------------------------------
+r165 | shawill | 2005-03-09 12:49:47 +0100 (Wed, 09 Mar 2005) | 10 lines
+Changed paths:
+   M /trunk/decoder/dec_create.c
+   M /trunk/egui/gui.c
+   M /trunk/egui/gui_throbber.c
+   M /trunk/etui/parse_cl.c
+   M /trunk/etui/ui.c
+   M /trunk/include/nemesi/comm.h
+   M /trunk/libCCstreaming/cc_parse_urilicense.c
+   M /trunk/libCCstreaming/cc_prms_chk.c
+   M /trunk/libCCstreaming/cc_tag_file.c
+   M /trunk/output/audio/ab_init.c
+   M /trunk/output/audio/audio_init.c
+   M /trunk/output/audio/audio_oss.c
+   M /trunk/output/audio/audio_sdl.c
+   M /trunk/output/audio/audio_utils.c
+   M /trunk/output/diskwriter/diskwriter.c
+   M /trunk/output/diskwriter/diskwriter_init.c
+   M /trunk/output/diskwriter/get_file_fd.c
+   M /trunk/output/video/video_preinit.c
+   M /trunk/output/video/video_sdl.c
+   M /trunk/output/video/video_th_start.c
+   M /trunk/output/video/video_utils.c
+   M /trunk/rtcp/rtcp_schedule.c
+   M /trunk/rtcp/rtcp_thread_create.c
+   M /trunk/rtcp/set_ssrc_sdes.c
+   M /trunk/rtp/init_rtp_sess.c
+   M /trunk/rtp/rtp.c
+   M /trunk/rtp/rtp_thread_create.c
+   M /trunk/rtp/set_stm_src.c
+   M /trunk/rtp/ssrc_check.c
+   M /trunk/rtsp/init_state.c
+   M /trunk/rtsp/remove_pkt.c
+   M /trunk/rtsp/rtsp_clean.c
+   M /trunk/rtsp/rtsp_med_create.c
+   M /trunk/rtsp/rtsp_sess_copy.c
+   M /trunk/rtsp/send_play_request.c
+   M /trunk/rtsp/set_rtsp_sessions.c
+   M /trunk/sdp/sdp_media_setup.c
+   M /trunk/sdp/sdp_parse_m_descr.c
+   M /trunk/sdp/sdp_session_setup.c
+   M /trunk/sdp/sdp_set_attr.c
+   D /trunk/src/nmserror.c
+   M /trunk/src/nmsprint.c
+
+nmserror completely removed: now nmsprintf(NNMSML_ERR, ...) or
+nmsprintf(NMSML_FATAL, ...) do the same job marvellously done by old nmserror
+'till now. We all will remember you for ever!!! :-(((
+By now nmsprintf and nmsstatusprintf (as said in the last commit) is a pointer
+to function. if some different ui would like to reimplement the functions these
+are the specifications:
+int (*nmsprintf)(int level, const char *fmt, ...)
+for return value: ( level < NMSML_WARN ) ? 1 : 0;
+
+
+------------------------------------------------------------------------
+r164 | shawill | 2005-03-08 18:57:34 +0100 (Tue, 08 Mar 2005) | 4 lines
+Changed paths:
+   M /trunk/decoder/dec_clean.c
+   M /trunk/decoder/decoder.c
+   M /trunk/egui/gui.c
+   M /trunk/egui/gui_throbber.c
+   M /trunk/etui/get_infos.c
+   M /trunk/etui/parse_cl.c
+   M /trunk/etui/send_play.c
+   M /trunk/etui/ui.c
+   M /trunk/include/nemesi/comm.h
+   M /trunk/include/nemesi/etui.h
+   M /trunk/libCCstreaming/cc_printmask.c
+   M /trunk/libCCstreaming/cc_prms_chk.c
+   M /trunk/libCCstreaming/issdplicense.c
+   M /trunk/output/audio/ab_get.c
+   M /trunk/output/audio/audio_init.c
+   M /trunk/output/audio/audio_oss.c
+   M /trunk/output/audio/audio_sdl.c
+   M /trunk/output/audio/audio_utils.c
+   M /trunk/output/diskwriter/diskwriter.c
+   M /trunk/output/diskwriter/get_file_fd.c
+   M /trunk/output/video/video_preinit.c
+   M /trunk/output/video/video_sdl.c
+   M /trunk/output/video/video_th.c
+   M /trunk/output/video/video_th_stop.c
+   M /trunk/output/video/video_utils.c
+   M /trunk/rtcp/handle_rtcp_event.c
+   M /trunk/rtcp/parse_rtcp_app.c
+   M /trunk/rtcp/parse_rtcp_bye.c
+   M /trunk/rtcp/parse_rtcp_pkt.c
+   M /trunk/rtcp/parse_rtcp_rr.c
+   M /trunk/rtcp/parse_rtcp_sdes.c
+   M /trunk/rtcp/parse_rtcp_sr.c
+   M /trunk/rtcp/rtcp_clean.c
+   M /trunk/rtcp/rtcp_hdr_val_chk.c
+   M /trunk/rtcp/rtcp_recv.c
+   M /trunk/rtcp/send_rtcp_bye.c
+   M /trunk/rtcp/send_rtcp_rr.c
+   M /trunk/rtp/rtp.c
+   M /trunk/rtp/rtp_clean.c
+   M /trunk/rtp/rtp_hdr_val_chk.c
+   M /trunk/rtp/rtp_recv.c
+   M /trunk/rtp/set_stm_src.c
+   M /trunk/rtp/ssrc_check.c
+   M /trunk/rtsp/check_response.c
+   M /trunk/rtsp/check_status.c
+   M /trunk/rtsp/close_cmd.c
+   M /trunk/rtsp/close_rtsp.c
+   M /trunk/rtsp/get_transport_str.c
+   M /trunk/rtsp/handle_get_response.c
+   M /trunk/rtsp/handle_pause_response.c
+   M /trunk/rtsp/handle_play_response.c
+   M /trunk/rtsp/handle_setup_response.c
+   M /trunk/rtsp/handle_teardown_response.c
+   M /trunk/rtsp/init_rtsp.c
+   M /trunk/rtsp/init_state.c
+   M /trunk/rtsp/open_cmd.c
+   M /trunk/rtsp/pause_cmd.c
+   M /trunk/rtsp/play_cmd.c
+   M /trunk/rtsp/playing_state.c
+   M /trunk/rtsp/ready_state.c
+   M /trunk/rtsp/recording_state.c
+   M /trunk/rtsp/reinit_rtsp.c
+   M /trunk/rtsp/rtsp.c
+   M /trunk/rtsp/rtsp_clean.c
+   M /trunk/rtsp/rtsp_recv.c
+   M /trunk/rtsp/rtsp_sess_create.c
+   M /trunk/rtsp/send_get_request.c
+   M /trunk/rtsp/send_pause_request.c
+   M /trunk/rtsp/send_play_request.c
+   M /trunk/rtsp/send_setup_request.c
+   M /trunk/rtsp/send_teardown_request.c
+   M /trunk/rtsp/set_rtsp_media.c
+   M /trunk/rtsp/set_rtsp_sessions.c
+   M /trunk/rtsp/set_transport_str.c
+   M /trunk/rtsp/seturlname.c
+   M /trunk/rtsp/stop_cmd.c
+   M /trunk/sdp/sdp_media_setup.c
+   M /trunk/sdp/sdp_session_setup.c
+   M /trunk/src/Makefile.am
+   M /trunk/src/load_plugins.c
+   M /trunk/src/main.c
+   M /trunk/src/nmserror.c
+   A /trunk/src/nmsprint.c
+   D /trunk/src/nmsprintf.c
+   D /trunk/src/nmsstatusprintf.c
+   M /trunk/src/output_init.c
+   M /trunk/src/uiprintf.c
+   M /trunk/wsocket/server_connect.c
+   M /trunk/wsocket/server_create.c
+   M /trunk/wsocket/tcp_open.c
+
+new nmsprintf: now nmsprintf and nmsstatusprintf are pointer to function.
+There are default implementations of two print functions, but a user interface could redefine it's own print functions.
+This way the GUI can implement its messege windows or status bar reports very easily.
+
+------------------------------------------------------------------------
+r163 | mancho | 2005-03-01 17:14:31 +0100 (Tue, 01 Mar 2005) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+
+NeMeSI 0.5.1
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 NEMESI 0.5.1
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
