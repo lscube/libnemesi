@@ -10,7 +10,7 @@ Source: http://streaming.polito.it/download/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires: SDL >= 1.2.2
 BuildRequires: SDL-devel >= 1.2.2
-Requires: ffmepg >= 0.4.6
+Requires: ffmpeg >= 0.4.6
 BuildRequires: ffmpeg-devel >= 0.4.6
 
 %description
