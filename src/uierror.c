@@ -55,7 +55,9 @@ int uierror(const char *fmt, ...)
 
 	va_start(ap, fmt);
 
+	fprintf(uistderr, "error: ");
 	vfprintf(uistderr, fmt, ap);
+	fprintf(uistderr, "\n");
 
 	va_end(ap);
 	fclose(uistderr);

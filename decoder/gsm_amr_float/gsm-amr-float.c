@@ -21,6 +21,7 @@
 
 #include <config.h>
 #include <nemesi/types.h>
+#include <nemesi/output.h>
 /*
 void Copyright(void)
 {
@@ -68,8 +69,9 @@ void Copyright(void)
 
 #define L_FRAME 160
 
-int decode(char *data, int len, uint8 *(*ab_get)(uint32))
+int decode(char *data, int len, NMSOutput *outc)
 {
+	NMSAFunctions *funcs = outc->audio->functions;
 
 	short synth[L_FRAME];
 	int frames = 0;
@@ -82,11 +84,13 @@ int decode(char *data, int len, uint8 *(*ab_get)(uint32))
 #endif
 	uint8 *outbuff;
 	uint16 *p;
+	uint32 req_len;
 
 	unsigned char *analysis = (unsigned char *) data;
 	enum Mode dec_mode;
 
-	outbuff=(uint8 *)p=(*ab_get)(L_FRAME * sizeof(uint16) * ELEVEN + L_FRAME * sizeof(uint16) / 40);
+	req_len = L_FRAME * sizeof(uint16) * ELEVEN + L_FRAME * sizeof(uint16) / 40;
+	outbuff=(uint8 *)p=funcs->get_buff(req_len);
 
 	/* init decoder */
 	if (!destate)
@@ -162,6 +166,7 @@ int decode(char *data, int len, uint8 *(*ab_get)(uint32))
 				adjust40 = 0;
 			}
 		}
+		funcs->play_buff(outbuff, req_len);
 /*		if (write(audio_fd, outbuff, L_FRAME * sizeof(short) * ELEVEN + L_FRAME * sizeof(short) / 40) != (L_FRAME * sizeof(short) * ELEVEN) + L_FRAME * sizeof(short) / 40)
 			fprintf(stderr, "\nerror writing output file: %s\n", strerror(errno));
 */

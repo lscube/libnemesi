@@ -157,21 +157,22 @@ target_vendor = @target_vendor@
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libaudio.la
-libaudio_la_SOURCES = set_audiodev.c \
-			enable_output.c \
-			sys_buff_size.c \
-			init_SDL.c \
-			SDL_mixaudio.c \
+libaudio_la_SOURCES = ab_get.c \
 			ab_init.c \
-			ab_get.c \
-			oss_play.c \
-			get_sys_buff.c \
-			empty_audio_buffer.c \
-			audio_init.c \
+			audio_close.c \
+			audio_format_bits.c \
+			audio_format_name.c \
+			audio_preinit.c \
+			audio_oss.c \
 			audio_pause.c \
 			audio_play.c \
 			audio_sdl.c \
-			audio_close.c
+			empty_audio_buffer.c \
+			enable_output.c \
+			get_sys_buff.c \
+			oss_play.c \
+			set_audiodev.c \
+			sys_buff_size.c
 
 
 libaudio_la_LDFLAGS = -static
@@ -184,27 +185,29 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 
 libaudio_la_LIBADD =
-am_libaudio_la_OBJECTS = set_audiodev.lo enable_output.lo \
-	sys_buff_size.lo init_SDL.lo SDL_mixaudio.lo ab_init.lo \
-	ab_get.lo oss_play.lo get_sys_buff.lo empty_audio_buffer.lo \
-	audio_init.lo audio_pause.lo audio_play.lo audio_sdl.lo \
-	audio_close.lo
+am_libaudio_la_OBJECTS = ab_get.lo ab_init.lo audio_close.lo \
+	audio_format_bits.lo audio_format_name.lo audio_preinit.lo \
+	audio_oss.lo audio_pause.lo audio_play.lo audio_sdl.lo \
+	empty_audio_buffer.lo enable_output.lo get_sys_buff.lo \
+	oss_play.lo set_audiodev.lo sys_buff_size.lo
 libaudio_la_OBJECTS = $(am_libaudio_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/SDL_mixaudio.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/ab_get.Plo ./$(DEPDIR)/ab_init.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ab_get.Plo ./$(DEPDIR)/ab_init.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_close.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/audio_init.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/audio_format_bits.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/audio_format_name.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/audio_oss.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_pause.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_play.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/audio_preinit.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/audio_sdl.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/empty_audio_buffer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/enable_output.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/get_sys_buff.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/init_SDL.Plo ./$(DEPDIR)/oss_play.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/oss_play.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/set_audiodev.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/sys_buff_size.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -245,18 +248,19 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SDL_mixaudio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ab_get.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ab_init.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_close.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_init.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_format_bits.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_format_name.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_oss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_pause.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_play.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_preinit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/audio_sdl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/empty_audio_buffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enable_output.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get_sys_buff.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init_SDL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/oss_play.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set_audiodev.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sys_buff_size.Plo@am__quote@

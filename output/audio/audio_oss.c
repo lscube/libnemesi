@@ -1,5 +1,5 @@
 /* * 
- *  $Id: audio_driver.h 48 2003-11-10 16:01:50Z mancho $
+ *  $Id: audio_oss.c 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -24,36 +24,55 @@
  *  along with NeMeSI; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
- *  This file is largely and freely inspired by audio_out_internal.h from MPlayer project.
- *  
  * */
- 
-#ifndef __AUDIO_DRIVER_H
-#define __AUDIO_DRIVER_H
 
-#include <nemesi/types.h>
+#include <stdlib.h>
 
-static uint32 preinit(const char *arg);
-static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags);
-// TODO function "control" for volume
-// static int control(int cmd, void *arg);
-static uint8 *get_buff(uint32 len);
-static uint32 play_buff(uint8 *data, uint32 len);
-static void pause(void);
-static void resume(void);
-static void uninit(void);
+#include <nemesi/comm.h>
+#include <nemesi/audio_drivers.h>
+#include <nemesi/audio_driver.h>
 
-#define NMS_LIB_AUDIO(x) NMSAFunctions nms_audio_##x =\
-{\
-	&info, \
-	preinit, \
-	config, \
-	get_buff, \
-	play_buff, \
-	pause, \
-	resume, \
-	uninit \
+static NMSADrvInfo info = {
+	"Open Sound System audio driver",
+	"oss",
+	"Open Media Streaming Project Team",
+	""
+};
+
+NMS_LIB_AUDIO(oss);
+
+static uint32 preinit(const char *arg)
+{
+	return 0;
 }
 
-#endif // __AUDIO_DRIVER_H
+static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags)
+{
+	return 0;
+}
+
+static uint8 *get_buff(uint32 len)
+{
+	return NULL;
+}
+
+static uint32 play_buff(uint8 *data, uint32 len)
+{
+	return 0;
+}
+
+static void pause(void)
+{
+	return;
+}
+
+static void resume(void)
+{
+	return;
+}
+
+static void uninit(void)
+{
+	return;
+}
 

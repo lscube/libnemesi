@@ -32,6 +32,7 @@
 #include <config.h>
 
 #include <nemesi/types.h>
+#include <nemesi/output.h>
 
 #ifndef GLOBAL_RTP_DEFS
 #define RTP_DEFS_EXTERN extern
@@ -101,7 +102,8 @@ RTP_DEFS_EXTERN struct rtp_pt_def rtp_pt_defs[128]
 #endif /* GLOBAL_RTP_DEFS */
 ;
 
-RTP_DEFS_EXTERN int (*decoders[128])(char *, int, uint8 *(*)());
+// RTP_DEFS_EXTERN int (*decoders[128])(char *, int, uint8 *(*)());
+RTP_DEFS_EXTERN int (*decoders[128])(char *, int, NMSOutput *);
 
 #undef GLOBAL_RTP_DEFS
 #undef RTP_DEFS_EXTERN

@@ -31,12 +31,6 @@
 #ifndef __AUDIO_DRIVERS_H
 #define __AUDIO_DRIVERS_H
 
-#ifndef NMS_GLOBAL_AUDIO_DRIVERS
-#define ADRV_EXTERN extern
-#else // NMS_GLOBAL_VIDEO_DRIVERS
-#define ADRV_EXTERN
-#endif // NMS_GLOBAL_VIDEO_DRIVERS
-
 #include <config.h>
 #include <nemesi/types.h>
 
@@ -66,7 +60,7 @@ typedef struct {
 	 * 	format:
          * returns : zero on successful initialization, non-zero on error.
          */
-        uint32 (*config)(uint32 rate,uint8 channels,uint32 format,uint32 flags);
+        uint32 (*config)(uint32 rate, uint8 channels, uint32 format, uint32 flags);
 	/*
 	 * allocs buffer for new decoded data.
 	 * params:
@@ -99,7 +93,7 @@ typedef struct {
 } NMSAFunctions;
 
 #if HAVE_SDL
-ADRV_EXTERN NMSAFunctions nms_audio_sdl;
+extern NMSAFunctions nms_audio_sdl;
 #endif
 
 /*
@@ -112,9 +106,6 @@ void list_audio_out();
 // NULL terminated array of all drivers
 extern ao_functions_t* audio_out_drivers[];
  */
-
-#undef NMS_GLOBAL_AUDIO_DRIVERS
-#undef ADRV_EXTERN
 
 #endif // __AUDIO_DRIVERS_H
 

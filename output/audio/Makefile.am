@@ -1,21 +1,22 @@
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libaudio.la
-libaudio_la_SOURCES =	set_audiodev.c \
-			enable_output.c \
-			sys_buff_size.c \
-			init_SDL.c \
-			SDL_mixaudio.c \
+libaudio_la_SOURCES =	ab_get.c \
 			ab_init.c \
-			ab_get.c \
-			oss_play.c \
-			get_sys_buff.c \
-			empty_audio_buffer.c \
-			audio_init.c \
+			audio_close.c \
+			audio_format_bits.c \
+			audio_format_name.c \
+			audio_preinit.c \
+			audio_oss.c \
 			audio_pause.c \
 			audio_play.c \
 			audio_sdl.c \
-			audio_close.c
+			empty_audio_buffer.c \
+			enable_output.c \
+			get_sys_buff.c \
+			oss_play.c \
+			set_audiodev.c \
+			sys_buff_size.c
 
 libaudio_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

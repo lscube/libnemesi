@@ -34,6 +34,8 @@
 #include <nemesi/decoder.h>
 #include <nemesi/rtpptdefs.h>
 #include <nemesi/preferences.h>
+#include <nemesi/output.h>
+#include <nemesi/audio_format.h>
 
 // #define SYS_BUFF 5 /*system buffer in num of packets*/
 #define GRAIN 20
@@ -90,6 +92,9 @@ void *decoder(void *args)
 	
 	select(0, NULL, NULL, NULL, &tvsleep);
 
+	// Audio init
+	nmsoutc->audio->functions->config(FREQ, CHANNELS, FORMAT, 0);
+
 	/* FV: startime ora assume il significato di istante di partenza del decoder */
 	gettimeofday(&(dec_args->startime), NULL);
 
@@ -141,8 +146,7 @@ void *decoder(void *args)
 						else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
-								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, \
-										(uint8 *(*)(uint32))ab_get);
+								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
 #ifndef HAVE_SDL
 								oss_play();
 #endif
@@ -161,12 +165,13 @@ void *decoder(void *args)
 										audio_play();
 									}
 								}
-							} else if ( !strcmp(output_pref, "diskdecoded") ) {
+							} /* XXX: not yet supported 
+							     else if ( !strcmp(output_pref, "diskdecoded") ) {
 								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, \
 										(uint8 *(*)(uint32))db_get);
 								diskwriter((char *)global_disk_buffer->data, global_disk_buffer->len);
 								global_disk_buffer->len = 0;
-							}
+							} */
 						}
 /**/
 				 		uiprintf("\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\

@@ -67,7 +67,7 @@ dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
-AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.hlimits.h malloc.h sys/ioctl.h)
+AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h sys/ioctl.h)
 AC_CHECK_HEADERS(ffmpeg/common.h ffmpeg/avcodec.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -83,7 +83,7 @@ AC_FUNC_ALLOCA
 AC_FUNC_MEMCMP
 AC_FUNC_MMAP
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr)
+AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv)
 AC_CHECK_FUNC(getaddrinfo)
 
 CFLAGS=""

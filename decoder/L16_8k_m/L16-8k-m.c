@@ -30,22 +30,26 @@
 #include <unistd.h>
 
 #include <nemesi/types.h>
+#include <nemesi/output.h>
 
 #define CHANNELS 2
 #define FACTOR_OVERSAMPLE 5
 #define ELEVEN 11
 
-int decode(char *data, int len, uint8 *(*ab_get)(uint32))
+int decode(char *data, int len, NMSOutput *outc)
 {
+	NMSAFunctions *funcs = outc->audio->functions;
 	int i, j, c;
 	/*
 	char outbuff[len*ELEVEN+len/40];
 	char *p=outbuff;
 	*/
 	uint8 *outbuff, *p;
+	uint32 req_len;
 	uint8 adjust=0, adjust40=0;
 
-	if ( (outbuff=p=(*ab_get)((uint32)(len*ELEVEN+len/40))) == NULL )
+	req_len=len*ELEVEN+len/40;
+	if ( (outbuff=p=funcs->get_buff(req_len)) == NULL )
 		return 1;
 
 	/* Endianess, Oversample to 44100Hz -- very very quick, raw and dirt */
@@ -71,6 +75,7 @@ int decode(char *data, int len, uint8 *(*ab_get)(uint32))
 			adjust40=0;
 		}
 	}
+	funcs->play_buff(outbuff, req_len);
 /*
 	if ( write(audio_fd, (char *)outbuff, len*ELEVEN+len/40) == -1 ){
 		fprintf(stderr,"\n\n\nCould not write on Audio Board\n\n\n");

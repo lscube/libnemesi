@@ -36,6 +36,7 @@
 #include <stdarg.h>
 #include <nemesi/types.h>
 #include <nemesi/comm.h>
+#include <nemesi/audio_drivers.h>
 
 #include <config.h>
 
@@ -57,6 +58,12 @@
 #define FREQ 44100
 #define CHANNELS 2
 #define BYTES_X_SAMPLE 2
+#define FORMAT AFMT_S16_LE
+
+typedef struct {
+	//! Functions for the specific audio output driver
+	NMSAFunctions *functions;
+} NMSAudio;
 
 /* Audio Buffer defines */
 #define SECONDS 1
@@ -65,9 +72,9 @@
 #define MIN_AUDIO_SYS_BUFF 0.2 /* min buffer percentage to request fast cycles */
 #define MAX_AUDIO_SYS_BUFF 0.9 /* max buffer percentage */
 
-struct audio_buff {
-/*	uint8 *audio_data; */
-	uint8 audio_data[AUDIO_BUFF_SIZE];
+typedef struct audio_buff {
+	uint8 *audio_data;
+/*	uint8 audio_data[AUDIO_BUFF_SIZE]; */
 	uint32 read_pos;
 	uint32 write_pos;
 	uint32 valid_data;
@@ -76,24 +83,29 @@ struct audio_buff {
 	int audio_fd;
 #endif
 	pthread_mutex_t syn;
-};
+} NMSAudioBuffer;
 
 AUDIO_EXTERN struct audio_buff *global_audio_buffer;
 
-struct audio_buff *ab_init(void);
+// struct audio_buff *ab_init(uint32);
+NMSAudioBuffer *ab_init(uint32);
 uint8 *ab_get(uint32, ...);
 /* end of Audio Buffer defines */
 
+NMSAudio *audio_preinit(char *);
+
+/*
 int audio_init(void);
 
 #ifdef HAVE_SDL
 SDL_AudioSpec *init_SDL(struct audio_buff *);
 void SDL_mixaudio(void *, Uint8 *, int);
 #else
+*/
 int set_audiodev(void);
 int oss_play(void);
 void enable_output(int);
-#endif
+// #endif
 
 int get_sys_buff(void);
 float sys_buff_size(float *);

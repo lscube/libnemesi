@@ -28,8 +28,8 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
-/* Define to 1 if you have the <fcntl.hlimits.h> header file. */
-#undef HAVE_FCNTL_HLIMITS_H
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
 
 /* Define to 1 if you have the <ffmpeg/avcodec.h> header file. */
 #undef HAVE_FFMPEG_AVCODEC_H
@@ -61,6 +61,9 @@
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 #undef HAVE_LIBPTHREAD
 
+/* Define to 1 if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -78,6 +81,9 @@
 
 /* Define to 1 if you have the `select' function. */
 #undef HAVE_SELECT
+
+/* Define to 1 if you have the `setenv' function. */
+#undef HAVE_SETENV
 
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET

@@ -41,7 +41,7 @@
 
 typedef struct {
 	// NMSAudio *audio;
-	char *audio; // XXX assolutamente temporanea;
+	NMSAudio *audio; // XXX assolutamente temporanea;
 	NMSVideo *video;
 } NMSOutput;
 

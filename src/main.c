@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	int n;
 	void *ret;
 	
-	extern int (*decoders[])(char *, int, uint8 *(*)());
+	// extern int (*decoders[])(char *, int, uint8 *(*)());
 
 	memset(decoders, 0, 128*sizeof(int (*)()));
 

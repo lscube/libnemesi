@@ -19826,7 +19826,8 @@ fi
 
 
 
-for ac_header in sys/time.h unistd.h strings.h errno.h fcntl.hlimits.h malloc.h sys/ioctl.h
+
+for ac_header in sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h sys/ioctl.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -21454,7 +21455,8 @@ done
 
 
 
-for ac_func in select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr
+
+for ac_func in select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include <nemesi/types.h>
+#include <nemesi/output.h>
 
 #include "common.h"
 #include "interface.h"
@@ -42,15 +43,17 @@
 #define BUFFER 8192
 
 int get_plugin_pt(void);
-int decode(char *, int, uint8 * (*)());
+int decode(char *, int, NMSOutput *);
 
 int get_plugin_pt(void)
 {
 	return 96;
 }
 
-int decode(char *data, int len, uint8 * (*ab_get) (uint32))
+int decode(char *data, int len, NMSOutput *outc)
 {
+	NMSAFunctions *funcs = outc->audio->functions;
+
 	static PMPSTR mp = NULL;
 
 	int size = 0;
@@ -77,8 +80,9 @@ int decode(char *data, int len, uint8 * (*ab_get) (uint32))
 	}
 #else
 	if (ret == MP3_OK) {
-		audio_data = (*ab_get) ((uint32) size);
+		audio_data = funcs->get_buff((uint32)size);
 		memcpy(audio_data, out, size);
+		funcs->play_buff(audio_data, (uint32)size);
 	}
 	else {
 		fprintf(stderr, "\ndecoded %d bytes with %d status\n", size, ret);

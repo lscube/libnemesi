@@ -33,7 +33,7 @@
 
 #include <nemesi/audio.h>
 
-struct audio_buff *ab_init(void)
+struct audio_buff *ab_init(uint32 buff_size)
 {
 	struct audio_buff *buff;
 	pthread_mutexattr_t mutex_attr;
@@ -43,12 +43,12 @@ struct audio_buff *ab_init(void)
 		uiprintf("Cannot allocate memory.\n");
 		return NULL;
 	}
-/*
-	if ( ((buff->audio_data) = (uint8 *)malloc(AUDIO_BUFF_SIZE*sizeof(uint8))) ==NULL ) {
+
+	if ( ((buff->audio_data) = (uint8 *)malloc(buff_size*sizeof(uint8))) ==NULL ) {
 		uiprintf("Cannot allocate memory.\n");
 		return NULL;
 	}
-*/
+
 	buff->read_pos=buff->write_pos=buff->valid_data=buff->len=0;
 
 #if 1

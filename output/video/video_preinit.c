@@ -31,8 +31,6 @@
 
 #include <nemesi/video.h>
 
-//! with this define we declare global variables contained in video_drivers.h
-#define VCT_GLOBAL_VIDEO_DRIVERS
 #include <nemesi/video_drivers.h>
 
 #include <config.h>
@@ -55,8 +53,10 @@ NMSVideo *video_preinit(char *drv_hint)
 	vc->functions = &nms_video_sdl; // XXX: very very temporanea
 	funcs = vc->functions;
 
+	// TODO: parse drv_hint for subdriver
+
 	// video init
-	if (funcs->preinit(NULL))
+	if (funcs->preinit(NULL)) // TODO: send subdriver hint
 		return NULL;
 	
 	uiprintf("Video driver: %s\n", funcs->info->name);

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id: audio_format_bits.c 48 2003-11-10 16:01:50Z mancho $
  *  
  *  This file is part of NeMeSI
  *
@@ -24,33 +24,52 @@
  *  along with NeMeSI; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
+ *  This file is taken from mplayer code and slightly modified
+ *  
  * */
 
-#include <nemesi/audio.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int audio_init(void)
+#include <config.h>
+#include <nemesi/audio_format.h>
+
+// return number of bits for 1 sample in one channel, or 8 bits for compressed
+int audio_format_bits(int format)
 {
-	struct audio_buff *audio_buffer;
-#ifdef HAVE_SDL
-	SDL_AudioSpec *SDL_audio_fmt;
-#endif
-	/* audio_buffer initialization */
-	if ( (audio_buffer=ab_init()) == NULL ) {
-		fprintf(stderr, "Failed while initializing Audio Buffer\n");
-		return 1;
-	}
+	switch (format) {
+	case AFMT_S16_LE:
+	case AFMT_S16_BE:
+	case AFMT_U16_LE:
+	case AFMT_U16_BE:
+		return 16;	//16 bits
 
-#ifdef HAVE_SDL /* SDL Initialization */
-	if( (SDL_audio_fmt = init_SDL(audio_buffer)) == NULL ) {
-		fprintf(stderr, "Cannot initialize SDL Library\n");
-		return 1;
-	}
-#else
-	/* OSS Initialization */
-	if((audio_buffer->audio_fd=set_audiodev()) == -1)
-		return 1;
+/*
+  the following two formats are not available with old linux kernel
+  headers (e.g. in 2.2.16)
+*/
+#ifdef AFMT_S32_LE
+	case AFMT_S32_LE:
+		return 32;
 #endif
-	global_audio_buffer=audio_buffer;
+#ifdef AFMT_S32_BE
+	case AFMT_S32_BE:
+		return 32;
+#endif
+	case AFMT_FLOAT:
+		return 32;
 
-	return 0;
+	case AFMT_MU_LAW:
+	case AFMT_A_LAW:
+	case AFMT_IMA_ADPCM:
+	case AFMT_S8:
+	case AFMT_U8:
+	case AFMT_MPEG:
+	case AFMT_AC3:
+	default:
+		return 8;	//default 1 byte
+
+	}
+	return 8;
 }
+

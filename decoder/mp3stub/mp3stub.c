@@ -39,7 +39,7 @@
 
 #include <nemesi/comm.h>
 #include <nemesi/types.h>
-
+//// XXX NON FUNZIONA PIU` !!!
 
 int decode(char *data, int len, int audio_fd, uint8 *(*ab_get)(uint32))
 {

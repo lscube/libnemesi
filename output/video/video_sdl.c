@@ -47,24 +47,24 @@
 #include <nemesi/video_driver.h>
 
 #define MUTEX_LOCK(mtx, x)	if (SDL_LockMutex(mtx)) { \
-					uiprintf("Cannot lock mutex"); \
+					uierror("Cannot lock mutex"); \
 					return x; \
 				}
 
 #define MUTEX_UNLOCK(mtx, x)	if (SDL_UnlockMutex(mtx)) { \
-					uiprintf("Cannot unlock mutex"); \
+					uierror("Cannot unlock mutex"); \
 					return x; \
 				}
 #ifdef SDL_ENABLE_LOCKS
 #define	SDL_OVR_LOCK(orv, x)	if (SDL_LockYUVOverlay (ovr)) { \
-					uiprintf("SDL: Couldn't lock YUV overlay\n"); \
+					uierror("SDL: Couldn't lock YUV overlay\n"); \
 					return x; \
 				}
 #define SDL_OVR_UNLOCK(ovr)	SDL_UnlockYUVOverlay (ovr);
 
 #define SDL_SRF_LOCK(srf, x)	if(SDL_MUSTLOCK(srf)) { \
 					if(SDL_LockSurface (srf)) { \
-						if(verbose) uiprintf("SDL: Couldn't lock RGB surface\n"); \
+						uierror("SDL: Couldn't lock RGB surface\n"); \
 						return x; \
 					} \
 				}
@@ -125,18 +125,14 @@ static uint32 preinit(const char *arg)
 	if (!flags) {
 		uiprintf("SDL Video already initialized\n");
 	} else {
-		uiprintf("Initializing SDL video output\n");
+		uiprintf("Initializing SDL Video output\n");
 		if (subsystem_init) {
-			if (SDL_InitSubSystem(flags)) {
-				uiprintf("Could not initialize SDL Video");
-				return 1;
-			}
+			if (SDL_InitSubSystem(flags))
+				return uierror("Could not initialize SDL Video");
 		} else {
 			flags |= SDL_INIT_NOPARACHUTE;
-			if (SDL_Init(flags)) {
-				uiprintf("Could not initialize SDL Video");
-				return 1;
-			}
+			if (SDL_Init(flags))
+				return uierror("Could not initialize SDL Video");
 		}
 		uiprintf("SDL Video initialized\n");
 	}
@@ -287,7 +283,7 @@ static uint32 get_picture(int w, int h, NMSPicture *pict)
 			pict->linesize[2] = bmp->pitches[2];
 			break;
 		default:
-			return uiprintf("SDL: unsupported format in alloc_picture");
+			return uierror("SDL: unsupported format in alloc_picture");
 			break;
 	}
 	SDL_OVR_LOCK(bmp, 1);
@@ -326,6 +322,8 @@ static uint32 update_screen(void)
 }
 static void uninit(void)
 {
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+
 	return;
 }
 

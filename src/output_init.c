@@ -46,8 +46,7 @@ int output_init(void)
 
 	uiprintf(SEPARATOR);
 	// AUDIO MODULE INIT
-	nmsoutc->audio = NULL;
-	if ( audio_init() ) {
+	if ((nmsoutc->audio=audio_preinit("sdl")) == NULL) {
 		fprintf(stderr, "Audio module not available: setting \"output\" to \"diskdecoded\"\n");
 		rem_avail_pref("output card");
 		edit_pref("output diskdecoded");
@@ -57,7 +56,7 @@ int output_init(void)
 	// VIDEO MODULE INIT
 	if ((nmsoutc->video=video_preinit("sdl")) == NULL) {
 		// TODO: rimuovere il video dalle availabilities
-		return 1;
+		return 1; // TODO non restituire errore
 	}
 
 	uiprintf(SEPARATOR);
@@ -69,7 +68,8 @@ int output_init(void)
 		if ( strcmp("card", get_pref("output")) ) {
 			fprintf(stderr, "\nNo output device available\n Cannot continue.\n");
 			return 1;
-		}
+		} else
+			fprintf(stderr, "Diskwriter succesfully initialized\n");
 	}
 	uiprintf(SEPARATOR);
 

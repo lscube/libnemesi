@@ -26,57 +26,41 @@
  *  
  * */
 
-#include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include <nemesi/types.h>
-#include <nemesi/output.h>
+#include <nemesi/audio.h>
 
-#include "mpg123.h"
-#include "mpglib.h"
+#include <nemesi/audio_drivers.h>
 
-/*#include <nemesi/comm.h>*/
+#include <config.h>
+#include <nemesi/comm.h>
 
-/* char buf[16384]; */
-/* struct mpstr mp; */
-
-#define BUFFER 8192 
-
-int get_plugin_pt(void);
-int decode(char *, int, NMSOutput *);
-
-int get_plugin_pt(void)
+/*!
+  Init audio
+  */
+NMSAudio *audio_preinit(char *drv_hint)
 {
-	return 96;
-}
+	NMSAudio *ac;
+	NMSAFunctions *funcs;
 
-int decode(char *data, int len, NMSOutput *outc)
-{
-	NMSAFunctions *funcs = outc->audio->functions;
-	static struct mpstr *mp = NULL;
-
-	int size;
-	char out[BUFFER];
-	int ret;
-	uint8 *audio_data;
-	uitn32 req_len;
-
-	if(!mp){
-		if((mp=(struct mpstr *)malloc(sizeof(struct mpstr))) == NULL){
-			fprintf(stderr,"Cannot allocate memory!\n");
-			return 1;
-		}
-		InitMP3(mp);
+	if ((ac=malloc(sizeof(NMSAudio))) == NULL) {
+		uierror("Could not alloc audio structure");
+		return NULL;
 	}
 
-	ret = decodeMP3(mp, data+4, len-4, out, BUFFER, &size);
-	while(ret == MP3_OK) {
-/*		write(audio_fd, out, size); */
-		audio_data=funcs->get_buff((uint32)size);
-		memcpy(audio_data, out, size);
-		funcs->play_buff(audio_data, (uint32)size);
-		ret = decodeMP3(mp, NULL, 0, out, BUFFER, &size);
-	}
+	// Audio Output Driver selection
+	ac->functions = &nms_audio_sdl; // XXX: very very temporanea
+	funcs = ac->functions;
 
-	return 0;
+	// TODO: parse drv hint for subdriver
+
+	// audio init
+	if (funcs->preinit(NULL)) // TODO: send subdriver hint
+		return NULL;
+	
+	uiprintf("Audio driver: %s\n", funcs->info->name);
+
+	return ac;
 }
+
