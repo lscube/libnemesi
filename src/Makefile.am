@@ -6,6 +6,7 @@ libutils_la_SOURCES =	urltokenize.c \
 			strdup.c \
 			strstrcase.c \
 			strncmpcase.c \
+			strcmpcase.c \
 			statustostr.c \
 			random32.c \
 			timeval_subtract.c \

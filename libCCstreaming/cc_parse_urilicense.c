@@ -27,6 +27,7 @@
  * */
 
 #include <nemesi/cc.h>
+#include <nemesi/utils.h>
 
 /*! \brief Parses Licenes URI and fills CCPermissions data structure.
  *
@@ -36,8 +37,28 @@
  * \param uri license uri to parse.  \param conds CCPermissions structure to be
  * filled.
  */
-int cc_parse_urilicense(char *uri, CCPermissions *perms)
+int cc_parse_urilicense(char *uri, CCPermsMask *mask)
 {
+	char *tkn, *permstr;
+
+	memset(mask, 0, sizeof(*mask));
+	
+	if(strncmpcase(uri, BASE_URI_LICENSE, strlen(BASE_URI_LICENSE))) // TODO: must continue or give an error, or ask what to to?
+		return nmserror("the base URI of license is not \"%s\", so it can't be considered valid");
+
+	tkn = uri + strlen(BASE_URI_LICENSE);
+	while(*tkn == '/') tkn++;
+	if (!(permstr = strdup(tkn)))
+		return nmserror("memory error in cc_parse_urilicense");
+	if (!(tkn = strchr(permstr, '/')))
+		*tkn = '\0';
+	if (!strcmpcase("publicdomain",permstr))
+		mask->publicdomain=1;
+	tkn = strtok(permstr, "-");
+	// while(*tkn) {}
+
+	free(permstr);
+
 	return 0;
 }
 

@@ -26,36 +26,32 @@
  *  
  * */
 
-#ifndef __UTILS_H
-#define __UTILS_H
+#include <nemesi/utils.h>
 
-#include <config.h>
+int strcmpcase(const char *s1, const char *s2)
+{
+	char *str1;
+	char *str2;
+	int res;
+	unsigned int i;
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/time.h>
+	if ((str1=strdup(s1)) == NULL)
+		return 1;
 
-#include <nemesi/comm.h>
-#include <nemesi/types.h>
+	if ((str2=strdup(s2)) == NULL)
+		return 1;
 
-#define min(x,y) ((x) < (y) ? (x) : (y))
-#define max(x,y) ((x) > (y) ? (x) : (y))
+	for (i = 0; i < strlen(str1); i++)
+		str1[i] = tolower(str1[i]);
 
-int urltokenize(char *, char **, char **, char **);
-char *strstrcase(char *, const char *);
-int strncmpcase(const char *, const char *, size_t);
-int strcmpcase(const char *, const char *);
-#if !HAVE_STRDUP
-char *strdup(const char *s);
-#endif /* !HAVE_STRDUP */
-char *statustostr(int);
-uint32 random32(int);
-int timeval_subtract(struct timeval *, const struct timeval *, const struct timeval *);
-int timeval_add(struct timeval *, const struct timeval *, const struct timeval *);
+	for (i = 0; i < strlen(str2); i++)
+		str2[i] = tolower(str2[i]);
 
+	res = strcmp(str1, str2);
 
-#endif
+	free(str1);
+	free(str2);
+
+	return res;
+}
+

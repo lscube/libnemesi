@@ -37,9 +37,9 @@
 			{ "NonCommercial", "nc", "The licensor permits others to copy, distribute, display, and perform the work. In return, licensees may not use the work for commercial purposes -- unless they get the licensor's permission." } \
 			{ "NoDerivative", "nd", "The licensor permits others to copy, distribute, display and perform only unaltered copies of the work -- not derivative works based on it." } \
 			{ "ShareAlike", "sa", "The licensor permits others to distribute derivative works only under a license identical to the one that governs the licensor's work." } \
+			{ "PubblicDomain", "publicdomain", "Public domain dedication" } \
 		    }
 
-			// { "PubblicDomain", "pd", "Public domain dedication" }
 
 #define CC_NAME 0
 #define CC_SHORT_NAME 1
@@ -56,13 +56,15 @@ typedef struct {
 	char *descr;
 } CCPermission;
 
-struct _ccpermissions {
+typedef struct _ccpermsmask {
 	char by:1;
 	char nc:1;
 	char nd:1;
 	char sa:1;
-};
+	char publicdomain:1;
+} CCPermsMask;
 
+#if 0
 /*! \brief License Conditions.
  *
  * Each CC license come with some conditions. At the moment a maximum of three
@@ -71,6 +73,7 @@ struct _ccpermissions {
  * conditions. The fields are Name, Short name and description.
  */
 typedef CCPermission CCPermissions[3];
+#endif
 
 //! definition of couples containing name and description for each valid cc license
 #define CC_LICENSE { \
@@ -97,7 +100,7 @@ typedef struct {
 int issdplicense(char *sdp_a);
 CCLicense *cc_newlicense(void);
 int cc_set_sdplicense(CCLicense *, char *);
-int cc_parse_urilicense(char *, CCPermissions *);
+int cc_parse_urilicense(char *, CCPermsMask *);
 
 #endif // _LIB_CC_STREAMING
 
