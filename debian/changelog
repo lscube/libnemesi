@@ -1,7 +1,13 @@
+nemesi (0.5.1-1) unstable; urgency=low
+
+  * Changed OMSP Team's email address.
+
+ -- OMSP Team <team@streaming.polito.it>  Mon, 28 Feb 2005 16:19:11 +0100
+
 nemesi (0.5.0-1) unstable; urgency=low
 
   * Initial Release.
   * Adjusted the docs/Makefile.am to fix problems with man-to-html rendering.
 
- -- OMSP Team <streaming@multiemeda.polito.it>  Wed,  2 Feb 2005 15:45:53 +0100
+ -- OMSP Team <team@streaming.polito.it>  Wed,  2 Feb 2005 15:45:53 +0100
 

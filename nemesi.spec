@@ -1,6 +1,6 @@
 Summary: standards-compliant multimedia streaming client
 Name: nemesi
-Version: 0.5.0
+Version: 0.5.1
 Release: 0
 Copyright: GPL
 Group: Applications/Internet
