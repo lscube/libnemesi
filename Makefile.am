@@ -3,6 +3,7 @@ SUBDIRS =	bufferpool \
 		md5 \
 		rtp \
 		rtcp \
+		sdp \
 		rtsp \
 		output \
 		decoder \

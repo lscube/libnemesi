@@ -26,3 +26,15 @@
  *  
  * */
 
+#ifndef _LIB_CC_STREAMING
+#define _LIB_CC_STREAMING
+
+typedef struct {
+	char *uriLicense;	//!< License URI
+	char *uriMetadata;	//!< Validation URL
+	char *title;		//!< Title of the presentation
+	char *creator;		//!< Author of the presentation
+} cc_license;
+
+#endif // _LIB_CC_STREAMING
+

@@ -50,12 +50,15 @@ struct RTSP_Medium *rtsp_med_create(int fd)
 	rtsp_m->next=NULL;
 	rtsp_m->filename=NULL;
 
+	rtsp_m->medium_info=NULL;
+	/*
 	(rtsp_m->medium_info).m=NULL;
 	(rtsp_m->medium_info).i=NULL;
 	(rtsp_m->medium_info).c=NULL;
 	(rtsp_m->medium_info).b=NULL;
 	(rtsp_m->medium_info).k=NULL;
 	(rtsp_m->medium_info).attr_list=NULL;
+	*/
 
 	return rtsp_m;
 }

@@ -262,6 +262,7 @@ dnl fi
 
 AC_CONFIG_FILES([rtp/Makefile])
 AC_CONFIG_FILES([rtcp/Makefile])
+AC_CONFIG_FILES([sdp/Makefile])
 AC_CONFIG_FILES([rtsp/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([wsocket/Makefile])

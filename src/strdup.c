@@ -43,7 +43,7 @@ char *strdup(const char *s)
 
 	return dup;
 }
-#else
-char *strdup(const char *s);
+// #else
+// char *strdup(const char *s);
 #endif /* !HAVE_STRDUP */
 

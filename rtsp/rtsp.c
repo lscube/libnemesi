@@ -69,13 +69,16 @@ void *rtsp(void *rtsp_args)
 					pthread_exit(NULL);
 				else if (n > 0){
 					if (full_msg_rcvd(rtsp_th))
-						if (handle_rtsp_pkt(rtsp_th))
+						if (handle_rtsp_pkt(rtsp_th)) {
 							nmsprintf(1, "\nError!\n");
+							reinit_rtsp(rtsp_th);
+							// rtsp_th->busy=0; // already done in reinit
+						}
 				} else {
 					nmsprintf(1, "\nServer died prematurely!\n");
-					rtsp_th->busy=0;
-					nmsprintf(1, "Session closed.\n");
 					reinit_rtsp(rtsp_th);
+					// rtsp_th->busy=0; // alreaydone in reinit
+					nmsprintf(1, "Session closed.\n");
 				}
 			}
 		if (FD_ISSET(command_fd, &readset)) {

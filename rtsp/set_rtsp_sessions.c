@@ -31,24 +31,44 @@
 
 int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *content_base, char *body, char description_format)
 {
-	enum boolean { false, true } media_des;
-	char *tkn=NULL;
+	SDP_attr *sdp_a;
+	char *tkn;
 	
-	switch (description_format)
-	{
+	switch (description_format) {
 		case DESCRIPTION_SDP_FORMAT :
-			if ( (rtsp_th->rtsp_queue=rtsp_sess_create(rtsp_th->urlname, content_base))==NULL )
+			if ( !(rtsp_th->rtsp_queue=rtsp_sess_create(rtsp_th->urlname, content_base)) )
 				return 1;
-			if ( (rtsp_th->rtsp_queue->body=(char *)malloc((content_length+1)*sizeof(char))) == NULL )
-				return nmserror("Cannot allocate memory.");
 
+			if ( !(rtsp_th->rtsp_queue->body=(char *)malloc((content_length+1)*sizeof(char))) )
+				return nmserror("Cannot allocate memory.");
 			memcpy(rtsp_th->rtsp_queue->body, body, content_length*sizeof(char));
 			rtsp_th->rtsp_queue->body[content_length]='\0';
-			media_des=false;
+
 			rtsp_th->type=M_ON_DEMAND;
+
+			if (!(rtsp_th->rtsp_queue->info=sdp_session_setup(rtsp_th->rtsp_queue->body, content_length)))
+				return nmserror("SDP parse error");
+
+			// we look for particular attributes of session
+			for(sdp_a=rtsp_th->rtsp_queue->info->attr_list; sdp_a; sdp_a=sdp_a->next) {
+				if ( !strncmpcase(sdp_a->a, "control", 7) ) {
+					tkn = sdp_a->a + 7; // 7 == strlen("control")
+					while ( (*tkn==' ') || (*tkn==':') ) // skip spaces and colon
+						tkn++;
+					rtsp_th->rtsp_queue->pathname=tkn;
+					rtsp_th->type=CONTAINER;
+				}
+			}
+
+			// media setup
+			if (set_rtsp_media(rtsp_th, description_format))
+				return 1;
+
+			// for (tmp_sdp=curr_rtsp_s->)
+#if 0
 			do {
 				if ( tkn==NULL )
-					tkn=strtok(rtsp_th->rtsp_queue->body, "\r\n");
+					tkn=strtok(curr_rtsp_s->body, "\r\n");
 				else
 					tkn=strtok(NULL, "\r\n");
 				if ( tkn==NULL ) {
@@ -58,43 +78,43 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 				switch (*tkn)
 				{
 					case 'v':
-						(rtsp_th->rtsp_queue->info).v=tkn+2;
+						(curr_rtsp_s->info).v=tkn+2;
 						break;
 					case 'o':
-						(rtsp_th->rtsp_queue->info).o=tkn+2;
+						(curr_rtsp_s->info).o=tkn+2;
 						break;
 					case 's':
-						(rtsp_th->rtsp_queue->info).s=tkn+2;
+						(curr_rtsp_s->info).s=tkn+2;
 						break;
 					case 'i':
-						(rtsp_th->rtsp_queue->info).i=tkn+2;
+						(curr_rtsp_s->info).i=tkn+2;
 						break;
 					case 'u':
-						(rtsp_th->rtsp_queue->info).u=tkn+2;
+						(curr_rtsp_s->info).u=tkn+2;
 						break;
 					case 'e':
-						(rtsp_th->rtsp_queue->info).e=tkn+2;
+						(curr_rtsp_s->info).e=tkn+2;
 						break;
 					case 'p':
-						(rtsp_th->rtsp_queue->info).p=tkn+2;
+						(curr_rtsp_s->info).p=tkn+2;
 						break;
 					case 'c':
-						(rtsp_th->rtsp_queue->info).c=tkn+2;
+						(curr_rtsp_s->info).c=tkn+2;
 						break;
 					case 'b':
-						(rtsp_th->rtsp_queue->info).b=tkn+2;
+						(curr_rtsp_s->info).b=tkn+2;
 						break;
 					case 't':
-						(rtsp_th->rtsp_queue->info).t=tkn+2;
+						(curr_rtsp_s->info).t=tkn+2;
 						break;
 					case 'r':
-						(rtsp_th->rtsp_queue->info).r=tkn+2;
+						(curr_rtsp_s->info).r=tkn+2;
 						break;
 					case 'z':
-						(rtsp_th->rtsp_queue->info).z=tkn+2;
+						(curr_rtsp_s->info).z=tkn+2;
 						break;
 					case 'k':
-						(rtsp_th->rtsp_queue->info).k=tkn+2;
+						(curr_rtsp_s->info).k=tkn+2;
 						break;
 					case 'a':
 						tkn+=2;
@@ -102,26 +122,28 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 							tkn+=7;
 							while ( (*(tkn)==' ') || (*(tkn)==':') )
 								tkn++;
-							rtsp_th->rtsp_queue->pathname=tkn;
+							curr_rtsp_s->pathname=tkn;
 							rtsp_th->type=CONTAINER;
 						}
 						break;
 					case 'm':
 						tkn[strlen(tkn)]='\n';
-						if ( set_rtsp_media(rtsp_th, content_length-(tkn-rtsp_th->rtsp_queue->body), \
+						if ( set_rtsp_media(rtsp_th, content_length-(tkn-curr_rtsp_s->body), \
 									&tkn) )
 							return 1;
 						break;
 				}
-			} while ( (tkn+strlen(tkn)-rtsp_th->rtsp_queue->body+2)<content_length );
+			} while ( (tkn+strlen(tkn)-curr_rtsp_s->body+2)<content_length );
+#endif // comment
 			break;
 		case DESCRIPTION_MH_FORMAT :
 			/* not yet implemented */
-			break;
+			// break;
 		default :
 			nmsprintf(1, "Unknown decription format.\n");
 			return 1;
 			break;
 	}
+
 	return 0;
 }

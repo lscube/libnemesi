@@ -40,11 +40,15 @@ struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
 			rtsp_s->content_base=NULL;
 			rtsp_s->pathname=urlname;
 	} else {
+		/* shawill: using strdup insted
 		if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(sizeof(char)*(strlen(content_base)+1)))==NULL) {
 			nmserror("Cannot allocate memory!");
 			return NULL;
 		}
 		strcpy(rtsp_s->content_base,content_base);
+		*/
+		if (!(rtsp_s->pathname=rtsp_s->content_base=strdup(content_base)))
+			return NULL;
 		rtsp_s->pathname+=strlen(content_base);
 	} 
 	rtsp_s->Session_ID=0;
@@ -52,6 +56,8 @@ struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
 	rtsp_s->media_queue=NULL;
 	rtsp_s->next=NULL;
 
+	rtsp_s->info=NULL;
+	/*
 	(rtsp_s->info).v=NULL;
 	(rtsp_s->info).o=NULL;
 	(rtsp_s->info).s=NULL;
@@ -66,6 +72,7 @@ struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
 	(rtsp_s->info).z=NULL;
 	(rtsp_s->info).k=NULL;
 	(rtsp_s->info).attr_list=NULL;
+	*/
 
 	return rtsp_s;
 }

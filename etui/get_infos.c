@@ -28,12 +28,14 @@
 
 #include <nemesi/etui.h>
 
+// shawill: TODO: modify for protocol abstraction
 int get_infos(struct RTSP_args *rtsp_args)
 {
 	struct RTSP_Session *sess;
 	struct RTSP_Medium *med;
 	char **str;
-	struct attr *attr;
+	// struct attr *attr;
+	SDP_attr *attr;
 
 	char *sdes[13]={ "Protocol Version",
 		"Session Identifier & Creator",
@@ -68,17 +70,17 @@ int get_infos(struct RTSP_args *rtsp_args)
 	while(sess){
 		med=sess->media_queue;
 		nmsprintf(1, "---- RTSP Session Infos: %s ----\n", sess->pathname);
-		for(str=(char **)&(sess->info); str < (char **)&(sess->info.attr_list); str++)
+		for(str=(char **)(sess->info); str < (char **)&(sess->info->attr_list); str++)
 			if (*str)
-				nmsprintf(1, "* %s: %s\n", sdes[str-(char **)&(sess->info)], *str);
-		for(attr=sess->info.attr_list; attr; attr=attr->next)
+				nmsprintf(1, "* %s: %s\n", sdes[str-(char **)(sess->info)], *str);
+		for(attr=sess->info->attr_list; attr; attr=attr->next)
 			nmsprintf(1, "%s\n", attr->a);
 		while (med) {
 			nmsprintf(1, "\n\t---- RTSP Medium Infos: %s ----\n", med->filename);
-			for(str=(char **)&(med->medium_info); str < (char **)&(med->medium_info.attr_list); str++)
+			for(str=(char **)(med->medium_info); str < (char **)&(med->medium_info->attr_list); str++)
 				if(*str)
-					nmsprintf(1, "\t* %s: %s\n", mdes[str-(char **)&(med->medium_info)], *str);
-			for(attr=med->medium_info.attr_list; attr; attr=attr->next)
+					nmsprintf(1, "\t* %s: %s\n", mdes[str-(char **)(med->medium_info)], *str);
+			for(attr=med->medium_info->attr_list; attr; attr=attr->next)
 				nmsprintf(1, "\t* %s\n", attr->a);
 			med=med->next;
 		}

@@ -34,41 +34,46 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 	struct RTSP_Session *sess, *psess;
 	void *ret;
 	
-	psess=sess=rtsp_th->rtsp_queue;
+	sess=psess=rtsp_th->rtsp_queue;
 #if 1
-	if(psess) {
-		if(psess->media_queue->rtp_sess->rtcp_tid > 0){
-			nmsprintf(2, "Sending cancel signal to RTCP Thread (ID: %d)\n", psess->media_queue->rtp_sess->rtcp_tid);
-			if (pthread_cancel(psess->media_queue->rtp_sess->rtcp_tid) != 0)
+	// check for active rtp/rtcp session
+	if(sess && sess->media_queue && sess->media_queue->rtp_sess) {
+		if(sess->media_queue->rtp_sess->rtcp_tid > 0){
+			nmsprintf(2, "Sending cancel signal to RTCP Thread (ID: %d)\n", sess->media_queue->rtp_sess->rtcp_tid);
+			if (pthread_cancel(sess->media_queue->rtp_sess->rtcp_tid) != 0)
 				nmsprintf(3, "Error while sending cancelation to RTCP Thread.\n");
 			else
-				pthread_join(psess->media_queue->rtp_sess->rtcp_tid, (void **)&ret);
+				pthread_join(sess->media_queue->rtp_sess->rtcp_tid, (void **)&ret);
 			if ( ret != PTHREAD_CANCELED )
 				nmsprintf(3, "Warning! RTCP Thread joined, but  not canceled!\n");
 		}
-		if(psess->media_queue->rtp_sess->rtp_tid > 0){
-			nmsprintf(2, "Sending cancel signal to RTP Thread (ID: %d)\n", psess->media_queue->rtp_sess->rtp_tid);
-			if(pthread_cancel(psess->media_queue->rtp_sess->rtp_tid) != 0)
+		if(sess->media_queue->rtp_sess->rtp_tid > 0){
+			nmsprintf(2, "Sending cancel signal to RTP Thread (ID: %d)\n", sess->media_queue->rtp_sess->rtp_tid);
+			if(pthread_cancel(sess->media_queue->rtp_sess->rtp_tid) != 0)
 				nmsprintf(3, "Error while sending cancelation to RTP Thread.\n");
 			else
-				pthread_join(psess->media_queue->rtp_sess->rtp_tid, (void **)&ret);
+				pthread_join(sess->media_queue->rtp_sess->rtp_tid, (void **)&ret);
 			if( ret != PTHREAD_CANCELED)
 				nmsprintf(3, "Warning! RTP Thread joined, but not canceled.\n");
 		}
 	}
 #endif
-	while(psess != NULL){
-		free(psess->body);
-		free(psess->content_base);
-		pmed=med=psess->media_queue;
-		while(pmed != NULL){
-			med=pmed->next;
-			free(pmed);
+	while(sess != NULL){
+		sdp_session_close(sess->info); //!< free sdp description info
+		free(sess->body);
+		free(sess->content_base);
+		for(med=sess->media_queue; med; pmed=med, med=med->next, free(pmed));
+		/* like these
+		med=pmed=sess->media_queue;
+		while(med != NULL){
 			pmed=med;
+			med=med->next;
+			free(pmed);
 		}
-		sess=psess->next;
-		free(psess);
+		*/
 		psess=sess;
+		sess=sess->next;
+		free(psess);
 	}
 #if 1
 	free(rtsp_th->server_port);
@@ -84,6 +89,7 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 	(rtsp_th->in_buffer).size = 0;
 	(rtsp_th->in_buffer).data = NULL;
 	rtsp_th->rtsp_queue = NULL;
+	rtsp_th->busy=0;
 #endif
 
 	return 0;

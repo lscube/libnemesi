@@ -30,7 +30,7 @@
  * \brief Header contenente le definizioni della libreria \b rtsp.
  * */
 
-/*! \defgroup RTSP Libreria RTSP
+/*! \defgroup RTSP RTSP Library
  *
  * \brief Implementazione del protocollo Real Time Streaming Protocol (RTSP) -
  * rfc 2326.
@@ -52,6 +52,8 @@
 #include <pthread.h>
 #include <string.h>
 
+#include <nemesi/sdp.h>
+#include <nemesi/cc.h>
 #include <nemesi/main.h>
 #include <nemesi/rtp.h>
 #include <nemesi/rtcp.h>
@@ -97,91 +99,6 @@ struct command {
 };
 
 /*!
- * \brief Elemento base della lista degli attributi RTSP.
- *
- * Nella risposta ad un metodo \c DESCRIBE un server, che utilizzi il
- * protocollo di descrizione \c SDP, può comunicare, oltre agli altri parametri
- * definiti, una serie di campi \em attributi, relativi alla descrizione sia
- * della sessione che del singolo medium, i quali possono portare delle
- * informazioni aggiuntive, non sempre standard.  Il numero di tali campi non
- * è, a priori, conoscibile, quindi è necessaria una lista dinamica.
- *
- * \see Medium_info
- * \see RTSP_Session_info
- * */
-struct attr {
-	struct attr *next;	/*!< puntatore al successivo elemento della
-				  lista degli attrributi. \c NULL se l'elemento
-				  corrente è l'ultimo. */
-	char *a;		/*!< Puntatore alla stringa che contiene
-				  l'attributo. */
-};
-
-/*!
- * \brief Informazioni sul Medium.
- *
- * Ogni campo ha un valore non nullo se è presente il corrispondente campo di
- * descrizione nel corpo della risposta ad un metodo \c DESCIBE.
- *
- * Per ulteriori informazioni sull'efficienza riguardo all'adozione dei puntatori nei campi
- * consigliamo di leggere anche la documentazione relativa a <tt>\ref RTSP_Session_info</tt>.
- *
- * \see RTSP_Session_info
- * */
-struct Medium_info {
-	char *m;		/*!< formato multimediale ed indirizzo di trasporto */
-	char *i;		/*!< titolo del media */
-	char *c;		/*!< informazioni di connessione */
-	char *b;		/*!< informazioni sulla banda */
-	char *k;		/*!< chiave di codifica */
-	struct attr *attr_list;	/*!< attributi */
-};
-
-/*!
- * \brief Informazioni sulla Sessione RTSP.
- *
- * I campi punteranno alle stringhe di descrizione relative all'interno del
- * body di una risposta ad una richiesta di descrizione.
- *
- * \note Per quello che riguarda l'efficienza, discorso valido anche per le
- * informazioni sul Medium, c'è da approfondire la strategia usata per
- * impostare i vari campi. In particolare il \b body di una risposta di \c
- * DESCRIBE viene conservato per intero in una zona di memoria e \em
- * tokenizzato riga per riga. Si crea così una suddivisione in stringhe ognuna
- * contenente un campo informazione. A questo punto si scandisce tutta questa
- * zona di memoria, di cui si conosce la lunghezza, e si assegnano ai campi
- * puntatori delle strutture i valori corrispondenti alle stringhe relative. I
- * campi delle informazioni non presenti rimarranno al valore di
- * inizializzazione \c NULL.  Con questa strategia si ha un leggero spreco di
- * memoria, ma questo è sicuramente inferiore allo spreco che si avrebbe con la
- * pre-allocazione di stringhe di lunghezza fissa, considerando il fatto che
- * raramente in una descrizione sono presenti tutti i campi. Inoltre, si
- * evitano molteplici \c malloc nel codice che appesantirebbero di parecchio
- * l'esecuzione del programma.
- *
- * \see Medium_info
- * */
-struct RTSP_Session_info {
-	char *v;		/*!< versione protocollo */
-	char *o;		/*!< creatore e identificazione di sessione */
-	char *s;		/*!< nome della sessione */
-	char *i;		/*!< informazioni sulla sessione */
-	char *u;		/*!< descrizione dell'URI */
-	char *e;		/*!< indirizzo e-mail */
-	char *p;		/*!< numero telefonico */
-	char *c;		/*!< informazioni sulla connessione */
-	char *b;		/*!< informazioni sulla banda */
-
-	char *t;		/*!< tempo in cui la sessione e' attiva */
-	char *r;		/*!< ripetizioni temporali */
-
-	char *z;		/*!< cambio di fuso orario */
-	char *k;		/*!< chiave di codifica */
-
-	struct attr *attr_list;	/*!< attributi */
-};
-
-/*!
  * \brief Struttura di descrizione di un medium RTSP.
  *
  * Tale struttura è un elemento di una lista single-linked che identificano
@@ -197,7 +114,7 @@ struct RTSP_Session_info {
  * \see RTSP_Session
  * */
 struct RTSP_Medium {
-	struct Medium_info medium_info;	/*!< Struttura delle informazioni
+	SDP_Medium_info *medium_info;	/*!< Struttura delle informazioni
 					  relative al medium. */
 	struct RTP_Session *rtp_sess;	/*!< Puntatore alla struttura della
 					  sessione RTP alla quale appartiene il
@@ -243,7 +160,7 @@ struct RTSP_Session {
 				  tutti gli <tt>\ref RTSP_Medium</tt> ad essa
 				  appartenenti sono relativi el percorso
 				  memorizzato in \c content_base. */
-	struct RTSP_Session_info info;	/*!< Struttura delle informazioni
+	SDP_Session_info *info;	/*!< Struttura delle informazioni
 					  relative alla sessione */
 	struct RTSP_Medium *media_queue;	/*!< Puntatore alla code dei
 						  media appertenenti alla
@@ -277,7 +194,7 @@ struct RTSP_Session {
  * aspettare che il resto arrivi successivamente.
  *
  * */
-struct buffer {
+struct RTSP_buffer {
 	int size;		/*!< Dimensione totale del buffer. */
 	int first_pkt_size;	/*!< Dimensione del primo pacchetto. */
 	char *data;		/*!< Puntatore alla zona dati. */
@@ -322,7 +239,7 @@ struct RTSP_Thread {
 	char *server_port;	/*!< Porta sulla quale è in ascolto il server.
 				 */
 	char *urlname;		/*!< URL della richiesta. */
-	struct buffer in_buffer;	/*!< Buffer di input dei dati. */
+	struct RTSP_buffer in_buffer;	/*!< Buffer di input dei dati. */
 	struct RTSP_Session *rtsp_queue;/*!< Lista delle sessioni attive. */
 };
 /*
@@ -378,7 +295,7 @@ void *get_curr_sess(int cmd, ...);
 // int get_curr_sess(struct RTSP_Thread *, struct RTSP_Session **, struct RTSP_Medium **);
 
 int set_rtsp_sessions(struct RTSP_Thread *, int, char *, char *, char);
-int set_rtsp_media(struct RTSP_Thread *, int , char **);
+int set_rtsp_media(struct RTSP_Thread *, char);
 struct RTSP_Session *rtsp_sess_copy(struct RTSP_Session *);
 struct RTSP_Session *rtsp_sess_create(char *, char *);
 struct RTSP_Medium *rtsp_med_create(int);

@@ -37,6 +37,7 @@ nemesi_SOURCES =	main.c \
 
 
 nemesi_LDADD =	$(top_srcdir)/rtsp/librtsp.la \
+		$(top_srcdir)/sdp/libsdp.la \
 		$(top_srcdir)/rtcp/librtcp.la \
 		$(top_srcdir)/rtp/librtp.la \
 		$(top_srcdir)/decoder/libdecoder.la \

@@ -30,7 +30,7 @@
 
 int full_msg_rcvd( struct RTSP_Thread *rtsp_th )
 {
-	struct buffer *in_buffer=&(rtsp_th->in_buffer);
+	struct RTSP_buffer *in_buffer=&(rtsp_th->in_buffer);
 	char *back_n; /* puntatore ai caratteri newline */
 	char *head_end; /* puntatore alla fine dell'header */
 	unsigned int body_len;

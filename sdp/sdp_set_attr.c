@@ -26,3 +26,25 @@
  *  
  * */
 
+#include <stdlib.h>
+
+#include <nemesi/sdp.h>
+#include <nemesi/comm.h>
+
+int sdp_set_attr(SDP_attr **attr_list, char *a)
+{
+	SDP_attr *new, **i;
+
+	// we use calloc, so it's all already initialized to NULL
+	if (!(new=(SDP_attr *)calloc(1, sizeof(SDP_attr))))
+		return nmserror("Could not allocate memory");
+
+	new->a = a;
+
+	for(i=attr_list; *i ; i=&((*i)->next)); // serch for the tail of queue
+	*i = new;
+
+	return 0;
+}
+
+
