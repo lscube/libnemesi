@@ -58,7 +58,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 		if ((tkna=strstrcase(tknb, "source"))){
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
-			for(tknb=tkna; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb++-tkna);
 			str[tknb-tkna]='\0';
 
@@ -71,7 +71,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 		if ((tkna=strstrcase(tknb, "destination"))){
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
-			for(tknb=tkna; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb++-tkna);
 			str[tknb-tkna]='\0';
 			
@@ -84,7 +84,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 		if ((tkna=strstrcase(tknb, "ssrc"))){
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
-			for(tknb=tkna; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb++-tkna);
 			str[tknb-tkna]='\0';
 			
@@ -95,7 +95,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 		if ((tkna=strstrcase(tknb, "ttl"))){
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
-			for(tknb=tkna; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb++-tkna);
 			str[tknb-tkna]='\0';
 			
@@ -106,7 +106,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 		if ((tkna=strstrcase(tknb, "layers"))){
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
-			for(tknb=tkna; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb++-tkna);
 			str[tknb-tkna]='\0';
 		
