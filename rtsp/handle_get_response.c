@@ -40,7 +40,7 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 	char *content_base=NULL;
 
 	if ( (prev_tkn=strtok((rtsp_th->in_buffer).data,"\n"))==NULL ) {
-		uiprintf("Invalid RTSP-DESCRIBE response\n");
+		nmsprintf(1, "Invalid RTSP-DESCRIBE response\n");
 		rtsp_th->busy=0;	
 		return 1;
 	}
@@ -71,7 +71,7 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 				description_format=DESCRIPTION_MH_FORMAT;
 			 */
 			else {
-				uiprintf("ALERT: Content-Type %s not recognized\n", prev_tkn);
+				nmsprintf(1, "ALERT: Content-Type %s not recognized\n", prev_tkn);
 			}
 		}
 		else if ( !strncmpcase(prev_tkn, "Content-Base", 12) ) {

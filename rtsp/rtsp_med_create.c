@@ -41,9 +41,10 @@ struct RTSP_Medium *rtsp_med_create(int fd)
 	getpeername(fd, &peeraddr, &len);
 	
 	if ( (rtsp_m=(struct RTSP_Medium *)malloc(sizeof(struct RTSP_Medium))) == NULL ) {
-		uiprintf("Cannot allocate memory.\n");
+		nmserror("Cannot allocate memory.");
 		return NULL;
 	}
+
 	if((rtsp_m->rtp_sess=init_rtp_sess(localaddr, peeraddr)) == NULL)
 		return NULL;
 	rtsp_m->next=NULL;

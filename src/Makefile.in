@@ -162,7 +162,6 @@ libutils_la_SOURCES = urltokenize.c \
 			strdup.c \
 			strstrcase.c \
 			strncmpcase.c \
-			uiprintf.c \
 			statustostr.c \
 			random32.c \
 			timeval_subtract.c \
@@ -173,7 +172,10 @@ libutils_la_SOURCES = urltokenize.c \
 			rem_avail_pref.c \
 			list_prefs.c \
 			get_pref.c \
-			uierror.c
+			uiprintf.c \
+			uierror.c \
+			nmserror.c \
+			nmsprintf.c
 
 
 libutils_la_LDFLAGS = -static
@@ -200,12 +202,12 @@ nemesi_LDADD = @DLOPEN@ \
 		$(top_srcdir)/bufferpool/libbuffpool.la \
 		$(top_srcdir)/etui/libetui.la \
 		$(top_srcdir)/wsocket/libwsocket.la \
-		$(top_srcdir)/src/libutils.la \
-		$(top_srcdir)/md5/libmd5.la \
 		$(top_srcdir)/src/libplugins.la \
 		$(top_srcdir)/output/audio/libaudio.la \
 		$(top_srcdir)/output/video/libvideo.la \
-		$(top_srcdir)/output/diskwriter/libdiskwriter.la
+		$(top_srcdir)/output/diskwriter/libdiskwriter.la \
+		$(top_srcdir)/src/libutils.la \
+		$(top_srcdir)/md5/libmd5.la
 
 
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir) @INCLTDL@
@@ -221,10 +223,10 @@ am_libplugins_la_OBJECTS = load_plugins.lo
 libplugins_la_OBJECTS = $(am_libplugins_la_OBJECTS)
 libutils_la_LIBADD =
 am_libutils_la_OBJECTS = urltokenize.lo strdup.lo strstrcase.lo \
-	strncmpcase.lo uiprintf.lo statustostr.lo random32.lo \
-	timeval_subtract.lo timeval_add.lo edit_pref.lo \
-	edit_avail_pref.lo add_avail_pref.lo rem_avail_pref.lo \
-	list_prefs.lo get_pref.lo uierror.lo
+	strncmpcase.lo statustostr.lo random32.lo timeval_subtract.lo \
+	timeval_add.lo edit_pref.lo edit_avail_pref.lo \
+	add_avail_pref.lo rem_avail_pref.lo list_prefs.lo get_pref.lo \
+	uiprintf.lo uierror.lo nmserror.lo nmsprintf.lo
 libutils_la_OBJECTS = $(am_libutils_la_OBJECTS)
 bin_PROGRAMS = nemesi$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
@@ -238,11 +240,11 @@ nemesi_DEPENDENCIES = $(top_srcdir)/rtsp/librtsp.la \
 	$(top_srcdir)/bufferpool/libbuffpool.la \
 	$(top_srcdir)/etui/libetui.la \
 	$(top_srcdir)/wsocket/libwsocket.la \
-	$(top_srcdir)/src/libutils.la $(top_srcdir)/md5/libmd5.la \
 	$(top_srcdir)/src/libplugins.la \
 	$(top_srcdir)/output/audio/libaudio.la \
 	$(top_srcdir)/output/video/libvideo.la \
-	$(top_srcdir)/output/diskwriter/libdiskwriter.la
+	$(top_srcdir)/output/diskwriter/libdiskwriter.la \
+	$(top_srcdir)/src/libutils.la $(top_srcdir)/md5/libmd5.la
 nemesi_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -254,6 +256,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/init_rtsp_args.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/list_prefs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/load_plugins.Plo ./$(DEPDIR)/main.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/nmserror.Plo ./$(DEPDIR)/nmsprintf.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/output_init.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/output_uninit.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/random32.Plo \
@@ -346,6 +349,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list_prefs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/load_plugins.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmserror.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmsprintf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/output_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/output_uninit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random32.Plo@am__quote@

@@ -43,8 +43,8 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 
 	pkt=(rtcp_pkt *)buffer;
 
-	if (rtcp_hdr_val_chk(pkt, n)){
-		uiprintf("\rRTCP Header Validity Check failed!"BLANK_LINE);
+	if (rtcp_hdr_val_chk(pkt, n)) {
+		nmsprintf(2, "RTCP Header Validity Check failed!"BLANK_LINE);
 		return 1;
 	}
 	if((ret=ssrc_check(rtp_sess, ntohl((pkt->r).sr.ssrc), &stm_src, server, RTCP)) == -1)

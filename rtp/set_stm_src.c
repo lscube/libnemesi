@@ -34,10 +34,9 @@ int set_stm_src(struct RTP_Session *rtp_sess, struct Stream_Source **stm_src, ui
 	
 	memset(port, 0, strlen(port));
 	
-	if(((*stm_src)=(struct Stream_Source *)malloc(sizeof(struct Stream_Source))) == NULL){
-		uiprintf("Cannot allocate memory!\n");
-		return -1;
-	}
+	if(((*stm_src)=(struct Stream_Source *)malloc(sizeof(struct Stream_Source))) == NULL)
+		return -nmserror("Cannot allocate memory");
+
 	(*stm_src)->next=rtp_sess->ssrc_queue;
 	rtp_sess->ssrc_queue=*stm_src;
 	
@@ -77,7 +76,7 @@ int set_stm_src(struct RTP_Session *rtp_sess, struct Stream_Source **stm_src, ui
 	if ( ((*stm_src)->rtcp_to).sin_port != 0 ){
 		sprintf(port,"%d", ntohs(((*stm_src)->rtcp_to).sin_port));
 		if ( server_connect(inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port, &((*stm_src)->rtcptofd), UDP) ){
-			uiprintf("\nCannot connect to remote RTCP destination %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
+			nmsprintf(1, "Cannot connect to remote RTCP destination %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
 			(*stm_src)->rtcptofd=-2;
 		}
 	}

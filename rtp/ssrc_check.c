@@ -46,11 +46,10 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 		/* nuovo SSRC */
 		/* inserimento in testa */
 		pthread_mutex_lock(&rtp_sess->syn);	
-		uiprintf("\nnuovo SSRC\n");
+		nmsprintf(3, "nuovo SSRC\n");
 		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0){
-			uiprintf("Error while setting new Stream Source\n");
 			pthread_mutex_unlock(&rtp_sess->syn);	
-			return -1;
+			return -nmserror("Error while setting new Stream Source");
 		}
 
 		poinit(&((*stm_src)->po),&(rtp_sess->bp));
@@ -59,10 +58,9 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 	} else {
 		if (local_collision){
 			
-			if ( (sockaddr=(struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL ){
-				uiprintf("Cannot allocate memory!\n");
-				return -1;
-			}
+			if ( (sockaddr=(struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL )
+				return -nmserror("Cannot allocate memory");
+
 			if (proto_type == RTP)
 				getsockname(rtp_sess->rtpfd, (struct sockaddr *) sockaddr, &socklen);
 			else
@@ -88,7 +86,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 
 				sprintf(port,"%d", ntohs(((*stm_src)->rtcp_to).sin_port));
 				if ( server_connect(inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port, &((*stm_src)->rtcptofd), UDP) ){
-					uiprintf("\nCannot connect to remote RTCP port %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
+					nmsprintf(2, "Cannot connect to remote RTCP port %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
 					(*stm_src)->rtcptofd=-2;
 				}
 			}
@@ -100,7 +98,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			
 			if( ssrc != rtp_sess->local_ssrc ){
 				/* OPTIONAL error counter step not implemented */
-				uiprintf("Warning! An identifier collision or a loop is indicated.\n");
+				nmsprintf(2, "Warning! An identifier collision or a loop is indicated.\n");
 				return 2;
 			}
 
@@ -121,7 +119,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					
 					/* New collision, change SSRC identifier */
 					
-					uiprintf("\nSSRC collision detected: getting new!\n");
+					nmsprintf(2, "SSRC collision detected: getting new!\n");
 					
 
 					/* Send RTCP BYE pkt */
@@ -132,16 +130,14 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					rtp_sess->transport.ssrc=rtp_sess->local_ssrc;
 			
 					/* New entry in SSRC queue with conflicting ssrc */
-					if( (stm_conf=(struct Conflict *)malloc(sizeof(struct Conflict))) == NULL){
-						uiprintf("Cannot allocate memory!\n");
-						return -1;
-					}
+					if( (stm_conf=(struct Conflict *)malloc(sizeof(struct Conflict))) == NULL)
+						return -nmserror("Cannot allocate memory!");
+
 					/* inserimento in testa */
 					pthread_mutex_lock(&rtp_sess->syn);	
-					if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0){
-						uiprintf("Error while setting new Stream Source\n");
+					if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 						pthread_mutex_unlock(&rtp_sess->syn);	
-						return -1;
+						return -nmserror("Error while setting new Stream Source");
 					}
 					poinit(&((*stm_src)->po),&(rtp_sess->bp));
 					pthread_mutex_unlock(&rtp_sess->syn);	

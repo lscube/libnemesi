@@ -39,10 +39,9 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 		case DESCRIPTION_SDP_FORMAT :
 			if ( (rtsp_th->rtsp_queue=rtsp_sess_create(rtsp_th->urlname, content_base))==NULL )
 				return 1;
-			if ( (rtsp_th->rtsp_queue->body=(char *)malloc((content_length+1)*sizeof(char))) == NULL ) {
-				uiprintf("Cannot allocate memory.\n");
-				return 1;
-			}
+			if ( (rtsp_th->rtsp_queue->body=(char *)malloc((content_length+1)*sizeof(char))) == NULL )
+				return nmserror("Cannot allocate memory.");
+
 			memcpy(rtsp_th->rtsp_queue->body, body, content_length*sizeof(char));
 			rtsp_th->rtsp_queue->body[content_length]='\0';
 			media_des=false;
@@ -53,7 +52,7 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 				else
 					tkn=strtok(NULL, "\r\n");
 				if ( tkn==NULL ) {
-					uiprintf("Invalid RTSP-DESCRIBE body... discarding\n");
+					nmsprintf(1, "Invalid RTSP-DESCRIBE body... discarding\n");
 					return 1;
 				}
 				switch (*tkn)
@@ -120,7 +119,7 @@ int set_rtsp_sessions(struct RTSP_Thread *rtsp_th, int content_length, char *con
 			/* not yet implemented */
 			break;
 		default :
-			uiprintf("Unknown decription format.\n");
+			nmsprintf(1, "Unknown decription format.\n");
 			return 1;
 			break;
 	}

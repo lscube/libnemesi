@@ -34,8 +34,8 @@ int close_cmd(struct RTSP_Thread *rtsp_th, ...)
 
 	if(rtsp_th->status == INIT){
 		rtsp_th->busy=0;
-		uiprintf(BLANK_LINE);
-		uiprintf("No Connection to close\n");
+		nmsprintf(1, BLANK_LINE);
+		nmsprintf(1, "No Connection to close\n");
 		return 1;
 	}
 	// get_curr_sess(NULL, NULL, NULL);

@@ -68,7 +68,7 @@ uint8 *ab_get(uint32 len, ...)
 		audio_buffer = va_arg(ap, struct audio_buff *);
 		va_end(ap);
 	} else {
-		uiprintf("\nError in <ab_get> function\n");
+		nmsprintf(3, "Error in <ab_get> function\n");
 	}
 	return NULL;
 }

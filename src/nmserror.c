@@ -26,36 +26,30 @@
  *  
  * */
 
-#include <nemesi/rtcp.h>
+#include <stdio.h>
+#include <stdarg.h>
 
-int parse_rtcp_pkt(struct Stream_Source *stm_src, rtcp_pkt *pkt, int len)
+#include <nemesi/comm.h>
+
+/*!  \brief error function.
+ *
+ * This function just prints the error message described in <tt>fmt</tt> and
+ * following parameters and return 1.
+ *
+ * \param fmt string containing message format (<tt>printf</tt> like). 
+ * \param ... variable list of arguments according with <tt>fmt</tt> description.
+ * \return 1. Error.  \see vctprintf
+ */
+int nmserror(const char *fmt, ...)
 {
-	rtcp_pkt *end;
-	end = (rtcp_pkt *)((uint32 *)pkt + len/4);
-	
-	while ( pkt < end ){
-		switch ((pkt->common).pt) {
-			case RTCP_SR:
-				parse_rtcp_sr(stm_src, pkt);
-				break;
-			case RTCP_SDES:
-				if(parse_rtcp_sdes(stm_src, pkt))
-					return -1;
-				break;
-			case RTCP_RR:
-				parse_rtcp_rr(pkt);
-				break;
-			case RTCP_BYE:
-				parse_rtcp_bye(pkt);
-				break;
-			case RTCP_APP:
-				parse_rtcp_app(pkt);
-				break;
-			default:
-				nmsprintf(2, "WARNING! Received unknown RTCP pkt\n");
-				return 1;
-		}
-		pkt=(rtcp_pkt *)((uint32 *)pkt + ntohs((pkt->common).len) + 1);
-	}
-	return 0;
+	va_list args;
+
+	va_start(args, fmt);
+	fprintf(stderr, "error: ");
+	vfprintf(stderr, fmt, args);
+	fprintf(stderr, "\n");
+	va_end(args);
+
+	return 1;
 }
+

@@ -34,6 +34,7 @@
 
 #include <nemesi/comm.h>
 
+#ifdef USE_UIPRINTF
 
 /*!
   return 1, error
@@ -65,3 +66,4 @@ int uierror(const char *fmt, ...)
 
 	return 1;
 }
+#endif // USE_UIPRINTF

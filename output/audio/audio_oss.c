@@ -65,16 +65,15 @@ static uint32 oss_init(const char *arg)
 		oss_priv.audiodev = strdup(DEF_AUDIODEV);
 /*
 	if ( (audio_fd=open("prova.wav", O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR )) == -1){
-		uiprintf("Could not open the file\n");
+		nmserror("Could not open the file");
 	}
 
 */	
 
-	if ( (oss_priv.audiofd=open(oss_priv.audiodev, O_WRONLY | O_NONBLOCK, 0)) == -1){
-		uiprintf("Could not open /dev/dsp\n");
-		return 1;
-	} else
-		uiprintf("OSS Audio initialized\n");
+	if ( (oss_priv.audiofd=open(oss_priv.audiodev, O_WRONLY | O_NONBLOCK, 0)) == -1)
+		return nmserror("Could not open /dev/dsp");
+	else
+		nmsprintf(1, "OSS Audio initialized\n");
 	// TODO: probably we have to remove NON BLOCKING flag
 
 	return 0;
@@ -87,18 +86,19 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 	int result;
 	audio_buf_info info;
 
-	oss_init(arg);
+	if ( oss_init(arg) )
+		return 1;
 	
 	// Audio Buffer initialization
 	if ( (oss_priv.audio_buffer=ab_init(AUDIO_BUFF_SIZE)) == NULL )
-		return uierror("Failed while initializing Audio Buffer\n");
+		return nmserror("Failed while initializing Audio Buffer");
 
 	// TODO; init card
 	req_format=0x7FFF000D;
 	// req_format=0x7FFF000A;
 	ioctl(audiofd, SNDCTL_DSP_SETFRAGMENT, &req_format);
 	ioctl(audiofd, SNDCTL_DSP_GETOSPACE, &info);
-	uiprintf("\nFrag: %d\nFrag total: %d\nFrag Size: %d\n", info.fragments, info.fragstotal, info.fragsize);
+	nmsprintf(2, "\nFrag: %d\nFrag total: %d\nFrag Size: %d\n", info.fragments, info.fragstotal, info.fragsize);
 
 	ioctl(audiofd, SNDCTL_DSP_GETCAPS, &req_format);
 	if (req_format & DSP_CAP_TRIGGER) {
@@ -107,33 +107,28 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 	}
 	
 	// Setup format
-	if ( (result=ioctl(audiofd, SNDCTL_DSP_GETFMTS, &req_format)) == -1 ){
-		uiprintf("Could not get formats supported\n");
-		return 1;
-	}
+	if ( (result=ioctl(audiofd, SNDCTL_DSP_GETFMTS, &req_format)) == -1 )
+		nmsprintf(2, "Could not get formats supported\n");
+
 	if (req_format & format) {
 		req_format = format;
-		if ( (result=ioctl(audiofd, SNDCTL_DSP_SETFMT, &req_format)) == -1 ){
-			uiprintf("Could not set format\n");
-			return 1;
+		if ( (result=ioctl(audiofd, SNDCTL_DSP_SETFMT, &req_format)) == -1 ) {
+			return nmserror("OSS: Could not set format");
 		}
-	} else {
-		uiprintf("Format %s non supported: exiting...", audio_format_name(req_format));
-		return 1;
-	}
+	} else
+		return nmserror("OSS: Format %s non supported: exiting...", audio_format_name(req_format));
+
 	// set channels
 	req_format = channels;
-	if ( (result=ioctl(audiofd, SNDCTL_DSP_CHANNELS, &req_format)) == -1 ){
-		uiprintf("Could not set number of channels\n");
-		return 1;
-	}
-	uiprintf("\nChannels: %d\n", req_format);
+	if ( (result=ioctl(audiofd, SNDCTL_DSP_CHANNELS, &req_format)) == -1 )
+		return nmserror("OSS: Could not set number of channels\n");
+		
+	nmsprintf(2, "Channels: %d\n", req_format);
 	req_format = rate;
-	if ( (result=ioctl(audiofd, SNDCTL_DSP_SPEED, &req_format)) == -1 ){
-		uiprintf("Could not set rate\n");
-		return 1;
-	}
-	uiprintf("Sample rate: %d\n", req_format);
+	if ( (result=ioctl(audiofd, SNDCTL_DSP_SPEED, &req_format)) == -1 )
+		return nmserror("Could not set rate");
+	
+	nmsprintf(2, "Sample rate: %d\n", req_format);
 
 	return 0;
 }
@@ -241,7 +236,7 @@ static void uninit(void)
 	if((oss_priv.audiofd) > 0) 
 		close(oss_priv.audiofd);
 
-	uiprintf("OSS Audio closed\n");
+	nmsprintf(1, "OSS Audio closed\n");
 
 	return;
 }

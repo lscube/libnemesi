@@ -32,7 +32,7 @@ int recording_state(struct RTSP_Thread *rtsp_th, short event)
 {
 	switch(event){
 		default:
-			uiprintf("Event %d in RTSP state %d (RECORDING) not yet implemented!\n", event, rtsp_th->status);
+			nmsprintf(1, "Event %d in RTSP state %d (RECORDING) not yet implemented!\n", event, rtsp_th->status);
 			break;
 	}
 	return 0;

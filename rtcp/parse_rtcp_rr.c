@@ -31,6 +31,7 @@
 
 int parse_rtcp_rr(rtcp_pkt *pkt)
 {
-	uiprintf("Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
+	// TODO: handle rr packet
+	nmsprintf(3, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
 	return 0;
 }

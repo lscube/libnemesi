@@ -43,12 +43,12 @@ int video_th_start(NMSVideo *vc)
 	pthread_attr_init(&vth_attr);
 
 	if ((n = pthread_attr_setdetachstate(&vth_attr, PTHREAD_CREATE_JOINABLE)) != 0) {
-		return uierror("Cannot set Video Thread attributes!: %s", strerror(n));
+		return nmserror("Cannot set Video Thread attributes!: %s", strerror(n));
 	}
 
 	/* Create Video Thread */
 	if ((n = pthread_create(&(vc->tid), &vth_attr, &video_th, (void *)vc)) > 0) {
-		return uierror("Cannot create Video Thread: %s", strerror(n));
+		return nmserror("Cannot create Video Thread: %s", strerror(n));
 	}
 
 	return 0;

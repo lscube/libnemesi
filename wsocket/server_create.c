@@ -40,10 +40,8 @@ int server_create(char *host, char *port, int *sock)
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_DGRAM;
 
-	if ((n = gethostinfo(&res, host, port, &hints)) != 0) {
-		uiprintf("%s: %s\n", PROG_NAME, gai_strerror(n));
-		return 1;
-	}
+	if ((n = gethostinfo(&res, host, port, &hints)) != 0)
+		return nmserror("(%s) %s", PROG_NAME, gai_strerror(n));
 
 	ressave = res;
 
@@ -54,10 +52,8 @@ int server_create(char *host, char *port, int *sock)
 		if (bind(*sock, res->ai_addr, res->ai_addrlen) == 0)
 			break;
 
-		if (close(*sock) < 0) {
-			uiprintf("%s: %s\n", PROG_NAME, strerror(errno));
-			return 1;
-		}
+		if (close(*sock) < 0)
+			return nmserror("(%s) %s", PROG_NAME, strerror(errno));
 
 
 	} while ((res = res->ai_next) != NULL);

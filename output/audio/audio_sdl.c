@@ -117,23 +117,23 @@ static uint32 sdl_init(const char *arg)
 #ifdef SDLENV
 	if (arg) {
 		setenv("SDL_AUDIODRIVER", arg, 1);
-		uiprintf("SDL: using %s audio driver\n", arg);
+		nmsprintf(1, "SDL: using %s audio driver\n", arg);
 	}
 #endif // SDLENV
 
 	if (!flags) {
-		uiprintf("SDL Audio already initialized\n");
+		nmsprintf(2, "SDL Audio already initialized\n");
 	} else {
-		uiprintf("Initializing SDL Audio output\n");
+		nmsprintf(1, "Initializing SDL Audio output\n");
 		if (subsystem_init) {
 			if (SDL_InitSubSystem(flags))
-				return uierror("Could not initialize SDL Audio");
+				return nmserror("Could not initialize SDL Audio");
 		} else {
 			flags |= SDL_INIT_NOPARACHUTE;
 			if (SDL_Init(flags))
-				return uierror("Could not initialize SDL Audio");
+				return nmserror("Could not initialize SDL Audio");
 		}
-		uiprintf("SDL Audio initialized\n");
+		nmsprintf(1, "SDL Audio initialized\n");
 	}
 
 	return 0;
@@ -148,7 +148,7 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 	if (sdl_priv.audio_buffer)
 		free(sdl_priv.audio_buffer);
 	if ( (sdl_priv.audio_buffer=ab_init(AUDIO_BUFF_SIZE)) == NULL )
-		return uierror("Failed while initializing Audio Buffer\n");
+		return nmserror("Failed while initializing Audio Buffer\n");
 
 	switch(format) {
 	    case AFMT_U8:
@@ -170,7 +170,7 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 		requested_fmt.format = AUDIO_U16MSB;
 	    break;
 	    default:
-                return uierror("SDL: Unsupported audio format: %s (0x%x).\n", audio_format_name(format), format);
+                return nmserror("SDL: Unsupported audio format: %s (0x%x).", audio_format_name(format), format);
 		break;
 	}
 
@@ -181,13 +181,13 @@ static uint32 init(uint32 rate, uint8 channels, uint32 format, uint32 flags, con
 	requested_fmt.userdata = (void *)(sdl_priv.audio_buffer);
 
 	if ( SDL_OpenAudio(&requested_fmt, &(sdl_priv.aspec)) < 0 )
-		return uierror("SDL: unable to open audio: %s\n", SDL_GetError());
+		return nmserror("SDL: unable to open audio: %s", SDL_GetError());
 
-	uiprintf("\nSDL Audio initialization completed successfully\n\n");
-	uiprintf("FREQ: requested %d -> obtained %d\n", requested_fmt.freq, sdl_priv.aspec.freq);
-	uiprintf("FORMAT: requested %u -> obtained %u\n", requested_fmt.format, sdl_priv.aspec.format);
-	uiprintf("CHANNELS: requested %hu -> obtained %hu\n", requested_fmt.channels, sdl_priv.aspec.channels);
-	uiprintf("SAMPLE: requested %hu -> obtained %hu\n", requested_fmt.samples, sdl_priv.aspec.samples);
+	nmsprintf(1, "SDL Audio initialization completed successfully\n\n");
+	nmsprintf(2, "FREQ: requested %d -> obtained %d\n", requested_fmt.freq, sdl_priv.aspec.freq);
+	nmsprintf(2, "FORMAT: requested %u -> obtained %u\n", requested_fmt.format, sdl_priv.aspec.format);
+	nmsprintf(2, "CHANNELS: requested %hu -> obtained %hu\n", requested_fmt.channels, sdl_priv.aspec.channels);
+	nmsprintf(2, "SAMPLE: requested %hu -> obtained %hu\n", requested_fmt.samples, sdl_priv.aspec.samples);
 
 	return 0;
 }
@@ -253,7 +253,7 @@ static void uninit(void)
 	SDL_CloseAudio();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 
-	uiprintf("SDL Audio closed\n");
+	nmsprintf(1, "SDL Audio closed\n");
 
 	return;
 }

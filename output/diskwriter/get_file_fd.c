@@ -36,24 +36,23 @@ int get_file_fd(NMSDiskWriter *dc, int pt)
 {
 	char filename[256];
 
-	if (pt > MAX_PT) {
-		uierror("Payload type exeded max allowed");
-		return -1;
-	}
+	if (pt > MAX_PT)
+		return -nmserror("Payload type exeded max allowed");
+
 	if ( dc->fd[pt] < 0 ) {
 		sprintf(filename, "%s.%d", dc->basename, pt);
 		if ( (dc->fd[pt]=creat( filename, 00644 )) < 0 )
-			uierror("\nfile %s in current directory cannot be created\n", filename);
+			nmserror("file %s in current directory cannot be created", filename);
 	}
 
 	return dc->fd[pt];
 
 	/*
 	if ( (dc->fd[pt] < 0) && ( (dc->fd[pt]=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
-		uiprintf("\nfile %s in current directory cannot be created\n", DEFAULT_FILENAME);
+		nmserror("file %s in current directory cannot be created\n", DEFAULT_FILENAME);
 
 	if ( (global_disk_buffer->file_fd < 0) && ( (global_disk_buffer->file_fd=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
-		uiprintf("\nfile %s in current directory cannot be created\n", DEFAULT_FILENAME);
+		nmserror("file %s in current directory cannot be created\n", DEFAULT_FILENAME);
 
 	return global_disk_buffer->file_fd;
 	*/

@@ -47,8 +47,8 @@ void *rtp(void *args)
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		bpinit(&(rtp_sess->bp));
 	
-	if((dec_args=(struct Dec_args *)malloc(sizeof(struct Dec_args))) == NULL){
-		uiprintf("Cannot allocate memory!\n");
+	if((dec_args=(struct Dec_args *)malloc(sizeof(struct Dec_args))) == NULL) {
+		nmserror("Cannot allocate memory!");
 		pthread_exit(NULL);
 	}
 	dec_args->rtp_sess_head=rtp_sess_head;
@@ -99,13 +99,13 @@ void *rtp(void *args)
 					if (rtp_sess->bp.flcount > BP_SLOT_NUM/2) {
 						pthread_mutex_unlock(&(dec_args->syn));
 						buffering=0;
-					} else {
-						uiprintf("\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
+					} else { // TODO: buffering based on rtp jitter
+						nmsprintf(1, "\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
 					}
 				}
 				if(rtp_recv(rtp_sess)){
 					/* Waiting 20 msec for decoder ready */
-					uiprintf("Waiting for decoder ready!\n");
+					nmsprintf(1, "Waiting for decoder ready!\n");
 					tv.tv_sec=0;
 					tv.tv_usec=20*(1000);
 					select(0, NULL, NULL, NULL, &tv);

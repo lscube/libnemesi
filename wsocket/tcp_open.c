@@ -42,15 +42,11 @@ int tcp_open(struct sockaddr *name, int namelen)
 {
 	int f;
 
-	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		uiprintf("socket() error in tcp_open.\n");
-		return 1;
-	}
+	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+		return nmserror("socket() error in tcp_open.");
 
-	if (connect(f, name, namelen) < 0) {
-		uiprintf("connect() error in tcp_open.\n");
-		return 1;
-	}
+	if (connect(f, name, namelen) < 0)
+		return nmserror("connect() error in tcp_open.");
 
 	return f;
 }

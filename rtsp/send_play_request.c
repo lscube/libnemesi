@@ -57,7 +57,7 @@ int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
 	strcat(b, "\r\n");
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		uiprintf("Cannot send PLAY request...\n");
+		nmsprintf(1, "Cannot send PLAY request...\n");
 		return 1;
 	}
 

@@ -46,7 +46,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th, int length, char **media_des)
 		else
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
-			uiprintf("Invalid Media description section.\n");
+			nmsprintf(1, "Invalid Media description section.\n");
 			return 1;
 		}
 		switch (*tkn) {
@@ -103,7 +103,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th, int length, char **media_des)
 						while ( *(tkn) == ' ' )
 							tkn++;
 						if ( (ch=strchr(tkn, '/')) == NULL ){
-							uiprintf("Invalid field rtpmap.\n");
+							nmsprintf(2, "Invalid field rtpmap.\n");
 							break;
 						}
 						if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){

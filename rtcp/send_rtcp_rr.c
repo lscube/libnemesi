@@ -45,7 +45,7 @@ int send_rtcp_rr(struct RTP_Session *rtp_sess)
 	for(stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next)
 		if (stm_src->rtcptofd > 0)
 			if( write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0 )
-				uiprintf("\nWARNING! Error while sending RTCP pkt\n");
+				nmsprintf(2, "WARNING! Error while sending RTCP pkt\n");
 	
 	return len;	
 }

@@ -32,8 +32,8 @@ struct RTP_Session *init_rtp_sess(struct sockaddr localaddr, struct sockaddr pee
 {
 	struct RTP_Session *rtp_sess;
 
-	if((rtp_sess=(struct RTP_Session *)calloc(1, sizeof(struct RTP_Session))) == NULL){
-		uiprintf("Cannot allocate memory!\n");
+	if((rtp_sess=(struct RTP_Session *)calloc(1, sizeof(struct RTP_Session))) == NULL) {
+		nmserror("Cannot allocate memory!");
 		return NULL;
 	}
 
@@ -43,8 +43,8 @@ struct RTP_Session *init_rtp_sess(struct sockaddr localaddr, struct sockaddr pee
 	rtp_sess->rtcpfd=-1;
 	rtp_sess->local_ssrc=random32(0);
 	pthread_mutex_init(&rtp_sess->syn,NULL);
-	if((rtp_sess->transport.spec=(char *)malloc(sizeof(char)*(strlen(RTP_AVP_UDP)+1))) ==NULL){
-		uiprintf("Cannot allocate memory!\n");
+	if((rtp_sess->transport.spec=(char *)malloc(sizeof(char)*(strlen(RTP_AVP_UDP)+1))) ==NULL) {
+		nmserror("Cannot allocate memory!");
 		return NULL;
 	}
 	strcpy(rtp_sess->transport.spec, RTP_AVP_UDP);

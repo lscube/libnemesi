@@ -27,12 +27,15 @@
  * */
 
 #include <fcntl.h>
+#include <nemesi/comm.h>
 #include <nemesi/etui.h>
 
 int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 {
 	char *urlname = NULL;
 	char optstr[256];
+
+#ifdef USE_UIPRINTF
 	fd_set rdset;
 	int n;
 
@@ -44,11 +47,11 @@ int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 		fprintf(stderr, "fcntl() error!\n");
 		return 1;
 	}
+#endif // USE_UIPRINTF
 	memset(optstr, '\0', 256);
 
 	if (parse_cl(argc, argv, &urlname) > 0)
 		return 1;
-	fprintf(stderr, "\nWelcome! This is %s - %s -- version %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 	if (urlname != NULL) {
 		fprintf(stderr, "Connect: Please wait, opening \"%s\"", urlname);
 		send_open(rtsp_args, urlname);
@@ -56,15 +59,15 @@ int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 		fprintf(stderr, "Please, enter a command or press 'h' for help\n\n");
 	
 	while (1) {
-
-		FD_ZERO(&rdset);
-		FD_SET(UIINPUT_FILENO, &rdset);
-		FD_SET(STDIN_FILENO, &rdset);
-		
 		if(rtsp_args->rtsp_th->busy)
 			throbber(rtsp_args->rtsp_th);
 		fprintf(stderr, "[ %s ] => ", statustostr(rtsp_args->rtsp_th->status));
 
+#ifdef USE_UIPRINTF
+		FD_ZERO(&rdset);
+		FD_SET(UIINPUT_FILENO, &rdset);
+		FD_SET(STDIN_FILENO, &rdset);
+		
 		select(UIINPUT_FILENO+1, &rdset, NULL, NULL, NULL);
 		if(FD_ISSET(UIINPUT_FILENO, &rdset)){
 			fprintf(stderr, "\r"); // TODO Da ottimizzare
@@ -77,6 +80,11 @@ int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 			if (parse_prompt(rtsp_args, optstr) > 0)
 				return 0;
 		}
+#else // USE_UIPRINTF
+		scanf("%s", optstr);
+		if (parse_prompt(rtsp_args, optstr) > 0)
+			return 0;
+#endif // USE_UIPRINTF
 	}
 
 	return 0;

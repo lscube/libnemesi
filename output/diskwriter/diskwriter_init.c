@@ -38,7 +38,7 @@ NMSDiskWriter *diskwriter_init(const char *basename)
 	// struct disk_buff *disk_buffer;
 
 	if ((dc=malloc(sizeof(NMSDiskWriter))) == NULL) {
-		uierror("Could not alloc disk writer structure");
+		nmserror("Could not alloc disk writer structure");
 		return NULL;
 	}
 

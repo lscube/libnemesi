@@ -37,16 +37,16 @@ void rtp_clean(void *args)
 	void *ret;
 	int i;
 	
-	uiprintf("RTP Thread is dying suicide!\n");
+	nmsprintf(2, "RTP Thread is dying suicide!\n");
 
 	if(rtp_sess->dec_tid > 0) {
-		uiprintf("Sending cancel signal to Decoder Thread (ID: %d)\n", rtp_sess->dec_tid);
+		nmsprintf(2, "Sending cancel signal to Decoder Thread (ID: %d)\n", rtp_sess->dec_tid);
 		if (pthread_cancel(rtp_sess->dec_tid) != 0)
-			uiprintf("Error while sending cancelation to Decoder Thread.\n");
+			nmsprintf(3, "Error while sending cancelation to Decoder Thread.\n");
 		else
 			pthread_join(rtp_sess->dec_tid, (void **)&ret);
 		if ( ret != PTHREAD_CANCELED )
-			uiprintf("Warning! Decoder Thread joined, but  not canceled!\n");
+			nmsprintf(3, "Warning! Decoder Thread joined, but  not canceled!\n");
 	}
 	rtp_sess->dec_tid = -1;
 	while(rtp_sess != NULL) {
@@ -83,5 +83,5 @@ void rtp_clean(void *args)
 		free(prev_rtp_sess);
 	}
 	free((struct Dec_args *)args);
-	uiprintf("RTP Thread R.I.P.\n");
+	nmsprintf(2, "RTP Thread R.I.P.\n");
 }

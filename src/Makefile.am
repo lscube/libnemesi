@@ -6,7 +6,6 @@ libutils_la_SOURCES =	urltokenize.c \
 			strdup.c \
 			strstrcase.c \
 			strncmpcase.c \
-			uiprintf.c \
 			statustostr.c \
 			random32.c \
 			timeval_subtract.c \
@@ -17,7 +16,10 @@ libutils_la_SOURCES =	urltokenize.c \
 			rem_avail_pref.c \
 			list_prefs.c \
 			get_pref.c \
-			uierror.c
+			uiprintf.c \
+			uierror.c \
+			nmserror.c \
+			nmsprintf.c
 
 libutils_la_LDFLAGS = -static
 
@@ -43,12 +45,12 @@ nemesi_LDADD =	@DLOPEN@ \
 		$(top_srcdir)/bufferpool/libbuffpool.la \
 		$(top_srcdir)/etui/libetui.la \
 		$(top_srcdir)/wsocket/libwsocket.la \
-		$(top_srcdir)/src/libutils.la \
-		$(top_srcdir)/md5/libmd5.la \
 		$(top_srcdir)/src/libplugins.la \
 		$(top_srcdir)/output/audio/libaudio.la \
 		$(top_srcdir)/output/video/libvideo.la \
-		$(top_srcdir)/output/diskwriter/libdiskwriter.la
+		$(top_srcdir)/output/diskwriter/libdiskwriter.la \
+		$(top_srcdir)/src/libutils.la \
+		$(top_srcdir)/md5/libmd5.la
 
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
 INCLUDES += @INCLTDL@

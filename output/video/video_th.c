@@ -51,9 +51,9 @@ void *video_th(void *vc)
 
 	if (videoc->fps) {
 		fps = videoc->fps;
-		uiprintf("Video Thread Started: fps = %f\n", fps);
+		nmsprintf(2, "Video Thread Started: fps = %f\n", fps);
 	} else {
-		uiprintf("Video Thread Started: using default fps = %f\n", fps);
+		nmsprintf(2, "Video Thread Started: using default fps = %f\n", fps);
 	}
 	tvsleep.tv_sec = 1/fps;// SLEEP_MS / 1000;
 	tvsleep.tv_usec = (long)(1000000/fps) % 1000000; //(SLEEP_MS % 1000) * 1000;
@@ -67,8 +67,6 @@ void *video_th(void *vc)
 		select(0, NULL, NULL, NULL, &tvstop);
 		funcs->update_screen();
 		gettimeofday(&tvstop, NULL);
-		// uiprintf("\n\tupdate time: %ld.%ld\n", tvstop.tv_sec, tvstop.tv_usec);
-		// uiprintf("\nUpdate screen!!!\n");
 	}
 
 	// pthread_cleanup_pop(1);

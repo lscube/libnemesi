@@ -45,7 +45,7 @@ NMSVideo *video_preinit(const char *drv_hint)
 	NMSVFunctions *funcs;
 
 	if ((vc=malloc(sizeof(NMSVideo))) == NULL) {
-		uierror("Could not alloc video structure");
+		nmserror("Could not alloc video structure");
 		return NULL;
 	}
 
@@ -63,7 +63,7 @@ NMSVideo *video_preinit(const char *drv_hint)
 	if (funcs->preinit(NULL)) // TODO: send subdriver hint
 		return NULL;
 	
-	uiprintf("Video driver: %s\n", funcs->info->name);
+	nmsprintf(1, "Video driver: %s\n", funcs->info->name);
 
 	return vc;
 }

@@ -34,8 +34,8 @@ struct RTCP_Event *rtcp_schedule(struct RTCP_Event *head, struct RTP_Session *rt
 	struct RTCP_Event *pevent=head;
 	struct RTCP_Event *event=head;
 	
-	if( (new_event=(struct RTCP_Event *)malloc(sizeof(struct RTCP_Event))) == NULL){
-		uiprintf("Cannot allocate memory!\n");
+	if( (new_event=(struct RTCP_Event *)malloc(sizeof(struct RTCP_Event))) == NULL) {
+		nmserror("Cannot allocate memory!");
 		return NULL;
 	}
 	new_event->rtp_sess=rtp_sess;

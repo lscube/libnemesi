@@ -36,18 +36,18 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 	char *reason_phrase;
 
 	if ( sscanf(status_line, "%s %hu ", ver, &res_state) < 2) {
-		uiprintf("invalid Status-Line in DESCRIBE Response\n");
+		nmsprintf(1, "invalid Status-Line in DESCRIBE Response\n");
 		return 1;
 	}
 	reason_phrase=strchr(strchr(status_line, ' ')+1, ' ')+1;
 	if ( (res_state>=300) && (res_state<400) ) {
-		uiprintf("WARNING: Redirection. reply was: %hu %s -> INIT-STATE\n", res_state, reason_phrase);
+		nmsprintf(1, "WARNING: Redirection. reply was: %hu %s -> INIT-STATE\n", res_state, reason_phrase);
 		rtsp_th->status=INIT;
 	}
 	if ( (res_state>=400) && (res_state<500))
-		uiprintf("WARNING: Client error. Reply was: %hu %s\n", res_state, reason_phrase);
+		nmsprintf(1, "WARNING: Client error. Reply was: %hu %s\n", res_state, reason_phrase);
 	if ( res_state>=500 )
-		uiprintf("WARNING; Server error. Reply was: %hu %s\n", res_state, reason_phrase);
+		nmsprintf(1, "WARNING; Server error. Reply was: %hu %s\n", res_state, reason_phrase);
 	if ( (res_state>=200) && (res_state<300) )
 		return 0;
 	return 1;

@@ -45,7 +45,7 @@ NMSAudio *audio_init(const char *drv_hint)
 	NMSAFunctions *funcs;
 
 	if ((ac=malloc(sizeof(NMSAudio))) == NULL) {
-		uierror("Could not alloc audio structure");
+		nmserror("Could not alloc audio structure");
 		return NULL;
 	}
 
@@ -62,7 +62,7 @@ NMSAudio *audio_init(const char *drv_hint)
 	if ( !(ac->init = !funcs->init(FREQ, CHANNELS, FORMAT, 0, NULL)) )
 		return NULL;
 	
-	uiprintf("Audio driver: %s\n", funcs->info->name);
+	nmsprintf(1, "Audio driver: %s\n", funcs->info->name);
 
 	return ac;
 }

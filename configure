@@ -21919,6 +21919,11 @@ fi
 
 if test "$enable_debug" = "yes"; then
 	CFLAGS="$CFLAGS -g -ggdb"
+
+cat >>confdefs.h <<\_ACEOF
+#define ENABLE_DEBUG 1
+_ACEOF
+
 fi
 
 case "$enable_warnings" in

@@ -39,13 +39,13 @@ int stop_cmd(struct RTSP_Thread *rtsp_th, ...)
 
 	if (rtsp_th->status == INIT) {
 		rtsp_th->busy=0;
-		uiprintf("Player not initialized!\n");
+		nmsprintf(1, "Player not initialized!\n");
 		va_end(ap);
 		return 1;
 	}
 	if (rtsp_th->status == READY) {
 		rtsp_th->busy=0;
-		uiprintf("I don't think you're yet playing or recording\n");
+		nmsprintf(1, "I don't think you're yet playing or recording\n");
 		va_end(ap);
 		return 0;
 	}

@@ -58,33 +58,33 @@ int get_infos(struct RTSP_args *rtsp_args)
 	
 	sess=rtsp_args->rtsp_th->rtsp_queue;
 	
-	uiprintf(BLANK_LINE);
+	nmsprintf(1, BLANK_LINE);
 
 	if (!sess){
-		uiprintf("No Connection!\n\n");
+		nmsprintf(1, "No Connection!\n\n");
 		return 0;
 	}
 
 	while(sess){
 		med=sess->media_queue;
-		uiprintf("---- RTSP Session Infos: %s ----\n", sess->pathname);
+		nmsprintf(1, "---- RTSP Session Infos: %s ----\n", sess->pathname);
 		for(str=(char **)&(sess->info); str < (char **)&(sess->info.attr_list); str++)
 			if (*str)
-				uiprintf("* %s: %s\n", sdes[str-(char **)&(sess->info)], *str);
+				nmsprintf(1, "* %s: %s\n", sdes[str-(char **)&(sess->info)], *str);
 		for(attr=sess->info.attr_list; attr; attr=attr->next)
-			uiprintf("%s\n", attr->a);
+			nmsprintf(1, "%s\n", attr->a);
 		while (med) {
-			uiprintf("\n\t---- RTSP Medium Infos: %s ----\n", med->filename);
+			nmsprintf(1, "\n\t---- RTSP Medium Infos: %s ----\n", med->filename);
 			for(str=(char **)&(med->medium_info); str < (char **)&(med->medium_info.attr_list); str++)
 				if(*str)
-					uiprintf("\t* %s: %s\n", mdes[str-(char **)&(med->medium_info)], *str);
+					nmsprintf(1, "\t* %s: %s\n", mdes[str-(char **)&(med->medium_info)], *str);
 			for(attr=med->medium_info.attr_list; attr; attr=attr->next)
-				uiprintf("\t* %s\n", attr->a);
+				nmsprintf(1, "\t* %s\n", attr->a);
 			med=med->next;
 		}
 		sess=sess->next;
 	}
-	uiprintf("\n");
+	nmsprintf(1, "\n");
 
 	return 0;
 }

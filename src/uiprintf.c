@@ -34,6 +34,7 @@
 
 #include <nemesi/comm.h>
 
+#ifdef USE_UIPRINTF
 
 int uiprintf(const char *fmt, ...)
 {
@@ -60,3 +61,4 @@ int uiprintf(const char *fmt, ...)
 
 	return 0;
 }
+#endif // USE_UIPRINTF

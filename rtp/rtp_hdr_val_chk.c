@@ -30,24 +30,24 @@
 
 int rtp_hdr_val_chk(rtp_pkt *pkt, int len)
 {
-	if ( pkt->ver != RTP_VERSION ){
-		uiprintf("RTP Header not valid: mismatching version number!");
-		uiprintf(BLANK_LINE);
+	if ( pkt->ver != RTP_VERSION ) {
+		nmsprintf(2, "RTP Header not valid: mismatching version number!");
+		nmsprintf(2, BLANK_LINE);
 		return 1;
 	}
-	if ( (pkt->pt>=200) && (pkt->pt<=204) ){
-		uiprintf("RTP Header not valid: mismatching payload type!");
-		uiprintf(BLANK_LINE);
+	if ( (pkt->pt>=200) && (pkt->pt<=204) ) {
+		nmsprintf(2, "RTP Header not valid: mismatching payload type!");
+		nmsprintf(2, BLANK_LINE);
 		return 1;
 	}
-	if ( (pkt->pad) && ( *(((uint8 *)pkt)+len-1) > (len - ((uint8 *)(pkt->data)-(uint8 *)pkt)) )){
-		uiprintf("RTP Header not valid: mismatching lenght!");
-		uiprintf(BLANK_LINE);
+	if ( (pkt->pad) && ( *(((uint8 *)pkt)+len-1) > (len - ((uint8 *)(pkt->data)-(uint8 *)pkt)) )) {
+		nmsprintf(2, "RTP Header not valid: mismatching lenght!");
+		nmsprintf(2, BLANK_LINE);
 		return 1;
 	}
-	if ( (pkt->cc) && ( pkt->cc > (len - ((uint8 *)(pkt->data)-(uint8 *)pkt))-((*(((uint8 *)pkt)+len-1)) * pkt->pad) )){
-		uiprintf("RTP Header not valid: mismatching CSRC count!");
-		uiprintf(BLANK_LINE);
+	if ( (pkt->cc) && ( pkt->cc > (len - ((uint8 *)(pkt->data)-(uint8 *)pkt))-((*(((uint8 *)pkt)+len-1)) * pkt->pad) )) {
+		nmsprintf(2, "RTP Header not valid: mismatching CSRC count!");
+		nmsprintf(2, BLANK_LINE);
 		return 1;
 	}
 	

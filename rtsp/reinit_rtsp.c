@@ -38,22 +38,22 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 #if 1
 	if(psess) {
 		if(psess->media_queue->rtp_sess->rtcp_tid > 0){
-			uiprintf("Sending cancel signal to RTCP Thread (ID: %d)\n", psess->media_queue->rtp_sess->rtcp_tid);
+			nmsprintf(2, "Sending cancel signal to RTCP Thread (ID: %d)\n", psess->media_queue->rtp_sess->rtcp_tid);
 			if (pthread_cancel(psess->media_queue->rtp_sess->rtcp_tid) != 0)
-				uiprintf("Error while sending cancelation to RTCP Thread.\n");
+				nmsprintf(3, "Error while sending cancelation to RTCP Thread.\n");
 			else
 				pthread_join(psess->media_queue->rtp_sess->rtcp_tid, (void **)&ret);
 			if ( ret != PTHREAD_CANCELED )
-				uiprintf("Warning! RTCP Thread joined, but  not canceled!\n");
+				nmsprintf(3, "Warning! RTCP Thread joined, but  not canceled!\n");
 		}
 		if(psess->media_queue->rtp_sess->rtp_tid > 0){
-			uiprintf("Sending cancel signal to RTP Thread (ID: %d)\n", psess->media_queue->rtp_sess->rtp_tid);
+			nmsprintf(2, "Sending cancel signal to RTP Thread (ID: %d)\n", psess->media_queue->rtp_sess->rtp_tid);
 			if(pthread_cancel(psess->media_queue->rtp_sess->rtp_tid) != 0)
-				uiprintf("Error while sending cancelation to RTP Thread.\n");
+				nmsprintf(3, "Error while sending cancelation to RTP Thread.\n");
 			else
 				pthread_join(psess->media_queue->rtp_sess->rtp_tid, (void **)&ret);
 			if( ret != PTHREAD_CANCELED)
-				uiprintf("Warning! RTP Thread joined, but not canceled.\n");
+				nmsprintf(3, "Warning! RTP Thread joined, but not canceled.\n");
 		}
 	}
 #endif
@@ -63,24 +63,6 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 		pmed=med=psess->media_queue;
 		while(pmed != NULL){
 			med=pmed->next;
-#if 0
-			if(pmed->rtp_sess->rtcp_tid > 0){
-				if (pthread_cancel(pmed->rtp_sess->rtcp_tid) != 0)
-					uiprintf("Error while sending cancelation to RTCP Thread.\n");
-				else 
-					pthread_join(pmed->rtp_sess->rtcp_tid, (void **)&ret);
-				if ( ret != PTHREAD_CANCELED )
-					uiprintf("Warning! RTCP Thread joined, but  not canceled!\n");
-			}
-			if(pmed->rtp_sess->rtp_tid > 0){
-				if(pthread_cancel(pmed->rtp_sess->rtp_tid) != 0)
-					uiprintf("Error while sending cancelation to RTP Thread.\n");
-				else 
-					pthread_join(pmed->rtp_sess->rtp_tid, (void **)&ret);
-				if( ret != PTHREAD_CANCELED)
-					uiprintf("Warning! RTP Thread joined, but not canceled.\n");
-			}
-#endif
 			free(pmed);
 			pmed=med;
 		}
@@ -88,7 +70,6 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 		free(psess);
 		psess=sess;
 	}
-/*	uiprintf("RTP THREAD cancelled\n"); */
 #if 1
 	free(rtsp_th->server_port);
 	free(rtsp_th->urlname);

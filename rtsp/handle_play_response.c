@@ -33,7 +33,7 @@ int handle_play_response(struct RTSP_Thread *rtsp_th)
 	char *prev_tkn;
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
-		uiprintf("Invalid RTSP-DESCRIBE response\n");
+		nmsprintf(1, "Invalid RTSP-DESCRIBE response\n");
 		rtsp_th->busy=0;
 		return 1;
 	}

@@ -43,7 +43,7 @@ int check_response(struct RTSP_Thread *rtsp_th)
 	sscanf(rtsp_th->waiting_for, "%d", &wait_res);
 	/* cerco il numero di sequenza del pacchetto arrivato */
 	if ((str_pos = strstrcase((rtsp_th->in_buffer).data, "CSeq")) == NULL) {
-		uiprintf("ERROR: CANNOT find CSeq number in server response.\n");
+		nmsprintf(1, "ERROR: CANNOT find CSeq number in server response.\n");
 		return 1;
 	}
 	str_pos+=5;

@@ -35,19 +35,17 @@ int set_ssrc_sdes(struct Stream_Source *stm_src, rtcp_sdes_item_t *item)
 	if ( str != NULL ){
 		if ( memcmp(str, item->data, item->len) != 0){
 			free(str);
-			if ( (str=(((char **)(&(stm_src->ssrc_sdes)))[item->type])=(char *)malloc(sizeof(char)*(item->len+1))) == NULL ){
-				uiprintf("Cannot allocate memory!");
-				return 1;
-			}
+			if ( (str=(((char **)(&(stm_src->ssrc_sdes)))[item->type])=(char *)malloc(sizeof(char)*(item->len+1))) == NULL )
+				return nmserror("Cannot allocate memory!");
+
 			memcpy(str, item->data, item->len);
 			str[item->len]=0;
 		}
 			
 	} else {
-		if ( (str=((char **)(&(stm_src->ssrc_sdes)))[item->type]=(char *)malloc(sizeof(char)*(item->len+1))) == NULL ){
-			uiprintf("Cannot allocate memory!");
-			return 1;
-		}
+		if ( (str=((char **)(&(stm_src->ssrc_sdes)))[item->type]=(char *)malloc(sizeof(char)*(item->len+1))) == NULL )
+			return nmserror("Cannot allocate memory!");
+
 		memcpy(str, item->data, item->len);
 		str[item->len]=0;
 	}

@@ -34,10 +34,9 @@ int remove_pkt(struct RTSP_Thread *rtsp_th)
 	char *buff=NULL;
 
 	if ((rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size)){
-		if((buff=(char *)malloc(sizeof(char)*(rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size))) == NULL){
-			uiprintf("Cannot allocate memory!\n");
-			return 1;
-		}
+		if((buff=(char *)malloc(sizeof(char)*(rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size))) == NULL)
+			return nmserror("Cannot allocate memory!");
+
 		memcpy(buff, rtsp_th->in_buffer.data+rtsp_th->in_buffer.first_pkt_size, \
 				(rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size)*sizeof(char));
 	} else

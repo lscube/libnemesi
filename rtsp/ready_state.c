@@ -40,7 +40,7 @@ int ready_state(struct RTSP_Thread *rtsp_th, short event)
 			/* Nessun altra PLAY da inviare */
 			rtsp_th->status = PLAYING;
 			rtsp_th->busy = 0;
-			uiprintf("----- Playing... -----\n");
+			nmsprintf(1, "----- Playing... -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);
@@ -58,7 +58,7 @@ int ready_state(struct RTSP_Thread *rtsp_th, short event)
 			rtsp_th->status = INIT;
 			reinit_rtsp(rtsp_th);
 			rtsp_th->busy = 0;
-			uiprintf("----- All Connections closed -----\n");
+			nmsprintf(1, "----- All Connections closed -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);

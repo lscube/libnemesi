@@ -37,45 +37,39 @@
 
 int output_init(void)
 {
-	// Warning: We cannot yet use uiprintf and uierror functions
+	if (!(nmsoutc = malloc(sizeof(NMSOutput))))
+		nmserror("Could not alloc output struct");
 
-	if (!(nmsoutc = malloc(sizeof(NMSOutput)))) {
-		uierror("Could not alloc output struct");
-		return 1;
-	}
-
-	uiprintf(SEPARATOR);
+	nmsprintf(1, SEPARATOR);
 	// AUDIO MODULE INIT
 	if ((nmsoutc->audio=audio_init("sdl")) == NULL) {
-		fprintf(stderr, "Audio module not available\n");
+		nmserror("Audio module not available");
 		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
 		// rem_avail_pref("output card");
 		// edit_pref("output disk");
 	}
 
-	uiprintf(SEPARATOR);
+	nmsprintf(1, SEPARATOR);
 	// VIDEO MODULE INIT
 	if ((nmsoutc->video=video_preinit("sdl")) == NULL) {
 		if (!nmsoutc->audio) {
-			fprintf(stderr, "Video module not available: setting \"output\" to \"null\"\n");
+			nmserror("Video module not available: setting \"output\" to \"null\"");
 			rem_avail_pref("output card");
 			// edit_pref("output disk");
 		} else
-			fprintf(stderr, "Video module not available\n");
+			nmserror("Video module not available");
 	}
 
-	uiprintf(SEPARATOR);
+	nmsprintf(1, SEPARATOR);
 	// DISKWRITER MODULE INIT
 	if ( (nmsoutc->diskwriter=diskwriter_init(DEFAULT_FILENAME)) == NULL ) {
 		fprintf(stderr, "Disk Writer module not available\n");
 		rem_avail_pref("output disk");
-		if ( strcmp("card", get_pref("output")) ) {
-			fprintf(stderr, "\nNo output device available\n Cannot continue.\n");
-			return 1;
-		}
+		if ( strcmp("card", get_pref("output")) )
+			return nmserror("No output device available\n Cannot continue");
 	} else
-		uiprintf("Diskwriter succesfully initialized\n");
-	uiprintf(SEPARATOR);
+		nmsprintf(1, "Diskwriter succesfully initialized\n");
+	nmsprintf(1, SEPARATOR);
 
 	return 0;
 }

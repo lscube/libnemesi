@@ -32,8 +32,8 @@ struct RTSP_Session *rtsp_sess_copy(struct RTSP_Session *curr_rtsp_s)
 {
 	struct RTSP_Session *new_rtsp_s;
 
-	if ( (new_rtsp_s=(struct RTSP_Session *)malloc(sizeof(struct RTSP_Session))) == NULL ){
-		uiprintf("Cannot allocate memory.\n");
+	if ( (new_rtsp_s=(struct RTSP_Session *)malloc(sizeof(struct RTSP_Session))) == NULL ) {
+		nmserror("Cannot allocate memory.");
 		return NULL;
 	}
 

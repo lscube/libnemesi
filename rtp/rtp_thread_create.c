@@ -36,15 +36,12 @@ int rtp_thread_create(struct RTP_Session *rtp_sess_head)
 	pthread_t rtp_tid;
 
 	pthread_attr_init(&rtp_attr);
-	if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) != 0){
-		uiprintf("Cannot set RTP Thread attributes!\n");
-		return 1;
-	}
+	if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) != 0)
+		return nmserror("Cannot set RTP Thread attributes (detach state)");
 
-	if ((n=pthread_create(&rtp_tid, &rtp_attr, &rtp, (void *)rtp_sess_head)) > 0){
-		uiprintf("Error: %s\n", strerror(n));
-		return 1;
-	}
+	if ((n=pthread_create(&rtp_tid, &rtp_attr, &rtp, (void *)rtp_sess_head)) > 0)
+		return nmserror("%s", strerror(n));
+
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		rtp_sess->rtp_tid=rtp_tid;
 	

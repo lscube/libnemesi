@@ -31,6 +31,10 @@
 
 #include <stdio.h>
 
+#undef USE_UIPRINTF
+
+#ifdef USE_UIPRINTF
+
 #ifndef COMM_GLOBALS
 #define COMM_EXTERN extern
 #else // COMM_GLOBALS
@@ -42,6 +46,8 @@ COMM_EXTERN int uipipe[2];
 #define UIINPUT_FILENO uipipe[0]
 #define UIERROR_FILENO uipipe[1]
 
+#endif // USE_UIPRINTF
+
 /***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
 #define BLANK_LINE "                                                                                \n"
 /***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
@@ -51,10 +57,15 @@ COMM_EXTERN int uipipe[2];
 #define BEGIN_SEP "\n<--------------\n"
 #define END_SEP "\n-------------->\n\n"
 
+int nmsprintf(int verbosity, const char *fmt, ...);
+int nmserror(const char *fmt, ...);
+
+#ifdef USE_UIPRINTF
 int uiprintf(const char *fmt, ...);
 int uierror(const char *fmt, ...);
 
 #undef COMM_GLOBALS
 #undef COMM_EXTERN
+#endif // USE_UIPRINTF
 
 #endif

@@ -54,7 +54,7 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 		hints.ai_socktype = SOCK_DGRAM;
 
 	if ((n = gethostinfo(&res, host, port, &hints)) != 0) {
-		uiprintf("%s: %s\n", PROG_NAME, gai_strerror(n));
+		nmsprintf(1, "%s: %s\n", PROG_NAME, gai_strerror(n));
 		return 1;
 	}
 
@@ -67,17 +67,13 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 		if (connect(*sock, res->ai_addr, res->ai_addrlen) == 0)
 			break;
 
-		if (close(*sock) < 0) {
-			uiprintf("%s: %s", PROG_NAME, strerror(errno));
-			return 1;
-		}
+		if (close(*sock) < 0)
+			return nmserror("(%s) %s", PROG_NAME, strerror(errno));
 
 	} while ((res = res->ai_next) != NULL);
 
-	if (res == NULL){
-		uiprintf("Server connect error for \"%s:%s\"\n", host, port);
-		return 1;
-	}
+	if (res == NULL)
+		return nmserror("Server connect error for \"%s:%s\"", host, port);
 
 	freeaddrinfo(ressave);
 
