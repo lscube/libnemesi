@@ -1,0 +1,203 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(wsocket/server_connect.c)
+AC_CONFIG_AUX_DIR(config)
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(nemesi, 0.2.0)
+
+AC_PREFIX_PROGRAM(nemesi)
+
+AM_CONFIG_HEADER(config.h)
+
+AC_ARG_ENABLE(debug,
+[  --enable-debug          enable gcc dubugging flags [default=no]],,
+	enable_debug="no")
+AC_ARG_ENABLE(warnings,
+[  --enable-warnings       enable/choose gcc warnings level: none, normal, pedantic [default=none]],,
+	enable_warnings="none")
+AC_ARG_ENABLE(errors,
+[  --enable-errors         make gcc warnings behave like errors: none, normal, pedantic [default=none]],,
+	enable_errors="none")
+AC_ARG_ENABLE(optimize,
+[  --enable-optimize       enable/chose optimization level: none, poor, normal, full, super [default=normal]],,
+	enable_optimize="normal")
+AC_ARG_ENABLE(gcc3,
+[  --enable-gcc3           enable/chose gcc3 as default compiler [default=no]],,
+	enable_gcc3="no")
+AC_ARG_ENABLE(sdl,
+[  --enable-sdl            enable/chose sdl as default output library [default=yes]],,
+	enable_sdl="yes")
+
+dnl Checks for programs.
+if test "$enable_gcc3" = "yes"; then
+	CC="gcc3";
+fi
+AC_PROG_CC
+AC_PROG_GCC_TRADITIONAL
+AC_PROG_CPP
+AC_PROG_AWK
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+dnl Check for LibTool Dynamic Loading
+AC_LIBLTDL_CONVENIENCE
+AC_SUBST(INCLTDL)
+AC_SUBST(LIBLTDL)
+AM_PROG_LIBTOOL
+AC_CONFIG_SUBDIRS(libltdl)
+
+AC_SUBST(LIBTOOL_DEPS)
+AC_SUBST(DLOPEN)
+AC_SUBST(DLPREOPEN)
+
+dnl Check for Endianess
+AC_C_BIGENDIAN
+
+dnl Checks for libraries.
+AC_CHECK_LIB(pthread,pthread_create)
+
+dnl Replace `main' with a function in -lm:
+AC_CHECK_LIB(m, main)
+
+dnl Checks for header files.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_TIME
+AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.hlimits.h malloc.h sys/ioctl.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_TYPE_UID_T
+AC_TYPE_PID_T
+AC_C_INLINE
+AC_HEADER_TIME
+
+dnl Checks for library functions.
+AC_FUNC_ALLOCA
+AC_FUNC_MEMCMP
+AC_FUNC_MMAP
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr)
+AC_CHECK_FUNC(getaddrinfo)
+
+CFLAGS=""
+
+dnl Check for SDL library
+if test "$enable_sdl" = "yes"; then
+	AM_PATH_SDL("1.2.2",
+		AC_DEFINE([HAVE_SDL], 1, [Define if SDL library is present]) \
+		CFLAGS="$CFLAGS $SDL_CFLAGS" \
+		LIBS="$LIBS $SDL_LIBS",
+		AC_MSG_WARN([Falling back to OSS Audio output!]))
+else
+	AC_MSG_WARN([SDL library disabled!])
+fi
+
+if test "$enable_debug" = "yes"; then
+	CFLAGS="$CFLAGS -g -ggdb"
+fi
+
+case "$enable_warnings" in
+	pedantic)
+		CFLAGS="$CFLAGS -W -Wall -pedantic"
+	;;
+	normal | yes)
+		CFLAGS="$CFLAGS -W -Wall"
+	;;
+	none | *)
+		CFLAGS="$CFLAGS"
+	;;
+esac
+
+case "$enable_errors" in
+	pedantic)
+		CFLAGS="$CFLAGS -pedantic-errors -Werror"
+	;;
+	normal | yes)
+		CFLAGS="$CFLAGS -Werror"
+	;;
+	none | *)
+		CFLAGS="$CFLAGS"
+	;;
+esac
+
+case "$enable_optimize" in
+	poor)
+		CFLAGS="$CFLAGS -O1" 
+	;;
+	full)
+		CFLAGS="$CFLAGS -O3"
+	;;
+	super)
+		CFLAGS="$CFLAGS -O3 -funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math -malign-functions=2 -malign-jumps=2 -malign-loops=2"
+	;;
+	none)
+		CFLAGS="$CFLAGS"
+	;;
+	normal | *)
+		CFLAGS="$CFLAGS -O2"
+	;;
+esac
+
+
+ARCH_DEFINES=""
+case "$host" in 
+	i386-*-* | i486-*-* | i586-*-* | i686-*-* | i86pc-*-*)
+		CFLAGS="$CFLAGS -mcpu=i486"
+		ARCH_DEFINES="-DI386_ASSEM"
+		arch_type=ix86
+	;;
+	ppc-*-*)
+		arch_type=ppc
+	;;
+	*-hpux-*)
+		ARCH_DEFINES="-DHPUX"
+	;;
+	*-sun-*)
+		have_solaris=yes
+	;;
+esac
+
+
+AC_SUBST(ARCH_DEFINES)
+AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
+AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
+AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
+
+if test "$prefix" = NONE && test "$exec_prefix" = NONE; then
+		nemesi_prefix="/usr/local/share"
+else if test "$prefix" = NONE; then
+		nemesi_prefix="$exec_prefix"/share
+	else
+		nemesi_prefix="$prefix"/share
+	fi
+fi
+		
+nemesi_plugindir="$nemesi_prefix"/nemesi/plugins
+AC_SUBST(nemesi_plugindir)
+
+AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir")
+AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR")
+
+AC_OUTPUT([\
+		Makefile \
+		bufferpool/Makefile \
+		etui/Makefile \
+		rtp/Makefile \
+		rtcp/Makefile \
+		rtsp/Makefile \
+		src/Makefile \
+		wsocket/Makefile \
+		output/Makefile \
+		output/audio/Makefile \
+		decoder/Makefile \
+		decoder/L16_8k_m/Makefile \
+		decoder/gsm_amr_float/Makefile \
+dnl		decoder/mp3stub/Makefile \
+		decoder/mp3/Makefile \
+		md5/Makefile \
+		plugins/Makefile \
+		docs/Makefile \
+	])
+

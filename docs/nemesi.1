@@ -1,0 +1,202 @@
+.TH NEMESI 1 "April 28, 2002"
+.SH NAME
+nemesi \- a NEtwork MEdia Streamer
+.SH SYNOPSIS
+.B nemesi 
+.RB [ " -hv " ]
+.RB [ " media URL " ]
+.SH OPTIONS
+.TP
+.B -h
+List command-line options.
+.TP
+.B -v
+Print version.
+.TP
+.B media URL
+The URL of the multimedia file that you want enjoy.
+.SH DESCRIPTION
+.B NeMeSI \-\- NEtwork MEdia Streamer I
+is a streaming client that allows user to enjoy playback of multimedia files
+with low latency transport over IP-based networks. This software is fully
+compliant with all IETF's protocols for streaming data that requires real-time
+class delivery. It also includes support for MP3 and GSM-AMR encoded stream.
+
+.B NeMeSI
+features an adaptive behaviour achieved by the innovative
+.B Dynamic CoDec Switching
+technique.
+
+.B NeMeSI
+is the official streaming client/player of
+.B Open Media Streaming Project
+by Internet Multimedia Group at Politecnico di Torino. Please visite OMSP
+home page (http://streaming.polito.it) for further information.
+
+.SH USAGE
+.SS Command line invocation
+Normally
+.B NeMeSI
+is started with
+.RS
+.PP
+nemesi urlname
+.RE
+.PP
+which runs
+.B NeMeSi
+and even try to open the URL described in
+.IR "urlname".
+This is equivalent to running
+.B NeMeSI
+with the command line
+.RS
+.PP
+nemesi
+.RE
+.PP
+and then issuing an open command
+.RB "(" open " or " o ")"
+at
+.I More-Touch E-Tui
+prompt (see
+.B Textual User Interface
+below) when
+.B NeMeSI
+is found in the
+.I INIT
+state.
+
+If the bootstrap phase executes whitout errors and the connection was
+already established,
+.B NeMeSI
+give you the prompt in the
+.I READY
+state, ready to accept some command. It's a good idea to issue now a
+.BR play " (or " p ")"
+command to start the playback of the streaming session.
+
+You can pause the playback with the command
+.B zause
+or stop it (which is like a pause plus a rewind) typing
+.BR "stop".
+You can close the connection with the streaming server by introducing a
+.B close
+command to return to the prompt in the
+.I INIT
+state. A
+.B quit
+command leave
+.B NeMeSI
+to the shell prompt.
+
+.SS Bootstrap messages
+The messages printed at bootstrap phase show
+.IP \(bu 4
+the names of the
+.I plugins
+loaded and the
+.I RTP Payload Type
+they manage
+.IP \(bu 4
+some information about the setup of the audio board
+.SS Textual user interface
+.B NeMeSI
+features the innovative
+.I More-Touch Electric-Textual User Interface
+for prompting and for parsing user commands. MT-ETUI accepts following commands:
+.TP
+.BR help " or " ?
+print help
+.TP
+.BR quit
+quit the program
+.TP
+.BR version
+print infos about NeMeSI
+.TP
+.BR open " urlname"
+connect to urlname
+.TP
+.BR info
+print info about the session
+.TP
+.BR play " [range]"
+start the playback. Issuing the optional
+.I range
+you can choose the portion of the
+media to playback. Generic format for
+.I range
+option is
+.RS
+.IP 
+hh:mm:ss-HH:MM:SS
+.RE
+.IP
+which suggests
+.B NeMeSI
+to start the playback of the stream at 
+.I hh 
+hours, 
+.I mm 
+minutes and 
+.I ss
+seconds and stop it at
+.I HH
+hours,
+.I MM
+minuts and
+.I SS
+seconds. Examples, showing
+.B NeMeSI
+prompt, of accepted command formats are:
+.RS
+.TP
+.RB "[ READY ] " "play 20:10-1:4:50"
+The playback starts at 20 minutes, 10 seconds and stops at 1 hour, 4 minutes and
+50 seconds.
+.TP 
+.RB "[ READY ] " "play 15-"
+The playback starts at 15 seconds and stops at the end (if any) of the stream.
+.TP
+.RB "[ READY ] " "play -25:6"
+The playback starts at the very beginning of the stream and stops at 25 minutes and
+6 seconds.
+.RE
+.TP
+.BR zause
+pause the playback
+.TP
+.BR stop
+stop the playback
+.TP
+.BR close
+close the connection
+.TP
+Every command accepts also its first char as abbreviation (e.g. 'h' for 'help').
+.SH ENVIRONMENT
+.TP
+.B NEMESI_PLUGIN_DIR
+Name of the alternative plugin directory. This should be an absolute path,
+since you will probably invoke
+.B NeMeSI
+from different directories. The value of NEMESI_PLUGIN_DIR will be used 
+instead of the compiled-in default.
+.SH "EXIT STATUS"
+.IP 0
+No errors.
+.IP 1
+There were errors.
+.SH "SEE ALSO"
+NeMeSI documentation at Open Media Streaming Project home page
+(http://streaming.polito.it).
+.SH AUTHORS
+.IP \(bu 2
+Giampaolo "mancho" Mancini
+<manchoz@inwind.it>
+.IP \(bu 2
+Francesco "shawill" Varano
+<shawill@infinito.it>
+.PP
+This manual page was written by Giampaolo "mancho" Mancini <manchoz@inwind.it>.
+
