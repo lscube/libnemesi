@@ -1,5 +1,5 @@
 /* * 
- *  ./src/main.c: $Revision: 1.6 $ -- $Date: 2003/01/15 17:39:13 $
+ *  ./src/main.c: $Revision: 1.7 $ -- $Date: 2003/01/16 13:00:56 $
  *  
  *  This file is part of NeMeSI
  *
@@ -104,15 +104,25 @@ int main(int argc, char *argv[])
 
 	pthread_attr_init(&rtsp_attr);
 	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0){
-		uiprintf("Cannot set RTSP Thread attributes!\n");
+		fprintf(stderr, "Cannot set RTSP Thread attributes!\n");
 		exit(1);
 	}
 
-	if ( audio_init() )
-		exit(1);
+	if ( audio_init() ) {
+		fprintf(stderr, "Audio module not available: setting \"output\" to \"diskdecoded\"\n");
+		rem_avail_pref("output card");
+		edit_pref("output diskdecoded");
+	}
 
-	if ( diskwriter_init() )
-		exit(1);
+	if ( diskwriter_init() ) {
+		fprintf(stderr, "Disk Writer module not available\n");
+		rem_avail_pref("output diskraw");
+		rem_avail_pref("output diskdecoded");
+		if ( strcmp("card", get_pref("output")) ) {
+			fprintf(stderr, "\nNo output device available\n Cannot continue.\n");
+			exit(1);
+		}
+	}
 
 	if ((n = pthread_create(&rtsp_tid, NULL, &rtsp, (void *) rtsp_args)) > 0) {
 		fprintf(stderr, "Cannot create RTSP Thread: %s\n", strerror(n));
@@ -123,7 +133,7 @@ int main(int argc, char *argv[])
 	/* THREAD CANCEL */	
 	uiprintf("Sending cancel signal to all threads\n");
 	if(rtsp_tid > 0){
-			uiprintf("Sending cancel signal to RTSP Thread (ID: %ld)\n", rtsp_tid);
+			fprintf(stderr, "Sending cancel signal to RTSP Thread (ID: %ld)\n", rtsp_tid);
 		if (pthread_cancel(rtsp_tid) != 0)
 			fprintf(stderr, "Error while sending cancelation to RTSP Thread.\n");
 		else

@@ -11,6 +11,9 @@ libutils_la_SOURCES =	urltokenize.c \
 			timeval_subtract.c \
 			timeval_add.c \
 			edit_pref.c \
+			edit_avail_pref.c \
+			add_avail_pref.c \
+			rem_avail_pref.c \
 			list_prefs.c \
 			get_pref.c
 

@@ -1,5 +1,5 @@
 /* * 
- *  ./src/edit_pref.c: $Revision: 1.1 $ -- $Date: 2003/01/15 11:24:27 $
+ *  ./src/edit_pref.c: $Revision: 1.2 $ -- $Date: 2003/01/16 13:00:56 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,15 +26,15 @@
  *  
  * */
 
-#include <stdio.h>
 #include <nemesi/preferences.h>
 
-int edit_pref(char *argstr)
+int edit_pref(const char *argstr)
 {
-	char *name, *value, *available;
+	char *name, *value, *available, tmp_argstr[PREF_MAX_NAME_LEN + PREF_MAX_AVAIL_LEN];
 	int i=0;
 	
-	if ( (name = strtok(argstr, " ")) == NULL ) {
+	strcpy(tmp_argstr, argstr);
+	if ( (name = strtok(tmp_argstr, " ")) == NULL ) {
 		fprintf(stderr, "\nError, preference name not valid\n");
 		return 1;
 	}

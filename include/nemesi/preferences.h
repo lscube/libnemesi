@@ -1,5 +1,5 @@
 /* * 
- *  ./include/nemesi/etui.h: $Revision: 1.2 $ -- $Date: 2003/01/15 11:18:00 $
+ *  ./include/nemesi/etui.h: $Revision: 1.3 $ -- $Date: 2003/01/16 13:00:56 $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,6 +29,9 @@
 #ifndef __PREFERENCES_H
 #define __PREFERENCES_H
 
+#include <stdio.h>
+#include <string.h>
+
 #define PREF_MAX_NAME_LEN 8
 #define PREF_MAX_VALUE_LEN 64
 #define PREF_MAX_AVAIL_LEN 256
@@ -45,7 +48,10 @@ struct Preference {
 
 extern struct Preference preferences[];
 
-int edit_pref(char *);
+int edit_pref(const char *);
+int edit_avail_pref(const char *);
+int add_avail_pref(const char *);
+int rem_avail_pref(const char *);
 int list_prefs(void);
 char *get_pref(const char *);
 

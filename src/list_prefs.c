@@ -1,5 +1,5 @@
 /* * 
- *  ./src/list_prefs.c: $Revision: 1.1 $ -- $Date: 2003/01/15 11:24:27 $
+ *  ./src/list_prefs.c: $Revision: 1.2 $ -- $Date: 2003/01/16 13:00:56 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,7 +26,6 @@
  *  
  * */
 
-#include <nemesi/etui.h>
 #include <nemesi/preferences.h>
 
 int list_prefs(void)

@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/diskwriter_init.c: $Revision: 1.1 $ -- $Date: 2003/01/15 17:40:26 $
+ *  ./output/diskwriter/diskwriter_init.c: $Revision: 1.2 $ -- $Date: 2003/01/16 13:00:56 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,18 +26,21 @@
  *  
  * */
 
-/* definizione per l'allocazione del buffer globale
- * questa definizione deve essere fatta solo in un file.
- *  */
-
 #include <nemesi/diskwriter.h>
 
 int diskwriter_init(void)
 {
+	int fd;
 	struct disk_buff *disk_buffer;
 
+	if ( (fd=creat( DEFAULT_FILENAME, 00644)) < 0 ) {
+		fprintf(stderr, "\nError initializzing Disk Writer Module: you have not write permission\n");
+		return 1;
+	}
+	close(fd);
+	
 	if ( (disk_buffer=db_init()) == NULL ) {
-		uiprintf("\nFailed while initializing Disk Writer Buffer\n");
+		fprintf(stderr, "\nFailed while initializing Disk Writer Buffer\n");
 		return 1;
 	}
 

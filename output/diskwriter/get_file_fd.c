@@ -1,5 +1,5 @@
 /* * 
- *  ./output/diskwriter/get_file_fd.c: $Revision: 1.2 $ -- $Date: 2003/01/15 17:39:13 $
+ *  ./output/diskwriter/get_file_fd.c: $Revision: 1.3 $ -- $Date: 2003/01/16 13:00:56 $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,7 +26,6 @@
  *  
  * */
 
-#include <stdio.h>
 #include <nemesi/diskwriter.h>
 
 int get_file_fd(void)
