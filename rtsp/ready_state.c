@@ -35,13 +35,15 @@ int ready_state(struct RTSP_Thread *rtsp_th, short event)
 	case RTSP_PLAY_RESPONSE:
 		if (handle_play_response(rtsp_th))
 			return 1;
-		if (get_curr_sess(rtsp_th, NULL, NULL)) {
+		// if (get_curr_sess(rtsp_th, NULL, NULL)) {
+		if (!get_curr_sess(GCS_NXT_SESS)) {
 			/* Nessun altra PLAY da inviare */
 			rtsp_th->status = PLAYING;
 			rtsp_th->busy = 0;
 			uiprintf("----- Playing... -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
-			get_curr_sess(NULL, NULL, NULL);
+			// get_curr_sess(NULL, NULL, NULL);
+			get_curr_sess(GCS_UNINIT);
 			break;
 		}
 		if (send_play_request(rtsp_th, ""))
@@ -50,14 +52,16 @@ int ready_state(struct RTSP_Thread *rtsp_th, short event)
 	case RTSP_CLOSE_RESPONSE:
 		if (handle_teardown_response(rtsp_th))
 			return 1;
-		if (get_curr_sess(rtsp_th, NULL, NULL)) {
+		// if (get_curr_sess(rtsp_th, NULL, NULL)) {
+		if (!get_curr_sess(GCS_NXT_MED)) {
 			/* Nessun altra TEARDOWN da inviare */
 			rtsp_th->status = INIT;
 			reinit_rtsp(rtsp_th);
 			rtsp_th->busy = 0;
 			uiprintf("----- All Connections closed -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
-			get_curr_sess(NULL, NULL, NULL);
+			// get_curr_sess(NULL, NULL, NULL);
+			get_curr_sess(GCS_UNINIT);
 			break;
 		}
 		if (send_teardown_request(rtsp_th))

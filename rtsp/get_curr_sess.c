@@ -26,6 +26,60 @@
  *  
  * */
 
+#include <stdarg.h>
+
+#include <nemesi/rtsp.h>
+
+void *get_curr_sess(int cmd, ...)
+{
+	va_list ap;
+	struct RTSP_Thread *rtsp_th;
+	static struct RTSP_Session *static_sess = NULL;
+	static struct RTSP_Medium *static_med = NULL;
+
+	switch (cmd) {
+		case GCS_INIT:
+			va_start(ap, cmd);
+			rtsp_th = va_arg(ap, struct RTSP_Thread *);
+			static_sess = rtsp_th->rtsp_queue;
+			static_med = static_sess->media_queue;
+			va_end(ap);
+			break;
+		case GCS_NXT_SESS:
+			if ( static_sess )
+				static_sess = static_sess->next;
+			if ( static_sess )
+				static_med = static_sess->media_queue;
+			else
+				static_med = NULL;
+		case GCS_CUR_SESS:
+				return static_sess;
+			break;
+		case GCS_NXT_MED:
+			/* sessione corrente, prossimo media */
+			if ( static_med )
+				static_med = static_med->next;
+			/* prossima sessione, primo media */
+			if ( (!static_med) && static_sess ) {
+				static_sess = static_sess->next;
+				if (static_sess)
+					static_med = static_sess->media_queue;
+			}
+		case GCS_CUR_MED:
+			return static_med;
+			break;
+		case GCS_UNINIT:
+			static_sess = NULL;
+			static_med = NULL;
+			break;
+		default:
+			break;
+	}
+	
+	return NULL;
+}
+// XXX: OLD get_curr_session FUNCTION
+#if 0 
 #include <nemesi/rtsp.h>
 
 /**
@@ -91,3 +145,4 @@ int get_curr_sess(struct RTSP_Thread *rtsp_th, struct RTSP_Session **rtsp_sess, 
 
 	return 0;
 }
+#endif // if 0

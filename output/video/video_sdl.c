@@ -112,7 +112,7 @@ struct sdl_vbuffer {
 static struct sdl_priv_s {
 	char driver[8]; //! video driver used by SDL
 	SDL_Surface *display;
-	SDL_Overlay *overlay;
+	// SDL_Overlay *overlay;
 	struct sdl_vbuffer *vbuffer;
 	int width, height;
 	int d_width, d_height;
@@ -173,8 +173,8 @@ static uint32 preinit(const char *arg)
 	Uint32 flags=0;
 
 	// private struct initialization
-	priv->display = NULL; // XXX to be removed
-	priv->overlay = NULL; // XXX to be removed
+	priv->display = NULL;
+	// priv->overlay = NULL; // XXX to be removed
 	priv->vbuffer = NULL;
 	priv->width = priv->height = 0;
 	priv->sdlflags = 0;
@@ -279,11 +279,11 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 	}
 
 
-	// TODO: to be removed
+	/* TODO: to be removed
 	if (priv->overlay)
 		SDL_FreeYUVOverlay(priv->overlay);
 	priv->overlay = NULL;
-	// TODO: END to be removed
+	*/// TODO: END to be removed
 	
 	if (priv->vbuffer)
 		free_vbuffer(priv->vbuffer);

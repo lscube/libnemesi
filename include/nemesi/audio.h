@@ -33,7 +33,7 @@
 #include <sys/time.h>
 #include <pthread.h>
 
-#include <stdarg.h>
+// #include <stdarg.h>
 #include <nemesi/types.h>
 #include <nemesi/comm.h>
 #include <nemesi/audio_drivers.h>

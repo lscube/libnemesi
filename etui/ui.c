@@ -36,8 +36,10 @@ int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 	fd_set rdset;
 	int n;
 
+	/*
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
+	*/
 	if (fcntl(UIINPUT_FILENO, F_SETFL, O_NONBLOCK) < 0){
 		fprintf(stderr, "fcntl() error!\n");
 		return 1;
@@ -65,8 +67,9 @@ int ui(struct RTSP_args *rtsp_args, int argc, char **argv)
 
 		select(UIINPUT_FILENO+1, &rdset, NULL, NULL, NULL);
 		if(FD_ISSET(UIINPUT_FILENO, &rdset)){
-			fprintf(stderr, "\r"); /* TODO Da ottimizzare */
-			while((n=read(UIINPUT_FILENO, optstr, 1)) > 0)
+			fprintf(stderr, "\r"); // TODO Da ottimizzare
+			// while((n=read(UIINPUT_FILENO, optstr, 1)) > 0)
+			if((n=read(UIINPUT_FILENO, optstr, 256)) > 0)
 				write(STDERR_FILENO, optstr, n);
 		}
 		if(FD_ISSET(STDIN_FILENO, &rdset)){

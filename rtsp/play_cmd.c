@@ -56,8 +56,10 @@ int play_cmd(struct RTSP_Thread *rtsp_th, ...)
 		va_end(ap);
 		return 1;
 	}
-	get_curr_sess(NULL, NULL, NULL);
-	get_curr_sess(rtsp_th, NULL, NULL);
+	// get_curr_sess(NULL, NULL, NULL);
+	get_curr_sess(GCS_UNINIT);
+	// get_curr_sess(rtsp_th, NULL, NULL);
+	get_curr_sess(GCS_INIT, rtsp_th);
 	if (send_play_request(rtsp_th, args)){
 		va_end(ap);
 		return 1;

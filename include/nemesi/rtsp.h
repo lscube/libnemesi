@@ -325,7 +325,6 @@ struct RTSP_Thread {
 	struct buffer in_buffer;	/*!< Buffer di input dei dati. */
 	struct RTSP_Session *rtsp_queue;/*!< Lista delle sessioni attive. */
 };
-
 /*
 int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, char *);
 */
@@ -368,7 +367,16 @@ int check_response(struct RTSP_Thread *);
 int check_status(char *, struct RTSP_Thread *);
 int set_transport_str(struct RTP_Session *, char **);
 int get_transport_str(struct RTP_Session *, char *);
-int get_curr_sess(struct RTSP_Thread *, struct RTSP_Session **, struct RTSP_Medium **);
+
+#define GCS_INIT 0
+#define GCS_NXT_SESS 1
+#define GCS_NXT_MED 2
+#define GCS_CUR_SESS 3
+#define GCS_CUR_MED 4
+#define GCS_UNINIT 5
+void *get_curr_sess(int cmd, ...);
+// int get_curr_sess(struct RTSP_Thread *, struct RTSP_Session **, struct RTSP_Medium **);
+
 int set_rtsp_sessions(struct RTSP_Thread *, int, char *, char *, char);
 int set_rtsp_media(struct RTSP_Thread *, int , char **);
 struct RTSP_Session *rtsp_sess_copy(struct RTSP_Session *);

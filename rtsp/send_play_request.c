@@ -35,7 +35,9 @@ int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
 	char b[256];
 	struct RTSP_Session *rtsp_sess;
 
-	get_curr_sess(NULL, &rtsp_sess, NULL);
+	// get_curr_sess(NULL, &rtsp_sess, NULL);
+	if (!(rtsp_sess=get_curr_sess(GCS_CUR_SESS)))
+		return 1;
 	
 	if ( rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)

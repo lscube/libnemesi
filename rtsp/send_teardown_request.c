@@ -38,7 +38,8 @@ int send_teardown_request(struct RTSP_Thread *rtsp_th)
 
 	memset(b, 0, 256);
 
-	if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
+	// if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
+	if ( !(rtsp_sess=get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med=get_curr_sess(GCS_CUR_MED)) )
 		return 1;
 
 	if ( rtsp_sess->content_base != NULL)

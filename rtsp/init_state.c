@@ -38,9 +38,13 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 			rtsp_th->fd=-1;
 			return 1;
 		}
-		get_curr_sess(NULL, NULL, NULL);
+		// get_curr_sess(NULL, NULL, NULL);
+		get_curr_sess(GCS_UNINIT);
+		/*
 		if (get_curr_sess(rtsp_th, NULL, NULL))
 			return 1;
+		*/
+		get_curr_sess(GCS_INIT, rtsp_th);
 		if (send_setup_request(rtsp_th))
 			return 1;
 		break;
@@ -50,7 +54,8 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 			reinit_rtsp(rtsp_th);	
 			return 1;
 		}
-		if (get_curr_sess(rtsp_th, NULL, NULL)) {
+		// if (get_curr_sess(rtsp_th, NULL, NULL)) {
+		if (!get_curr_sess(GCS_NXT_MED)) {
 			/* Nessun altra SETUP da inviare */
 			/* Esecuzione del Thread RTP: uno per ogni sessione RTSP */
 			if (rtp_thread_create(rtsp_th->rtsp_queue->media_queue->rtp_sess)){
@@ -65,7 +70,8 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 			rtsp_th->status = READY;
 			rtsp_th->busy = 0;
 			/* Inizializza a NULL le variabili statiche interne */
-			get_curr_sess(NULL, NULL, NULL);
+			// get_curr_sess(NULL, NULL, NULL);
+			get_curr_sess(GCS_UNINIT);
 			break;
 		}
 		if (send_setup_request(rtsp_th))

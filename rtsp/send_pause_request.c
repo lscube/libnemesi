@@ -35,7 +35,8 @@ int send_pause_request(struct RTSP_Thread *rtsp_th, char *range)
 	char b[256];
 	struct RTSP_Session *rtsp_sess;
 
-	get_curr_sess(NULL, &rtsp_sess, NULL);
+	// get_curr_sess(NULL, &rtsp_sess, NULL);
+	rtsp_sess=get_curr_sess(GCS_CUR_SESS);
 	
 	if ( rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)

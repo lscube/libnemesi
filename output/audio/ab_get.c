@@ -26,6 +26,7 @@
  *  
  * */
 
+#include <stdarg.h>
 #include <nemesi/audio.h>
 
 #define WAIT_IF_FULL 10 /* millisecondi di sleep se il buffer è pieno */
