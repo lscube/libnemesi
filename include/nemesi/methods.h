@@ -99,8 +99,29 @@
 // Status Code Definitions
 #define RTSP_SUCCESS		200
 #define RTSP_REDIRECT		300
+#define RTSP_MULTIPLE_CHOICES	300
+#define RTSP_MOVED_PERMANENTLY	301 // The request resource are moved permanently
+#define RTSP_FOUND		302 // The requested resource reside temporarily (load balancing)
+#define RTSP_SEE_OTHER		303 // This status code SHALL NOT be used in RTSP
+#define RTSP_NOT_MODIFIED	304 // If the client has performed a conditional DESCRIBE or SETUP
+#define RTSP_USE_PROXY		305
 #define RTSP_CLIENT_ERROR	400
+#define RTSP_BAD_REQUEST	400 // The request could not be understood by the server (bad syntax)
+#define RTSP_METHOD_NOT_ALLOWED	405 // The method specified in the request is not allowed
+#define RTSP_PAR_NOT_UNDERSTOOD	451 // The recipient of the request does not support one or more parameters
+#define RTSP_RESERVED		452 // This error code was removed from RFC 2326 [1] and is obsolete
+#define RTSP_NOT_ENOUGH_BAND	453 // The request was refused because there was insufficient bandwidth
+#define RTSP_SESSION_NOT_FOUND	454 // The RTSP session identifier in the Session header is invalid
+#define RTSP_METHOD_NOT_STATE	455 // The client or server cannot process this request in its current state
+#define RTSP_FIELD_NOT_4_RES	456 // The server could not act on a required request header
+#define RTSP_INVALID_RANGE	457 // The Range value given is out of bounds
+#define RTSP_READONLY_PARAMETER	458 // The parameter to be set by SET_PARAMETER can be read but not modified
+#define RTSP_NOT_AGGREGATE	459 // The method may not be applied on the URL since it is aggregate ctrl
+#define RTSP_Only_Aggregate	460 // The method may not be applied on the URL since it is not aggregate ctrl
+#define RTSP_UNSUPP_TRANSPORT	461 // The Transport field did not contain a supported transport specification
+#define RTSP_DEST_UNREACHABLE	462 // The client address could not be reached.
 #define RTSP_SERVER_ERROR	500
+#define RTSP_UNSUPPORTED_OPTION	551 // Feature-tag given was not supported
 
 #define RTSP_IS_SUCCESS(x) ((x>=RTSP_SUCCESS) && (x<RTSP_REDIRECT))? 1 : 0
 #define RTSP_IS_REDIRECT(x) ((x>=RTSP_REDIRECT) && (x<RTSP_CLIENT_ERROR))? 1 : 0
