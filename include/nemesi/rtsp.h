@@ -69,6 +69,9 @@
 /*! RTSP End of Line. */
 #define RTSP_EL "\r\n"
 
+/*! Lower bound for first RTP port if specified by user. */
+#define RTSP_MIN_RTP_PORT 1024
+
 /*! 
  * Total number of recognized commands.
  * "NONE" is a special command, just for internal purpouses
@@ -77,6 +80,10 @@
 #define COMMAND_NUM 5
 /*! Total number of implemented states. */
 #define STATE_NUM 4
+
+typedef struct {
+	int32 first_rtp_port;
+} NMSRtspHints;
 
 /*! \enum Definition for possible states in RTSP state-machine
  */
@@ -238,7 +245,8 @@ struct RTSP_buffer {
  * */
 struct RTSP_Thread {
 	RTSP_COMMON_IF
-
+	NMSRtspHints *hints;
+	uint16 force_rtp_port;
 	int fd;		/*!< descrittore sul quale è attiva la connessione con
 			  il server, dal quale cioè, verranno letti i dati
 			  provenienti dal server */
@@ -270,8 +278,11 @@ extern int (*state_machine[STATE_NUM]) (struct RTSP_Thread *, short);
 
 void *rtsp(void *);
 
-// int init_rtsp(void);
-struct RTSP_Ctrl *init_rtsp(void);
+	// old init function definitions: -|
+	// /-------------------------------/
+	// |- int init_rtsp(void);
+	// \- struct RTSP_Ctrl *init_rtsp(void);
+struct RTSP_Ctrl *init_rtsp(NMSRtspHints *);
 int reinit_rtsp(struct RTSP_Thread *);
 int create_thread(struct RTSP_Thread *);
 void rtsp_clean(void *);

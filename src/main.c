@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
 	struct RTSP_Ctrl *rtsp_ctrl;
 	NMSOutputHints output_hints = {NULL, NULL, NULL, 0};
 	NMSUiHints ui_hints = { 0, NULL };
-	NMSCLOptions cl_opt = { &output_hints, &ui_hints };
+	NMSRtspHints rtsp_hints = { -1 };
+	NMSCLOptions cl_opt = { &output_hints, &ui_hints, &rtsp_hints };
 	int n;
 	char *slash;
 	
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
 	if (output_init(&output_hints))
 		exit( nmsprintf(NMSML_FATAL, "Error initializing output module\n") );
 
-	if ( !(rtsp_ctrl = init_rtsp()) )
+	if ( !(rtsp_ctrl = init_rtsp(&rtsp_hints)) )
 		exit( nmsprintf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)) );
 
 	// UI interface function

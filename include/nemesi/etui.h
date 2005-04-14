@@ -65,6 +65,8 @@
 			nmsprintf(NMSML_NORM, "   --noaudio          Do not inizialize audio output\n"); \
 			nmsprintf(NMSML_NORM, "   --novideo          Do not inizialize video output\n"); \
 			nmsprintf(NMSML_NORM, "   --nodisk           Do not inizialize diskwriter output\n"); \
+			nmsprintf(NMSML_NORM, "\n RTP options:\n"); \
+			nmsprintf(NMSML_NORM, "   -p|--first-port [n]   Force RTP/RTCP ports choise.\n"); \
 			nmsprintf(NMSML_NORM, "\n"); \
 		}
 
@@ -74,7 +76,7 @@
 			nmsprintf(NMSML_ALWAYS, "              - marco.penno@polito.it\n\n"); \
 		  }
 
-#define CL_MAIN_OPTIONS	"hv::V"		/* help, verbosity, version */
+#define CL_MAIN_OPTIONS	"hv::Vp:"		/* help, verbosity, version, first-port */
 #define CL_MAIN_LONG_OPTIONS	{"version", 0, NULL, 'V'}, \
 				{"help", 0, NULL, 'h'}, \
 				{"verbose", 2, NULL, 'v'}, \
@@ -86,7 +88,8 @@
 				{"tui", 0, NULL, 6}, \
 				{"noaudio", 0, NULL, 7}, \
 				{"novideo", 0, NULL, 8}, \
-				{"nodisk", 0, NULL, 9}
+				{"nodisk", 0, NULL, 9}, \
+				{"first-port", 1, NULL, 'p'}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS

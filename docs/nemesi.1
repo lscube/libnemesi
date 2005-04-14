@@ -1,8 +1,8 @@
 .TH \fBNeMeSI\fP 1 "February 1, 2005" "Network Media Streamer I" "Open Media Streaming Project"
 .SH NAME
-nemesi \- standards-compliant multimedia streaming client
+nemesi \- standards\-compliant multimedia streaming client
 .br
-gnemesi \- standards-compliant multimedia streaming client
+gnemesi \- standards\-compliant multimedia streaming client
 .SH SYNOPSIS
 .B nemesi 
 .RB [ " options " ]
@@ -21,7 +21,7 @@ The RTSP URL (starting with rtsp://) of the multimedia file that you want play.
 
 .SH DESCRIPTION
 \fBNeMeSI\fP is a streaming client that allows user to enjoy playback of
-multimedia files with low latency transport over IP-based networks. This
+multimedia files with low latency transport over IP\-based networks. This
 software is fully compliant with  IETF's standards for real\-time streaming of
 multimedia contents over Internet.  \fBNeMeSI\fP implements RTSP \- Real\-Time
 Streaming Protocol (RFC2326) and RTP/RTCP \- Real\-Time Transport Protocol/RTP
@@ -34,17 +34,17 @@ Conferences with Minimal Control (RFC3551).
 .I Audio
 .IP
 \(bu
-MP3 (MPEG-1 Layer III) (RFC3119).
+MP3 (MPEG\-1 Layer III) (RFC3119).
 .IP
 \(bu
-GSM-AMR (3rd generation GSM) (RFC3267).
+GSM\-AMR (3rd generation GSM) (RFC3267).
 .RE
 .sp 1
 .RS
 .I Video
 .IP
 \(bu
-MPEG-1/2 (RFC2250).
+MPEG\-1/2 (RFC2250).
 .RE
 .PP
 \fBNeMeSI\fP features an adaptive behaviour achieved by the innovative
@@ -63,42 +63,57 @@ with the proprietary streaming applications currently dominant on the market.
 \fBgnemesi\fP is \fBNeMeSI\fP with a Graphical User Interface. It has the same
 options as \fBNeMeSI\fP.
 You can start \fBNeMeSI\fP with the GUI also running it
-with the \fI--gui\fP command line option.
+with the \fI\-\-gui\fP command line option.
 
 .SH GENERAL OPTIONS
 .TP
-.B -h
-List command-line options.
+.B \-h\fR, \fB\-\-help\fR
+List command\-line options.
 .TP
-.B -V
+.B \-V\fR, \fB\-\-version\fR
 Print version.
 .TP
-.B -v [n]
-Set verbosity level
+.B \-v\fR, \fB\-\-verbosity[=][n]\fR
+Set verbosity level. Without 'n' the level will be incremented for each \fB\-v\fR found.
+.RS
+.I EXAMPLE\fR:
+.RS
+\-v 2: set verbosity level to 2.
+.RE
+.RS
+\-\-verbose=0: set verbosity level to 0.
+.RE
+.RS
+\-\-verbose 3: set verbosity level to 3.
+.RE
+.RS
+\-vvv: increment verbosity level 3 times.
+.RE
+.RE
 .TP
-.B --gui
+.B \-\-gui
 use Graphical User Interface.
 .TP
-.B --tui
-use Textual User Interface (e-tui)
+.B \-\-tui
+use Textual User Interface (e\-tui)
 .SH GENERAL OUTPUT OPTIONS
-.B --sysbuff <msec>
+.B \-\-sysbuff <msec>
 .RS
 Set the
 .B system buffer
 cache of decoded milliseconds.
 .RE
 .TP
-.B --noaudio
+.B \-\-noaudio
 Do not inizialize audio output module
 .TP
-.B --novideo
+.B \-\-novideo
 Do not inizialize video output module
 .TP
-.B --nodisk
+.B \-\-nodisk
 Do not inizialize diskwriter output module
 .SH AUDIO OUTPUT OPTIONS
-.B --ao <driver1[:device],driver2,...,[...]>
+.B \-\-ao <driver1[:device],driver2,...,[...]>
 .RS
 Specify a list of audio output drivers.
 .RE
@@ -106,8 +121,8 @@ If the list ends with "..." then
 \fBNeMeSI\fP will also try the other installed audio drivers, not listed on the command line, if all
 the provided drivers don't work.
 .BR
-.I NOTE:
-Use --ao help to view the list of available audio drivers.
+.I NOTE\fR:
+Use \-\-ao help to view the list of available audio drivers.
 .
 Available audio output drivers are:
 .TP
@@ -118,7 +133,7 @@ output driver.
 .B oss\ \ \ \ 
 Open Sound System audio driver
 .SH VIDEO OUTPUT OPTIONS
-.B --vo <driver1[:option],driver2,...,[...]>
+.B \-\-vo <driver1[:option],driver2,...,[...]>
 .RS
 Specify a list of video output drivers.
 .RE
@@ -126,14 +141,26 @@ If the list ends with "..." then
 \fBNeMeSI\fP will also try the other installes video drivers, not listed on the command line, if all
 the provided drivers don't work.
 .BR
-.I NOTE:
-Use --vo help to view the list of available video drivers.
+.I NOTE\fR:
+Use \-\-vo help to view the list of available video drivers.
 .
 Available video output drivers are:
 .TP
 .B sdl\ \ \ \ 
 Highly platform independent SDL (Simple Directmedia Layer) library
 output driver.
+.SH RTP OPTIONS
+.TP
+.B \-p\fR, \fB\-\-first\-port\fR
+force RTP/RTCP port choise: ports for new RTP sessions will not be chosen
+randomly, but fixed starting from number provided from user.
+.I WARNING\fR:
+rfc specify that RTP session ports should be chosen randomly, but, in some
+environments, fixing ports is the only way to make the things run.
+.BR
+.I NOTE\fR:
+RTSP library, for security reasons, impose a lower bound for port numbers that
+is currenctly 1024, and upper limit is 65535.
 .SH USAGE
 .SS Command line invocation
 Normally \fBNeMeSI\fP is started with
@@ -152,7 +179,7 @@ This is equivalent to running \fBNeMeSI\fP in the command line
 .PP
 and then issuing an open command
 .RB "(" open " or " o ")"
-at \fIMore-Touch E-Tui\fP prompt (see \fB Textual User Interface\fP below) when
+at \fIMore\-Touch E\-Tui\fP prompt (see \fB Textual User Interface\fP below) when
 \fBNeMeSI\fP is in the \fIINIT\fP state.
 
 If the bootstrap phase executes whitout errors and the connection is already
@@ -182,8 +209,8 @@ some informations about the setup of the audio and video drivers
 .SS Textual user interface
 .B \fBNeMeSI\fP
 features the innovative
-.I More-Touch Electric-Textual User Interface
-for both prompting and parsing user commands. MT-ETUI accepts following commands:
+.I More\-Touch Electric\-Textual User Interface
+for both prompting and parsing user commands. MT\-ETUI accepts following commands:
 .TP
 .BR help " or " ?
 print help
@@ -209,7 +236,7 @@ The format for
 option is
 .RS
 .IP 
-hh:mm:ss-HH:MM:SS
+hh:mm:ss\-HH:MM:SS
 .RE
 .IP
 which instructs
@@ -231,14 +258,14 @@ seconds. Examples, showing
 prompt, of accepted command formats are:
 .RS
 .TP
-.RB "[ READY ] " "play 20:10-1:4:50"
+.RB "[ READY ] " "play 20:10\-1:4:50"
 The playback starts at 20 minutes, 10 seconds and stops at 1 hour, 4 minutes and
 50 seconds.
 .TP 
-.RB "[ READY ] " "play 15-"
+.RB "[ READY ] " "play 15\-"
 The playback starts at 15 seconds and stops at the end (if any) of the stream.
 .TP
-.RB "[ READY ] " "play -25:6"
+.RB "[ READY ] " "play \-25:6"
 The playback starts at the very beginning of the stream and stops at 25 minutes and
 6 seconds.
 .RE
@@ -259,15 +286,15 @@ Every command accepts also its first char as abbreviation (e.g. 'h' for 'help').
 .B NEMESI_PLUGIN_DIR
 Name of the alternative plugin directory. This should be an absolute path,
 since you will probably invoke \fBNeMeSI\fP from different directories. The
-value of \fINEMESI_PLUGIN_DIR\fP will be used instead of the compiled-in default.
+value of \fINEMESI_PLUGIN_DIR\fP will be used instead of the compiled\-in default.
 .TP
 .B NEMESI_THROBBER_DIR
 Name of the alternative directory for the spinning throbber in the GUI. The
-value of \fINEMESI_THROBBER_DIR\fP will be used instead of the compiled-in default.
+value of \fINEMESI_THROBBER_DIR\fP will be used instead of the compiled\-in default.
 .TP
 .B NEMESI_PIXMAP_DIR
 Name of the alternative directory for the GUI pixmaps. The
-value of \fINEMESI_PIXMAP_DIR\fP will be used instead of the compiled-in default.
+value of \fINEMESI_PIXMAP_DIR\fP will be used instead of the compiled\-in default.
 .SH "EXIT STATUS"
 .IP 0
 No errors.

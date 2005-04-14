@@ -55,6 +55,7 @@ typedef struct {
 typedef struct {
 	NMSOutputHints *output;
 	NMSUiHints *ui;
+	NMSRtspHints *rtsp;
 } NMSCLOptions;
 
 int output_init(NMSOutputHints *);

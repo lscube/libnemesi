@@ -35,7 +35,7 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 	void *ret;
 	
 	sess=psess=rtsp_th->rtsp_queue;
-#if 1
+#if 1 // TODO: fix last teardown response wait
 	// check for active rtp/rtcp session
 	if(sess && sess->media_queue && sess->media_queue->rtp_sess) {
 		if(sess->media_queue->rtp_sess->rtcp_tid > 0){
@@ -75,7 +75,7 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 		sess=sess->next;
 		free(psess);
 	}
-#if 1
+
 	free(rtsp_th->server_port);
 	free(rtsp_th->urlname);
 	free((rtsp_th->in_buffer).data);
@@ -91,7 +91,14 @@ int reinit_rtsp(struct RTSP_Thread *rtsp_th)
 	rtsp_th->rtsp_queue = NULL;
 	if (rtsp_th->comm->opcode == NONE)
 		rtsp_th->busy=0;
-#endif
+
+	// reset first RP port
+	if ( rtsp_th->hints || ( (rtsp_th->hints->first_rtp_port > RTSP_MIN_RTP_PORT) && (rtsp_th->hints->first_rtp_port < 65535) ) ) {
+		rtsp_th->force_rtp_port = rtsp_th->hints->first_rtp_port;
+		if ( rtsp_th->force_rtp_port % 2 )
+			rtsp_th->force_rtp_port++;
+	} else
+		rtsp_th->force_rtp_port = 0;
 
 	return 0;
 }

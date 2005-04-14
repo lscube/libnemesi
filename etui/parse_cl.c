@@ -37,6 +37,7 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 {
 	NMSOutputHints *output_hints = cl_opt->output;
 	NMSUiHints *ui_hints = cl_opt->ui;
+	NMSRtspHints *rtsp_hints = cl_opt->rtsp;
 	int ret = 0;
 	char usage = 0; // printf usage at the end of function
 	// getopt variables
@@ -97,6 +98,26 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			if ( v != nmsverbosity_get() )
 				nmsverbosity_set(v);
 				nmsprintf(NMSML_DBG1, "Verbosity level set to %d\n", nmsverbosity_get());
+			break;
+		case 'p':
+			// we check here the correct value for first RTP port in order not to deceive user!!!
+			// new check will be done in the correct place in RTSP lib.
+			rtsp_hints->first_rtp_port = strtol(optarg, &v_err, 10);
+			if ( (*v_err) ) {
+				nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
+				usage = 1;
+				ret = -1;
+			} else if (rtsp_hints->first_rtp_port < 0) {
+				nmsprintf(NMSML_ERR, "Port number must be greater than zero!\n");
+				ret = -1;
+			} else if (rtsp_hints->first_rtp_port < RTSP_MIN_RTP_PORT) {
+				nmsprintf(NMSML_ERR, "For security reasons RTSP Library imposes that port number should be greater than %d\n", RTSP_MIN_RTP_PORT);
+				ret = -1;
+			} else if (rtsp_hints->first_rtp_port > 65535) {
+				nmsprintf(NMSML_ERR, "Port number can't be greater than 65535\n");
+				ret = -1;
+			} else
+				nmsprintf(NMSML_DBG1, "First RTP port hint: %d\n", rtsp_hints->first_rtp_port);
 			break;
 		case 1: // audio out driver selection
 			if ( !strcmp(optarg, "help") ) {

@@ -37,7 +37,7 @@
  * \return RTSP_Ctrl structure. This is the interface structure between user
  * interface and RTSP librarween user interface and RTSP library.
  */
-struct RTSP_Ctrl *init_rtsp(void)
+struct RTSP_Ctrl *init_rtsp(NMSRtspHints *hints)
 {
 	struct RTSP_Thread *rtsp_th;
 	pthread_attr_t rtsp_attr;
@@ -77,7 +77,25 @@ struct RTSP_Ctrl *init_rtsp(void)
 	(rtsp_th->in_buffer).first_pkt_size = 0;
 	(rtsp_th->in_buffer).data = NULL;
 	rtsp_th->rtsp_queue = NULL;
+	rtsp_th->force_rtp_port = 0;
 #endif
+
+	rtsp_th->hints = hints;
+	// check for the exactness of values hinted
+	if (hints) { // hints given
+		// set first RTP port
+		if (hints->first_rtp_port > 0) {
+			if (hints->first_rtp_port < RTSP_MIN_RTP_PORT) {
+				nmsprintf(NMSML_ERR, "For security reasons RTSP Library imposes that port number should be greater than %d\n", RTSP_MIN_RTP_PORT);
+				return NULL;
+			} else if (hints->first_rtp_port > 65535) {
+				nmsprintf(NMSML_ERR, "Port number can't be greater than 65535\n");
+				return NULL;
+			}
+			rtsp_th->force_rtp_port = hints->first_rtp_port;
+			nmsprintf(NMSML_WARN, "RTP ports forced by user (not randomly generated)\n");
+		}
+	}
 
 	cmd[0] = open_cmd;
 	cmd[1] = play_cmd;

@@ -46,10 +46,20 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	if ( !(rtsp_sess=get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med=get_curr_sess(GCS_CUR_MED)) )
 		return 1;
 
-	rnd=(rand()%((2<<15) - 1 - 5001))+5001;
-
-	if ( (rnd%2) )
-		rnd++;
+	if ( !rtsp_th->force_rtp_port ) {
+		// default behaviour: random port number generation.
+		rnd=(rand()%((2<<15) - 1 - 5001))+5001;
+	
+		if ( (rnd%2) )
+			rnd++;
+	} else {
+		// RTP port number partially specified by user.
+		if ( rtsp_th->force_rtp_port % 2 ) {
+			rtsp_th->force_rtp_port++;
+			nmsprintf(NMSML_WARN, "First RTP port specified was odd number => corrected to %u\n", rtsp_th->force_rtp_port);
+		}
+		rnd = rtsp_th->force_rtp_port;
+	}
 	
 	sprintf(b, "%d", rnd);
 	server_create(NULL, b, &(rtsp_med->rtp_sess->rtpfd));
@@ -82,6 +92,12 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
 		nmsprintf(NMSML_ERR, "Cannot send SETUP request...\n");
 		return 1;
+	}
+
+	// next rtp port forces
+	if ( rtsp_th->force_rtp_port ) {
+		rtsp_th->force_rtp_port += 2;
+		nmsprintf(NMSML_DBG2, "Next client ports will be %u-%u\n", rtsp_th->force_rtp_port, rtsp_th->force_rtp_port + 1);
 	}
 
 	sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE, rtsp_sess->CSeq);
