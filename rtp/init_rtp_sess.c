@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-struct RTP_Session *init_rtp_sess(struct sockaddr localaddr, struct sockaddr peeraddr)
+struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 {
 	struct RTP_Session *rtp_sess;
 
@@ -49,8 +49,41 @@ struct RTP_Session *init_rtp_sess(struct sockaddr localaddr, struct sockaddr pee
 	}
 	strcpy(rtp_sess->transport.spec, RTP_AVP_UDP);
 	rtp_sess->transport.delivery=unicast;
-	(rtp_sess->transport).srcaddr=((struct sockaddr_in *)&peeraddr)->sin_addr;
-	(rtp_sess->transport).dstaddr=((struct sockaddr_in *)&localaddr)->sin_addr;
+	// --- remote address
+	if((rtp_sess->transport.srcaddr.addr=malloc(sizeof(char)* peer->addr_len)) ==NULL) {
+		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
+		return NULL;
+	}
+	memcpy(rtp_sess->transport.srcaddr.addr, peer->addr, peer->addr_len);
+	rtp_sess->transport.srcaddr.addr_len = peer->addr_len;
+	switch (peer->addr->sa_family) {
+		case AF_INET:
+			nmsprintf(NMSML_DBG1, "IPv4 address\n");
+			nmsprintf(NMSML_DBG2, "RTP: remote addr: %u:%u\n", ((struct sockaddr_in *)peer->addr)->sin_addr, ((struct sockaddr_in *)peer->addr)->sin_port);
+			break;
+		case AF_INET6:
+			nmsprintf(NMSML_DBG1, "IPv4 address\n");
+			nmsprintf(NMSML_DBG2, "RTP: remote addr: %u:%u\n", ((struct sockaddr_in6 *)peer->addr)->sin6_addr, ((struct sockaddr_in6 *)peer->addr)->sin6_port);
+			break;
+	}
+	// --- local address
+	if((rtp_sess->transport.dstaddr.addr=malloc(sizeof(char)* local->addr_len)) ==NULL) {
+		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
+		return NULL;
+	}
+	memcpy(rtp_sess->transport.dstaddr.addr, local->addr, local->addr_len);
+	rtp_sess->transport.dstaddr.addr_len = local->addr_len;
+	switch (local->addr->sa_family) {
+		case AF_INET:
+			nmsprintf(NMSML_DBG1, "IPv4 local address\n");
+			nmsprintf(NMSML_DBG2, "RTP: local addr: %u:%u\n", ((struct sockaddr_in *)local->addr)->sin_addr, ((struct sockaddr_in *)local->addr)->sin_port);
+			break;
+		case AF_INET6:
+			nmsprintf(NMSML_DBG1, "IPv6 local address\n");
+			nmsprintf(NMSML_DBG2, "RTP: local addr: %u:%u\n", ((struct sockaddr_in6 *)local->addr)->sin6_addr, ((struct sockaddr_in6 *)local->addr)->sin6_port);
+			break;
+	}
+	// ---
 	rtp_sess->transport.mode=play;
 	rtp_sess->transport.ssrc=rtp_sess->local_ssrc;
 	

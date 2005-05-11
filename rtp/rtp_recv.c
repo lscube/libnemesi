@@ -41,15 +41,15 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 	uint32 transit;
 	int32 delta;
 
-	struct sockaddr_in server;
-	socklen_t server_len=sizeof(struct sockaddr_in);
+	struct sockaddr_storage serveraddr;
+	NMSsockaddr server = { (struct sockaddr *)&serveraddr, sizeof(serveraddr) };
 
 	if( (slot=bpget(&(rtp_sess->bp))) < 0) {
 		nmsprintf(NMSML_VERB, "No more space in Playout Buffer!"BLANK_LINE);
 		return 1;
 	}
 	
-	n=recvfrom(rtp_sess->rtpfd, &((rtp_sess->bp).bufferpool[slot]), BP_SLOT_SIZE, 0, (struct sockaddr *)&server, &server_len);
+	n=recvfrom(rtp_sess->rtpfd, &((rtp_sess->bp).bufferpool[slot]), BP_SLOT_SIZE, 0, server.addr, &server.addr_len);
 	gettimeofday(&now, NULL);
 
 	pkt=(rtp_pkt *)&((rtp_sess->bp).bufferpool[slot]);
@@ -60,7 +60,7 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 		return 0;
 	}
 
-	if((ret=ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, server, RTP)) == -1){
+	if((ret=ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, &server, RTP)) == -1){
 		return 1;
 	} else if (ret == 2){
 		bprmv(&(rtp_sess->bp), &(stm_src->po), slot);

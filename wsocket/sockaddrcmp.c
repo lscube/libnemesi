@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,22 +28,26 @@
 
 #include <nemesi/wsocket.h>
 
-/**
- * The function opens a TCP connection.
- * It creates a SOCK_STREAM type socket and, through it, connects to the address <tt>name</tt>.
- * \param name address to which we want to connect.
- * \param namelen length of address <tt>name</tt>.
- * \return descriptor of created socket.
+/*
+ * The function that compares two sockaddr structures.
+ * \param addr1 first sockaddr struct
+ * \param addr1_len length of first sockaddr struct
+ * \param addr2 second sockaddr struct
+ * \param addr1_len length of second sockaddr struct
+ * \return 0 if the two structires are egual, otherwise an error reflecting the
+ * first difference encountered. 
  */
-int tcp_open(struct sockaddr *name, int namelen)
+int sockaddrcmp(struct sockaddr *addr1, socklen_t addr1_len, struct sockaddr *addr2, socklen_t addr2_len)
 {
-	int f;
+	if (addr1_len != addr2_len)
+		return WSOCK_CMP_ERRSIZE;
+	if (addr1->sa_family != addr1->sa_family)
+		return WSOCK_CMP_ERRFAMILY;
+	if (sock_cmp_addr(addr1, addr2 /*, addr1_len */))
+		return WSOCK_CMP_ERRADDR;
+	if (sock_cmp_port(addr1, addr2 /*, addr1_len */))
+		return WSOCK_CMP_ERRPORT;
 
-	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return nmsprintf(NMSML_ERR, "socket() error in tcp_open.\n");
-
-	if (connect(f, name, namelen) < 0)
-		return nmsprintf(NMSML_ERR, "connect() error in tcp_open.\n");
-
-	return f;
+	return 0;
 }
+

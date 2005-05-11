@@ -32,14 +32,16 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 {
 	uint8 buffer[1024];
 	struct Stream_Source *stm_src;
-	struct sockaddr_in server;
+
+	struct sockaddr_storage serveraddr;
+	NMSsockaddr server= { (struct sockaddr *)&serveraddr, sizeof(serveraddr) };
+
 	rtcp_pkt *pkt;
 	int ret, n;
-	socklen_t server_len=sizeof(struct sockaddr);
 
 	memset(buffer, 0, 1024);
 	
-	n=recvfrom(rtp_sess->rtcpfd, buffer, 1024, 0, (struct sockaddr *)&server, &server_len);
+	n=recvfrom(rtp_sess->rtcpfd, buffer, 1024, 0, server.addr, &server.addr_len);
 
 	pkt=(rtcp_pkt *)buffer;
 
@@ -47,7 +49,7 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 		nmsprintf(NMSML_WARN, "RTCP Header Validity Check failed!"BLANK_LINE);
 		return 1;
 	}
-	if((ret=ssrc_check(rtp_sess, ntohl((pkt->r).sr.ssrc), &stm_src, server, RTCP)) == -1)
+	if((ret=ssrc_check(rtp_sess, ntohl((pkt->r).sr.ssrc), &stm_src, &server, RTCP)) == -1)
 		return 1;
 	else if ( ret == 1 ){
 		if (pkt->common.pt == RTCP_SR)

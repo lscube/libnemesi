@@ -88,8 +88,8 @@ typedef struct {
 struct Transport {
 	char *spec;
 	enum deliveries { unicast, multicast } delivery;
-	struct in_addr dstaddr;
-	struct in_addr srcaddr;
+	NMSsockaddr srcaddr;
+	NMSsockaddr dstaddr;
 	int layers;
 	enum modes { play, record } mode;
 	int append;
@@ -144,9 +144,9 @@ struct Session_Stats {
 
 struct Stream_Source {
 	uint32 ssrc;
-	struct sockaddr_in rtp_from;
-	struct sockaddr_in rtcp_from;
-	struct sockaddr_in rtcp_to;
+	NMSsockaddr rtp_from;
+	NMSsockaddr rtcp_from;
+	NMSsockaddr rtcp_to;
 	int rtcptofd;
 	struct SSRC_Stats ssrc_stats;
 	struct SSRC_Description ssrc_sdes;
@@ -155,7 +155,7 @@ struct Stream_Source {
 };
 
 struct Conflict {
-	struct sockaddr_in *transaddr;
+	NMSsockaddr transaddr;
 	time_t time;
 	struct Conflict *next;
 };
@@ -189,13 +189,15 @@ enum proto_types {
 
 void *rtp(void *);
 
-struct RTP_Session *init_rtp_sess(struct sockaddr, struct sockaddr);
+// struct RTP_Session *init_rtp_sess(struct sockaddr *, socklen_t, struct sockaddr *, socklen_t);
+struct RTP_Session *init_rtp_sess(NMSsockaddr *, NMSsockaddr *);
 int rtp_thread_create(struct RTP_Session *);
 
 int rtp_recv(struct RTP_Session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
-int ssrc_check(struct RTP_Session *, uint32, struct Stream_Source **, struct sockaddr_in, enum proto_types);
-int set_stm_src(struct RTP_Session *, struct Stream_Source **, uint32, struct sockaddr_in, enum proto_types);
+int ssrc_check(struct RTP_Session *, uint32, struct Stream_Source **, NMSsockaddr *, enum proto_types);
+int set_stm_src(struct RTP_Session *, struct Stream_Source **, uint32, NMSsockaddr *,  enum proto_types);
+int rtcp_to_connect(struct Stream_Source *, NMSsockaddr *, uint16);
 void init_seq(struct Stream_Source *, uint16);
 void update_seq(struct Stream_Source *, uint16);
 

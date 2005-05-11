@@ -26,24 +26,23 @@
  *  
  * */
 
-#include <nemesi/wsocket.h>
+#ifndef __FFMPEG_H
+#define __FFMPEG_H
 
-/**
- * The function opens a TCP connection.
- * It creates a SOCK_STREAM type socket and, through it, connects to the address <tt>name</tt>.
- * \param name address to which we want to connect.
- * \param namelen length of address <tt>name</tt>.
- * \return descriptor of created socket.
- */
-int tcp_open(struct sockaddr *name, int namelen)
-{
-	int f;
+#include <stdio.h>
 
-	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return nmsprintf(NMSML_ERR, "socket() error in tcp_open.\n");
+#include <ffmpeg/avcodec.h>
 
-	if (connect(f, name, namelen) < 0)
-		return nmsprintf(NMSML_ERR, "connect() error in tcp_open.\n");
+#include <nemesi/img_format.h>
 
-	return f;
-}
+typedef struct {
+	AVCodec *codec;
+	AVCodecContext *context;
+	AVFrame *frame;
+	int got_frame;
+} FFMpeg4Dec;
+
+FFMpeg4Dec *init_ffmpeg4(void);
+
+#endif // __FFMPEG_H
+

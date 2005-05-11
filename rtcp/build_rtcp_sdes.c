@@ -34,15 +34,18 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 {
 	struct passwd *pwitem=getpwuid(getuid());
 	rtcp_sdes_item_t *item;
-	char str[MAX_SDES_LEN];
+	char str[MAX_SDES_LEN] = "";
 	int len, pad;
+	char addr[128];		/* Unix domain is largest */
 
 	memset(str, 0, MAX_SDES_LEN);
 	
 	/* SDES CNAME: username@ipaddress */
-	strcpy(str, pwitem->pw_name);
-	strcat(str, "@");
-	strcat(str, inet_ntoa(rtp_sess->transport.dstaddr));
+	if ( sock_ntop_host(rtp_sess->transport.dstaddr.addr, rtp_sess->transport.dstaddr.addr_len, addr, sizeof(addr)) ) {
+		strcpy(str, pwitem->pw_name);
+		strcat(str, "@");
+		strcat(str, addr);
+	}
 	if ( ((strlen(str) + sizeof(rtcp_sdes_item_t) - 1 + sizeof(rtcp_common_t) +1) >> 2)  > (unsigned int)left )
 		/* No space left in UDP pkt */
 		return 0;

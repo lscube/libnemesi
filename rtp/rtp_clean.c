@@ -60,17 +60,23 @@ void rtp_clean(void *args)
 			csrc=csrc->next;
 			for(i=0; i<9; i++)
 				free( ((char **)(&(psrc->ssrc_sdes)))[i] );
+			free(psrc->rtp_from.addr);
+			free(psrc->rtcp_from.addr);
+			free(psrc->rtcp_to.addr);
 			free(psrc);
 		}
 		bpkill(&(rtp_sess->bp));
 
+		// transport allocs
 		free((rtp_sess->transport).spec);
+		free((rtp_sess->transport).srcaddr.addr);
+		free((rtp_sess->transport).dstaddr.addr);
 
 		conf=rtp_sess->conf_queue;
 		while(conf) {
 			pconf=conf;
 			conf=conf->next;
-			free(pconf->transaddr);
+			free(pconf->transaddr.addr);
 			free(pconf);
 		}
 

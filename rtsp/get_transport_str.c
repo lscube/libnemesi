@@ -32,8 +32,9 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 {
 	char *tkna, *tknb;
 	char str[256];
+	char addr[128];		/* Unix domain is largest */
 	
-	memset(str, 0, 256);
+	memset(str, 0, sizeof(str));
 	
 	for(tknb=strtok(buff,";"); (*tknb == ' ') || (*tknb == ':'); tknb++);
 	
@@ -62,7 +63,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			strncpy(str, tkna, tknb++-tkna);
 			str[tknb-tkna]='\0';
 
-			if(!inet_aton(str, &(rtp_sess->transport.srcaddr))){
+			if ( !sock_ntop_host(rtp_sess->transport.srcaddr.addr, rtp_sess->transport.srcaddr.addr_len, addr, sizeof(addr)) ) {
 				nmsprintf(NMSML_ERR, "PANIC: Source IP Address not valid!\n");
 				return 1;
 			}
@@ -75,7 +76,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			strncpy(str, tkna, tknb++-tkna);
 			str[tknb-tkna]='\0';
 			
-			if(!inet_aton(str, &(rtp_sess->transport.dstaddr))){
+			if ( !sock_ntop_host(rtp_sess->transport.dstaddr.addr, rtp_sess->transport.dstaddr.addr_len, addr, sizeof(addr)) ) {
 				nmsprintf(NMSML_ERR, "PANIC: Destination IP Address not valid!\n");
 				return 1;
 			}

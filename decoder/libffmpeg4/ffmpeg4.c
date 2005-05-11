@@ -31,7 +31,7 @@
 // #include <stdio.h>
 #include <stdlib.h>
 // #include <math.h>
-#include "ffmpeg.h"
+#include "ffmpeg4.h"
 
 #include <nemesi/output.h>
 #include <nemesi/video_img.h>
@@ -46,7 +46,7 @@ int decode(char *, int, NMSOutput *);
 
 int get_plugin_pt(void)
 {
-	return 32;
+	return 96;
 }
 
 
@@ -57,7 +57,7 @@ int decode(char *data, int len, NMSOutput *outc)
 	NMSPicture pict;
 	NMSPicture *pict_pt = &pict;
 	int decd_len=0, size;
-	static FFMpegDec *ff=NULL;
+	static FFMpeg4Dec *ff=NULL;
 	// XXX: variabile temporanea temporanea temporanea
 	static double elapsed = 0;
 
@@ -67,7 +67,7 @@ int decode(char *data, int len, NMSOutput *outc)
 	} else
 		return 1;
 
-	if ( (!ff) && (!(ff=init_ffmpeg())) )
+	if ( (!ff) && (!(ff=init_ffmpeg4())) )
 		return 1;
 
 // XXX: provvisoriamente commentata
@@ -93,9 +93,9 @@ int decode(char *data, int len, NMSOutput *outc)
 			return 0;
 		}
 #endif // if 0
-	while ( decd_len < (len - 4) ) {
+	while ( decd_len < len ) {
 		
-		size= avcodec_decode_video(ff->context, ff->frame, &(ff->got_frame), (uint8_t *)(data + 4 /*+ len_tmp*/), (int)(len - 4/* - len_tmp*/));
+		size= avcodec_decode_video(ff->context, ff->frame, &(ff->got_frame), (uint8_t *)(data /*+ len_tmp*/), (int)(len /* - len_tmp*/));
 		
 		if (size < 0) {
                 	fprintf(stderr, "Error while decoding with libavcodec\n");

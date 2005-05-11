@@ -2,7 +2,7 @@ SUBDIRS = L16_8k_m gsm_amr_float
 
 
 if NEMESI_HAVE_AVC
-SUBDIRS += libffmpeg libffmp3
+SUBDIRS += libffmpeg libffmp3 libffmpeg4
 endif
 
 nemesiincludedir = $(top_srcdir)/include

@@ -31,21 +31,19 @@
 struct RTSP_Medium *rtsp_med_create(int fd)
 {
 	struct RTSP_Medium *rtsp_m;
-	struct sockaddr localaddr, peeraddr;
-	socklen_t len=sizeof(struct sockaddr);
+	struct sockaddr_storage localaddr, peeraddr;
+	NMSsockaddr local = { (struct sockaddr *)&localaddr, sizeof(localaddr) };
+	NMSsockaddr peer = { (struct sockaddr *)&peeraddr, sizeof(peeraddr) };
 
-	memset(&localaddr, 0, len);
-	memset(&peeraddr, 0, len);
-	
-	getsockname(fd, &localaddr, &len);
-	getpeername(fd, &peeraddr, &len);
+	getsockname(fd, (struct sockaddr *)local.addr, &local.addr_len);
+	getpeername(fd, (struct sockaddr *)peer.addr, &peer.addr_len);
 	
 	if ( (rtsp_m=(struct RTSP_Medium *)malloc(sizeof(struct RTSP_Medium))) == NULL ) {
 		nmsprintf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}
 
-	if((rtsp_m->rtp_sess=init_rtp_sess(localaddr, peeraddr)) == NULL)
+	if((rtsp_m->rtp_sess=init_rtp_sess(&local, &peer)) == NULL)
 		return NULL;
 	rtsp_m->next=NULL;
 	rtsp_m->filename=NULL;

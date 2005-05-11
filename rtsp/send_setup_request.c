@@ -36,8 +36,8 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	char *options = NULL;
 	struct RTSP_Session *rtsp_sess;
 	struct RTSP_Medium *rtsp_med;
-	struct sockaddr rtpaddr, rtcpaddr;
-	socklen_t rtplen=sizeof(struct sockaddr), rtcplen=sizeof(struct sockaddr);
+	struct sockaddr_storage rtpaddr, rtcpaddr;
+	socklen_t rtplen=sizeof(rtpaddr), rtcplen=sizeof(rtcpaddr);
 	unsigned int rnd;
 
 	memset(b, 0, 256);
@@ -68,11 +68,12 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	server_create(NULL, b, &(rtsp_med->rtp_sess->rtcpfd));
 
 	/* per sapere il numero di porta assegnato */
-	getsockname(rtsp_med->rtp_sess->rtpfd, &rtpaddr, &rtplen);
-	getsockname(rtsp_med->rtp_sess->rtcpfd, &rtcpaddr, &rtcplen);
+	/* assigned ports */
+	getsockname(rtsp_med->rtp_sess->rtpfd, (struct sockaddr *)&rtpaddr, &rtplen);
+	getsockname(rtsp_med->rtp_sess->rtcpfd, (struct sockaddr *)&rtcpaddr, &rtcplen);
 
-	rtsp_med->rtp_sess->transport.cli_ports[0]=((struct sockaddr_in *)&rtpaddr)->sin_port;
-	rtsp_med->rtp_sess->transport.cli_ports[1]=((struct sockaddr_in *)&rtcpaddr)->sin_port;
+	rtsp_med->rtp_sess->transport.cli_ports[0]=sock_get_port((struct sockaddr *)&rtpaddr);
+	rtsp_med->rtp_sess->transport.cli_ports[1]=sock_get_port((struct sockaddr *)&rtcpaddr);
 
 	if ( set_transport_str(rtsp_med->rtp_sess, &options))
 		return 1;

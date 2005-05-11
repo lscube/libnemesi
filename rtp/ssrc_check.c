@@ -28,16 +28,17 @@
 
 #include <nemesi/rtp.h>
 
-int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source **stm_src, struct sockaddr_in recfrom, enum proto_types proto_type)
+/*
+ * check for ssrc of incoming packet.
+ * \return 0 on OK, > 0 on collision detected, -1 on internal fatal error.
+ * */
+int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source **stm_src, NMSsockaddr *recfrom, enum proto_types proto_type)
 {
 	struct Conflict *stm_conf=rtp_sess->conf_queue;
-	struct sockaddr_in *sockaddr=NULL;
-	socklen_t socklen=sizeof(struct sockaddr_in);
-	char port[256];
+	struct sockaddr_storage sockaddr;
+	NMSsockaddr sock = { (struct sockaddr *)&sockaddr, sizeof(sockaddr) };
 	uint8 local_collision;
 	
-	// memset(port, 0, strlen(port));
-	memset(port, 0, sizeof(port));
 
 	local_collision = (rtp_sess->local_ssrc == ssrc);
 	pthread_mutex_lock(&rtp_sess->syn);	
@@ -48,7 +49,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 		/* inserimento in testa */
 		pthread_mutex_lock(&rtp_sess->syn);	
 		nmsprintf(NMSML_DBG1, "new SSRC\n");
-		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0){
+		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 			pthread_mutex_unlock(&rtp_sess->syn);	
 			return -nmsprintf(NMSML_ERR, "Error while setting new Stream Source\n");
 		}
@@ -59,41 +60,34 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 	} else {
 		if (local_collision){
 			
-			if ( (sockaddr=(struct sockaddr_in *)malloc(sizeof(struct sockaddr_in))) == NULL )
-				return -nmsprintf(NMSML_FATAL, "Cannot allocate memory\n");
-
 			if (proto_type == RTP)
-				getsockname(rtp_sess->rtpfd, (struct sockaddr *) sockaddr, &socklen);
+				getsockname(rtp_sess->rtpfd, sock.addr, &sock.addr_len);
 			else
-				getsockname(rtp_sess->rtcpfd, (struct sockaddr *) sockaddr, &socklen);
+				getsockname(rtp_sess->rtcpfd, sock.addr, &sock.addr_len);
 			
 		} else if (proto_type == RTP){
 			
-			if (((*stm_src)->rtp_from).sin_port == 0) 
-				(*stm_src)->rtp_from=recfrom;
-			sockaddr=&((*stm_src)->rtp_from);
+			if (!(*stm_src)->rtp_from.addr)
+				sockaddrdup(&(*stm_src)->rtp_from, recfrom);
+			sock.addr = (*stm_src)->rtp_from.addr;
+			sock.addr_len = (*stm_src)->rtp_from.addr_len;
 			
-		} else if (proto_type == RTCP){
+		} else /* if (proto_type == RTCP)*/ {
 			
-			if (((*stm_src)->rtcp_from).sin_port == 0) 
-				(*stm_src)->rtcp_from=recfrom;
-			sockaddr=&((*stm_src)->rtcp_from);
+			if (!(*stm_src)->rtcp_from.addr)
+				sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
+			sock.addr = (*stm_src)->rtcp_from.addr;
+			sock.addr_len = (*stm_src)->rtcp_from.addr_len;
 
-			if ( ((*stm_src)->rtcp_to).sin_port == 0 ){
+			if (!(*stm_src)->rtcp_to.addr) {
 				
-				((*stm_src)->rtcp_to).sin_addr=recfrom.sin_addr;
-				/*((*stm_src)->rtcp_to).sin_port=recfrom.sin_port;*/
-				((*stm_src)->rtcp_to).sin_port=(rtp_sess->transport).srv_ports[1];
-
-				sprintf(port,"%d", ntohs(((*stm_src)->rtcp_to).sin_port));
-				if ( server_connect(inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port, &((*stm_src)->rtcptofd), UDP) ){
-					nmsprintf(NMSML_WARN, "Cannot connect to remote RTCP port %s:%s\n", inet_ntoa(((*stm_src)->rtcp_to).sin_addr), port);
-					(*stm_src)->rtcptofd=-2;
-				}
+				if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).srv_ports[1]) < 0 )
+					return -1;
 			}
 		}
 
-		if(memcmp(&((*sockaddr).sin_family), &(recfrom.sin_family), sizeof(sa_family_t)+sizeof(uint16_t)+sizeof(struct in_addr)) != 0){
+		if( !sockaddrcmp(sock.addr, sock.addr_len, recfrom->addr, recfrom->addr_len) ){
+			nmsprintf(NMSML_DBG1, "An identifier collision or a loop is indicated\n");
 			
 			/* An identifier collision or a loop is indicated */
 			
@@ -106,8 +100,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			/* A collision or loop of partecipants's own packets */
 			
 			else {
-				while ((stm_conf != NULL) && (memcmp(&((stm_conf->transaddr)->sin_family), &(recfrom.sin_family),\
-							sizeof(sa_family_t)+sizeof(uint16_t)+sizeof(struct in_addr)) != 0))
+				while ( stm_conf && sockaddrcmp(stm_conf->transaddr.addr, stm_conf->transaddr.addr_len, recfrom->addr, recfrom->addr_len) )
 					stm_conf=stm_conf->next;
 				
 				if (stm_conf){
@@ -135,6 +128,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 						return -nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
 
 					/* inserimento in testa */
+					/* insert at the beginning of Stream Sources queue */
 					pthread_mutex_lock(&rtp_sess->syn);	
 					if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 						pthread_mutex_unlock(&rtp_sess->syn);	
@@ -144,7 +138,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					pthread_mutex_unlock(&rtp_sess->syn);	
 				
 					/* New entry in SSRC Conflict queue */
-					stm_conf->transaddr=sockaddr;
+					sockaddrdup(&stm_conf->transaddr, &sock);
 					stm_conf->time=time(NULL);
 					stm_conf->next=rtp_sess->conf_queue;
 					rtp_sess->conf_queue=stm_conf;

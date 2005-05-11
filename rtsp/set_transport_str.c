@@ -32,6 +32,7 @@
 int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 {
 	char buff[256];
+	char addr[128];		/* Unix domain is largest */
 
 	memset(buff, 0, sizeof(buff));
 	
@@ -41,10 +42,10 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 		sprintf(buff+strlen(buff), "multicast;");
 	else
 		sprintf(buff+strlen(buff), "unicast;");
-	if (rtp_sess->transport.dstaddr.s_addr != inet_addr("0.0.0.0"))
-		sprintf(buff+strlen(buff), "destination=%s;", inet_ntoa(rtp_sess->transport.dstaddr));
-	if (rtp_sess->transport.srcaddr.s_addr != inet_addr("0.0.0.0"))
-		sprintf(buff+strlen(buff), "source=%s;", inet_ntoa(rtp_sess->transport.srcaddr));
+	if ( sock_ntop_host(rtp_sess->transport.dstaddr.addr, rtp_sess->transport.dstaddr.addr_len, addr, sizeof(addr)) )
+		sprintf(buff+strlen(buff), "destination=%s;", addr);
+	if ( sock_ntop_host(rtp_sess->transport.srcaddr.addr, rtp_sess->transport.srcaddr.addr_len, addr, sizeof(addr)) )
+		sprintf(buff+strlen(buff), "source=%s;", addr);
 	if (rtp_sess->transport.layers)
 		sprintf(buff+strlen(buff), "layers=%d;", rtp_sess->transport.layers);
 	if (rtp_sess->transport.mode == record)

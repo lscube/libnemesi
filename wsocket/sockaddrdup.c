@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,22 +28,14 @@
 
 #include <nemesi/wsocket.h>
 
-/**
- * The function opens a TCP connection.
- * It creates a SOCK_STREAM type socket and, through it, connects to the address <tt>name</tt>.
- * \param name address to which we want to connect.
- * \param namelen length of address <tt>name</tt>.
- * \return descriptor of created socket.
- */
-int tcp_open(struct sockaddr *name, int namelen)
+int sockaddrdup(NMSsockaddr *dst, NMSsockaddr *src)
 {
-	int f;
 
-	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return nmsprintf(NMSML_ERR, "socket() error in tcp_open.\n");
-
-	if (connect(f, name, namelen) < 0)
-		return nmsprintf(NMSML_ERR, "connect() error in tcp_open.\n");
-
-	return f;
+	if( !(dst->addr=malloc(src->addr_len)) )
+		return -nmsprintf(NMSML_FATAL, "Cannot allocate memory\n");
+	memcpy(dst->addr, src->addr, src->addr_len);
+	dst->addr_len = src->addr_len;
+	
+	return 0;
 }
+

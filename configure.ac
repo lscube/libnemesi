@@ -98,6 +98,10 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv)
 AC_CHECK_FUNC(getaddrinfo)
 
+dnl check if we have the generic struct for net addresses the has max possible size
+AC_CHECK_TYPES(struct sockaddr_storage,,, [#include <sys/socket.h>])
+dnl AC_CHECK_MEMBERS(struct sockaddr_in.sin_len,,, [#include <netinet/in.h>])
+
 dnl CFLAGS=""
 
 dnl Check for SDL libraryISL3880
@@ -293,6 +297,7 @@ AC_CONFIG_FILES([decoder/gsm_amr_float/Makefile])
 dnl if test x$NEMESI_HAVE_AVC = xyes; then
 AC_CONFIG_FILES([decoder/libffmp3/Makefile])
 AC_CONFIG_FILES([decoder/libffmpeg/Makefile])
+AC_CONFIG_FILES([decoder/libffmpeg4/Makefile])
 dnl fi
 
 AC_CONFIG_FILES([md5/Makefile])

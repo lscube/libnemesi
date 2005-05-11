@@ -43,9 +43,12 @@ int send_rtcp_rr(struct RTP_Session *rtp_sess)
 	len += build_rtcp_sdes(rtp_sess, pkt, (MAX_PKT_SIZE >> 2) - len); /* in 32 bit words */
 
 	for(stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next)
-		if (stm_src->rtcptofd > 0)
+		if (stm_src->rtcptofd > 0) {
 			if( write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0 )
 				nmsprintf(NMSML_WARN, "WARNING! Error while sending RTCP pkt\n");
+			else
+				nmsprintf(NMSML_DBG1, "RTCP RR packet sent\n");
+		}
 	
 	return len;	
 }

@@ -32,14 +32,17 @@
 #include <config.h>
 
 #include <stdio.h>
-#include <errno.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netdb.h>
 #include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 #include <nemesi/comm.h>
+#include <nemesi/types.h>
 
 #ifdef WORDS_BIGENDIAN
 #define ntohl24(x) (x)
@@ -47,10 +50,28 @@
 #define ntohl24(x) (((x&0xff) << 16) | (x&0xff00) | ((x&0xff0000)>>16)) 
 #endif
 
+#ifndef HAVE_STRUCT_SOCKADDR_STORAGE
+#define MAXSOCKADDR 128 /*!< max socket address structure size */
+struct sockaddr_storage {
+	char padding[MAXSOCKADDR];
+};
+#endif // HAVE_STRUCT_SOCKADDR_STORAGE
+
+typedef struct {
+	struct sockaddr *addr;
+	socklen_t addr_len;
+} NMSsockaddr;
+
 enum sock_types {
 	TCP = 0,
 	UDP = 1
 };
+
+#define WSOCK_ERRFAMILY		-1
+#define WSOCK_CMP_ERRSIZE	1
+#define WSOCK_CMP_ERRFAMILY	2
+#define WSOCK_CMP_ERRADDR	3
+#define WSOCK_CMP_ERRPORT	4
 
 int gethostinfo(struct addrinfo **, char *, char *, struct addrinfo *);
 int tcp_open(struct sockaddr *, int);
@@ -58,5 +79,13 @@ int server_connect(char *, char *, int *, enum sock_types);
 int server_create(char *, char *, int *);
 int tcp_write(int, void *, int);
 int tcp_read(int, void *, int);
+int sock_cmp_addr(const struct sockaddr *, const struct sockaddr * /*, socklen_t */);
+int sock_cmp_port(const struct sockaddr *, const struct sockaddr * /*, socklen_t */);
+void sock_set_port(struct sockaddr *, /* socklen_t,*/ int);
+void sock_set_addr(struct sockaddr *, /* socklen_t,*/ const void *addr);
+uint16 sock_get_port(const struct sockaddr * /*, socklen_t*/);
+char *sock_ntop_host(const struct sockaddr *, socklen_t, char *, size_t);
+int sockaddrcmp(struct sockaddr *, socklen_t, struct sockaddr *, socklen_t);
+int sockaddrdup(NMSsockaddr *, NMSsockaddr *);
 
 #endif
