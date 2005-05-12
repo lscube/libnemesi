@@ -37,7 +37,11 @@ int server_create(char *host, char *port, int *sock)
 	
 	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_flags = AI_PASSIVE;
+#ifdef IPV6
 	hints.ai_family = AF_UNSPEC;
+#else
+	hints.ai_family = AF_INET;
+#endif
 	hints.ai_socktype = SOCK_DGRAM;
 
 	if ((n = gethostinfo(&res, host, port, &hints)) != 0)

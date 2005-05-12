@@ -47,7 +47,11 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 	memset(&hints, 0, sizeof(struct addrinfo));
 
 	hints.ai_flags = AI_CANONNAME;
+#ifdef IPV6
 	hints.ai_family = AF_UNSPEC;
+#else
+	hints.ai_family = AF_INET;
+#endif
 	if (sock_type == TCP)
 		hints.ai_socktype = SOCK_STREAM;
 	else if (sock_type == UDP)
