@@ -58,10 +58,12 @@ int server_create(char *host, char *port, int *sock)
 
 	} while ((res = res->ai_next) != NULL);
 
-	if (res == NULL)
-		return 1;
-
 	freeaddrinfo(ressave);
 
-	return 0;
+	/*
+	if (res == NULL)
+		return 1;
+	*/
+
+	return res ? 0 : 1;
 }

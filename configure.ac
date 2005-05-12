@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(nemesi, 0.5.2-SVN-rev.176)
+AC_INIT(nemesi, 0.5.2-SVN-rev.178)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
@@ -31,14 +31,17 @@ AC_ARG_ENABLE(optimize,
 [  --enable-optimize       enable/chose optimization level: none, poor, normal, full, super [[default=normal]]],,
 	enable_optimize="normal")
 AC_ARG_ENABLE(sdl,
-[  --enable-sdl            enable/chose sdl as default output library [[default=yes]]],,
+[  --enable-sdl            enable/chose sdl as default output library [[default=autodetected]]],,
 	enable_sdl="yes")
 AC_ARG_ENABLE(avc,
-[  --enable-avc            enable libavcodec support [[default=yes]]],,
+[  --enable-avc            enable libavcodec support [[default=autodetected]]],,
 	enable_avc="yes")
 AC_ARG_ENABLE(gui,
-[  --enable-gui            enable GUI [[default=yes]]],,
+[  --enable-gui            enable GUI [[default=autodetected]]],,
 	enable_gui="yes")
+AC_ARG_ENABLE(ipv6,
+[  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
+	enable_ipv6="yes")
 
 dnl Check for programs.
 AC_PROG_CC
@@ -103,6 +106,15 @@ AC_CHECK_TYPES(struct sockaddr_storage,,, [#include <sys/socket.h>])
 dnl AC_CHECK_MEMBERS(struct sockaddr_in.sin_len,,, [#include <netinet/in.h>])
 
 dnl CFLAGS=""
+
+dnl Check for IPv6 support
+if test "$enable_ipv6" = "yes"; then
+	AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
+else
+	AC_MSG_WARN([IPv6 disabled: skip check.])
+	dnl AM_CONDITIONAL(NEMESI_HAVE_IPV6, /bin/false)
+	dnl NEMESI_HAVE_IPV6=no
+fi
 
 dnl Check for SDL libraryISL3880
 if test "$enable_sdl" = "yes"; then
