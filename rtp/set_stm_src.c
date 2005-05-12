@@ -32,7 +32,6 @@ int set_stm_src(struct RTP_Session *rtp_sess, struct Stream_Source **stm_src, ui
 {
 	int addrcmp_err;
 	
-	
 	if(((*stm_src)=(struct Stream_Source *)calloc(1, sizeof(struct Stream_Source))) == NULL)
 		return -nmsprintf(NMSML_FATAL, "Cannot allocate memory\n");
 

@@ -31,6 +31,7 @@
 struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 {
 	struct RTP_Session *rtp_sess;
+	char addr[128];		/* Unix domain is largest */
 
 	if((rtp_sess=(struct RTP_Session *)calloc(1, sizeof(struct RTP_Session))) == NULL) {
 		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
@@ -56,14 +57,14 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 	}
 	memcpy(rtp_sess->transport.srcaddr.addr, peer->addr, peer->addr_len);
 	rtp_sess->transport.srcaddr.addr_len = peer->addr_len;
+	if ( sock_ntop_host(peer->addr, peer->addr_len, addr, sizeof(addr)) )
+		nmsprintf(NMSML_DBG2, "RTP: remote addr: %u:%u\n", addr, sock_get_port(peer->addr));
 	switch (peer->addr->sa_family) {
 		case AF_INET:
 			nmsprintf(NMSML_DBG1, "IPv4 address\n");
-			nmsprintf(NMSML_DBG2, "RTP: remote addr: %u:%u\n", ((struct sockaddr_in *)peer->addr)->sin_addr, ((struct sockaddr_in *)peer->addr)->sin_port);
 			break;
 		case AF_INET6:
 			nmsprintf(NMSML_DBG1, "IPv4 address\n");
-			nmsprintf(NMSML_DBG2, "RTP: remote addr: %u:%u\n", ((struct sockaddr_in6 *)peer->addr)->sin6_addr, ((struct sockaddr_in6 *)peer->addr)->sin6_port);
 			break;
 	}
 	// --- local address
@@ -73,14 +74,14 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 	}
 	memcpy(rtp_sess->transport.dstaddr.addr, local->addr, local->addr_len);
 	rtp_sess->transport.dstaddr.addr_len = local->addr_len;
+	if ( sock_ntop_host(local->addr, local->addr_len, addr, sizeof(addr)) )
+		nmsprintf(NMSML_DBG2, "RTP: local addr: %u:%u\n", addr, sock_get_port(peer->addr));
 	switch (local->addr->sa_family) {
 		case AF_INET:
 			nmsprintf(NMSML_DBG1, "IPv4 local address\n");
-			nmsprintf(NMSML_DBG2, "RTP: local addr: %u:%u\n", ((struct sockaddr_in *)local->addr)->sin_addr, ((struct sockaddr_in *)local->addr)->sin_port);
 			break;
 		case AF_INET6:
 			nmsprintf(NMSML_DBG1, "IPv6 local address\n");
-			nmsprintf(NMSML_DBG2, "RTP: local addr: %u:%u\n", ((struct sockaddr_in6 *)local->addr)->sin6_addr, ((struct sockaddr_in6 *)local->addr)->sin6_port);
 			break;
 	}
 	// ---
