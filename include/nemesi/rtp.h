@@ -85,11 +85,29 @@ typedef struct {
 	uint8 data[1];	/* beginning of RTP data */
 } rtp_pkt;
 
+#define RTP_TRANSPORT_SPEC		1
+#define RTP_TRANSPORT_DELIVERY		2
+#define RTP_TRANSPORT_SRCADDR		3
+#define RTP_TRANSPORT_SRCADDRSTR	4
+#define RTP_TRANSPORT_DSTADDR		5
+#define RTP_TRANSPORT_DSTADDRSTR	6
+#define RTP_TRANSPORT_LAYERS		7
+#define RTP_TRANSPORT_MODE		8
+#define RTP_TRANSPORT_APPEND		9
+#define RTP_TRANSPORT_TTL		10
+#define RTP_TRANSPORT_MCSPORT0		11
+#define RTP_TRANSPORT_MCSPORT1		12
+#define RTP_TRANSPORT_CLIPORT0		13
+#define RTP_TRANSPORT_CLIPORT1		14
+#define RTP_TRANSPORT_SRVPORT0		15
+#define RTP_TRANSPORT_SRVPORT1		16
+#define RTP_TRANSPORT_SSRC		17
+
 struct Transport {
 	char *spec;
 	enum deliveries { unicast, multicast } delivery;
-	NMSsockaddr srcaddr;
-	NMSsockaddr dstaddr;
+	NMSaddr srcaddr;
+	NMSaddr dstaddr;
 	int layers;
 	enum modes { play, record } mode;
 	int append;
@@ -142,6 +160,10 @@ struct Session_Stats {
 	uint8 initial;		/* the flag that is true if the app has not yet sent an RTCP pkt */
 };
 
+#define SSRC_KNOWN	0
+#define SSRC_NEW	1
+#define SSRC_COLLISION	2
+
 struct Stream_Source {
 	uint32 ssrc;
 	NMSsockaddr rtp_from;
@@ -189,7 +211,6 @@ enum proto_types {
 
 void *rtp(void *);
 
-// struct RTP_Session *init_rtp_sess(struct sockaddr *, socklen_t, struct sockaddr *, socklen_t);
 struct RTP_Session *init_rtp_sess(NMSsockaddr *, NMSsockaddr *);
 int rtp_thread_create(struct RTP_Session *);
 
@@ -197,7 +218,9 @@ int rtp_recv(struct RTP_Session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
 int ssrc_check(struct RTP_Session *, uint32, struct Stream_Source **, NMSsockaddr *, enum proto_types);
 int set_stm_src(struct RTP_Session *, struct Stream_Source **, uint32, NMSsockaddr *,  enum proto_types);
-int rtcp_to_connect(struct Stream_Source *, NMSsockaddr *, uint16);
+int rtp_transport_set(struct RTP_Session *, int, void *);
+int rtp_transport_get(struct RTP_Session *, int, void *, uint32);
+int rtcp_to_connect(struct Stream_Source *, NMSaddr *, uint16);
 void init_seq(struct Stream_Source *, uint16);
 void update_seq(struct Stream_Source *, uint16);
 

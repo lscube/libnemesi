@@ -28,26 +28,28 @@
 
 #include <nemesi/wsocket.h>
 
-/*
- * The function that compares two sockaddr structures.
- * \param addr1 first sockaddr struct
- * \param addr1_len length of first sockaddr struct
- * \param addr2 second sockaddr struct
- * \param addr1_len length of second sockaddr struct
- * \return 0 if the two structires are egual, otherwise an error reflecting the
- * first difference encountered. 
- */
-int sockaddrcmp(struct sockaddr *addr1, socklen_t addr1_len, struct sockaddr *addr2, socklen_t addr2_len)
+int sock_get_addr(const struct sockaddr *sockaddr, NMSaddr *retaddr)
 {
-	if (addr1_len != addr2_len)
-		return WSOCK_ERRSIZE;
-	if (addr1->sa_family != addr1->sa_family)
-		return WSOCK_ERRFAMILY;
-	if (sock_cmp_addr(addr1, addr2 /*, addr1_len */))
-		return WSOCK_ERRADDR;
-	if (sock_cmp_port(addr1, addr2 /*, addr1_len */))
-		return WSOCK_ERRPORT;
+	if ( !sockaddr || !retaddr)
+		return 1;
 
-	return 0;
+	retaddr->family = sockaddr->sa_family;
+	switch (sockaddr->sa_family) {
+		case AF_INET:
+			memcpy(&retaddr->addr.in, &((struct sockaddr_in *)sockaddr)->sin_addr, sizeof(struct in_addr));
+			return 0;
+			break;
+#ifdef IPV6
+		case AF_INET6:
+			memcpy(&retaddr->addr.in6, &((struct sockaddr_in6 *)sockaddr)->sin6_addr, sizeof(struct in6_addr));
+			return 0;
+			break;
+#endif
+		default:
+			retaddr->family = AF_UNSPEC;
+			break;
+	}
+
+	return 1;
 }
 

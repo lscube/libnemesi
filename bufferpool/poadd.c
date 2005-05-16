@@ -59,7 +59,7 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 	}
 	if ( (i != -1) && (cseq == ((uint32)ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) + po->cycles)) ) {
 		pthread_mutex_unlock(&(po->po_mutex));
-		return 1;
+		return PKT_DUPLICATED;
 	}
 	if (i == po->pohead) {	/* inserimento in testa */
 		po->pobuff[index].next = i;
@@ -83,7 +83,7 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 		po->pobuff[index].prev = i;
 		
 		pthread_mutex_unlock(&(po->po_mutex));
-		return 2;
+		return PKT_MISORDERED;
 	}
 
 	pthread_mutex_unlock(&(po->po_mutex));

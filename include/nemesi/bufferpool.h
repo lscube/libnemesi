@@ -170,6 +170,9 @@ typedef struct {
 	int flcount; /*!< Contatore degli elementi presenti nella Free List. */
 } buffer_pool;
 
+#define PKT_DUPLICATED	1
+#define PKT_MISORDERED	2
+
 int poinit(playout_buff *, buffer_pool *);
 int poadd(playout_buff *, int, uint32);
 int podel(playout_buff *, int);

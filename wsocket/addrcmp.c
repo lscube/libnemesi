@@ -28,26 +28,27 @@
 
 #include <nemesi/wsocket.h>
 
-/*
- * The function that compares two sockaddr structures.
- * \param addr1 first sockaddr struct
- * \param addr1_len length of first sockaddr struct
- * \param addr2 second sockaddr struct
- * \param addr1_len length of second sockaddr struct
- * \return 0 if the two structires are egual, otherwise an error reflecting the
- * first difference encountered. 
- */
-int sockaddrcmp(struct sockaddr *addr1, socklen_t addr1_len, struct sockaddr *addr2, socklen_t addr2_len)
+int addrcmp(const NMSaddr *addr1, const NMSaddr *addr2)
 {
-	if (addr1_len != addr2_len)
-		return WSOCK_ERRSIZE;
-	if (addr1->sa_family != addr1->sa_family)
+	if ( addr1->family != addr2->family )
 		return WSOCK_ERRFAMILY;
-	if (sock_cmp_addr(addr1, addr2 /*, addr1_len */))
-		return WSOCK_ERRADDR;
-	if (sock_cmp_port(addr1, addr2 /*, addr1_len */))
-		return WSOCK_ERRPORT;
-
+	switch (addr1->family) {
+		case AF_INET:
+			if (!memcmp(&addr1->addr.in, &addr2->addr.in, sizeof(struct in_addr)))
+				return 0;
+			else
+				return WSOCK_ERRADDR;
+			break;
+		case AF_INET6:
+			if (!memcmp(&addr1->addr.in6, &addr2->addr.in6, sizeof(struct in6_addr)))
+				return 0;
+			else
+				return WSOCK_ERRADDR;
+			break;
+		default:
+			return WSOCK_ERRFAMILYUNKNOWN;
+	}
+	
 	return 0;
 }
 

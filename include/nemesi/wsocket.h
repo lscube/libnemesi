@@ -62,16 +62,24 @@ typedef struct {
 	socklen_t addr_len;
 } NMSsockaddr;
 
+typedef struct {
+	sa_family_t family;
+	union {
+		struct in_addr in;
+		struct in6_addr in6;
+	} addr;
+} NMSaddr;
+
 enum sock_types {
 	TCP = 0,
 	UDP = 1
 };
 
-#define WSOCK_ERRFAMILY		-1
-#define WSOCK_CMP_ERRSIZE	1
-#define WSOCK_CMP_ERRFAMILY	2
-#define WSOCK_CMP_ERRADDR	3
-#define WSOCK_CMP_ERRPORT	4
+#define WSOCK_ERRFAMILYUNKNOWN	-1
+#define WSOCK_ERRSIZE	1
+#define WSOCK_ERRFAMILY	2
+#define WSOCK_ERRADDR	3
+#define WSOCK_ERRPORT	4
 
 int gethostinfo(struct addrinfo **, char *, char *, struct addrinfo *);
 int tcp_open(struct sockaddr *, int);
@@ -84,8 +92,11 @@ int sock_cmp_port(const struct sockaddr *, const struct sockaddr * /*, socklen_t
 void sock_set_port(struct sockaddr *, /* socklen_t,*/ int);
 void sock_set_addr(struct sockaddr *, /* socklen_t,*/ const void *addr);
 uint16 sock_get_port(const struct sockaddr * /*, socklen_t*/);
+int sock_get_addr(const struct sockaddr *, NMSaddr *);
 char *sock_ntop_host(const struct sockaddr *, socklen_t, char *, size_t);
 int sockaddrcmp(struct sockaddr *, socklen_t, struct sockaddr *, socklen_t);
 int sockaddrdup(NMSsockaddr *, NMSsockaddr *);
+int addrcmp(const NMSaddr *, const NMSaddr *);
+char *addr_ntop(const NMSaddr *, char *, size_t);
 
 #endif

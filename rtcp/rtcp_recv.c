@@ -49,12 +49,18 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 		nmsprintf(NMSML_WARN, "RTCP Header Validity Check failed!"BLANK_LINE);
 		return 1;
 	}
-	if((ret=ssrc_check(rtp_sess, ntohl((pkt->r).sr.ssrc), &stm_src, &server, RTCP)) == -1)
-		return 1;
-	else if ( ret == 1 ){
-		if (pkt->common.pt == RTCP_SR)
-			rtp_sess->sess_stats.senders++;
-		rtp_sess->sess_stats.members++;
+
+	switch ( ssrc_check(rtp_sess, ntohl((pkt->r).sr.ssrc), &stm_src, &server, RTCP) ) {
+		case SSRC_NEW:
+			if (pkt->common.pt == RTCP_SR)
+				rtp_sess->sess_stats.senders++;
+			rtp_sess->sess_stats.members++;
+			break;
+		case -1:
+			return 1;
+			break;
+		default:
+			break;
 	}
 
 	if((ret=parse_rtcp_pkt(stm_src, pkt, n)) != 0)

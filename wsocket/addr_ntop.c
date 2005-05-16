@@ -24,42 +24,52 @@
  *  along with NeMeSI; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
- *  this piece of code is taken from Richard Stevens source code of
- *    UNIX Network Programming, Volume 1, Second Edition: Networking APIs:
- *      Sockets and XTI, Prentice Hall, 1998, ISBN 0-13-490012-X.
  * */
 
 #include <nemesi/wsocket.h>
 
-#ifdef	HAVE_SOCKADDR_DL_STRUCT
-# include	<net/if_dl.h>
-#endif
-
-/*
- * The function compares port filed of sock addr structure.
- * It recognizes the family of sockaddr struct and compares the rigth field.
- * \return 0 if port are equal, -1 if family is not known.
- * */
-int sock_cmp_port(const struct sockaddr *sa1, const struct sockaddr *sa2 /*, socklen_t salen */)
+char *addr_ntop(const NMSaddr *addr, char *str, size_t len)
 {
-	if (sa1->sa_family != sa2->sa_family)
-		return -1;
-
-	switch (sa1->sa_family) {
+	switch (addr->family) {
 		case AF_INET:
-			return !( ((struct sockaddr_in *) sa1)->sin_port == ((struct sockaddr_in *) sa2)->sin_port);
+			if (inet_ntop(AF_INET, &addr->addr.in, str, len) == NULL)
+				return(NULL);
+			return(str);
 			break;
-
 #ifdef	IPV6
 		case AF_INET6:
-			return !( ((struct sockaddr_in6 *) sa1)->sin6_port == ((struct sockaddr_in6 *) sa2)->sin6_port);
+			if (inet_ntop(AF_INET6, &addr->addr.in6, str, len) == NULL)
+				return(NULL);
+			return(str);
 			break;
 #endif
+			
+#if 0 // not yet supported by NMSaddr
+#ifdef	AF_UNIX
+		case AF_UNIX:
+			/* OK to have no pathname bound to the socket: happens on
+			 * every connect() unless client calls bind() first. */
+			if (addr->addr.un_path[0] == 0)
+				strcpy(str, "(no pathname bound)");
+			else
+				snprintf(str, len, "%s", addr->addr.un_path);
+			return(str);
+#endif
+			
+#ifdef	HAVE_SOCKADDR_DL_STRUCT
+		case AF_LINK:
+			if (addr->addr.dl_nlen > 0)
+				snprintf(str, len, "%*s",
+						addr->addr.dl_nlen, &addr->addr.dl_data[0]);
+			else
+				snprintf(str, len, "AF_LINK, index=%d", addr->addr.dl_index);
+			return(str);
+#endif
+#endif
 		default:
-			return -1;
-			break;
-
+			snprintf(str, len, "addr_ntop: unknown AF_xxx: %d", addr->family);
+			return(str);
 	}
-    // return -1;
+	return (NULL);
 }
 

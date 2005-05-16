@@ -34,6 +34,7 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 
 	if (len/4 > (ntohs((pkt->common).len) + 1)){
 		/* This is a fu**ing compound pkt */
+		nmsprintf(NMSML_DBG2, "RTCP Compound packet arrived (total len=%d)\n", len);
 		if ( ( *(uint16 *)pkt & RTCP_VALID_MASK) != RTCP_VALID_VALUE) {
 			nmsprintf(NMSML_WARN, "RTCP Header not valid: first pkt of Compound is not a SR (or RR)!\n"BLANK_LINE);
 			return 1;
@@ -43,10 +44,11 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 		while ((pkt < end) && ((pkt->common).ver == 2));
 
 		if (pkt != end) {
-			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching lenght!\n"BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching lenght (%d)!\n"BLANK_LINE, len);
 			return 1;
 		}
 	} else {
+		nmsprintf(NMSML_DBG2, "RTCP packet arrived (total len=%d)\n", len);
 		if ( (pkt->common).ver != RTP_VERSION ){
 			nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching version number!\n"BLANK_LINE);
 			return 1;

@@ -69,8 +69,6 @@ void rtp_clean(void *args)
 
 		// transport allocs
 		free((rtp_sess->transport).spec);
-		free((rtp_sess->transport).srcaddr.addr);
-		free((rtp_sess->transport).dstaddr.addr);
 
 		conf=rtp_sess->conf_queue;
 		while(conf) {

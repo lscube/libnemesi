@@ -111,7 +111,7 @@ dnl Check for IPv6 support
 if test "$enable_ipv6" = "yes"; then
 	AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
 else
-	AC_MSG_WARN([IPv6 disabled: skip check.])
+	AC_MSG_WARN([IPv6 disabled: check skipped.])
 	dnl AM_CONDITIONAL(NEMESI_HAVE_IPV6, /bin/false)
 	dnl NEMESI_HAVE_IPV6=no
 fi

@@ -32,7 +32,7 @@
 int rtp_recv(struct RTP_Session *rtp_sess)
 {
 
-	int n, ret;
+	int n;
 	uint32 rate;
 	int slot;
 	rtp_pkt *pkt;
@@ -60,45 +60,57 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 		return 0;
 	}
 
-	if((ret=ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, &server, RTP)) == -1){
-		return 1;
-	} else if (ret == 2){
-		bprmv(&(rtp_sess->bp), &(stm_src->po), slot);
-		return 0;
-	} else if ( ret == 1){
-		(stm_src->ssrc_stats).probation=MIN_SEQUENTIAL;
-		(stm_src->ssrc_stats).max_seq = ntohs(pkt->seq) - 1;
-		
-		if ( (rate=(rtp_pt_defs[pkt->pt].rate)) == 0 )
-			rate=RTP_DEF_CLK_RATE;
-		(stm_src->ssrc_stats).transit=(uint32)(((double)now.tv_sec + (double)now.tv_usec/1000000.0)*(double)rate) - ntohl(pkt->time);
-		(stm_src->ssrc_stats).jitter=0;
-		(stm_src->ssrc_stats).firstts=ntohl(pkt->time);
-		(stm_src->ssrc_stats).firsttv=now;
-		init_seq(stm_src, ntohs(pkt->seq));
-		rtp_sess->sess_stats.senders++;
-		rtp_sess->sess_stats.members++;
-
-	} else if (ret == 0){
-		update_seq(stm_src, ntohs(pkt->seq));
-		
-		if ( (rate=(rtp_pt_defs[pkt->pt].rate)) == 0 )
-			rate=RTP_DEF_CLK_RATE;
-
-		transit = (uint32)(((double)now.tv_sec + (double)now.tv_usec/1000000.0)*(double)rate) - ntohl(pkt->time);
-		delta = transit - stm_src->ssrc_stats.transit;
-		stm_src->ssrc_stats.transit = transit;
-		if ( delta < 0)
-			delta = -delta;
-		stm_src->ssrc_stats.jitter += (1./16.)*((double)delta - stm_src->ssrc_stats.jitter);
+	switch ( ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, &server, RTP) ) {
+		case SSRC_KNOWN:
+			update_seq(stm_src, ntohs(pkt->seq));
+			
+			if ( (rate=(rtp_pt_defs[pkt->pt].rate)) == 0 )
+				rate=RTP_DEF_CLK_RATE;
+	
+			transit = (uint32)(((double)now.tv_sec + (double)now.tv_usec/1000000.0)*(double)rate) - ntohl(pkt->time);
+			delta = transit - stm_src->ssrc_stats.transit;
+			stm_src->ssrc_stats.transit = transit;
+			if ( delta < 0)
+				delta = -delta;
+			stm_src->ssrc_stats.jitter += (1./16.)*((double)delta - stm_src->ssrc_stats.jitter);
+			break;
+		case SSRC_NEW:
+			(stm_src->ssrc_stats).probation=MIN_SEQUENTIAL;
+			(stm_src->ssrc_stats).max_seq = ntohs(pkt->seq) - 1;
+			
+			if ( (rate=(rtp_pt_defs[pkt->pt].rate)) == 0 )
+				rate=RTP_DEF_CLK_RATE;
+			(stm_src->ssrc_stats).transit=(uint32)(((double)now.tv_sec + (double)now.tv_usec/1000000.0)*(double)rate) - ntohl(pkt->time);
+			(stm_src->ssrc_stats).jitter=0;
+			(stm_src->ssrc_stats).firstts=ntohl(pkt->time);
+			(stm_src->ssrc_stats).firsttv=now;
+			init_seq(stm_src, ntohs(pkt->seq));
+			rtp_sess->sess_stats.senders++;
+			rtp_sess->sess_stats.members++;
+			break;
+		case SSRC_COLLISION:
+			bprmv(&(rtp_sess->bp), &(stm_src->po), slot);
+			return 0;
+			break;
+		case -1:
+			return 1;
+			break;
+		default:
+			break;
 	}
 
-	if((ret=poadd(&(stm_src->po), slot, (stm_src->ssrc_stats).cycles)) == 1) {
-		nmsprintf(NMSML_VERB, "WARNING: Duplicate pkt found... discarded\n");
-		bpfree(&(rtp_sess->bp), slot);
-		return 0;
-	} else if (ret == 2)
-		nmsprintf(NMSML_VERB, "WARNING: Misordered pkt found... reordered\n");
+	switch ( poadd(&(stm_src->po), slot, (stm_src->ssrc_stats).cycles) ) {
+		case PKT_DUPLICATED:
+			nmsprintf(NMSML_VERB, "WARNING: Duplicate pkt found... discarded\n");
+			bpfree(&(rtp_sess->bp), slot);
+			return 0;
+			break;
+		case PKT_MISORDERED:
+			nmsprintf(NMSML_VERB, "WARNING: Misordered pkt found... reordered\n");
+			break;
+		default:
+			break;
+	}
 
 	((stm_src->po).pobuff[slot]).pktlen=n;
 	

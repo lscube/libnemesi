@@ -30,7 +30,7 @@
 
 /*
  * check for ssrc of incoming packet.
- * \return 0 on OK, > 0 on collision detected, -1 on internal fatal error.
+ * \return SSRC_KNOWN, SSRC_NEW, SSRC_COLLISION, -1 on internal fatal error.
  * */
 int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source **stm_src, NMSsockaddr *recfrom, enum proto_types proto_type)
 {
@@ -40,7 +40,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 	uint8 local_collision;
 	
 
-	local_collision = (rtp_sess->local_ssrc == ssrc);
+	local_collision = (rtp_sess->local_ssrc == ssrc) ? SSRC_COLLISION : 0;
 	pthread_mutex_lock(&rtp_sess->syn);	
 	pthread_mutex_unlock(&rtp_sess->syn);	
 	for(*stm_src=rtp_sess->ssrc_queue; !local_collision && *stm_src && ((*stm_src)->ssrc != ssrc); *stm_src=(*stm_src)->next);
@@ -56,7 +56,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 
 		poinit(&((*stm_src)->po),&(rtp_sess->bp));
 		pthread_mutex_unlock(&rtp_sess->syn);	
-		return 1;
+		return SSRC_NEW;
 	} else {
 		if (local_collision){
 			
@@ -80,21 +80,26 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			sock.addr_len = (*stm_src)->rtcp_from.addr_len;
 
 			if (!(*stm_src)->rtcp_to.addr) {
+				NMSaddr nms_addr;
+
+				if (sock_get_addr(recfrom->addr, &nms_addr))
+					return -nmsprintf(NMSML_ERR, "Invalid address for received packet\n");
 				
-				if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).srv_ports[1]) < 0 )
+				// if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).srv_ports[1]) < 0 )
+				if ( rtcp_to_connect(*stm_src, &nms_addr, (rtp_sess->transport).srv_ports[1]) < 0 )
 					return -1;
 			}
 		}
 
-		if( !sockaddrcmp(sock.addr, sock.addr_len, recfrom->addr, recfrom->addr_len) ){
-			nmsprintf(NMSML_DBG1, "An identifier collision or a loop is indicated\n");
+		if( sockaddrcmp(sock.addr, sock.addr_len, recfrom->addr, recfrom->addr_len) ){
+			nmsprintf(NMSML_ERR, "An identifier collision or a loop is indicated\n");
 			
 			/* An identifier collision or a loop is indicated */
 			
 			if( ssrc != rtp_sess->local_ssrc ){
 				/* OPTIONAL error counter step not implemented */
 				nmsprintf(NMSML_VERB, "Warning! An identifier collision or a loop is indicated.\n");
-				return 2;
+				return SSRC_COLLISION;
 			}
 
 			/* A collision or loop of partecipants's own packets */
@@ -108,7 +113,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					/* OPTIONAL error counter step not implemented */
 					
 					stm_conf->time=time(NULL);
-					return 2;
+					return SSRC_COLLISION;
 				} else {
 					
 					/* New collision, change SSRC identifier */

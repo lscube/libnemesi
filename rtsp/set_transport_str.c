@@ -42,9 +42,9 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 		sprintf(buff+strlen(buff), "multicast;");
 	else
 		sprintf(buff+strlen(buff), "unicast;");
-	if ( sock_ntop_host(rtp_sess->transport.dstaddr.addr, rtp_sess->transport.dstaddr.addr_len, addr, sizeof(addr)) )
+	if ( rtp_transport_get(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addr, sizeof(addr)) )
 		sprintf(buff+strlen(buff), "destination=%s;", addr);
-	if ( sock_ntop_host(rtp_sess->transport.srcaddr.addr, rtp_sess->transport.srcaddr.addr_len, addr, sizeof(addr)) )
+	if ( addr_ntop(&rtp_sess->transport.srcaddr, addr, sizeof(addr)) )
 		sprintf(buff+strlen(buff), "source=%s;", addr);
 	if (rtp_sess->transport.layers)
 		sprintf(buff+strlen(buff), "layers=%d;", rtp_sess->transport.layers);

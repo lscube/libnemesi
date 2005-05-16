@@ -31,7 +31,7 @@
 struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 {
 	struct RTP_Session *rtp_sess;
-	char addr[128];		/* Unix domain is largest */
+	NMSaddr nms_addr;
 
 	if((rtp_sess=(struct RTP_Session *)calloc(1, sizeof(struct RTP_Session))) == NULL) {
 		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
@@ -51,24 +51,28 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 	strcpy(rtp_sess->transport.spec, RTP_AVP_UDP);
 	rtp_sess->transport.delivery=unicast;
 	// --- remote address
-	if (sockaddrdup(&rtp_sess->transport.srcaddr, peer))
+	if ( sock_get_addr(peer->addr, &nms_addr) ) {
+		nmsprintf(NMSML_ERR, "remote address not valid\n");
 		return NULL;
-	if ( sock_ntop_host(peer->addr, peer->addr_len, addr, sizeof(addr)) )
-		nmsprintf(NMSML_DBG2, "RTP: remote addr: %s:%u\n", addr, ntohs(sock_get_port(peer->addr)));
-	switch (peer->addr->sa_family) {
+	}
+	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDR, &nms_addr))
+		return NULL;
+	switch (nms_addr.family) {
 		case AF_INET:
 			nmsprintf(NMSML_DBG1, "IPv4 address\n");
 			break;
 		case AF_INET6:
-			nmsprintf(NMSML_DBG1, "IPv4 address\n");
+			nmsprintf(NMSML_DBG1, "IPv6 address\n");
 			break;
 	}
 	// --- local address
-	if (sockaddrdup(&rtp_sess->transport.dstaddr, local))
+	if ( sock_get_addr(local->addr, &nms_addr) ) {
+		nmsprintf(NMSML_ERR, "local address not valid\n");
 		return NULL;
-	if ( sock_ntop_host(local->addr, local->addr_len, addr, sizeof(addr)) )
-		nmsprintf(NMSML_DBG2, "RTP: local addr: %s:%u\n", addr, ntohs(sock_get_port(peer->addr)));
-	switch (local->addr->sa_family) {
+	}
+	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDR, &nms_addr))
+		return NULL;
+	switch (nms_addr.family) {
 		case AF_INET:
 			nmsprintf(NMSML_DBG1, "IPv4 local address\n");
 			break;

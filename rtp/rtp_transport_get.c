@@ -24,42 +24,47 @@
  *  along with NeMeSI; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
- *  this piece of code is taken from Richard Stevens source code of
- *    UNIX Network Programming, Volume 1, Second Edition: Networking APIs:
- *      Sockets and XTI, Prentice Hall, 1998, ISBN 0-13-490012-X.
  * */
 
-#include <nemesi/wsocket.h>
+#include <errno.h>
 
-#ifdef	HAVE_SOCKADDR_DL_STRUCT
-# include	<net/if_dl.h>
-#endif
+#include <nemesi/rtp.h>
+#include <nemesi/utils.h>
 
-/*
- * The function compares port filed of sock addr structure.
- * It recognizes the family of sockaddr struct and compares the rigth field.
- * \return 0 if port are equal, -1 if family is not known.
- * */
-int sock_cmp_port(const struct sockaddr *sa1, const struct sockaddr *sa2 /*, socklen_t salen */)
+int rtp_transport_get(struct RTP_Session *rtp_sess, int par, void *value, uint32 len)
 {
-	if (sa1->sa_family != sa2->sa_family)
-		return -1;
-
-	switch (sa1->sa_family) {
-		case AF_INET:
-			return !( ((struct sockaddr_in *) sa1)->sin_port == ((struct sockaddr_in *) sa2)->sin_port);
+	// switch here for parameters that do NOT need value
+	if (!value)
+		return 1;
+	// switch here for parameters that need value
+	switch (par) {
+		case RTP_TRANSPORT_SRCADDR:
+			memcpy((NMSaddr *)value, &rtp_sess->transport.srcaddr, min(sizeof(NMSaddr), len));
+			if (len < sizeof(NMSaddr))
+				errno = ENOSPC;
+			return 0;
 			break;
-
-#ifdef	IPV6
-		case AF_INET6:
-			return !( ((struct sockaddr_in6 *) sa1)->sin6_port == ((struct sockaddr_in6 *) sa2)->sin6_port);
+		case RTP_TRANSPORT_SRCADDRSTR:
+			if ( addr_ntop(&rtp_sess->transport.srcaddr, (char *)value, len) )
+				return 1;
+			return 0;
 			break;
-#endif
+		case RTP_TRANSPORT_DSTADDR:
+			memcpy((NMSaddr *)value, &rtp_sess->transport.dstaddr, min(sizeof(NMSaddr), len));
+			if (len < sizeof(NMSaddr))
+				errno = ENOSPC;
+			return 0;
+			break;
+		case RTP_TRANSPORT_DSTADDRSTR:
+			if ( addr_ntop(&rtp_sess->transport.dstaddr, (char *)value, len) )
+				return 1;
+			return 0;
+			break;
 		default:
-			return -1;
+			return 1;
 			break;
-
 	}
-    // return -1;
+
+	return 1;
 }
 

@@ -15,6 +15,9 @@ libwsocket_la_SOURCES = 	server_connect.c \
 				sock_set_addr.c \
 				sock_set_port.c \
 				sock_get_port.c \
-				sock_ntop_host.c
+				sock_get_addr.c \
+				sock_ntop_host.c \
+				addrcmp.c \
+				addr_ntop.c
 libwsocket_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
