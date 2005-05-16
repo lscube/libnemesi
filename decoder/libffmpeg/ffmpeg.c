@@ -107,8 +107,12 @@ int decode(char *data, int len, NMSOutput *outc)
 				// vc->format = IMGFMT_I420;
 				vc->width = ff->context->width;
 				vc->height = ff->context->height;
-				// vc->fps = ff->context->frame_rate;
-				vc->fps = 25;
+#if LIBAVCODEC_BUILD >= 4754
+				if ( ff->context->time_base.num && ff->context->time_base.den )
+					vc->fps = ff->context->time_base.den / ff->context->time_base.num;
+#else
+				vc->fps = ff->context->frame_rate / ff->context->frame_rate_base;
+#endif
 				if (funcs->config(vc->width, vc->height, vc->width, vc->height, vc->fps, \
 							0, "NeMeSI (SDL)", vc->format))
 					return 1;
