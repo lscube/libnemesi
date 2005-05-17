@@ -76,10 +76,10 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 
 	} while ((res = res->ai_next) != NULL);
 
-	if (res == NULL)
-		return nmsprintf(NMSML_ERR, "Server connect error for \"%s:%s\"", host, port);
-
 	freeaddrinfo(ressave);
+
+	if ( !res )
+		return nmsprintf(NMSML_ERR, "Server connect error for \"%s:%s\"", host, port);
 
 	return 0;
 }

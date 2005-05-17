@@ -75,6 +75,9 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 			stm_src->ssrc_stats.jitter += (1./16.)*((double)delta - stm_src->ssrc_stats.jitter);
 			break;
 		case SSRC_NEW:
+			rtp_sess->sess_stats.senders++;
+			rtp_sess->sess_stats.members++;
+		case SSRC_RTPNEW:
 			(stm_src->ssrc_stats).probation=MIN_SEQUENTIAL;
 			(stm_src->ssrc_stats).max_seq = ntohs(pkt->seq) - 1;
 			
@@ -85,8 +88,6 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 			(stm_src->ssrc_stats).firstts=ntohl(pkt->time);
 			(stm_src->ssrc_stats).firsttv=now;
 			init_seq(stm_src, ntohs(pkt->seq));
-			rtp_sess->sess_stats.senders++;
-			rtp_sess->sess_stats.members++;
 			break;
 		case SSRC_COLLISION:
 			bprmv(&(rtp_sess->bp), &(stm_src->po), slot);

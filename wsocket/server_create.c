@@ -64,10 +64,5 @@ int server_create(char *host, char *port, int *sock)
 
 	freeaddrinfo(ressave);
 
-	/*
-	if (res == NULL)
-		return 1;
-	*/
-
 	return res ? 0 : 1;
 }

@@ -49,6 +49,9 @@ int close_rtsp(struct RTSP_Ctrl *rtsp_ctrl)
 		return 1;
 	}
 
+	free(rtsp_ctrl->comm);
+	free(rtsp_ctrl);
+
 	return 0;
 }
 

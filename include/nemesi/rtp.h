@@ -162,7 +162,9 @@ struct Session_Stats {
 
 #define SSRC_KNOWN	0
 #define SSRC_NEW	1
-#define SSRC_COLLISION	2
+#define SSRC_RTPNEW	2
+#define SSRC_RTCPNEW	3
+#define SSRC_COLLISION	4
 
 struct Stream_Source {
 	uint32 ssrc;

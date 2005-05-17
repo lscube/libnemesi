@@ -96,12 +96,13 @@ int main(int argc, char *argv[])
 
 	output_uninit();
 
-	if (output_hints.audio)
+	// if (output_hints.audio)
 		free(output_hints.audio);
-	if (output_hints.video)
+	// if (output_hints.video)
 		free(output_hints.video);
-	if (output_hints.diskwriter)
+	// if (output_hints.diskwriter)
 		free(output_hints.diskwriter);
+		free(ui_hints.url);
 
 	unload_plugins();
 

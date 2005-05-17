@@ -133,7 +133,7 @@ void *decoder(void *args)
 #ifndef TS_SCHEDULE
 							cycles || 
 #endif // TS_SCHEDULE
-							timeval_subtract(NULL, &tv_elapsed, &tvstart) ){
+							timeval_subtract(NULL, &tv_elapsed, &tvstart) ) {
 					
 						/* istruzione con bug
 						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
@@ -193,11 +193,12 @@ void *decoder(void *args)
 				}
 #ifdef TS_SCHEDULE
 				/* FV: controlli sul timestamp */
-				if(stm_src->po.potail >= 0){
+				if(stm_src->po.potail >= 0) {
 					pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail); // pacchetto successivo
 					if ( !ts_min_next ) {
 						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
-						// fprintf(stderr, "\nNuovo min: %3.2f\n", ts_min_next);
+						nmsprintf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
+						nmsprintf(NMSML_DBG3, "\nNuovo min: %3.2f\n", ts_min_next);
 					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
 						ts_min_next = min(ts_min_next, \
 								((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
@@ -253,8 +254,9 @@ void *decoder(void *args)
 			timeval_add(&tv_min_next, &tv_min_next, &startime);
 			   // timeval_subtract(&tv_min_next, &tv_min_next, &tv_sys_buff);
 
+			// nmsprintf(NMSML_DBG3, "tv_min_next: %ld.%ld tv_stop: %ld.%ld\n", tv_min_next.tv_sec, tv_min_next.tv_usec, tvstop.tv_sec, tvstop.tv_usec);
 			if ( !timeval_subtract(&tvsleep, &tv_min_next, &tvstop) && (tvsleep.tv_usec > 10000) ) {
-				// fprintf(stderr, "\n\tDormiamo per: %lds e %ldus\n", tvsleep.tv_sec, tvsleep.tv_usec);
+				nmsprintf(NMSML_DBG3, "\n\tWe sleep for: %lds e %ldus\n", tvsleep.tv_sec, tvsleep.tv_usec);
 				select(0, NULL, NULL, NULL, &tvsleep);
 			}
 			ts_min_next = 0;

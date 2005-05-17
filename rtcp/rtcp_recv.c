@@ -55,6 +55,7 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 			if (pkt->common.pt == RTCP_SR)
 				rtp_sess->sess_stats.senders++;
 			rtp_sess->sess_stats.members++;
+		case SSRC_RTCPNEW:
 			break;
 		case -1:
 			return 1;

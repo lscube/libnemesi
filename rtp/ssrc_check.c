@@ -67,15 +67,21 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			
 		} else if (proto_type == RTP){
 			
-			if (!(*stm_src)->rtp_from.addr)
+			if (!(*stm_src)->rtp_from.addr) {
 				sockaddrdup(&(*stm_src)->rtp_from, recfrom);
+				nmsprintf(NMSML_DBG1, "new SSRC for RTP\n");
+				local_collision = SSRC_RTPNEW;
+			}
 			sock.addr = (*stm_src)->rtp_from.addr;
 			sock.addr_len = (*stm_src)->rtp_from.addr_len;
 			
 		} else /* if (proto_type == RTCP)*/ {
 			
-			if (!(*stm_src)->rtcp_from.addr)
+			if (!(*stm_src)->rtcp_from.addr) {
 				sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
+				nmsprintf(NMSML_DBG1, "new SSRC for RTCP\n");
+				local_collision = SSRC_RTCPNEW;
+			}
 			sock.addr = (*stm_src)->rtcp_from.addr;
 			sock.addr_len = (*stm_src)->rtcp_from.addr_len;
 
