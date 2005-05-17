@@ -95,12 +95,12 @@ typedef struct {
 #define RTP_TRANSPORT_MODE		8
 #define RTP_TRANSPORT_APPEND		9
 #define RTP_TRANSPORT_TTL		10
-#define RTP_TRANSPORT_MCSPORT0		11
-#define RTP_TRANSPORT_MCSPORT1		12
-#define RTP_TRANSPORT_CLIPORT0		13
-#define RTP_TRANSPORT_CLIPORT1		14
-#define RTP_TRANSPORT_SRVPORT0		15
-#define RTP_TRANSPORT_SRVPORT1		16
+#define RTP_TRANSPORT_MCSRTP		11
+#define RTP_TRANSPORT_MCSRTCP		12
+#define RTP_TRANSPORT_CLIRTP		13
+#define RTP_TRANSPORT_CLIRTCP		14
+#define RTP_TRANSPORT_SRVRTP		15
+#define RTP_TRANSPORT_SRVRTCP		16
 #define RTP_TRANSPORT_SSRC		17
 
 struct Transport {
@@ -112,9 +112,9 @@ struct Transport {
 	enum modes { play, record } mode;
 	int append;
 	int ttl;
-	uint16 mcs_ports[2];
-	uint16 cli_ports[2];
-	uint16 srv_ports[2];
+	in_port_t mcs_ports[2]; //!< stored in network order
+	in_port_t cli_ports[2]; //!< stored in network order
+	in_port_t srv_ports[2]; //!< stored in network order
 	uint32 ssrc;
 };
 
@@ -222,7 +222,7 @@ int ssrc_check(struct RTP_Session *, uint32, struct Stream_Source **, NMSsockadd
 int set_stm_src(struct RTP_Session *, struct Stream_Source **, uint32, NMSsockaddr *,  enum proto_types);
 int rtp_transport_set(struct RTP_Session *, int, void *);
 int rtp_transport_get(struct RTP_Session *, int, void *, uint32);
-int rtcp_to_connect(struct Stream_Source *, NMSaddr *, uint16);
+int rtcp_to_connect(struct Stream_Source *, NMSaddr *, in_port_t);
 void init_seq(struct Stream_Source *, uint16);
 void update_seq(struct Stream_Source *, uint16);
 

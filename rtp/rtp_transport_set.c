@@ -30,52 +30,7 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 
-#if 0
-/* static function that checks if string is a valid IPv4 or IPv6 address
- * \return 0 on OK, 1 if string is not valid address.
- * */
-static int check_addr_str(const char *address)
-{
-	struct in_addr in_addr;
-#ifdef IPV6
-	struct in6_addr in6_addr;
-#endif
-	int res;
-
-	res = inet_pton(AF_INET, (char *)value, &in_addr);
-#ifdef IPV6
-	if ( !res )
-		res = inet_pton(AF_INET6, (char *)value, &in6_addr);
-#endif
-
-	return res ? 0 : 1;
-}
-#endif
-
-/* static function that converts strings address in in*_addr struct
- * \return 0 on OK, 1 if string is not valid address.
- * */
-static int convert_addr_str(const char *address, NMSaddr *retaddr)
-{
-	int res;
-
-	retaddr->family = AF_UNSPEC;
-
-	if ( (res = inet_pton(AF_INET, address, &retaddr->addr.in)) > 0 ) {
-		nmsprintf(NMSML_DBG2, "IPv4 address converted (%s->%u)\n", address, retaddr->addr.in);
-		retaddr->family = AF_INET;
-	}
-#ifdef IPV6
-	else if ( (res = inet_pton(AF_INET6, address, &retaddr->addr.in6)) > 0 ) {
-		nmsprintf(NMSML_DBG2, "IPv6 address converted (%s->%u)\n", address, retaddr->addr.in6);
-		retaddr->family = AF_INET6;
-	}
-#endif
-	else
-		nmsprintf(NMSML_ERR, "no address converted\n");
-
-	return res ? 0 : 1;
-}
+static int convert_addr_str(const char *, NMSaddr *);
 
 int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 {
@@ -102,6 +57,33 @@ int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 				return 1;
 			return 0;
 			break;
+		case RTP_TRANSPORT_LAYERS:
+			rtp_sess->transport.layers = *(int *)value;
+			break;
+		case RTP_TRANSPORT_TTL:
+			rtp_sess->transport.ttl = *(int *)value;
+			break;
+		case RTP_TRANSPORT_MCSRTP:
+			rtp_sess->transport.mcs_ports[0]=htons(*(in_port_t *)value);
+			break;
+		case RTP_TRANSPORT_MCSRTCP:
+			rtp_sess->transport.mcs_ports[1]=htons(*(in_port_t *)value);
+			break;
+		case RTP_TRANSPORT_CLIRTP:
+			rtp_sess->transport.cli_ports[0]=htons(*(in_port_t *)value);
+			break;
+		case RTP_TRANSPORT_CLIRTCP:
+			rtp_sess->transport.cli_ports[1]=htons(*(in_port_t *)value);
+			break;
+		case RTP_TRANSPORT_SRVRTP:
+			rtp_sess->transport.srv_ports[0]=htons(*(in_port_t *)value);
+			break;
+		case RTP_TRANSPORT_SRVRTCP:
+			rtp_sess->transport.srv_ports[1]=htons(*(in_port_t *)value);
+			break;
+		case RTP_TRANSPORT_SSRC:
+			rtp_sess->transport.ssrc = *(uint32 *)value;
+			break;
 		default:
 			return 1;
 			break;
@@ -109,4 +91,51 @@ int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 
 	return 1;
 }
+
+/* static function that converts strings address in in*_addr struct
+ * \return 0 on OK, 1 if string is not valid address.
+ * */
+static int convert_addr_str(const char *address, NMSaddr *retaddr)
+{
+	int res;
+
+	retaddr->family = AF_UNSPEC;
+
+	if ( (res = inet_pton(AF_INET, address, &retaddr->addr.in)) > 0 ) {
+		nmsprintf(NMSML_DBG2, "IPv4 address converted (%s->%u)\n", address, retaddr->addr.in);
+		retaddr->family = AF_INET;
+	}
+#ifdef IPV6
+	else if ( (res = inet_pton(AF_INET6, address, &retaddr->addr.in6)) > 0 ) {
+		nmsprintf(NMSML_DBG2, "IPv6 address converted (%s->%u)\n", address, retaddr->addr.in6);
+		retaddr->family = AF_INET6;
+	}
+#endif
+	else
+		nmsprintf(NMSML_ERR, "no address converted\n");
+
+	return res ? 0 : 1;
+}
+
+#if 0
+/* static function that checks if string is a valid IPv4 or IPv6 address
+ * \return 0 on OK, 1 if string is not valid address.
+ * */
+static int check_addr_str(const char *address)
+{
+	struct in_addr in_addr;
+#ifdef IPV6
+	struct in6_addr in6_addr;
+#endif
+	int res;
+
+	res = inet_pton(AF_INET, (char *)value, &in_addr);
+#ifdef IPV6
+	if ( !res )
+		res = inet_pton(AF_INET6, (char *)value, &in6_addr);
+#endif
+
+	return res ? 0 : 1;
+}
+#endif
 

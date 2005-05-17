@@ -40,19 +40,23 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 	
 	do {
 		if ((tkna=strstrcase(tknb, "server_port")) || ((tkna=strstrcase(tknb, "port")) && !strncmp(tknb, "port", 4))){
+			in_port_t port;
+
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			for(tknb=tkna++; (*tknb == ' ') || (*tknb != '-'); tknb++);
 
 			strncpy(str, tkna, tknb-tkna);
 			str[tknb-tkna]='\0';
-			rtp_sess->transport.srv_ports[0]=ntohs((unsigned short)atoi(str));
+			port=atoi(str);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP, &port);
 			
 			for(tknb++; (*tknb == ' '); tknb++);
 
 			for(tkna=tknb; (*tkna != '\0') && (*tkna != '\r') && (*tkna != '\n'); tkna++);
-			strncpy(str, tknb, tkna++-tknb);
-			str[tkna-tknb]='\0';
-			rtp_sess->transport.srv_ports[1]=ntohs((unsigned short)atoi(str));
+			strncpy(str, tknb, tkna-tknb);
+			str[tkna++-tknb]='\0';
+			port=atoi(str);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP, &port);
 
 			continue;
 		}
@@ -60,8 +64,8 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
 			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb++-tkna);
-			str[tknb-tkna]='\0';
+			strncpy(str, tkna, tknb-tkna);
+			str[tknb++-tkna]='\0';
 
 			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, str)) {
 				nmsprintf(NMSML_ERR, "Source IP Address not valid!\n");
@@ -73,8 +77,8 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
 			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb++-tkna);
-			str[tknb-tkna]='\0';
+			strncpy(str, tkna, tknb-tkna);
+			str[tknb++-tkna]='\0';
 			
 			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, str)) {
 				nmsprintf(NMSML_ERR, "Destination IP Address not valid!\n");
@@ -83,35 +87,44 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			continue;
 		}
 		if ((tkna=strstrcase(tknb, "ssrc"))){
+			uint32 ssrc;
+
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
 			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb++-tkna);
-			str[tknb-tkna]='\0';
+			strncpy(str, tkna, tknb-tkna);
+			str[tknb++-tkna]='\0';
 			
-			rtp_sess->transport.ssrc=(unsigned short)atoi(str);
+			ssrc=strtoul(str, NULL, 10);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 			
 			continue;
 		}
 		if ((tkna=strstrcase(tknb, "ttl"))){
+			int ttl;
+
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
 			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb++-tkna);
-			str[tknb-tkna]='\0';
+			strncpy(str, tkna, tknb-tkna);
+			str[tknb++-tkna]='\0';
 			
-			rtp_sess->transport.ttl=(unsigned short)atoi(str);
+			ttl=atoi(str);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_TTL, &ttl);
 			
 			continue;
 		}
 		if ((tkna=strstrcase(tknb, "layers"))){
+			int layers;
+			
 			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
 			
 			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb++-tkna);
-			str[tknb-tkna]='\0';
+			strncpy(str, tkna, tknb-tkna);
+			str[tknb++-tkna]='\0';
 		
-			rtp_sess->transport.layers=(unsigned short)atoi(str);
+			layers=atoi(str);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS, &layers);
 			
 			continue;
 		}

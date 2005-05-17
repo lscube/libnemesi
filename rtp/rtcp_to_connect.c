@@ -37,7 +37,7 @@
  * \return 0 on OK, 1 if connection went wrong, -1 on internal fatal error.
  * */
 // int rtcp_to_connect(struct Stream_Source *stm_src, NMSsockaddr *remoteaddr, uint16 port)
-int rtcp_to_connect(struct Stream_Source *stm_src, NMSaddr *remoteaddr, uint16 port)
+int rtcp_to_connect(struct Stream_Source *stm_src, NMSaddr *remoteaddr, in_port_t port)
 {
 	char addr[128];		/* Unix domain is largest */
 	char port_str[256];
