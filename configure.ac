@@ -266,13 +266,16 @@ AC_SUBST(nemesi_libdir)
 nemesi_plugindir="$nemesi_libdir"/plugins
 AC_SUBST(nemesi_plugindir)
 
-
 nemesi_sharedir="$prefix"/share/$PACKAGE_NAME
 AC_SUBST(nemesi_sharedir)
 nemesi_throbberdir="$nemesi_sharedir"/throbber
 AC_SUBST(nemesi_throbberdir)
 nemesi_pixmapdir="$nemesi_sharedir"/pixmaps
 AC_SUBST(nemesi_pixmapdir)
+
+if test -f configure.ac; then
+	AC_DEFINE(NEMESI_SVN, 1,[Define this is a release])
+fi
 
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
 AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])

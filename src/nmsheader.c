@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,19 +26,22 @@
  *  
  * */
 
-#ifndef __VERSION_H
-#define __VERSION_H
+#include <string.h>
 
-#include <config.h>
+#include <nemesi/version.h>
+#include <nemesi/comm.h>
 
-#ifndef VERSION
-#define VERSION "0.4.0"
-#endif
-#ifdef NEMESI_SVN
-#define SVNREV "$Rev$"
-#endif
-#define VERSION_NAME "Kettle Shaft"
-#define PROG_NAME "NeMeSI"
-#define PROG_DESCR "NEtwork MEdia Streamer I"
+inline void nmsheader(void)
+{
+	char svnrev[32] = "";
+#ifdef SVNREV
+	char *tkn;
 
+	// strcat(svnrev, SVNREV+1);
+	snprintf(svnrev, sizeof(svnrev), "- SVN %s", SVNREV + 1);
+	if ( (tkn=strchr(svnrev, '$')) )
+		*tkn = '\0';
 #endif
+	nmsprintf(NMSML_ALWAYS, "\n"NMSCLR_BLUE_BOLD"%s - %s -- release %s %s(%s)\n\n"NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, svnrev, VERSION_NAME);
+}
+

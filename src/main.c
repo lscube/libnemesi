@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	// extern int (*decoders[])(char *, int, uint8 *(*)());
 
 	// nmsprintf(0, "\nWelcome! This is %s - %s -- version %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
-	header();
+	nmsheader();
 
 	// command line parsing
 	if ( (n=parse_cl(argc, argv, &cl_opt)) )

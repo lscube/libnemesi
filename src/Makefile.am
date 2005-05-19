@@ -22,7 +22,8 @@ libutils_la_SOURCES =	urltokenize.c \
 			uiprintf.c \
 			uierror.c \
 			nmsprint.c \
-			pref2ccmask.c
+			pref2ccmask.c \
+			nmsheader.c
 
 libutils_la_LDFLAGS = -static
 

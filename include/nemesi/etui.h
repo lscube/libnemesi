@@ -42,7 +42,7 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 
-#define header()	nmsprintf(NMSML_ALWAYS, "\n"NMSCLR_BLUE_BOLD"%s - %s -- release %s (%s)\n\n"NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+#define header()	nmsheader();
 
 #if HAVE_GUI
 #define ui_usage()	nmsprintf(NMSML_NORM, "   --gui              Use Graphical User Interface\n"); \

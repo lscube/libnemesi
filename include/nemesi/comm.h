@@ -136,4 +136,6 @@ int uierror(const char *fmt, ...);
 
 #endif // USE_UIPRINTF
 
+inline void nmsheader(void);
+
 #endif
