@@ -33,6 +33,7 @@
 
 int rtp_transport_get(struct RTP_Session *rtp_sess, int par, void *value, uint32 len)
 {
+	int ret = RTP_TRANSPORT_NOTSET;
 	// switch here for parameters that do NOT need value
 	if (!value)
 		return 1;
@@ -42,29 +43,26 @@ int rtp_transport_get(struct RTP_Session *rtp_sess, int par, void *value, uint32
 			memcpy((NMSaddr *)value, &rtp_sess->transport.srcaddr, min(sizeof(NMSaddr), len));
 			if (len < sizeof(NMSaddr))
 				errno = ENOSPC;
-			return 0;
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SRCADDRSTR:
 			if ( addr_ntop(&rtp_sess->transport.srcaddr, (char *)value, len) )
-				return 1;
-			return 0;
+				ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_DSTADDR:
 			memcpy((NMSaddr *)value, &rtp_sess->transport.dstaddr, min(sizeof(NMSaddr), len));
 			if (len < sizeof(NMSaddr))
 				errno = ENOSPC;
-			return 0;
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_DSTADDRSTR:
 			if ( addr_ntop(&rtp_sess->transport.dstaddr, (char *)value, len) )
-				return 1;
-			return 0;
+				ret = RTP_TRANSPORT_SET;
 			break;
 		default:
-			return 1;
 			break;
 	}
 
-	return 1;
+	return ret;
 }
 

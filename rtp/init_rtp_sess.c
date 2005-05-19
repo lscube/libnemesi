@@ -44,11 +44,15 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 	rtp_sess->rtcpfd=-1;
 	rtp_sess->local_ssrc=random32(0);
 	pthread_mutex_init(&rtp_sess->syn,NULL);
+	/*
 	if((rtp_sess->transport.spec=(char *)malloc(sizeof(char)*(strlen(RTP_AVP_UDP)+1))) ==NULL) {
 		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
 		return NULL;
 	}
 	strcpy(rtp_sess->transport.spec, RTP_AVP_UDP);
+	*/
+	if((rtp_sess->transport.spec=(char *)malloc(sizeof(char)*(strlen(RTP_AVP_UDP)+1))) ==NULL)
+		nmsprintf(NMSML_FATAL, "Cannot duplicate string!\n");
 	rtp_sess->transport.delivery=unicast;
 	// --- remote address
 	if ( sock_get_addr(peer->addr, &nms_addr) ) {

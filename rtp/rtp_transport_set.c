@@ -34,62 +34,72 @@ static int convert_addr_str(const char *, NMSaddr *);
 
 int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 {
+	int ret = RTP_TRANSPORT_NOTSET;
 	// switch here for parameters that do NOT need value
-	if (!value)
-		return 1;
+	// for now nothing
+
+	if ( (ret != RTP_TRANSPORT_SET) && !value)
+		return RTP_TRANSPORT_NOTSET;
+
 	// switch here for parameters that need value
 	switch (par) {
 		case RTP_TRANSPORT_SRCADDR:
 			memcpy(&rtp_sess->transport.srcaddr, (NMSaddr *)value, sizeof(NMSaddr));
-			return 0;
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SRCADDRSTR:
-			if ( convert_addr_str((char *)value, &rtp_sess->transport.srcaddr) )
-				return 1;
-			return 0;
+			if ( !convert_addr_str((char *)value, &rtp_sess->transport.srcaddr) )
+				ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_DSTADDR:
 			memcpy(&rtp_sess->transport.dstaddr, (NMSaddr *)value, sizeof(NMSaddr));
-			return 0;
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_DSTADDRSTR:
-			if ( convert_addr_str((char *)value, &rtp_sess->transport.dstaddr) )
-				return 1;
-			return 0;
+			if ( !convert_addr_str((char *)value, &rtp_sess->transport.dstaddr) )
+				ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_LAYERS:
 			rtp_sess->transport.layers = *(int *)value;
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_TTL:
 			rtp_sess->transport.ttl = *(int *)value;
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_MCSRTP:
 			rtp_sess->transport.mcs_ports[0]=htons(*(in_port_t *)value);
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_MCSRTCP:
 			rtp_sess->transport.mcs_ports[1]=htons(*(in_port_t *)value);
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_CLIRTP:
 			rtp_sess->transport.cli_ports[0]=htons(*(in_port_t *)value);
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_CLIRTCP:
 			rtp_sess->transport.cli_ports[1]=htons(*(in_port_t *)value);
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SRVRTP:
 			rtp_sess->transport.srv_ports[0]=htons(*(in_port_t *)value);
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SRVRTCP:
 			rtp_sess->transport.srv_ports[1]=htons(*(in_port_t *)value);
+			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SSRC:
 			rtp_sess->transport.ssrc = *(uint32 *)value;
+			ret = RTP_TRANSPORT_SET;
 			break;
 		default:
-			return 1;
 			break;
 	}
 
-	return 1;
+	return ret;
 }
 
 /* static function that converts strings address in in*_addr struct

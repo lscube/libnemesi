@@ -34,6 +34,7 @@
 #ifndef VERSION
 #define VERSION "0.4.0"
 #endif
+#define SVNREV "$Rev$"
 #define VERSION_NAME "Kettle Shaft"
 #define PROG_NAME "NeMeSI"
 #define PROG_DESCR "NEtwork MEdia Streamer I"
