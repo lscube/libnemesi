@@ -51,7 +51,7 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 	}
 	strcpy(rtp_sess->transport.spec, RTP_AVP_UDP);
 	*/
-	if((rtp_sess->transport.spec=(char *)malloc(sizeof(char)*(strlen(RTP_AVP_UDP)+1))) ==NULL)
+	if( !(rtp_sess->transport.spec=strdup(RTP_AVP_UDP)) )
 		nmsprintf(NMSML_FATAL, "Cannot duplicate string!\n");
 	rtp_sess->transport.delivery=unicast;
 	// --- remote address

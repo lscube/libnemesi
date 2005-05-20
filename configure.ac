@@ -274,7 +274,7 @@ nemesi_pixmapdir="$nemesi_sharedir"/pixmaps
 AC_SUBST(nemesi_pixmapdir)
 
 if test -f configure.ac; then
-	AC_DEFINE(NEMESI_SVN, 1,[Define this is a release])
+	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
 fi
 
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
