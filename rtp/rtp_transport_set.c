@@ -75,6 +75,11 @@ int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 			rtp_sess->transport.mcs_ports[1]=htons(*(in_port_t *)value);
 			ret = RTP_TRANSPORT_SET;
 			break;
+		case RTP_TRANSPORT_MCSPORTS:
+			rtp_sess->transport.mcs_ports[0]=htons(((in_port_t *)value)[0]);
+			rtp_sess->transport.mcs_ports[1]=htons(((in_port_t *)value)[0]);
+			ret = RTP_TRANSPORT_SET;
+			break;
 		case RTP_TRANSPORT_CLIRTP:
 			rtp_sess->transport.cli_ports[0]=htons(*(in_port_t *)value);
 			ret = RTP_TRANSPORT_SET;
@@ -83,12 +88,22 @@ int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 			rtp_sess->transport.cli_ports[1]=htons(*(in_port_t *)value);
 			ret = RTP_TRANSPORT_SET;
 			break;
+		case RTP_TRANSPORT_CLIPORTS:
+			rtp_sess->transport.cli_ports[0]=htons(((in_port_t *)value)[0]);
+			rtp_sess->transport.cli_ports[1]=htons(((in_port_t *)value)[1]);
+			ret = RTP_TRANSPORT_SET;
+			break;
 		case RTP_TRANSPORT_SRVRTP:
 			rtp_sess->transport.srv_ports[0]=htons(*(in_port_t *)value);
 			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SRVRTCP:
 			rtp_sess->transport.srv_ports[1]=htons(*(in_port_t *)value);
+			ret = RTP_TRANSPORT_SET;
+			break;
+		case RTP_TRANSPORT_SRVPORTS:
+			rtp_sess->transport.srv_ports[0]=htons(((in_port_t *)value)[0]);
+			rtp_sess->transport.srv_ports[1]=htons(((in_port_t *)value)[1]);
 			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SSRC:

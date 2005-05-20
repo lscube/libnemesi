@@ -14,7 +14,8 @@ librtp_la_SOURCES =	rtp_clean.c \
 			update_seq.c \
 			rtcp_to_connect.c \
 			rtp_transport_set.c \
-			rtp_transport_get.c
+			rtp_transport_get.c \
+			rtp_transport_wrappers.c
 
 librtp_la_LDFLAGS = -static
 INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)

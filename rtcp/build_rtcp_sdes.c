@@ -36,7 +36,6 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 	rtcp_sdes_item_t *item;
 	char str[MAX_SDES_LEN] = "";
 	int len, pad;
-	char *pad_pos;
 	char addr[128];		/* Unix domain is largest */
 
 	memset(str, 0, MAX_SDES_LEN);
@@ -73,10 +72,8 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 			/* No space left in UDP pkt */
 			pad = 4 - len % 4;
 			len += pad/4;
-			pad_pos = (char *)item;
 			while (pad--)
-				// *(((char *)item)++)=0;
-				*(pad_pos++)=0;
+				*((char *)item++)=0;
 			pkt->common.len=htons(len);
 			return len;
 		}
@@ -96,10 +93,9 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 		/* No space left in UDP pkt */
 		pad = 4 - len % 4;
 		len += pad/4;
-		pad_pos = (char *)item;
 		while (pad--)
 			// *(((char *)item)++)=0;
-			*(pad_pos++)=0;
+			*((char *)item++)=0;
 		pkt->common.len=htons(len);
 		return len;
 	}
@@ -114,10 +110,9 @@ int build_rtcp_sdes(struct RTP_Session *rtp_sess, rtcp_pkt *pkt, int left)
 
 	pad = 4 - len % 4;
 	len += pad/4;
-	pad_pos = (char *)item;
 	while (pad--)
 		// *(((char *)item)++)=0;
-		*(pad_pos++)=0;
+		*((char *)item++)=0;
 	pkt->common.len=htons(len);
 
 	return len;

@@ -36,7 +36,7 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 
 	memset(buff, 0, sizeof(buff));
 	
-	strcpy(buff, rtp_sess->transport.spec);
+	rtp_transport_get(rtp_sess, RTP_TRANSPORT_SPEC, buff, sizeof(buff));
 	*(buff+strlen(buff))=';';
 	if (rtp_sess->transport.mode == multicast)
 		sprintf(buff+strlen(buff), "multicast;");
