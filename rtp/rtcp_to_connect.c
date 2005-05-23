@@ -43,17 +43,13 @@ int rtcp_to_connect(struct Stream_Source *stm_src, NMSaddr *remoteaddr, in_port_
 	char port_str[256];
 	struct sockaddr_storage rtcp_to_addr_s;
 	NMSsockaddr rtcp_to_addr = { (struct sockaddr *)&rtcp_to_addr_s, sizeof(rtcp_to_addr_s) };
-	// uint16 port_int16;
-
-	// sockaddrdup(&stm_src->rtcp_to, remoteaddr);
-	// sock_set_port(stm_src->rtcp_to.addr, port);
 
 	if (port> 0)
-		sprintf(port_str,"%d", ntohs(port));
+		// sprintf(port_str,"%d", ntohs(port));
+		sprintf(port_str,"%d", port);
 	else
 		return nmsprintf(NMSML_ERR, "Cannot connect to a port < 0\n");
 
-	// if ( !sock_ntop_host(stm_src->rtcp_to.addr, stm_src->rtcp_to.addr_len, addr, sizeof(addr)) ) {
 	if ( !addr_ntop(remoteaddr, addr, sizeof(addr)) ) {
 		nmsprintf(NMSML_WARN, "RTP: Cannot get address from source\n");
 		stm_src->rtcptofd=-2;

@@ -28,6 +28,7 @@
 
 #include <nemesi/rtp.h>
 
+// get wrappers
 inline char *rtp_transport_get_spec(struct RTP_Session *rtp_sess)
 {
 	return rtp_sess->transport.spec;
@@ -40,6 +41,187 @@ inline enum deliveries rtp_transport_get_delivery(struct RTP_Session *rtp_sess)
 
 inline int rtp_trasnport_get_srcaddrstr(struct RTP_Session *rtp_sess, char *addrstr, uint32 strlen)
 {
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addrstr, strlen);
+}
+
+inline NMSaddr *rtp_transport_get_srcaddr(struct RTP_Session *rtp_sess)
+{
+	return &rtp_sess->transport.srcaddr;
+}
+
+inline int rtp_trasnport_get_dstaddrstr(struct RTP_Session *rtp_sess, char *addrstr, uint32 strlen)
+{
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addrstr, strlen);
+}
+
+inline NMSaddr *rtp_transport_get_dstaddr(struct RTP_Session *rtp_sess)
+{
+	return &rtp_sess->transport.dstaddr;
+}
+
+inline enum modes rtp_transport_get_mode(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.mode;
+}
+
+inline int rtp_transport_get_layers(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.layers;
+}
+
+inline int rtp_transport_get_append(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.append;
+}
+
+inline int rtp_transport_get_ttl(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.ttl;
+}
+
+inline in_port_t rtp_transport_get_mcsrtpport(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.mcs_ports[0];
+}
+
+inline in_port_t rtp_transport_get_mcsrtcpport(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.mcs_ports[1];
+}
+
+inline int rtp_transport_get_mcsports(struct RTP_Session *rtp_sess, in_port_t ports[2])
+{
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_MCSPORTS, ports, sizeof(ports));
+}
+
+inline in_port_t rtp_transport_get_srvrtpport(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.srv_ports[0];
+}
+
+inline in_port_t rtp_transport_get_srvrtcpport(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.srv_ports[1];
+}
+
+inline int rtp_transport_get_srvports(struct RTP_Session *rtp_sess, in_port_t ports[2])
+{
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRVPORTS, ports, sizeof(ports));
+}
+
+inline in_port_t rtp_transport_get_clirtpport(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.cli_ports[0];
+}
+
+inline in_port_t rtp_transport_get_clirtcpport(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.cli_ports[1];
+}
+
+inline int rtp_transport_get_cliports(struct RTP_Session *rtp_sess, in_port_t ports[2])
+{
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_CLIPORTS, ports, sizeof(ports));
+}
+
+inline uint32 rtp_transport_get_ssrc(struct RTP_Session *rtp_sess)
+{
+	return rtp_sess->transport.ssrc;
+}
+
+// set wrappers
+inline int rtp_transport_set_delivery(struct RTP_Session *rtp_sess, enum deliveries delivery)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DELIVERY, &delivery);
+}
+
+inline int rtp_trasnport_set_srcaddrstr(struct RTP_Session *rtp_sess, char *address)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, address);
+}
+
+inline int rtp_transport_set_srcaddr(struct RTP_Session *rtp_sess, NMSaddr *address)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDR, address);
+}
+
+inline int rtp_trasnport_set_dstaddrstr(struct RTP_Session *rtp_sess, char *address)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, address);
+}
+
+inline int rtp_transport_set_dstaddr(struct RTP_Session *rtp_sess, NMSaddr *address)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDR, address);
+}
+
+inline int rtp_transport_set_layers(struct RTP_Session *rtp_sess, int layers)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS, &layers);
+}
+
+inline int rtp_transport_set_mode(struct RTP_Session *rtp_sess, enum modes mode)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MODE, &mode);
+}
+
+inline int rtp_transport_set_append(struct RTP_Session *rtp_sess, int append)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_APPEND, &append);
+}
+
+inline int rtp_transport_set_ttl(struct RTP_Session *rtp_sess, int ttl)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_TTL, &ttl);
+}
+
+inline int rtp_transport_set_mcsports(struct RTP_Session *rtp_sess, in_port_t ports[2])
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MCSPORTS, ports);
+}
+
+inline int rtp_transport_set_mcsrtpport(struct RTP_Session *rtp_sess, in_port_t port)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MCSRTP, &port);
+}
+
+inline int rtp_transport_set_mcsrtcpport(struct RTP_Session *rtp_sess, in_port_t port)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MCSRTCP, &port);
+}
+
+inline int rtp_transport_set_srvports(struct RTP_Session *rtp_sess, in_port_t ports[2])
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVPORTS, ports);
+}
+
+inline int rtp_transport_set_srvrtpport(struct RTP_Session *rtp_sess, in_port_t port)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP, &port);
+}
+
+inline int rtp_transport_set_srvrtcpport(struct RTP_Session *rtp_sess, in_port_t port)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP, &port);
+}
+
+inline int rtp_transport_set_cliports(struct RTP_Session *rtp_sess, in_port_t ports[2])
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_CLIPORTS, ports);
+}
+
+inline int rtp_transport_set_clirtpport(struct RTP_Session *rtp_sess, in_port_t port)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_CLIRTP, &port);
+}
+
+inline int rtp_transport_set_clirtcpport(struct RTP_Session *rtp_sess, in_port_t port)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_CLIRTCP, &port);
+}
+
+inline int rtp_transport_set_ssrc(struct RTP_Session *rtp_sess, uint32 ssrc)
+{
+	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 }
 

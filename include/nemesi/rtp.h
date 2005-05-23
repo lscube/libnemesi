@@ -112,15 +112,15 @@ typedef struct {
 struct Transport {
 	char *spec;
 	enum deliveries { unicast, multicast } delivery;
-	NMSaddr srcaddr;
-	NMSaddr dstaddr;
+	NMSaddr srcaddr; //!< stored in network order
+	NMSaddr dstaddr; //!< stored in network order
 	int layers;
 	enum modes { play, record } mode;
 	int append;
 	int ttl;
-	in_port_t mcs_ports[2]; //!< stored in network order
-	in_port_t cli_ports[2]; //!< stored in network order
-	in_port_t srv_ports[2]; //!< stored in network order
+	in_port_t mcs_ports[2]; //!< stored in host order
+	in_port_t cli_ports[2]; //!< stored in host order
+	in_port_t srv_ports[2]; //!< stored in host order
 	uint32 ssrc;
 };
 
@@ -226,9 +226,54 @@ int rtp_recv(struct RTP_Session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
 int ssrc_check(struct RTP_Session *, uint32, struct Stream_Source **, NMSsockaddr *, enum proto_types);
 int set_stm_src(struct RTP_Session *, struct Stream_Source **, uint32, NMSsockaddr *,  enum proto_types);
+// rtp transport setup functions
 int rtp_transport_set(struct RTP_Session *, int, void *);
 int rtp_transport_get(struct RTP_Session *, int, void *, uint32);
+// rtp transport wrapper finctions for rtp_transport_get
+inline char *rtp_transport_get_spec(struct RTP_Session *);
+inline enum deliveries rtp_transport_get_delivery(struct RTP_Session *);
+inline int rtp_trasnport_get_srcaddrstr(struct RTP_Session *, char *, uint32);
+inline NMSaddr *rtp_transport_get_srcaddr(struct RTP_Session *);
+inline int rtp_trasnport_get_dstaddrstr(struct RTP_Session *, char *, uint32);
+inline NMSaddr *rtp_transport_get_dstaddr(struct RTP_Session *);
+inline int rtp_transport_get_layers(struct RTP_Session *);
+inline enum modes rtp_transport_get_mode(struct RTP_Session *);
+inline int rtp_transport_get_append(struct RTP_Session *);
+inline int rtp_transport_get_ttl(struct RTP_Session *);
+inline int rtp_transport_get_mcsports(struct RTP_Session *, in_port_t [2]);
+inline in_port_t rtp_transport_get_mcsrtcpport(struct RTP_Session *);
+inline in_port_t rtp_transport_get_mcsrtcpport(struct RTP_Session *);
+inline int rtp_transport_get_srvports(struct RTP_Session *, in_port_t [2]);
+inline in_port_t rtp_transport_get_srvrtcpport(struct RTP_Session *);
+inline in_port_t rtp_transport_get_srvrtcpport(struct RTP_Session *);
+inline int rtp_transport_get_cliports(struct RTP_Session *, in_port_t [2]);
+inline in_port_t rtp_transport_get_clirtcpport(struct RTP_Session *);
+inline in_port_t rtp_transport_get_clirtcpport(struct RTP_Session *);
+inline uint32 rtp_transport_get_ssrc(struct RTP_Session *);
+// rtp transport wrapper finctions for rtp_transport_set
+// inline char *rtp_transport_set_spec(struct RTP_Session *, char *); // not settable
+inline int rtp_transport_set_delivery(struct RTP_Session *, enum deliveries);
+inline int rtp_trasnport_set_srcaddrstr(struct RTP_Session *, char *);
+inline int rtp_transport_set_srcaddr(struct RTP_Session *, NMSaddr *);
+inline int rtp_trasnport_set_dstaddrstr(struct RTP_Session *, char *);
+inline int rtp_transport_set_dstaddr(struct RTP_Session *, NMSaddr *);
+inline int rtp_transport_set_layers(struct RTP_Session *, int);
+inline int rtp_transport_set_mode(struct RTP_Session *, enum modes);
+inline int rtp_transport_set_append(struct RTP_Session *, int);
+inline int rtp_transport_set_ttl(struct RTP_Session *, int);
+inline int rtp_transport_set_mcsports(struct RTP_Session *, in_port_t [2]);
+inline int rtp_transport_set_mcsrtcpport(struct RTP_Session *, in_port_t);
+inline int rtp_transport_set_mcsrtcpport(struct RTP_Session *, in_port_t);
+inline int rtp_transport_set_srvports(struct RTP_Session *, in_port_t [2]);
+inline int rtp_transport_set_srvrtcpport(struct RTP_Session *, in_port_t);
+inline int rtp_transport_set_srvrtcpport(struct RTP_Session *, in_port_t);
+inline int rtp_transport_set_cliports(struct RTP_Session *, in_port_t [2]);
+inline int rtp_transport_set_clirtcpport(struct RTP_Session *, in_port_t);
+inline int rtp_transport_set_clirtcpport(struct RTP_Session *, in_port_t);
+inline int rtp_transport_set_ssrc(struct RTP_Session *, uint32);
+// rtcp connection functions
 int rtcp_to_connect(struct Stream_Source *, NMSaddr *, in_port_t);
+// SSRC management functions
 void init_seq(struct Stream_Source *, uint16);
 void update_seq(struct Stream_Source *, uint16);
 

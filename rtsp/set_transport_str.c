@@ -33,12 +33,13 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 {
 	char buff[256];
 	char addr[128];		/* Unix domain is largest */
+	in_port_t ports[2];
 
 	memset(buff, 0, sizeof(buff));
 	
 	rtp_transport_get(rtp_sess, RTP_TRANSPORT_SPEC, buff, sizeof(buff));
 	*(buff+strlen(buff))=';';
-	if (rtp_sess->transport.mode == multicast)
+	if (rtp_transport_get_delivery(rtp_sess) == multicast)
 		sprintf(buff+strlen(buff), "multicast;");
 	else
 		sprintf(buff+strlen(buff), "unicast;");
@@ -46,37 +47,27 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 		sprintf(buff+strlen(buff), "destination=%s;", addr);
 	if ( rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addr, sizeof(addr)) == RTP_TRANSPORT_SET )
 		sprintf(buff+strlen(buff), "source=%s;", addr);
-	if (rtp_sess->transport.layers)
-		sprintf(buff+strlen(buff), "layers=%d;", rtp_sess->transport.layers);
-	if (rtp_sess->transport.mode == record)
+	if ( rtp_transport_get_layers(rtp_sess) )
+		sprintf(buff+strlen(buff), "layers=%d;", rtp_transport_get_layers(rtp_sess));
+	if (rtp_transport_get_mode(rtp_sess) == record)
 		sprintf(buff+strlen(buff), "mode=record;");
 	else
 		sprintf(buff+strlen(buff), "mode=play;");
-	if (rtp_sess->transport.append)
+	if (rtp_transport_get_append(rtp_sess))
 		sprintf(buff+strlen(buff), "append;");
-	if (rtp_sess->transport.ttl)
-		sprintf(buff+strlen(buff), "ttl=%d;", rtp_sess->transport.ttl);
-	if (rtp_sess->transport.mcs_ports[0])
-		sprintf(buff+strlen(buff), "port=%d-%d;", \
-				(int)ntohs(rtp_sess->transport.mcs_ports[0]), \
-				(int)ntohs(rtp_sess->transport.mcs_ports[1]));
-	if (rtp_sess->transport.cli_ports[0])
-		sprintf(buff+strlen(buff), "client_port=%d-%d;", \
-				(int)ntohs(rtp_sess->transport.cli_ports[0]), \
-				(int)ntohs(rtp_sess->transport.cli_ports[1]));
-	if(rtp_sess->transport.ssrc)
-		sprintf(buff+strlen(buff), "ssrc=%u;", rtp_sess->transport.ssrc);
+	if (rtp_transport_get_ttl(rtp_sess))
+		sprintf(buff+strlen(buff), "ttl=%d;", rtp_transport_get_ttl(rtp_sess));
+	if ( rtp_transport_get_mcsports(rtp_sess, ports) == RTP_TRANSPORT_SET )
+		sprintf(buff+strlen(buff), "port=%d-%d;", (int)ports[0], (int)ports[1]);
+	if ( rtp_transport_get_cliports(rtp_sess, ports) == RTP_TRANSPORT_SET )
+		sprintf(buff+strlen(buff), "client_port=%d-%d;", (int)ports[0], (int)ports[1]);
+	if(rtp_transport_get_ssrc(rtp_sess))
+		sprintf(buff+strlen(buff), "ssrc=%u;", rtp_transport_get_ssrc(rtp_sess));
 	
 	/* eliminiamo l'ultimo ; */
 	/* drop last ';' */
 	*(buff+strlen(buff)-1)='\0';
 
-#if 0 // we use strdup instead;
-	if ((*str=(char *)malloc(sizeof(char)*(strlen(buff)+1))) == NULL)
-		return nmsprintf(NMSML_FATAL, "set_transport_str: Cannot allocate memory!\n");
-
-	strcpy(*str, buff);
-#endif
 	if (!(*str=strdup(buff)))
 		return nmsprintf(NMSML_FATAL, "set_transport_str: Could not duplicate string!\n");
 
