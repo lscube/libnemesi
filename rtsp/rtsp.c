@@ -53,11 +53,6 @@ void *rtsp(void *rtsp_thread)
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	pthread_cleanup_push(rtsp_clean, rtsp_thread);
-	
-	/*
-	if (init_rtsp())
-		pthread_exit(NULL);
-	*/
 
 	while (1) {
 		FD_ZERO(&readset);
@@ -77,12 +72,12 @@ void *rtsp(void *rtsp_thread)
 					if (full_msg_rcvd(rtsp_th))
 						if (handle_rtsp_pkt(rtsp_th)) {
 							// nmsprintf(NMSML_ERR, "\nError!\n");
-							reinit_rtsp(rtsp_th);
+							rtsp_reinit(rtsp_th);
 							// rtsp_th->busy=0; // already done in reinit
 						}
 				} else {
 					nmsprintf(NMSML_ERR, "\nServer died prematurely!\n");
-					reinit_rtsp(rtsp_th);
+					rtsp_reinit(rtsp_th);
 					// rtsp_th->busy=0; // alreaydone in reinit
 					nmsprintf(NMSML_NORM, "Session closed.\n");
 				}

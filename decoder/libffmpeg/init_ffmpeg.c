@@ -63,7 +63,7 @@ FFMpegDec *init_ffmpeg(void)
 
 	ff->got_frame = 0;
 	
-	fprintf(stderr, "\nlibavcodec decoder plugin succesfully initialized\n");
+	fprintf(stderr, "\nlibavcodec MPEG-1 decoder plugin succesfully initialized\n");
    
 	return ff;
 }

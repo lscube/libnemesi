@@ -37,7 +37,7 @@
  * \return RTSP_Ctrl structure. This is the interface structure between user
  * interface and RTSP librarween user interface and RTSP library.
  */
-struct RTSP_Ctrl *init_rtsp(NMSRtspHints *hints)
+struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 {
 	struct RTSP_Thread *rtsp_th;
 	pthread_attr_t rtsp_attr;

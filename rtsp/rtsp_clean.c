@@ -66,7 +66,7 @@ void rtsp_clean(void *rtsp_thread)
 		}
 	}
 #endif
-	reinit_rtsp(rtsp_th);
+	rtsp_reinit(rtsp_th);
 	nmsprintf(NMSML_DBG1, "RTSP Thread R.I.P.\n");
 #ifdef USE_UIPRINTF
 	fprintf(stderr, "\r"); /* TODO Da ottimizzare */

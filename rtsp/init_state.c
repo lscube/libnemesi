@@ -46,14 +46,14 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 		*/
 		get_curr_sess(GCS_INIT, rtsp_th);
 		if (send_setup_request(rtsp_th)) // {
-			// reinit_rtsp(rtsp_th);	
+			// rtsp_reinit(rtsp_th);	
 			return 1;
 		// }
 		break;
 
 	case RTSP_SETUP_RESPONSE:
 		if (handle_setup_response(rtsp_th))// {
-			// reinit_rtsp(rtsp_th);	
+			// rtsp_reinit(rtsp_th);	
 			return 1;
 		// }
 		// if (get_curr_sess(rtsp_th, NULL, NULL)) {

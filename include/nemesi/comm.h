@@ -52,16 +52,16 @@ extern int uipipe[2];
 #ifdef NMS_COLOURED
 
 // COLOURS definitions
-#define NMSCLR_RED		"\033[0;31;40m"
-#define NMSCLR_GREEN		"\033[0;32;40m"
-#define NMSCLR_YELLOW		"\033[0;33;40m"
-#define NMSCLR_BLUE		"\033[0;34;40m"
-#define NMSCLR_MAGENTA		"\033[0;35;40m"
-#define NMSCLR_CYAN		"\033[0;36;40m"
-#define NMSCLR_WHITE		"\033[0;37;40m"
-#define NMSCLR_RED_BOLD		"\033[1;31;40m"
-#define NMSCLR_YELLOW_BOLD	"\033[1;33;40m"
-#define NMSCLR_BLUE_BOLD	"\033[1;34;40m"
+#define NMSCLR_RED		"\033[0;31m" // "\033[0;31;40m"
+#define NMSCLR_GREEN		"\033[0;32m" // "\033[0;32;40m"
+#define NMSCLR_YELLOW		"\033[0;33m" // "\033[0;33;40m"
+#define NMSCLR_BLUE		"\033[0;34m" // "\033[0;34;40m"
+#define NMSCLR_MAGENTA		"\033[0;35m" // "\033[0;35;40m"
+#define NMSCLR_CYAN		"\033[0;36m" // "\033[0;36;40m"
+#define NMSCLR_WHITE		"\033[0;37m" // "\033[0;37;40m"
+#define NMSCLR_RED_BOLD		"\033[1;31m" // "\033[1;31;40m"
+#define NMSCLR_YELLOW_BOLD	"\033[1;33m" // "\033[1;33;40m"
+#define NMSCLR_BLUE_BOLD	"\033[1;34m" // "\033[1;34;40m"
 #define NMSCLR_DEFAULT		"\033[0m"
 
 #define nmscolour(stm, clr)	fprintf(stm, clr)

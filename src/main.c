@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 	if (output_init(&output_hints))
 		exit( nmsprintf(NMSML_FATAL, "Error initializing output module\n") );
 
-	if ( !(rtsp_ctrl = init_rtsp(&rtsp_hints)) )
+	if ( !(rtsp_ctrl = rtsp_init(&rtsp_hints)) )
 		exit( nmsprintf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)) );
 
 	// UI interface function
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 		if ((n=ui(rtsp_ctrl, &ui_hints, argc, argv)) > 0)
 			exit(1);
 
-	close_rtsp(rtsp_ctrl);
+	rtsp_close(rtsp_ctrl);
 
 	output_uninit();
 

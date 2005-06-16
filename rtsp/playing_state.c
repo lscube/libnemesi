@@ -56,7 +56,7 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 		if (!get_curr_sess(GCS_NXT_MED)) {
 			/* Nessun altra TEARDOWN da inviare */
 			rtsp_th->status = INIT;
-			reinit_rtsp(rtsp_th);
+			rtsp_reinit(rtsp_th);
 			rtsp_th->busy = 0;
 			nmsprintf(NMSML_NORM, "----- All Connections closed -----\n");
 			/* Inizializza a NULL le variabili statiche interne */

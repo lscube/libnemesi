@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int reinit_rtsp(struct RTSP_Thread *rtsp_th)
+int rtsp_reinit(struct RTSP_Thread *rtsp_th)
 {
 	struct RTSP_Medium *med, *pmed;
 	struct RTSP_Session *sess, *psess;

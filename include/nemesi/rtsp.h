@@ -282,11 +282,11 @@ void *rtsp(void *);
 	// /-------------------------------/
 	// |- int init_rtsp(void);
 	// \- struct RTSP_Ctrl *init_rtsp(void);
-struct RTSP_Ctrl *init_rtsp(NMSRtspHints *);
-int reinit_rtsp(struct RTSP_Thread *);
+struct RTSP_Ctrl *rtsp_init(NMSRtspHints *);
+int rtsp_reinit(struct RTSP_Thread *);
 int create_thread(struct RTSP_Thread *);
 void rtsp_clean(void *);
-int close_rtsp(struct RTSP_Ctrl *);
+int rtsp_close(struct RTSP_Ctrl *);
 
 int send_get_request(struct RTSP_Thread *);
 int send_pause_request(struct RTSP_Thread *, char *);

@@ -226,6 +226,7 @@ int rtp_recv(struct RTP_Session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
 int ssrc_check(struct RTP_Session *, uint32, struct Stream_Source **, NMSsockaddr *, enum proto_types);
 int set_stm_src(struct RTP_Session *, struct Stream_Source **, uint32, NMSsockaddr *,  enum proto_types);
+
 // rtp transport setup functions
 int rtp_transport_set(struct RTP_Session *, int, void *);
 int rtp_transport_get(struct RTP_Session *, int, void *, uint32);
@@ -271,6 +272,7 @@ inline int rtp_transport_set_cliports(struct RTP_Session *, in_port_t [2]);
 inline int rtp_transport_set_clirtcpport(struct RTP_Session *, in_port_t);
 inline int rtp_transport_set_clirtcpport(struct RTP_Session *, in_port_t);
 inline int rtp_transport_set_ssrc(struct RTP_Session *, uint32);
+
 // rtcp connection functions
 int rtcp_to_connect(struct Stream_Source *, NMSaddr *, in_port_t);
 // SSRC management functions

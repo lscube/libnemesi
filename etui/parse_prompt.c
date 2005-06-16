@@ -41,32 +41,35 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 	switch (opt) {
 	case 'h':
 	case '?':
-		printf("\nHelp:\n");
-		printf("\t* help or ?           print this help\n");
-		printf("\t* quit                quit\n");
-		printf("\t* version             print infos about NeMeSI.\n");
-		printf("\t* open urlname        connect to urlname\n");
-		printf("\t* info                print info about the session\n");
-		printf("\t* play [range]        start the playback\n");
-		printf("\t* zause               pause the playback\n");
-		printf("\t* stop                stop the playback\n");
-		printf("\t* close               close the connection\n");
-		printf("\t* edit option value   change the value of specified option\n");
-		printf("\t* list                show list of editable options, with assigned values and short description\n");
-		printf("\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
+		nmsprintf(NMSML_NORM, "\nHelp:\n");
+		nmsprintf(NMSML_NORM, "\t* help or ?           print this help\n");
+		nmsprintf(NMSML_NORM, "\t* quit                quit\n");
+		nmsprintf(NMSML_NORM, "\t* version             print infos about NeMeSI.\n");
+		nmsprintf(NMSML_NORM, "\t* open urlname        connect to urlname\n");
+		nmsprintf(NMSML_NORM, "\t* info                print info about the session\n");
+		nmsprintf(NMSML_NORM, "\t* play [range]        start the playback\n");
+		nmsprintf(NMSML_NORM, "\t* zause               pause the playback\n");
+		nmsprintf(NMSML_NORM, "\t* stop                stop the playback\n");
+		nmsprintf(NMSML_NORM, "\t* close               close the connection\n");
+		nmsprintf(NMSML_NORM, "\t* edit option value   change the value of specified option\n");
+		nmsprintf(NMSML_NORM, "\t* list                show list of editable options, with assigned values and short description\n");
+		nmsprintf(NMSML_NORM, "\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
 		break;
 	case 'q':
 		send_close(rtsp_ctrl);
 		return 1;
 	case 'v':
-		printf("\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
-		printf("Copyleft 2001 - mancho@cclif.polito.it\n");
-		printf("              - shawill@cclinf.polito.it\n\n");
+		nmsprintf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+		nmsprintf(NMSML_NORM, "Copyleft 2001 - mancho@cclif.polito.it\n");
+		nmsprintf(NMSML_NORM, "              - shawill@cclinf.polito.it\n\n");
 		break;
 	case 'o':
-		sscanf(optstr, "%*s %s", argstr);
-		printf("Connect: Please wait, opening \"%s\"\n", argstr);
-		send_open(rtsp_ctrl, argstr);
+		if ( sscanf(optstr, "%*s %s", argstr) != 1)
+			nmsprintf(NMSML_ERR, "Can't connect: no address given\n");
+		else {
+			nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"\n", argstr);
+			send_open(rtsp_ctrl, argstr);
+		}
 		break;
 	case 'i':
 		get_infos(rtsp_ctrl);
@@ -94,14 +97,14 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 		if ( sscanf(optstr, "%*s %[^\n]", argstr) > 0)
 			edit_pref(argstr);
 		else
-			printf("No preference give to edit\n");
+			nmsprintf(NMSML_ERR, "No preference give to edit\n");
 		break;
 	case 'l':
 		list_prefs();
 		break;
 	default:
-		printf("\nUnknown command: %s\n", optstr);
-		printf("Press \'h\' for help.\n\n");
+		nmsprintf(NMSML_ERR, "Unknown command: %s\n", optstr);
+		nmsprintf(NMSML_NORM, "Press \'h\' for help.\n\n");
 		break;
 	}
 	return 0;

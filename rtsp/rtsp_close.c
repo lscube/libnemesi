@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int close_rtsp(struct RTSP_Ctrl *rtsp_ctrl)
+int rtsp_close(struct RTSP_Ctrl *rtsp_ctrl)
 {
 	void *ret=NULL;
 

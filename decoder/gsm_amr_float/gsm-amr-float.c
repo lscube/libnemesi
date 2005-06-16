@@ -90,7 +90,9 @@ int decode(char *data, int len, NMSOutput *outc)
 	enum Mode dec_mode;
 
 	req_len = L_FRAME * sizeof(uint16) * ELEVEN + L_FRAME * sizeof(uint16) / 40;
-	outbuff=(uint8 *)p=funcs->get_buff(req_len);
+	// outbuff=(uint8 *)p=funcs->get_buff(req_len);
+	outbuff=funcs->get_buff(req_len);
+	p=(uint16 *)outbuff;
 
 	/* init decoder */
 	if (!destate)

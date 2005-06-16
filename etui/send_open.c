@@ -30,6 +30,8 @@
 
 int send_open(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
 {
+	if ( !*urlname)
+		return 1;
 
 	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
 		rtsp_ctrl->comm->opcode = OPEN;

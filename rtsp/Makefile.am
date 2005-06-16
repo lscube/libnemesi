@@ -2,8 +2,8 @@
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = librtsp.la
-librtsp_la_SOURCES =	init_rtsp.c \
-			reinit_rtsp.c \
+librtsp_la_SOURCES =	rtsp_init.c \
+			rtsp_reinit.c \
 			init_state.c \
 			ready_state.c \
 			playing_state.c \
@@ -40,7 +40,7 @@ librtsp_la_SOURCES =	init_rtsp.c \
 			get_transport_str.c \
 			remove_pkt.c \
 			rtsp_clean.c \
-			close_rtsp.c \
+			rtsp_close.c \
 			seturlname.c
 			
 librtsp_la_LDFLAGS = -static

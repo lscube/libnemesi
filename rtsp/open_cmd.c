@@ -42,6 +42,10 @@ int open_cmd(struct RTSP_Thread *rtsp_th, ...)
 		nmsprintf(NMSML_WARN, "Client already connected!\n");
 		return 1;
 	}
+	if ( !*rtsp_th->comm->arg ) {
+		nmsprintf(NMSML_ERR, "No address given\n");
+		return 1;
+	}
 	if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
 		return 1;
 	urltokenize(rtsp_th->urlname, &server, NULL, NULL);
