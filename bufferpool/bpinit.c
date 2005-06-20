@@ -49,7 +49,7 @@ int bpinit(buffer_pool *bp)
 		return 1;
 	}
 	memset(bp->bufferpool, 0, BP_SLOT_NUM*sizeof(BP_SLOT));
-	for (i = 0; i < BP_SLOT_NUM; bp->freelist[i++] = i + 1);
+	for (i = 0; i < BP_SLOT_NUM; bp->freelist[i] = i + 1, i++);
 	bp->freelist[BP_SLOT_NUM - 1] = -1;
 	bp->flhead = 0;
 	bp->flcount = 0;

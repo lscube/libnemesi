@@ -47,7 +47,7 @@ void *video_th(void *outc)
 	NMSVideo *videoc = ((NMSOutput *)outc)->video;
 	NMSAudio *audioc = ((NMSOutput *)outc)->audio;
 	NMSVFunctions *vfuncs = videoc->functions;
-	NMSAFunctions *afuncs;
+	NMSAFunctions *afuncs=NULL;
 	struct timeval tvsleep, tvstart, tvstop;
 	float fps=DEF_FPS;
 	double last_pts = 0, next_pts = 0;

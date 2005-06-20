@@ -72,22 +72,20 @@
 /*! Lower bound for first RTP port if specified by user. */
 #define RTSP_MIN_RTP_PORT 1024
 
-/*! 
- * Total number of recognized commands.
- * "NONE" is a special command, just for internal purpouses
- * and not considered elsewhere.
- */
-#define COMMAND_NUM 5
-/*! Total number of implemented states. */
-#define STATE_NUM 4
-
 typedef struct {
 	int32 first_rtp_port;
 } NMSRtspHints;
 
 /*! \enum Definition for possible states in RTSP state-machine
+ * The last ("STATES_NUM") is used to know how many states are present in the machine.
  */
-enum states { INIT, READY, PLAYING, RECORDING };
+enum states { INIT, READY, PLAYING, RECORDING, STATES_NUM };
+/*! \enum opcodes: enum which codify the available commands for the user.
+* "COMMAND_NUM" is the total number of recognized commands.
+* "NONE" is a special command, just for internal purpouses
+* and not considered elsewhere.
+*/
+enum opcodes { OPEN, PLAY, PAUSE, STOP, CLOSE, COMMAND_NUM, NONE };
 
 /*!
  * \brief Struttura per la comunicazione dei comandi tra la ui e il modulo
@@ -104,14 +102,8 @@ enum states { INIT, READY, PLAYING, RECORDING };
  *
  * */
 struct command {
-		/*! \enum opcodes enum che codifica i vari comandi disponibili
-		 * all'utente. */
-	enum opcodes { OPEN, PLAY, PAUSE, STOP, CLOSE, NONE } opcode;	/*!< codice del
-								  comando
-								  inserito
-								  dall'utente.
-								 */
-	char arg[256];		/*!< Eventuali argomenti del comando. */
+	enum opcodes opcode;	/*!< Command code inserted by user. */
+	char arg[256];		/*!< Possible command arguments. */
 };
 
 /*!
@@ -274,7 +266,7 @@ int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, char *);
 */
 extern int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
 
-extern int (*state_machine[STATE_NUM]) (struct RTSP_Thread *, short);
+extern int (*state_machine[STATES_NUM]) (struct RTSP_Thread *, short);
 
 void *rtsp(void *);
 

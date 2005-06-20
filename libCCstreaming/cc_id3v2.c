@@ -144,7 +144,7 @@ int cc_id3v2(CCLicense *license, CCTag *tag)
 
 	// ID3v2 header creation
 	// string "ID3"
-	strncpy(id3->id, "ID3", 3);
+	strncpy((char *)id3->id, "ID3", 3);
 	// ID3v2 version
 	id3->major = ID3v2_MAJOR;
 	id3->rev = ID3v2_REV;
@@ -158,40 +158,40 @@ int cc_id3v2(CCLicense *license, CCTag *tag)
 	// put frames
 	if (license->title) {
 		// there's the creator info => put TIT2 frame
-		strncpy(frame->id, "TIT2", 4);
+		strncpy((char *)frame->id, "TIT2", 4);
 		/*frame->size = */enc_synchsafe_int(frame->size, tit2 + 1); // char enc byte added
 		frame->flags = 0;
 		frame->charenc = 0; // ISO-8858-1
-		strcpy(frame->data, license->title);
+		strcpy((char *)frame->data, license->title);
 		frame = (struct id3frm *)(frame->data + tit2);
 	}
 	if (license->creator) {
 		// there's the title info => put TPE1 frame
-		strncpy(frame->id, "TPE1", 4);
+		strncpy((char *)frame->id, "TPE1", 4);
 		/*frame->size = */enc_synchsafe_int(frame->size, tpe1 + 1); // char enc byte added
 		frame->flags = 0;
 		frame->charenc = 0; // ISO-8858-1
-		strcpy(frame->data, license->creator);
+		strcpy((char *)frame->data, license->creator);
 		frame = (struct id3frm *)(frame->data + tpe1);
 	}
 	if ((license->uriLicense) || (license->uriMetadata)) {
 		// there's CC info => put TCOP frame
-		strncpy(frame->id, "TCOP", 4);
+		strncpy((char *)frame->id, "TCOP", 4);
 		/*frame->size = */enc_synchsafe_int(frame->size, tcop + 1); // char enc byte added
 		frame->flags = 0;
 		frame->charenc = 0; // ISO-8858-1
 		pos = frame->data;
 		if (license->uriLicense) {
-			sprintf(pos, "%s%s", CC_URILIC, license->uriLicense);
-			pos += strlen(pos);
+			sprintf((char *)pos, "%s%s", CC_URILIC, license->uriLicense);
+			pos += strlen((char *)pos);
 		}
 		if (license->uriMetadata) {
-			sprintf(pos, "%s%s", CC_URIMETA, license->uriMetadata);
+			sprintf((char *)pos, "%s%s", CC_URIMETA, license->uriMetadata);
 		}
 		frame = (struct id3frm *)(frame->data + tcop);
 	}
 
-	tag->header = (char *)id3;
+	tag->header = (int8 *)id3;
 	tag->hdim = id3len;
 
 	return 0;

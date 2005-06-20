@@ -6118,8 +6118,11 @@ void * Speech_Decode_Frame_init( )
 
    if ( Decoder_amr_init( &s->decoder_amrState ) || Post_Filter_init( &s->
          post_state ) || Post_Process_init( &s->postHP_state ) ) {
-      Speech_Decode_Frame_exit( ( void ** )( &s ) );
-      return NULL;
+   	void *vp; // we nust declade a dummy var to avoid warning that strict-aliasing rules are broken
+	vp = s;
+	Speech_Decode_Frame_exit( &vp );
+	// Speech_Decode_Frame_exit( ( void ** )( &s ) );
+	return NULL;
    }
    return s;
 }

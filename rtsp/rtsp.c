@@ -34,7 +34,7 @@
 #include <nemesi/version.h>
 
 int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
-int (*state_machine[STATE_NUM]) (struct RTSP_Thread *, short);
+int (*state_machine[STATES_NUM]) (struct RTSP_Thread *, short);
 
 /**
 * funzione che implementa il thread rtsp.
