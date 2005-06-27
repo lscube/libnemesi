@@ -68,7 +68,8 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 				return nmsprintf(NMSML_FATAL, "Cannot create RTCP Thread!\n");
 
 			rtsp_th->status = READY;
-			rtsp_th->busy = 0;
+			rtsp_unbusy(rtsp_th);
+			// rtsp_th->busy = 0;
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);

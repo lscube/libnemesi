@@ -81,7 +81,6 @@ int check_status(char *status_line, struct RTSP_Thread *rtsp_th)
 				rtsp_th->comm->opcode = OPEN;
 				write(rtsp_th->pipefd[1], "o", 1);
 				strncpy(rtsp_th->comm->arg, location, sizeof(rtsp_th->comm->arg));
-				// rtsp_th->busy=1;
 				pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 				///// XXX: end proving
 			} else

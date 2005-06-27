@@ -28,6 +28,12 @@
 
 #include <nemesi/rtp.h>
 
+#define RET_ERR(err_level, ...)	{ \
+					nmsprintf(err_level, __VA_ARGS__ ); \
+					free(rtp_sess); \
+					return NULL; \
+				}
+
 struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 {
 	struct RTP_Session *rtp_sess;
@@ -43,17 +49,16 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 	rtp_sess->rtpfd=-1;
 	rtp_sess->rtcpfd=-1;
 	rtp_sess->local_ssrc=random32(0);
-	pthread_mutex_init(&rtp_sess->syn,NULL);
+	if ( pthread_mutex_init(&rtp_sess->syn,NULL) )
+		RET_ERR(NMSML_FATAL, "Cannot init mutex!\n")
 	if( !(rtp_sess->transport.spec=strdup(RTP_AVP_UDP)) )
-		nmsprintf(NMSML_FATAL, "Cannot duplicate string!\n");
+		RET_ERR(NMSML_FATAL, "Cannot duplicate string!\n")
 	rtp_sess->transport.delivery=unicast;
 	// --- remote address
-	if ( sock_get_addr(peer->addr, &nms_addr) ) {
-		nmsprintf(NMSML_ERR, "remote address not valid\n");
-		return NULL;
-	}
+	if ( sock_get_addr(peer->addr, &nms_addr) )
+		RET_ERR(NMSML_ERR, "remote address not valid\n")
 	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDR, &nms_addr))
-		return NULL;
+		RET_ERR(NMSML_ERR, "Could not set srcaddr in transport string\n")
 	switch (nms_addr.family) {
 		case AF_INET:
 			nmsprintf(NMSML_DBG1, "IPv4 address\n");
@@ -63,12 +68,10 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 			break;
 	}
 	// --- local address
-	if ( sock_get_addr(local->addr, &nms_addr) ) {
-		nmsprintf(NMSML_ERR, "local address not valid\n");
-		return NULL;
-	}
+	if ( sock_get_addr(local->addr, &nms_addr) )
+		RET_ERR(NMSML_ERR, "local address not valid\n")
 	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDR, &nms_addr))
-		return NULL;
+		RET_ERR(NMSML_ERR, "Could not set dstaddr in transport string\n")
 	switch (nms_addr.family) {
 		case AF_INET:
 			nmsprintf(NMSML_DBG1, "IPv4 local address\n");

@@ -70,7 +70,8 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 		nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
 	
 	while (1) {
-		if(rtsp_ctrl->busy)
+		if(rtsp_is_busy(rtsp_ctrl))
+			// rtsp_wait(rtsp_ctrl);
 			throbber(rtsp_ctrl);
 		fprintf(stderr, "\r[ %s ] => ", statustostr(rtsp_ctrl->status));
 

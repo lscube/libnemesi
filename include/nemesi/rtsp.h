@@ -208,6 +208,9 @@ struct RTSP_buffer {
 	char *data;		/*!< Puntatore alla zona dati. */
 };
 
+#define RTSP_READY	0
+#define RTSP_BUSY	1
+
 /*!
  * \brief Definition of the common part for RTSP_Thread and RTSP_Ctrl structs
  */
@@ -239,6 +242,7 @@ struct RTSP_Thread {
 	RTSP_COMMON_IF
 	NMSRtspHints *hints;
 	uint16 force_rtp_port;
+	pthread_cond_t cond_busy;
 	int fd;		/*!< descrittore sul quale è attiva la connessione con
 			  il server, dal quale cioè, verranno letti i dati
 			  provenienti dal server */
@@ -261,24 +265,31 @@ struct RTSP_Ctrl {
 	RTSP_COMMON_IF
 };
 
-/*
-int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, char *);
-*/
-extern int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
-
-extern int (*state_machine[STATES_NUM]) (struct RTSP_Thread *, short);
-
-void *rtsp(void *);
+//******** interface functions ********************
 
 	// old init function definitions: -|
 	// /-------------------------------/
 	// |- int init_rtsp(void);
 	// \- struct RTSP_Ctrl *init_rtsp(void);
 struct RTSP_Ctrl *rtsp_init(NMSRtspHints *);
-int rtsp_reinit(struct RTSP_Thread *);
-int create_thread(struct RTSP_Thread *);
-void rtsp_clean(void *);
+int rtsp_is_busy(struct RTSP_Ctrl *);
+void rtsp_wait(struct RTSP_Ctrl *);
 int rtsp_close(struct RTSP_Ctrl *);
+//
+//***** ENDOF interface functions ******************
+
+void rtsp_unbusy(struct RTSP_Thread *);
+int rtsp_reinit(struct RTSP_Thread *);
+void rtsp_clean(void *);
+
+/*
+extern int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, char *);
+*/
+extern int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
+
+extern int (*state_machine[STATES_NUM]) (struct RTSP_Thread *, short);
+
+void *rtsp(void *);
 
 int send_get_request(struct RTSP_Thread *);
 int send_pause_request(struct RTSP_Thread *, char *);
@@ -300,6 +311,7 @@ int stop_cmd(struct RTSP_Thread *, ...);
 int open_cmd(struct RTSP_Thread *, ...);
 int close_cmd(struct RTSP_Thread *, ...);
 
+// RTSP packet handling/creation funcs.
 int seturlname(struct RTSP_Thread *, char *);
 int handle_rtsp_pkt(struct RTSP_Thread *);
 int full_msg_rcvd( struct RTSP_Thread *);

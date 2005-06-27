@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,36 +27,15 @@
  * */
 
 #include <nemesi/rtsp.h>
-#include <stdarg.h>
 
-int stop_cmd(struct RTSP_Thread *rtsp_th, ...)
+void rtsp_wait(struct RTSP_Ctrl *rtsp_ctrl)
 {
-	va_list ap;
-	char *args;
+	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)rtsp_ctrl;
 
-	va_start(ap, rtsp_th);
-	args = va_arg(ap, char *);
+	pthread_mutex_lock(&(rtsp_th->comm_mutex));
+	while (rtsp_th->busy)
+		pthread_cond_wait(&(rtsp_th->cond_busy), &(rtsp_th->comm_mutex));
 
-	if (rtsp_th->status == INIT) {
-		nmsprintf(NMSML_ERR, "Player not initialized!\n");
-		va_end(ap);
-		return 1;
-	}
-	if (rtsp_th->status == READY) {
-		nmsprintf(NMSML_ERR, "I don't think you're yet playing or recording\n");
-		va_end(ap);
-		// return 0;
-		return 1;
-	}
-	// get_curr_sess(NULL, NULL, NULL);
-	// get_curr_sess(GCS_UNINIT); // useless
-	// get_curr_sess(rtsp_th, NULL, NULL);
-	get_curr_sess(GCS_INIT, rtsp_th);
-	if (send_pause_request(rtsp_th, args)){
-			va_end(ap);
-			return 1;
-	}
-
-	va_end(ap);
-	return 0;
+	pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 }
+

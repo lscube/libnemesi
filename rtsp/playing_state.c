@@ -39,7 +39,8 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 		if (!get_curr_sess(GCS_NXT_SESS)) {
 			/* Nessun altra PLAY da inviare */
 			rtsp_th->status = READY;
-			rtsp_th->busy = 0;
+			rtsp_unbusy(rtsp_th);
+			// rtsp_th->busy = 0;
 			nmsprintf(NMSML_NORM, "----- Play paused -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
@@ -57,7 +58,8 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 			/* Nessun altra TEARDOWN da inviare */
 			rtsp_th->status = INIT;
 			rtsp_reinit(rtsp_th);
-			rtsp_th->busy = 0;
+			rtsp_unbusy(rtsp_th);
+			// rtsp_th->busy = 0;
 			nmsprintf(NMSML_NORM, "----- All Connections closed -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);

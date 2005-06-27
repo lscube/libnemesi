@@ -52,6 +52,11 @@ void *rtp(void *args)
 		pthread_exit(NULL);
 	}
 	dec_args->rtp_sess_head=rtp_sess_head;
+	
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+/*	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
+	pthread_cleanup_push(rtp_clean, (void *)dec_args);
 
 	/* Playout Buffer Size */
 	/*
@@ -62,14 +67,10 @@ void *rtp(void *args)
 	// dec_args->startime.tv_usec=PO_BUFF_SIZE_MSEC*(1000);
 	/* 500 msec */
 
-	pthread_mutex_init(&(dec_args->syn), NULL);
+	if ( pthread_mutex_init(&(dec_args->syn), NULL) )
+		pthread_exit(NULL);
 	/* Decoder bloccato fino alla ricezione del primo pkt */
 	pthread_mutex_lock(&(dec_args->syn));
-	
-	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-/*	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
-	pthread_cleanup_push(rtp_clean, (void *)dec_args);
 
 	if(dec_create(dec_args))
 		pthread_exit(NULL);

@@ -60,10 +60,8 @@ void rtsp_clean(void *rtsp_thread)
 			if (full_msg_rcvd(rtsp_th))
 				/*if (*/handle_rtsp_pkt(rtsp_th);/*)*/
 					/*nmsprintf(NMSML_ERR, "\nError!\n");*/
-		} else {
+		} else
 			nmsprintf(NMSML_ERR, "Server died prematurely!\n");
-			rtsp_th->busy=0;
-		}
 	}
 #endif
 	rtsp_reinit(rtsp_th);

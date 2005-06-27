@@ -34,12 +34,10 @@ int handle_pause_response(struct RTSP_Thread *rtsp_th)
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
 		nmsprintf(NMSML_ERR, "Invalid RTSP-PAUSE response\n");
-		// rtsp_th->busy=0;
 		return 1;
 	}
 	if ( check_status(prev_tkn, rtsp_th) < 0 ){
 		remove_pkt(rtsp_th);
-		// rtsp_th->busy=0;
 		return 1;
 	}
 

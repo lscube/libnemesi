@@ -40,12 +40,10 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 
 	if ( (prev_tkn=strtok((rtsp_th->in_buffer).data,"\n"))==NULL ) {
 		nmsprintf(NMSML_ERR, "Invalid RTSP-DESCRIBE response\n");
-		// rtsp_th->busy=0;	
 		return 1;
 	}
 	if ( check_status(prev_tkn, rtsp_th) < 0 ){
 		remove_pkt(rtsp_th);
-		// rtsp_th->busy=0;	
 		return 1;
 	}
 	/* state success: header parsing */
@@ -90,10 +88,8 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 	if ( tkn!=NULL )
 		tkn[strlen(tkn)]='\n'; /* rimetto a posto il \n modificato dalla strtok */
 	// if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn, description_format) ) {
-	if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn) ) {
-		// rtsp_th->busy=0;	
+	if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn) )
 		return 1;
-	}
 	remove_pkt(rtsp_th);
 	memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
 	return 0;

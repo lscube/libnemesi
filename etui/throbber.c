@@ -61,7 +61,7 @@ int throbber(struct RTSP_Ctrl *rtsp_ctrl)
 	setbuf(stdout, NULL);
 	
 	fprintf(stdout, "             ");
-	while (rtsp_ctrl->busy) {
+	while ( rtsp_is_busy(rtsp_ctrl) ) {
 		tv.tv_sec=0;
 		tv.tv_usec=50000;
 		fprintf(stdout, "\b\b\b\b\b\b\b\b\b\b\b\b\b");

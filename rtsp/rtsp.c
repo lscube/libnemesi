@@ -73,12 +73,10 @@ void *rtsp(void *rtsp_thread)
 						if (handle_rtsp_pkt(rtsp_th)) {
 							// nmsprintf(NMSML_ERR, "\nError!\n");
 							rtsp_reinit(rtsp_th);
-							// rtsp_th->busy=0; // already done in reinit
 						}
 				} else {
-					nmsprintf(NMSML_ERR, "\nServer died prematurely!\n");
+					nmsprintf(NMSML_ERR, "Server died prematurely!\n");
 					rtsp_reinit(rtsp_th);
-					// rtsp_th->busy=0; // alreaydone in reinit
 					nmsprintf(NMSML_NORM, "Session closed.\n");
 				}
 			}

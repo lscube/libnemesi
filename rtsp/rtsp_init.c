@@ -28,6 +28,13 @@
 
 #include <nemesi/rtsp.h>
 
+#define RET_ERR(ret_level, ...) { \
+					nmsprintf(ret_level, __VA_ARGS__ ); \
+					free(rtsp_th->comm); \
+					free(rtsp_th); \
+					return NULL; \
+				}
+
 /*!
  * \brief Function called to start rtsp lib.
  *
@@ -42,18 +49,25 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 	struct RTSP_Thread *rtsp_th;
 	pthread_attr_t rtsp_attr;
 	pthread_mutexattr_t mutex_attr;
+	// pthread_condattr_t cond_attr;
 	int n;
 
 	// if ( !(rtsp_th = (struct RTSP_Thread *) malloc(sizeof(struct RTSP_Thread))) )
 	// We use calloc so that we are not in need to initialize to zero below
-	if ( !(rtsp_th = (struct RTSP_Thread *) calloc(1, sizeof(struct RTSP_Thread))) )
+	if ( !(rtsp_th = (struct RTSP_Thread *) calloc(1, sizeof(struct RTSP_Thread))) ) {
+		nmsprintf(NMSML_FATAL, "Could not alloc memory!\n");
 		return NULL;
+	}
+
+	/* not needed if we use calloc
+	 * rtsp_th->comm = NULL;
+	 */
 
 	if (pipe(rtsp_th->pipefd) < 0)
-		return NULL;
+		RET_ERR(NMSML_FATAL, "Could not create pipe\n")
 
 	if ((n = pthread_mutexattr_init(&mutex_attr)) > 0)
-		return NULL;
+		RET_ERR(NMSML_FATAL, "Could not init mutex attributes\n")
 #if 0
 #ifdef	_POSIX_THREAD_PROCESS_SHARED
 	if ((n = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
@@ -61,10 +75,18 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 #endif
 #endif
 	if ((n = pthread_mutex_init(&(rtsp_th->comm_mutex), &mutex_attr)) > 0)
-		return NULL;
+		RET_ERR(NMSML_FATAL, "Could not init mutex\n")
+
+	/* // we give NULL to cond_init: uncommet this (and the declaration above)
+	 * if you want to give different attributes to cond
+	if (pthread_condattr_init(&cond_attr) > 0)
+		RET_ERR(NMSML_FATAL, "Could not init condition variable attributes\n")
+	*/
+	if (pthread_cond_init(&(rtsp_th->cond_busy), NULL /*&cond_attr*/) > 0)
+		RET_ERR(NMSML_FATAL, "Could not init condition variable\n")
 	
 	if ((rtsp_th->comm = (struct command *) malloc(sizeof(struct command))) == NULL)
-		return NULL;
+		RET_ERR(NMSML_FATAL, "Could not alloc memory\n")
 
 	rtsp_th->fd = -1;
 	rtsp_th->status = INIT;
@@ -85,13 +107,10 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 	if (hints) { // hints given
 		// set first RTP port
 		if (hints->first_rtp_port > 0) {
-			if (hints->first_rtp_port < RTSP_MIN_RTP_PORT) {
-				nmsprintf(NMSML_ERR, "For security reasons RTSP Library imposes that port number should be greater than %d\n", RTSP_MIN_RTP_PORT);
-				return NULL;
-			} else if (hints->first_rtp_port > 65535) {
-				nmsprintf(NMSML_ERR, "Port number can't be greater than 65535\n");
-				return NULL;
-			}
+			if (hints->first_rtp_port < RTSP_MIN_RTP_PORT)
+				RET_ERR(NMSML_ERR, "For security reasons RTSP Library imposes that port number should be greater than %d\n", RTSP_MIN_RTP_PORT)
+			else if (hints->first_rtp_port > 65535)
+				RET_ERR(NMSML_ERR, "Port number can't be greater than 65535\n")
 			rtsp_th->force_rtp_port = hints->first_rtp_port;
 			nmsprintf(NMSML_WARN, "RTP ports forced by user (not randomly generated)\n");
 		}
@@ -110,16 +129,11 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 	
 	// Creation of RTSP Thread
 	pthread_attr_init(&rtsp_attr);
-	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0) {
-		nmsprintf(NMSML_FATAL, "Cannot set RTSP Thread attributes!\n");
-		return NULL;
-	}
+	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) != 0)
+		RET_ERR(NMSML_FATAL, "Cannot set RTSP Thread attributes!\n")
 
-	if ((n = pthread_create(&rtsp_th->rtsp_tid, NULL, &rtsp, (void *) rtsp_th)) > 0) {
-		nmsprintf(NMSML_FATAL, "Cannot create RTSP Thread: %s\n", strerror(n));
-		return NULL;
-	}
-
+	if ((n = pthread_create(&rtsp_th->rtsp_tid, NULL, &rtsp, (void *) rtsp_th)) > 0)
+		RET_ERR(NMSML_FATAL, "Cannot create RTSP Thread: %s\n", strerror(n))
 
 	return (struct RTSP_Ctrl *)rtsp_th;
 }
