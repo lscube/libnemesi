@@ -26,7 +26,7 @@
  *  
  * */
 
-#include <nemesi/etui.h>
+#include <nemesi/rtsp.h>
 
 int seturlname(struct RTSP_Thread *rtsp_th, char *urlname)
 {

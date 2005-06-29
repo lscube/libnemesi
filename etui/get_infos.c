@@ -39,7 +39,9 @@ int get_infos(struct RTSP_Ctrl *rtsp_ctrl)
 	// struct attr *attr;
 	SDP_attr *attr;
 
-	char *sdes[13]={ "Protocol Version",
+	char *sdes[/*13*/]=SDP_SESSION_FIELDS;
+#if 0
+	{ "Protocol Version",
 		"Session Identifier & Creator",
 		"Session Name",
 		"Session Info",
@@ -53,12 +55,16 @@ int get_infos(struct RTSP_Ctrl *rtsp_ctrl)
 		"Time Zone",
 		"Crypto Key"
 	};
-	char *mdes[5]={ "Multimedia Type & Transport Address",
+#endif
+	char *mdes[/*5*/]=SDP_MEDIA_FIELDS;
+#if 0
+	{ "Multimedia Type & Transport Address",
 		"Medium Title",
 		"Connection Info",
 		"Bandwidth Info",
 		"Crypto Key"
 	};
+#endif
 	
 	sess=rtsp_th->rtsp_queue;
 	

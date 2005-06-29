@@ -26,9 +26,9 @@
  *  
  * */
 
-#include <nemesi/etui.h>
+#include <nemesi/rtsp.h>
 
-int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
+int rtsp_play(struct RTSP_Ctrl *rtsp_ctrl, char *range)
 {
 	char *tkn;
 	char *meno;
@@ -38,21 +38,21 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 	int i, j;
 	
 		
-	*(argstr+strlen(argstr)-1)='\0';
-	while(*++argstr == ' ');
+	*(range+strlen(range)-1)='\0';
+	while(*++range == ' ');
 
-	meno=argstr;
+	meno=range;
 	j=0;
 	
-	if(*argstr){
+	if(*range){
 			
-		for(tkn=argstr; tkn && (isdigit(*tkn) || (*tkn == ':')  || (*tkn == '-') || isspace(*tkn)); tkn++);
+		for(tkn=range; tkn && (isdigit(*tkn) || (*tkn == ':')  || (*tkn == '-') || isspace(*tkn)); tkn++);
 		if (*tkn){
 			nmsprintf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A tesht' de fero?\n");
 			return 1;
 		}
 		
-		if((tkn=strchr(argstr, '-')) != NULL){
+		if((tkn=strchr(range, '-')) != NULL){
 			*tkn='\0';
 			if (strlen(++tkn)){
 				flag=1;
@@ -93,7 +93,7 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 				return 1;
 			}
 			j--;
-			meno=argstr;
+			meno=range;
 		}
 		sprintf(start, "%c%c:%c%c:%c%c", zz[0][0][0], zz[0][0][1], zz[0][1][0], zz[0][1][1], zz[0][2][0], zz[0][2][1]);
 		if (flag){
@@ -108,7 +108,7 @@ int send_play(struct RTSP_Ctrl *rtsp_ctrl, char *argstr)
 
 	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
 		rtsp_ctrl->comm->opcode= PLAY;
-		if (*argstr){
+		if (*range){
 			sprintf(rtsp_ctrl->comm->arg, "%s-", start);
 			if (flag)
 				sprintf(rtsp_ctrl->comm->arg+strlen(rtsp_ctrl->comm->arg), "%s", stop);

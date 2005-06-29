@@ -27,7 +27,6 @@
  * */
 
 #include <nemesi/rtsp.h>
-#include <nemesi/etui.h>
 
 #include <fcntl.h>
 

@@ -65,7 +65,7 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 	*/
 	if (urlname != NULL) {
 		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", urlname);
-		send_open(rtsp_ctrl, urlname);
+		rtsp_open(rtsp_ctrl, urlname);
 	} else
 		nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
 	

@@ -56,7 +56,7 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 		nmsprintf(NMSML_NORM, "\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
 		break;
 	case 'q':
-		send_close(rtsp_ctrl);
+		rtsp_close(rtsp_ctrl);
 		return 1;
 	case 'v':
 		nmsprintf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
@@ -68,7 +68,7 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 			nmsprintf(NMSML_ERR, "Can't connect: no address given\n");
 		else {
 			nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"\n", argstr);
-			send_open(rtsp_ctrl, argstr);
+			rtsp_open(rtsp_ctrl, argstr);
 		}
 		break;
 	case 'i':
@@ -77,16 +77,16 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 	case 'p':
 		// fgets(argstr, 256, stdin);
 		sscanf(optstr, "%*s %s", argstr);
-		send_play(rtsp_ctrl, argstr);
+		rtsp_play(rtsp_ctrl, argstr);
 		break;
 	case 'z':
-		send_pause(rtsp_ctrl, 'z');
+		rtsp_pause(rtsp_ctrl, 'z');
 		break;
 	case 's':
-		send_pause(rtsp_ctrl, 's');
+		rtsp_pause(rtsp_ctrl, 's');
 		break;
 	case 'c':
-		send_close(rtsp_ctrl);
+		rtsp_close(rtsp_ctrl);
 		break;
 	case 'e':
 		/*

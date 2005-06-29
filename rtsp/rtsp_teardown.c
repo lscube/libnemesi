@@ -26,19 +26,15 @@
  *  
  * */
 
-#include <nemesi/etui.h>
+#include <nemesi/rtsp.h>
 
-int send_open(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
+int rtsp_close(struct RTSP_Ctrl *rtsp_ctrl)
 {
-	if ( !*urlname)
-		return 1;
-
 	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
-		rtsp_ctrl->comm->opcode = OPEN;
-		strncpy(rtsp_ctrl->comm->arg, urlname, sizeof(rtsp_ctrl->comm->arg));
-		write(rtsp_ctrl->pipefd[1], "o", 1);
+		rtsp_ctrl->comm->opcode = CLOSE;
+		write(rtsp_ctrl->pipefd[1], "c", 1);
 		rtsp_ctrl->busy=1;
 	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
-	
+
 	return 0;
 }

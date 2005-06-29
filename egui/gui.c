@@ -19,7 +19,6 @@
 #include "gui_throbber.h"
 #include "gnmsprint.h"
 #include <nemesi/egui.h>
-#include <nemesi/etui.h>
 #include <nemesi/comm.h>
 
 int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints * ui_hints, int argc, char *argv[])
@@ -71,7 +70,7 @@ int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints * ui_hints, int argc, char *argv
 
 	if (ui_hints->url) {
 		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
-		send_open(rtsp_ctrl, ui_hints->url);
+		rtsp_open(rtsp_ctrl, ui_hints->url);
 		gui_throbber(&rtsp_ctrl->busy);
 	}			/* else
 				   nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");

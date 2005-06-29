@@ -26,14 +26,25 @@
  *  
  * */
 
-#include <nemesi/etui.h>
+#include <nemesi/rtsp.h>
 
-int send_close(struct RTSP_Ctrl *rtsp_ctrl)
+int rtsp_pause(struct RTSP_Ctrl *rtsp_ctrl, char ch)
 {
-	
+
 	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
-		rtsp_ctrl->comm->opcode = CLOSE;
-		write(rtsp_ctrl->pipefd[1], "c", 1);
+		switch(ch){
+		case 'z':
+			rtsp_ctrl->comm->opcode= PAUSE;
+			write(rtsp_ctrl->pipefd[1], "z", 1);
+			break;
+		case 's':
+			rtsp_ctrl->comm->opcode= STOP;
+			write(rtsp_ctrl->pipefd[1], "s", 1);
+			break;
+		default:
+			break;
+		}
+		*(rtsp_ctrl->comm->arg)='\0';
 		rtsp_ctrl->busy=1;
 	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
 

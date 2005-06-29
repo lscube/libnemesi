@@ -275,6 +275,10 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *);
 int rtsp_is_busy(struct RTSP_Ctrl *);
 void rtsp_wait(struct RTSP_Ctrl *);
 int rtsp_close(struct RTSP_Ctrl *);
+int rtsp_open(struct RTSP_Ctrl *, char *);
+int rtsp_pause(struct RTSP_Ctrl *, char);
+int rtsp_play(struct RTSP_Ctrl *, char *);
+int rtsp_close(struct RTSP_Ctrl *);
 //
 //***** ENDOF interface functions ******************
 

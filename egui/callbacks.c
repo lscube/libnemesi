@@ -14,7 +14,6 @@
 #include "gui_url.h"
 #include "gnmsprint.h"
 #include <nemesi/egui.h>
-#include <nemesi/etui.h>
 #include <nemesi/methods.h>
 
 #define CREDITS	"NeMeSI -- Network Media Streamer I\n\n"\
@@ -180,9 +179,9 @@ on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
 	if (internal_call)
 		return;
 	if (gtk_toggle_tool_button_get_active(togglebutton))
-		send_play(rtsp_ctrl, argstr);
+		rtsp_play(rtsp_ctrl, argstr);
 	else
-		send_pause(rtsp_ctrl, 'z');
+		rtsp_pause(rtsp_ctrl, 'z');
 
 	gui_throbber(&rtsp_ctrl->busy);
 
@@ -192,7 +191,7 @@ void
 on_stop_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-	send_pause(rtsp_ctrl, 's');
+	rtsp_pause(rtsp_ctrl, 's');
 	gui_throbber(&rtsp_ctrl->busy);
 }
 
@@ -201,7 +200,7 @@ void
 on_close_cmd_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-	send_close(rtsp_ctrl);
+	rtsp_close(rtsp_ctrl);
 	gui_throbber(&rtsp_ctrl->busy);
 }
 
@@ -318,7 +317,7 @@ on_opendialog_response                 (GtkDialog       *dialog,
 			gtk_widget_hide(opendialog);
 			*/
 			nmsprintf(NMSML_DBG1, "%s\n", true_url);
-			send_open(rtsp_ctrl, true_url);
+			rtsp_open(rtsp_ctrl, true_url);
 			gui_throbber(&rtsp_ctrl->busy);
 			break;
 		case GTK_RESPONSE_CLOSE:

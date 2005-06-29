@@ -67,6 +67,13 @@ typedef struct _SDP_attr {
 				  last. */
 } SDP_attr;
 
+#define SDP_MEDIA_FIELDS { \
+				"Multimedia Type & Transport Address", \
+				"Medium Title", \
+				"Connection Info", \
+				"Bandwidth Info", \
+				"Crypto Key" \
+			 };
 /*!
  * \brief Medium imformations.
  * 
@@ -97,6 +104,21 @@ typedef struct _SDP_Medium_info {
 	struct _SDP_Medium_info *next;	/*!< Next medium informatioin struct */
 } SDP_Medium_info;
 
+#define SDP_SESSION_FIELDS { \
+				"Protocol Version", \
+				"Session Identifier & Creator", \
+				"Session Name", \
+				"Session Info", \
+				"URI Description", \
+				"e-mail Address", \
+				"Phone Number", \
+				"Connection Info", \
+				"Bandwidth Info", \
+				"Active Time", \
+				"I' so' llu re", \
+				"Time Zone", \
+				"Crypto Key" \
+			   }
 /*!
  * \brief Session informations
  *
