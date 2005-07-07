@@ -32,6 +32,11 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 {
 	rtcp_pkt *end;
 
+	if (len < (int)sizeof(rtcp_common_t)) {
+		nmsprintf(NMSML_ERR, "RTCP packet too small!!! (%d)\n", len);
+		return 1;
+	}
+
 	if (len/4 > (ntohs((pkt->common).len) + 1)){
 		/* This is a fu**ing compound pkt */
 		nmsprintf(NMSML_DBG2, "RTCP Compound packet arrived (total len=%d)\n", len);

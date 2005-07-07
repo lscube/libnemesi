@@ -49,7 +49,29 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 		return 1;
 	}
 	
-	n=recvfrom(rtp_sess->rtpfd, &((rtp_sess->bp).bufferpool[slot]), BP_SLOT_SIZE, 0, server.addr, &server.addr_len);
+	if ( (n=recvfrom(rtp_sess->rtpfd, &((rtp_sess->bp).bufferpool[slot]), BP_SLOT_SIZE, 0, server.addr, &server.addr_len)) == -1 ) {
+		switch (errno) {
+			case EBADF:
+				nmsprintf(NMSML_ERR, "RTP recvfrom: invalid descriptor\n");
+				break;
+			case ENOTSOCK:
+				nmsprintf(NMSML_ERR, "RTP recvfrom: not a socket\n");
+				break;
+			case EINTR:
+				nmsprintf(NMSML_ERR, "RTP recvfrom: The receive was interrupted by delivery of a signal\n");
+				break;
+			case EFAULT:
+				nmsprintf(NMSML_ERR, "RTP recvfrom: The buffer points outside userspace\n");
+				break;
+			case EINVAL:
+				nmsprintf(NMSML_ERR, "RTP recvfrom: Invalid argument passed.\n");
+				break;
+			default:
+				nmsprintf(NMSML_ERR, "in RTP recvfrom\n");
+				break;
+		}
+		return 1;
+	}
 	gettimeofday(&now, NULL);
 
 	pkt=(rtp_pkt *)&((rtp_sess->bp).bufferpool[slot]);

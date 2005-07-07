@@ -26,6 +26,8 @@
  *  
  * */
 
+#include <errno.h>
+
 #include <nemesi/rtcp.h>
 
 int rtcp_recv(struct RTP_Session *rtp_sess)
@@ -41,7 +43,29 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 
 	memset(buffer, 0, 1024);
 	
-	n=recvfrom(rtp_sess->rtcpfd, buffer, 1024, 0, server.addr, &server.addr_len);
+	if ( (n=recvfrom(rtp_sess->rtcpfd, buffer, 1024, 0, server.addr, &server.addr_len)) == -1 ) {
+		switch (errno) {
+			case EBADF:
+				nmsprintf(NMSML_ERR, "RTCP recvfrom: invalid descriptor\n");
+				break;
+			case ENOTSOCK:
+				nmsprintf(NMSML_ERR, "RTCP recvfrom: not a socket\n");
+				break;
+			case EINTR:
+				nmsprintf(NMSML_ERR, "RTCP recvfrom: The receive was interrupted by delivery of a signal\n");
+				break;
+			case EFAULT:
+				nmsprintf(NMSML_ERR, "RTCP recvfrom: The buffer points outside userspace\n");
+				break;
+			case EINVAL:
+				nmsprintf(NMSML_ERR, "RTCP recvfrom: Invalid argument passed.\n");
+				break;
+			default:
+				nmsprintf(NMSML_ERR, "in RTCP recvfrom\n");
+				break;
+		}
+		return 1;
+	}
 
 	pkt=(rtcp_pkt *)buffer;
 

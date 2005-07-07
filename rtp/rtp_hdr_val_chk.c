@@ -30,6 +30,11 @@
 
 int rtp_hdr_val_chk(rtp_pkt *pkt, int len)
 {
+	if (len < (int)sizeof(rtp_pkt)) {
+		nmsprintf(NMSML_ERR, "RTP packet too small (%d: smaller than RTP header size)!!!\n", len);
+		return 1;
+	}
+
 	if ( pkt->ver != RTP_VERSION ) {
 		nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching version number!"BLANK_LINE);
 		return 1;
