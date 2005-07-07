@@ -50,15 +50,15 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 	} else {
 		nmsprintf(NMSML_DBG2, "RTCP packet arrived (total len=%d)\n", len);
 		if ( (pkt->common).ver != RTP_VERSION ){
-			nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching version number!\n"BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching RTP version number!\n"BLANK_LINE);
 			return 1;
 		}
 		if ( ! (((pkt->common).pt>=200) && ((pkt->common).pt<=204)) ){
-			nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching payload type!\n"BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching payload type!\n"BLANK_LINE);
 			return 1;
 		}
 		if ( ((pkt->common).pad) && ( *(((uint8 *)pkt)+len-1) > (pkt->common).len*4) ){
-			nmsprintf(NMSML_WARN, "RTP Header not valid: mismatching lenght!\n"BLANK_LINE);
+			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching lenght!\n"BLANK_LINE);
 			return 1;
 		}
 	}
