@@ -26,10 +26,10 @@
  *  
  * */
 
-#include <nemesi/etui.h>
+#include <nemesi/rtsp.h>
 
 // shawill: TODO: modify for protocol abstraction
-int get_infos(struct RTSP_Ctrl *rtsp_ctrl)
+void rtsp_info_print(struct RTSP_Ctrl *rtsp_ctrl)
 {
 	// tmp
 	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)rtsp_ctrl;
@@ -39,40 +39,16 @@ int get_infos(struct RTSP_Ctrl *rtsp_ctrl)
 	// struct attr *attr;
 	SDP_attr *attr;
 
-	char *sdes[/*13*/]=SDP_SESSION_FIELDS;
-#if 0
-	{ "Protocol Version",
-		"Session Identifier & Creator",
-		"Session Name",
-		"Session Info",
-		"URI Description",
-		"e-mail Address",
-		"Phone Number",
-		"Connection Info",
-		"Bandwidth Info",
-		"Active Time",
-		"I' so' llu re",
-		"Time Zone",
-		"Crypto Key"
-	};
-#endif
-	char *mdes[/*5*/]=SDP_MEDIA_FIELDS;
-#if 0
-	{ "Multimedia Type & Transport Address",
-		"Medium Title",
-		"Connection Info",
-		"Bandwidth Info",
-		"Crypto Key"
-	};
-#endif
+	char *sdes[/*13*/] =  {SDP_SESSION_FIELDS };
+	char *mdes[/*5*/] = { SDP_MEDIA_FIELDS };
 	
 	sess=rtsp_th->rtsp_queue;
 	
 	nmsprintf(NMSML_NORM, BLANK_LINE);
 
-	if (!sess){
+	if (!sess) {
 		nmsprintf(NMSML_NORM, "No Connection!\n\n");
-		return 0;
+		return;
 	}
 
 	while(sess){
@@ -96,5 +72,4 @@ int get_infos(struct RTSP_Ctrl *rtsp_ctrl)
 	}
 	nmsprintf(NMSML_ALWAYS, "\n");
 
-	return 0;
 }

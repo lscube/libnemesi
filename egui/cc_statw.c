@@ -245,7 +245,7 @@ static void cc_stbarw_upd(void *userdata)
 {
 	struct RTSP_Ctrl *rtsp_ctrl = (struct RTSP_Ctrl *)userdata;
 
-	switch (rtsp_ctrl->status) {
+	switch (rtsp_status(rtsp_ctrl)) {
 		case READY:
 		case PLAYING:
 			switch (rtsp_ctrl->descr_fmt) {

@@ -58,8 +58,13 @@ int rtsp_reinit(struct RTSP_Thread *rtsp_th)
 		}
 	}
 #endif
+	// the destruction of sdp informations must be done only once, because
+	// in all other sessions the pointer is the same and the allocated
+	// struct is one
+	sdp_session_destroy(sess->info); //!< free sdp description info
 	while(sess != NULL){
-		sdp_session_destroy(sess->info); //!< free sdp description info
+		// MUST be done only once
+		// sdp_session_destroy(sess->info); //!< free sdp description info
 		free(sess->body);
 		free(sess->content_base);
 		for(med=sess->media_queue; med; pmed=med, med=med->next, free(pmed));

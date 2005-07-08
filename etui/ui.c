@@ -73,7 +73,7 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 		if(rtsp_is_busy(rtsp_ctrl))
 			// rtsp_wait(rtsp_ctrl);
 			throbber(rtsp_ctrl);
-		fprintf(stderr, "\r[ %s ] => ", statustostr(rtsp_ctrl->status));
+		fprintf(stderr, "\r[ %s ] => ", statustostr(rtsp_status(rtsp_ctrl)));
 
 		FD_ZERO(&rdset);
 		FD_SET(STDIN_FILENO, &rdset);

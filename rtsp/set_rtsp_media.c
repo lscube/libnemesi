@@ -57,7 +57,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 					curr_rtsp_m=curr_rtsp_m->next;
 				} else if ( rtsp_th->type==M_ON_DEMAND ) {
 					/* one medium for each session */
-					if ( (curr_rtsp_s->next=rtsp_sess_copy(curr_rtsp_s))==NULL )
+					if ( (curr_rtsp_s->next=rtsp_sess_dup(curr_rtsp_s))==NULL )
 						return 1;
 					curr_rtsp_s=curr_rtsp_s->next;
 					if ( (curr_rtsp_s->media_queue=rtsp_med_create(rtsp_th->fd))==NULL )
@@ -144,7 +144,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 					curr_rtsp_m=curr_rtsp_m->next;
 				} else if ( rtsp_th->type==M_ON_DEMAND ) {
 					/* una sessione per ogni medium */
-					if ( (curr_rtsp_s->next=rtsp_sess_copy(curr_rtsp_s))==NULL )
+					if ( (curr_rtsp_s->next=rtsp_sess_dup(curr_rtsp_s))==NULL )
 						return 1;
 					curr_rtsp_s=curr_rtsp_s->next;
 					if ( (curr_rtsp_s->media_queue=rtsp_med_create(rtsp_th->fd))==NULL )

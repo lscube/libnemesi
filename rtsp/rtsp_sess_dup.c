@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-struct RTSP_Session *rtsp_sess_copy(struct RTSP_Session *curr_rtsp_s)
+struct RTSP_Session *rtsp_sess_dup(struct RTSP_Session *curr_rtsp_s)
 {
 	struct RTSP_Session *new_rtsp_s;
 

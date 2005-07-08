@@ -279,6 +279,9 @@ int rtsp_open(struct RTSP_Ctrl *, char *);
 int rtsp_pause(struct RTSP_Ctrl *, char);
 int rtsp_play(struct RTSP_Ctrl *, char *);
 int rtsp_close(struct RTSP_Ctrl *);
+// enum states rtsp_status(struct RTSP_Ctrl *);
+#define rtsp_status(ctrl) ctrl->status
+void rtsp_info_print(struct RTSP_Ctrl *);
 //
 //***** ENDOF interface functions ******************
 
@@ -337,7 +340,7 @@ void *get_curr_sess(int cmd, ...);
 
 int set_rtsp_sessions(struct RTSP_Thread *, int, char *, char *);
 int set_rtsp_media(struct RTSP_Thread *);
-struct RTSP_Session *rtsp_sess_copy(struct RTSP_Session *);
+struct RTSP_Session *rtsp_sess_dup(struct RTSP_Session *);
 struct RTSP_Session *rtsp_sess_create(char *, char *);
 struct RTSP_Medium *rtsp_med_create(int);
 int remove_pkt(struct RTSP_Thread *);

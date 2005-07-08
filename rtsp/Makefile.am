@@ -26,6 +26,7 @@ librtsp_la_SOURCES =	body_exists.c \
 			rtsp.c \
 			rtsp_clean.c \
 			rtsp_close.c \
+			rtsp_info_print.c \
 			rtsp_infos.c \
 			rtsp_init.c \
 			rtsp_is_busy.c \
@@ -35,8 +36,8 @@ librtsp_la_SOURCES =	body_exists.c \
 			rtsp_play.c \
 			rtsp_recv.c \
 			rtsp_reinit.c \
-			rtsp_sess_copy.c \
 			rtsp_sess_create.c \
+			rtsp_sess_dup.c \
 			rtsp_teardown.c \
 			rtsp_unbusy.c \
 			rtsp_wait.c \

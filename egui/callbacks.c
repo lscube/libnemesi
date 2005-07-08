@@ -67,7 +67,7 @@ void update_toolbar(void)
 	stop_but = lookup_widget(nemesi, "stop_cmd");
 	close_but = lookup_widget(nemesi, "close_cmd");
 	internal_call = TRUE;
-	switch (rtsp_ctrl->status) {
+	switch (rtsp_status(rtsp_ctrl)) {
 		case INIT:
 			gtk_widget_set_sensitive(open_but, TRUE);
 			gtk_widget_set_sensitive(play_tog, FALSE);
@@ -95,7 +95,7 @@ void update_toolbar(void)
 	internal_call = FALSE;
 	gtk_widget_set_sensitive(toolbar, TRUE);
 
-	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_ctrl->status));
+	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_status(rtsp_ctrl)));
 	gnms_stbar_update();
 	gnms_showmsgs();
 

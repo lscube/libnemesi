@@ -72,7 +72,7 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 		}
 		break;
 	case 'i':
-		get_infos(rtsp_ctrl);
+		rtsp_info_print(rtsp_ctrl);
 		break;
 	case 'p':
 		// fgets(argstr, 256, stdin);

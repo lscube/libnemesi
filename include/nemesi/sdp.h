@@ -67,13 +67,11 @@ typedef struct _SDP_attr {
 				  last. */
 } SDP_attr;
 
-#define SDP_MEDIA_FIELDS { \
-				"Multimedia Type & Transport Address", \
+#define SDP_MEDIA_FIELDS	"Multimedia Type & Transport Address", \
 				"Medium Title", \
 				"Connection Info", \
 				"Bandwidth Info", \
-				"Crypto Key" \
-			 };
+				"Crypto Key"
 /*!
  * \brief Medium imformations.
  * 
@@ -104,8 +102,7 @@ typedef struct _SDP_Medium_info {
 	struct _SDP_Medium_info *next;	/*!< Next medium informatioin struct */
 } SDP_Medium_info;
 
-#define SDP_SESSION_FIELDS { \
-				"Protocol Version", \
+#define SDP_SESSION_FIELDS	"Protocol Version", \
 				"Session Identifier & Creator", \
 				"Session Name", \
 				"Session Info", \
@@ -117,8 +114,7 @@ typedef struct _SDP_Medium_info {
 				"Active Time", \
 				"I' so' llu re", \
 				"Time Zone", \
-				"Crypto Key" \
-			   }
+				"Crypto Key"
 /*!
  * \brief Session informations
  *
@@ -164,7 +160,6 @@ typedef struct {
 	SDP_Medium_info *media_info_queue; /*!< Media information queue */
 } SDP_Session_info;
 
-SDP_Session_info *sdp_session_new(void);
 SDP_Session_info *sdp_session_setup(char *descr, int descr_len);
 SDP_Medium_info *sdp_media_setup(char **descr, int descr_len);
 int sdp_set_attr(SDP_attr **attr_list, char *a);

@@ -57,22 +57,6 @@ struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
 	rtsp_s->next=NULL;
 
 	rtsp_s->info=NULL;
-	/*
-	(rtsp_s->info).v=NULL;
-	(rtsp_s->info).o=NULL;
-	(rtsp_s->info).s=NULL;
-	(rtsp_s->info).i=NULL;
-	(rtsp_s->info).u=NULL;
-	(rtsp_s->info).e=NULL;
-	(rtsp_s->info).p=NULL;
-	(rtsp_s->info).c=NULL;
-	(rtsp_s->info).b=NULL;
-	(rtsp_s->info).t=NULL;
-	(rtsp_s->info).r=NULL;
-	(rtsp_s->info).z=NULL;
-	(rtsp_s->info).k=NULL;
-	(rtsp_s->info).attr_list=NULL;
-	*/
 
 	return rtsp_s;
 }
