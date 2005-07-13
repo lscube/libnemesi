@@ -11,7 +11,8 @@ noinst_LTLIBRARIES = libdecoder.la
 
 libdecoder_la_SOURCES =	decoder.c \
 			dec_create.c \
-			dec_clean.c
+			dec_clean.c \
+			dec_idle.c
 
 libdecoder_la_LDFLAGS = -static
 

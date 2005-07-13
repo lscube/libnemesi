@@ -278,7 +278,7 @@ int rtsp_close(struct RTSP_Ctrl *);
 int rtsp_open(struct RTSP_Ctrl *, char *);
 int rtsp_pause(struct RTSP_Ctrl *, char);
 int rtsp_play(struct RTSP_Ctrl *, char *);
-int rtsp_close(struct RTSP_Ctrl *);
+int rtsp_uninit(struct RTSP_Ctrl *);
 // enum states rtsp_status(struct RTSP_Ctrl *);
 #define rtsp_status(ctrl) ctrl->status
 void rtsp_info_print(struct RTSP_Ctrl *);

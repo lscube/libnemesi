@@ -42,6 +42,7 @@
 void *decoder(void *);
 
 int dec_create(struct Dec_args *);
+void dec_idle(void);
 void dec_clean(void *);
 
 #endif

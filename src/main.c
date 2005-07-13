@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 		if ((n=ui(rtsp_ctrl, &ui_hints, argc, argv)) > 0)
 			exit(1);
 
-	rtsp_close(rtsp_ctrl);
+	rtsp_uninit(rtsp_ctrl);
 
 	output_uninit();
 

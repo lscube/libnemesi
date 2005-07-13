@@ -262,9 +262,7 @@ void *decoder(void *args)
 			ts_min_next = 0;
 
 		} else { // Buffer di Rete vuoto => dormiamo un po'
-			tvsleep.tv_sec = 0;
-			tvsleep.tv_usec = 1000;
-			select(0, NULL, NULL, NULL, &tvsleep);
+			dec_idle();
 /**/
 			/*
 			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
