@@ -1,8 +1,8 @@
 Summary: standards-compliant multimedia streaming client
 Name: nemesi
-Version: 0.5.2
+Version: 0.5.3
 Release: 0
-Copyright: GPL
+License: GPL
 Group: Applications/Internet
 Vendor: OMSP Team (http://streaming.polito.it)
 Packager: OMSP Team (http://streaming.polito.it)
@@ -55,6 +55,7 @@ rm -rf %{buildroot}
 %{_libdir}/%{name}/plugins/gsm_amr_float.*
 %{_libdir}/%{name}/plugins/L16_8k_m.*
 %{_libdir}/%{name}/plugins/libffmpeg.*
+%{_libdir}/%{name}/plugins/libffmpeg4.*
 
 %{_datadir}/%{name}/throbber/*.png
 %{_datadir}/%{name}/pixmaps/*.png
