@@ -1,3 +1,9 @@
+nemesi (0.5.3) unstable; urgency=low
+
+  * No changes
+
+ -- OMSP Team <team@streaming.polito.it>  Tue, 26 Jul 2005 17:44:13 +0200
+
 nemesi (0.5.2) unstable; urgency=low
 
   * Changes to debian packet no more needed.

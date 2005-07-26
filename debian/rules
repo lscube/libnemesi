@@ -35,7 +35,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-	-$(MAKE) clean
+	-$(MAKE) -s clean
 	find . -name "*~" | xargs rm -f
 	dh_clean 
 
@@ -44,7 +44,7 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/nemesi
+	$(MAKE) -s install DESTDIR=$(CURDIR)/debian/nemesi
 
 
 # Build architecture-independent files here.
