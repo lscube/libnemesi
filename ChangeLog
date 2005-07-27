@@ -1,5 +1,190 @@
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
+NEMESI 0.5.3
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+r256 | mancho | 2005-07-26 17:51:17 +0200 (Tue, 26 Jul 2005) | 2 lines
+
+Updating the debian subdir
+
+------------------------------------------------------------------------
+r255 | mancho | 2005-07-26 16:58:42 +0200 (Tue, 26 Jul 2005) | 2 lines
+
+Preparing release 0.5.3
+
+------------------------------------------------------------------------
+r244 | shawill | 2005-07-13 18:39:35 +0200 (Wed, 13 Jul 2005) | 3 lines
+
+rtsp_teardown.c contained the right rtsp_close function:
+   renamed to rtsp_close.c
+
+------------------------------------------------------------------------
+r243 | shawill | 2005-07-13 18:34:15 +0200 (Wed, 13 Jul 2005) | 3 lines
+
+rtsp_close function was declared twice and both does something completely different from the other. Sorry...
+Some little changes in decoder.
+
+------------------------------------------------------------------------
+r238 | shawill | 2005-07-08 18:22:51 +0200 (Fri, 08 Jul 2005) | 2 lines
+
+Some other little changes in rtsp interface.
+
+------------------------------------------------------------------------
+r232 | shawill | 2005-07-07 17:34:00 +0200 (Thu, 07 Jul 2005) | 3 lines
+
+- rtp_recv, rtcp_recv: some new checks after recvfrom function,
+- rtp_hdr_val_chk and rtcp_hdr_val_chk first of all check if the received size is, at least, the header size.
+
+------------------------------------------------------------------------
+r229 | shawill | 2005-07-07 16:19:54 +0200 (Thu, 07 Jul 2005) | 2 lines
+
+Fixed some error messages in RTCP header checks.
+
+------------------------------------------------------------------------
+r221 | shawill | 2005-06-30 11:31:07 +0200 (Thu, 30 Jun 2005) | 3 lines
+
+Forgive me... I forgot again to add a file.
+however, "rtsp_infos" is not used at present time.
+
+------------------------------------------------------------------------
+r217 | shawill | 2005-06-29 18:40:25 +0200 (Wed, 29 Jun 2005) | 8 lines
+
+Functions for opening, playing, pausing, closing an RTSP session has been moved
+in rtsp/ dir from etui.  It only remains the 'get_infos' function to be moved.
+The rtsp_infos is not usable yet, 'cause I should think a good way to return
+sessions information from rtsp to the user interface.
+After that I will move my attention to decoder side, and then "libification"
+will be complete.
+
+
+------------------------------------------------------------------------
+r213 | shawill | 2005-06-27 16:30:15 +0200 (Mon, 27 Jun 2005) | 9 lines
+
+- Added some other interface functions to rtsp:
+   rtsp_is_busy: check if RTSP thread is waiting for some response from server,
+   rtsp_wait: wait for RTSP thread to become available.
+- Added some internal functions:
+   rtsp_unbusy: set the RTSP Thread available again.
+- removed som odd RTSP "busy" manipulations.
+- fixed some return checks for mutex, mutexattr, cond, condattr functions.
+
+
+------------------------------------------------------------------------
+r205 | shawill | 2005-06-20 19:59:38 +0200 (Mon, 20 Jun 2005) | 3 lines
+
+Removed some warnings/errors given by gcc4.
+Some other small (small small) changes in rtsp.
+
+------------------------------------------------------------------------
+r201 | shawill | 2005-06-16 14:54:01 +0200 (Thu, 16 Jun 2005) | 4 lines
+
+Some functions have been renamed.
+The colors of console don't set the background anymore, avoiding that
+tremendous effect if the backgournd of the user terminal wasn't black.
+
+------------------------------------------------------------------------
+r194 | shawill | 2005-05-23 18:25:22 +0200 (Mon, 23 May 2005) | 2 lines
+
+rtp_transport_X wrappers completed.
+
+------------------------------------------------------------------------
+r192 | shawill | 2005-05-20 18:25:25 +0200 (Fri, 20 May 2005) | 2 lines
+
+Forgot to add rtp_trasport_wrappers.c source file.
+
+------------------------------------------------------------------------
+r190 | shawill | 2005-05-20 18:16:21 +0200 (Fri, 20 May 2005) | 2 lines
+
+rtp transport wrappers for RTP libnemesi. (begin)
+
+------------------------------------------------------------------------
+r188 | shawill | 2005-05-20 11:10:29 +0200 (Fri, 20 May 2005) | 2 lines
+
+Merge tries... dummy commit
+
+------------------------------------------------------------------------
+r186 | shawill | 2005-05-20 10:54:16 +0200 (Fri, 20 May 2005) | 2 lines
+
+Sorry, a little/big bug in init_rtp_sess... to much work... to much things in mind!!!
+
+------------------------------------------------------------------------
+r185 | shawill | 2005-05-19 13:56:03 +0200 (Thu, 19 May 2005) | 2 lines
+
+NeMeSI now recognize if the source tree is from SVN or from release.
+
+------------------------------------------------------------------------
+r184 | shawill | 2005-05-19 12:22:15 +0200 (Thu, 19 May 2005) | 2 lines
+
+Tries for revision number in version.h header.
+
+------------------------------------------------------------------------
+r183 | shawill | 2005-05-17 19:32:41 +0200 (Tue, 17 May 2005) | 2 lines
+
+Starting NeMeSI libification.
+
+------------------------------------------------------------------------
+r182 | shawill | 2005-05-17 12:36:33 +0200 (Tue, 17 May 2005) | 2 lines
+
+Initialization bugfixes in RTP/RTCP packet receivers.
+
+------------------------------------------------------------------------
+r181 | shawill | 2005-05-16 20:04:30 +0200 (Mon, 16 May 2005) | 2 lines
+
+mpeg1 and mpeg4 plugins calculate fps from bitstream.
+
+------------------------------------------------------------------------
+r180 | shawill | 2005-05-16 16:43:45 +0200 (Mon, 16 May 2005) | 2 lines
+
+Some other adjustments to network structures.
+
+------------------------------------------------------------------------
+r179 | shawill | 2005-05-12 17:56:38 +0200 (Thu, 12 May 2005) | 2 lines
+
+Checks in order to avoid mismach between IPv6 and IPv4.
+
+------------------------------------------------------------------------
+r178 | shawill | 2005-05-12 17:28:44 +0200 (Thu, 12 May 2005) | 2 lines
+
+IPv6 checks in configure. This should fix 174-177 rev problems.
+
+------------------------------------------------------------------------
+r177 | shawill | 2005-05-12 13:17:16 +0200 (Thu, 12 May 2005) | 3 lines
+
+Some problems with new structures:
+WARNING: from rev. 174 nemesi could not behave right.
+
+------------------------------------------------------------------------
+r176 | shawill | 2005-05-12 12:26:28 +0200 (Thu, 12 May 2005) | 3 lines
+
+nmsprintf format error in init_rtp.c
+
+
+------------------------------------------------------------------------
+r175 | shawill | 2005-05-12 12:20:36 +0200 (Thu, 12 May 2005) | 2 lines
+
+different debug messages for network type in init_rtp.c
+
+------------------------------------------------------------------------
+r174 | shawill | 2005-05-11 19:20:45 +0200 (Wed, 11 May 2005) | 3 lines
+
+sockaddr_in structres converted to sockaddr and sockaddr storage:
+NeMeSI should be IPv6 compatible now!
+
+------------------------------------------------------------------------
+r173 | shawill | 2005-04-14 16:34:26 +0200 (Thu, 14 Apr 2005) | 5 lines
+
+New option:
+-p|--first-port n: Force RTP/RTCP ports choise.
+RTSP library, command line parser, and man page updated for this capability.
+look at man page for further informations.
+
+------------------------------------------------------------------------
+r172 | mancho | 2005-03-21 11:58:18 +0100 (Mon, 21 Mar 2005) | 2 lines
+
+NeMeSI 0.5.2
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
 NEMESI 0.5.2
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
