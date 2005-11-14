@@ -273,7 +273,7 @@ AC_SUBST(nemesi_throbberdir)
 nemesi_pixmapdir="$nemesi_sharedir"/pixmaps
 AC_SUBST(nemesi_pixmapdir)
 
-if test -f configure.ac; then
+if test -f svnrev.h; then
 	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
 fi
 

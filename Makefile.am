@@ -57,3 +57,4 @@ maintainer-clean-local:
 	find -iname Makefile.in -exec rm \{} \;
 
 svnclean: maintainer-clean
+	@echo -e "/* This header is just for keeping track of current SVN revision.\n * If this file is present in the sources tree then this is a development SVN\n * version.\n * `date`\n * */\n\n#ifndef __SVNREV_H\n#define __SVNREV_H\n\n#define SVNREV \"\$$Rev$$\"\n\n#endif // __SVNREV_H\n" > svnrev.h

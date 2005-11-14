@@ -35,7 +35,8 @@
 #define VERSION "0.4.0"
 #endif
 #ifdef NEMESI_SVN
-#define SVNREV "$Rev$"
+// #define SVNREV "$Rev$"
+#include <svnrev.h>
 #endif
 #define VERSION_NAME "Kettle Shaft"
 #define PROG_NAME "NeMeSI"
