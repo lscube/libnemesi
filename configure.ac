@@ -287,20 +287,21 @@ AC_DEFINE_UNQUOTED(NEMESI_PIXMAPS_DIR_DEFAULT, "$nemesi_pixmapdir", [Define defa
 AC_DEFINE(NEMESI_PIXMAPS_DIR_ENV, "NEMESI_PIXMAP_DIR",[Define the name for the ENV variable forn NeMeSI pixmaps dir])
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([bufferpool/Makefile])
+AC_CONFIG_FILES([libNeMeSI/bufferpool/Makefile])
 AC_CONFIG_FILES([etui/Makefile])
 
 dnl if test x$NEMESI_HAVE_GTK = xyes; then
 AC_CONFIG_FILES([egui/Makefile])
 dnl fi
 
-AC_CONFIG_FILES([libCCstreaming/Makefile])
-AC_CONFIG_FILES([rtp/Makefile])
-AC_CONFIG_FILES([rtcp/Makefile])
-AC_CONFIG_FILES([sdp/Makefile])
-AC_CONFIG_FILES([rtsp/Makefile])
+AC_CONFIG_FILES([libNeMeSI/libCCstreaming/Makefile])
+AC_CONFIG_FILES([libNeMeSI/rtp/Makefile])
+AC_CONFIG_FILES([libNeMeSI/rtcp/Makefile])
+AC_CONFIG_FILES([libNeMeSI/sdp/Makefile])
+AC_CONFIG_FILES([libNeMeSI/rtsp/Makefile])
 AC_CONFIG_FILES([src/Makefile])
-AC_CONFIG_FILES([wsocket/Makefile])
+AC_CONFIG_FILES([libNeMeSI/wsocket/Makefile])
+AC_CONFIG_FILES([libNeMeSI/Makefile])
 AC_CONFIG_FILES([output/Makefile])
 AC_CONFIG_FILES([output/audio/Makefile])
 AC_CONFIG_FILES([output/video/Makefile])
@@ -315,7 +316,8 @@ AC_CONFIG_FILES([decoder/libffmpeg/Makefile])
 AC_CONFIG_FILES([decoder/libffmpeg4/Makefile])
 dnl fi
 
-AC_CONFIG_FILES([md5/Makefile])
+AC_CONFIG_FILES([libNeMeSI/md5/Makefile])
+AC_CONFIG_FILES([libNeMeSI/utils/Makefile])
 AC_CONFIG_FILES([plugins/Makefile])
 AC_CONFIG_FILES([docs/Makefile])
 AC_OUTPUT

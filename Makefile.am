@@ -1,14 +1,7 @@
-SUBDIRS =	bufferpool \
-		wsocket \
-		md5 \
-		rtp \
-		rtcp \
-		libCCstreaming \
-		sdp \
-		rtsp \
-		output \
-		decoder \
-		etui
+SUBDIRS =	libNeMeSI \
+			output \
+			decoder \
+			etui
 
 if NEMESI_HAVE_GTK
 SUBDIRS += egui

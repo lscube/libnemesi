@@ -1,0 +1,6 @@
+#!/bin/bash
+
+./autogen.sh && \
+# ./configure --enable-debug --enable-verbose --enable-warnings=normal && \
+./configure --enable-debug --enable-warnings=normal $* && \
+./build
