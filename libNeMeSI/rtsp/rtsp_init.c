@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_init.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -115,6 +115,9 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 			nmsprintf(NMSML_WARN, "RTP ports forced by user (not randomly generated)\n");
 		}
 	}
+	
+	if ( (rtsp_th->rtp_th = nms_rtp_init()) )
+		RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n")
 
 	cmd[0] = open_cmd;
 	cmd[1] = play_cmd;

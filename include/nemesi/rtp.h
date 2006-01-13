@@ -206,6 +206,12 @@ struct RTP_Session {
 	pthread_mutex_t syn;
 };
 
+struct nmsRTPth {
+	struct RTP_Session *rtp_sess_head;
+	// struct timeval startime;
+	pthread_mutex_t syn;
+};
+
 struct Dec_args {
 	struct RTP_Session *rtp_sess_head;
 	// struct timeval startime;
@@ -219,8 +225,9 @@ enum proto_types {
 
 void *rtp(void *);
 
+struct nmsRTPth *nms_rtp_init(void);
 struct RTP_Session *init_rtp_sess(NMSsockaddr *, NMSsockaddr *);
-int rtp_thread_create(struct RTP_Session *);
+int rtp_thread_create(struct RTP_Session *); // something like rtp_run could be better?
 
 int rtp_recv(struct RTP_Session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);

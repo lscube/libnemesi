@@ -1,5 +1,5 @@
 /* * 
- *  $Id:rtp_thread_create.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,23 +27,22 @@
  * */
 
 #include <nemesi/rtp.h>
+#include <nemesi/comm.h>
 
-int rtp_thread_create(struct RTP_Session *rtp_sess_head)
+struct nmsRTPth *nms_rtp_init(void)
 {
-	struct RTP_Session *rtp_sess;
-	int n;
-	pthread_attr_t rtp_attr;
-	pthread_t rtp_tid;
-
-	pthread_attr_init(&rtp_attr);
-	if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		return nmsprintf(NMSML_FATAL, "Cannot set RTP Thread attributes (detach state)\n");
-
-	if ((n=pthread_create(&rtp_tid, &rtp_attr, &rtp, (void *)rtp_sess_head)) > 0)
-		return nmsprintf(NMSML_FATAL, "%s\n", strerror(n));
-
-	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
-		rtp_sess->rtp_tid=rtp_tid;
+	struct nmsRTPth *rtp_th;
 	
-	return 0;
+	if ( !(rtp_th = (struct nmsRTPth *) calloc(1, sizeof(struct nmsRTPth))) ) {
+		nmsprintf(NMSML_FATAL, "Could not alloc memory!\n");
+		return NULL;
+	}
+	
+	
+	if ( pthread_mutex_init(&(rtp_th->syn), NULL) )
+		return NULL;
+	/* Decoder blocked 'till buffering is complete */
+	pthread_mutex_lock(&(rtp_th->syn));
+	
+	return rtp_th;
 }

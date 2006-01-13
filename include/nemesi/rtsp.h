@@ -214,7 +214,8 @@ struct RTSP_buffer {
 /*!
  * \brief Definition of the common part for RTSP_Thread and RTSP_Ctrl structs
  */
-#define RTSP_COMMON_IF	int pipefd[2]; \
+#define RTSP_COMMON_IF \
+			int pipefd[2]; \
 			pthread_mutex_t comm_mutex; \
 			struct command *comm; \
 			enum states status;	/*!< Current RTSP state-machine status */ \
@@ -259,6 +260,7 @@ struct RTSP_Thread {
 	char *urlname;		/*!< URL della richiesta. */
 	struct RTSP_buffer in_buffer;	/*!< Buffer di input dei dati. */
 	// struct RTSP_Session *rtsp_queue;/*!< Lista delle sessioni attive. */
+	struct nmsRTPth *rtp_th;
 };
 
 struct RTSP_Ctrl {
