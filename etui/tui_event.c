@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,27 +26,20 @@
  *  
  * */
 
-#include <nemesi/decoder.h>
+#include <nemesi/etui.h>
 
-pthread_t dec_create(struct RTSP_Ctrl *rtsp_ctrl)
+int tui_event(struct RTSP_Ctrl *rtsp_ctrl, char event)
 {
-	struct RTP_Session *rtp_sess_head=((struct RTSP_Thread *)rtsp_ctrl)->rtp_th->rtp_sess_head;
-	struct RTP_Session *rtp_sess;
-	int n;
-	pthread_attr_t dec_attr;
-	pthread_t dec_tid;
-
-	pthread_attr_init(&dec_attr);
-	if ( pthread_attr_setdetachstate(&dec_attr, PTHREAD_CREATE_JOINABLE) != 0) {
-		nmsprintf(NMSML_FATAL, "Cannot set Decoder Thread attributes!\n");
-		return 0;
+	switch (event) {
+		case 'q':
+			nmsprintf(NMSML_ALWAYS, "quit!\n");
+			nmsClose(rtsp_ctrl);
+			return 1;
+			break;
+		default:
+			return -1;
+			break;
 	}
-
-/*	pthread_attr_setschedpolicy(&dec_attr, SCHED_RR);*/
-	if((n=pthread_create(&dec_tid, &dec_attr, &decoder, (void *) ((struct RTSP_Thread *)rtsp_ctrl)->rtp_th)) > 0) {
-		nmsprintf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n", strerror(n));
-		return 0;
-	}
-
-	return dec_tid;
+	
+	return 0;
 }

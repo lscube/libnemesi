@@ -159,7 +159,7 @@ struct RTCP_Event {
 typedef struct rtcp_sdes rtcp_sdes_t;
 
 void *rtcp(void *);
-int rtcp_thread_create(struct RTP_Session *rtp_sess);
+int rtcp_thread_create(struct nmsRTPth *);
 void rtcp_clean(void *);
 void rtcp_clean_events(void *);
 

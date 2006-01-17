@@ -1,6 +1,7 @@
 .NOTPARALLEL: nemesi
 
 nemesiincludedir = $(top_srcdir)/include
+libnmsdir = $(top_srcdir)/libnms
 
 noinst_LTLIBRARIES = libplugins.la
 
@@ -12,8 +13,9 @@ libplugins_la_LDFLAGS = -static
 bin_PROGRAMS = nemesi
 
 nemesi_SOURCES =	main.c \
-			output_init.c \
-			output_uninit.c
+				output_init.c \
+				output_uninit.c \
+				nmsOpen.c
 
 
 nemesi_LDADD =	$(top_srcdir)/etui/libetui.la
@@ -22,7 +24,7 @@ if NEMESI_HAVE_GTK
 nemesi_LDADD +=	$(top_srcdir)/egui/libegui.la
 endif
 
-nemesi_LDADD += $(top_srcdir)/libNeMeSI/libnemesi.la\
+nemesi_LDADD += $(libnmsdir)/libnemesi.la\
 				$(top_srcdir)/decoder/libdecoder.la \
 				$(top_srcdir)/src/libplugins.la \
 				$(top_srcdir)/output/audio/libaudio.la \

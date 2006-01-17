@@ -34,29 +34,22 @@
 
 void *rtp(void *args)
 {
-	struct RTP_Session *rtp_sess_head=((struct RTP_Session *)args);
+	struct RTP_Session *rtp_sess_head=((struct nmsRTPth *)args)->rtp_sess_head;
+	pthread_mutex_t *syn = &((struct nmsRTPth *)args)->syn;
 	struct RTP_Session *rtp_sess;
 	struct timeval tv;
-	struct Dec_args *dec_args;
 	int maxfd=0;
 	
 	fd_set readset;
-	// char first=1;
 	char buffering=1;
 	
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		bpinit(&(rtp_sess->bp));
 	
-	if((dec_args=(struct Dec_args *)malloc(sizeof(struct Dec_args))) == NULL) {
-		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
-		pthread_exit(NULL);
-	}
-	dec_args->rtp_sess_head=rtp_sess_head;
-	
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 /*	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
-	pthread_cleanup_push(rtp_clean, (void *)dec_args);
+	pthread_cleanup_push(rtp_clean, (void *)args);
 
 	/* Playout Buffer Size */
 	/*
@@ -67,18 +60,7 @@ void *rtp(void *args)
 	// dec_args->startime.tv_usec=PO_BUFF_SIZE_MSEC*(1000);
 	/* 500 msec */
 
-	if ( pthread_mutex_init(&(dec_args->syn), NULL) )
-		pthread_exit(NULL);
-	/* Decoder bloccato fino alla ricezione del primo pkt */
-	pthread_mutex_lock(&(dec_args->syn));
-
-	if(dec_create(dec_args))
-		pthread_exit(NULL);
-
 	while(1){
-		/*
-		pthread_testcancel();
-		*/
 		FD_ZERO(&readset);
 
 		for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next){
@@ -90,15 +72,9 @@ void *rtp(void *args)
 		
 		for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 			if (FD_ISSET(rtp_sess->rtpfd, &readset)){
-				/*
-				if(first){
-					first=!first;
-					pthread_mutex_unlock(&(dec_args->syn));
-				}
-				*/
 				if (buffering) {
 					if (rtp_sess->bp.flcount > BP_SLOT_NUM/2) {
-						pthread_mutex_unlock(&(dec_args->syn));
+						pthread_mutex_unlock(syn);
 						buffering=0;
 					} else { // TODO: buffering based on rtp jitter
 						nmsprintf(NMSML_NORM, "\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));

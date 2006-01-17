@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,7 +30,7 @@
 
 void *rtcp(void *args)
 {
-	struct RTP_Session *rtp_sess_head=((struct RTP_Session *)args);
+	struct RTP_Session *rtp_sess_head=((struct nmsRTPth *)args)->rtp_sess_head;
 	struct RTP_Session *rtp_sess;
 	struct RTCP_Event *head=NULL;
 	int maxfd=0, ret;

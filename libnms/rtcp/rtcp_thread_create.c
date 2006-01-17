@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_thread_create.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,27 +26,19 @@
  *  
  * */
 
-#include <nemesi/decoder.h>
+#include <nemesi/rtcp.h>
 
-pthread_t dec_create(struct RTSP_Ctrl *rtsp_ctrl)
+int rtcp_thread_create(struct nmsRTPth *rtp_th)
 {
-	struct RTP_Session *rtp_sess_head=((struct RTSP_Thread *)rtsp_ctrl)->rtp_th->rtp_sess_head;
-	struct RTP_Session *rtp_sess;
 	int n;
-	pthread_attr_t dec_attr;
-	pthread_t dec_tid;
+	pthread_attr_t rtcp_attr;
 
-	pthread_attr_init(&dec_attr);
-	if ( pthread_attr_setdetachstate(&dec_attr, PTHREAD_CREATE_JOINABLE) != 0) {
-		nmsprintf(NMSML_FATAL, "Cannot set Decoder Thread attributes!\n");
-		return 0;
-	}
+	pthread_attr_init(&rtcp_attr);
+	if (pthread_attr_setdetachstate(&rtcp_attr, PTHREAD_CREATE_JOINABLE) != 0)
+		return nmsprintf(NMSML_FATAL, "Cannot set RTCP Thread attributes!\n");
 
-/*	pthread_attr_setschedpolicy(&dec_attr, SCHED_RR);*/
-	if((n=pthread_create(&dec_tid, &dec_attr, &decoder, (void *) ((struct RTSP_Thread *)rtsp_ctrl)->rtp_th)) > 0) {
-		nmsprintf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n", strerror(n));
-		return 0;
-	}
-
-	return dec_tid;
+	if ((n=pthread_create(&rtp_th->rtcp_tid, &rtcp_attr, &rtcp, (void *)rtp_th)) > 0)
+		return nmsprintf(NMSML_FATAL, "%s\n", strerror(n));
+	
+	return 0;
 }

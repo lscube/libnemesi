@@ -179,9 +179,9 @@ on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
 	if (internal_call)
 		return;
 	if (gtk_toggle_tool_button_get_active(togglebutton))
-		rtsp_play(rtsp_ctrl, argstr);
+		nmsPlay(rtsp_ctrl, argstr);
 	else
-		rtsp_pause(rtsp_ctrl, 'z');
+		nmsPause(rtsp_ctrl);
 
 	gui_throbber(&rtsp_ctrl->busy);
 
@@ -191,7 +191,7 @@ void
 on_stop_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-	rtsp_pause(rtsp_ctrl, 's');
+	nmsPause(rtsp_ctrl);
 	gui_throbber(&rtsp_ctrl->busy);
 }
 
@@ -200,7 +200,7 @@ void
 on_close_cmd_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-	rtsp_close(rtsp_ctrl);
+	nmsClose(rtsp_ctrl);
 	gui_throbber(&rtsp_ctrl->busy);
 }
 
@@ -317,8 +317,7 @@ on_opendialog_response                 (GtkDialog       *dialog,
 			gtk_widget_hide(opendialog);
 			*/
 			nmsprintf(NMSML_DBG1, "%s\n", true_url);
-			rtsp_open(rtsp_ctrl, true_url);
-			gui_throbber(&rtsp_ctrl->busy);
+			nmsOpen(rtsp_ctrl, true_url, gui_throbber, &rtsp_ctrl->busy);
 			break;
 		case GTK_RESPONSE_CLOSE:
 			nmsprintf(NMSML_DBG3, "response: CLOSE\n");

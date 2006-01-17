@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtp_clean.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,25 +30,16 @@
 
 void rtp_clean(void *args)
 {
-	struct RTP_Session *rtp_sess=((struct Dec_args *)args)->rtp_sess_head;
+	struct nmsRTPth *rtp_th = (struct nmsRTPth *)args;
+	struct RTP_Session *rtp_sess=rtp_th->rtp_sess_head;
 	struct RTP_Session *prev_rtp_sess;
 	struct Stream_Source *csrc, *psrc;
 	struct Conflict *conf, *pconf;
-	void *ret;
 	int i;
 	
 	nmsprintf(NMSML_DBG1, "RTP Thread is dying suicide!\n");
-
-	if(rtp_sess->dec_tid > 0) {
-		nmsprintf(NMSML_DBG1, "Sending cancel signal to Decoder Thread (ID: %lu)\n", rtp_sess->dec_tid);
-		if (pthread_cancel(rtp_sess->dec_tid) != 0)
-			nmsprintf(NMSML_DBG2, "Error while sending cancelation to Decoder Thread.\n");
-		else
-			pthread_join(rtp_sess->dec_tid, (void **)&ret);
-		if ( ret != PTHREAD_CANCELED )
-			nmsprintf(NMSML_DBG2, "Warning! Decoder Thread joined, but  not canceled!\n");
-	}
-	rtp_sess->dec_tid = -1;
+	pthread_mutex_lock(&rtp_th->syn);
+	
 	while(rtp_sess != NULL) {
 		close(rtp_sess->rtpfd);
 		close(rtp_sess->rtcpfd);
@@ -82,6 +73,7 @@ void rtp_clean(void *args)
 		rtp_sess=rtp_sess->next;
 		free(prev_rtp_sess);
 	}
-	free((struct Dec_args *)args);
+	rtp_th->rtp_sess_head = NULL;
+
 	nmsprintf(NMSML_DBG1, "RTP Thread R.I.P.\n");
 }

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:init_state.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -59,12 +59,13 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 		// if (get_curr_sess(rtsp_th, NULL, NULL)) {
 		if (!get_curr_sess(GCS_NXT_MED)) {
 			/* Nessun altra SETUP da inviare */
+			rtsp_th->rtp_th->rtp_sess_head = rtsp_th->rtsp_queue->media_queue->rtp_sess;
 			/* Esecuzione del Thread RTP: uno per ogni sessione RTSP */
-			if (rtp_thread_create(rtsp_th->rtsp_queue->media_queue->rtp_sess))
+			if (rtp_thread_create(rtsp_th->rtp_th))
 				return nmsprintf(NMSML_FATAL, "Cannot create RTP Thread!\n");
 
 			/* Esecuzione del Thread RTCP: uno per ogni sessione RTSP */
-			if (rtcp_thread_create(rtsp_th->rtsp_queue->media_queue->rtp_sess))
+			if (rtcp_thread_create(rtsp_th->rtp_th))
 				return nmsprintf(NMSML_FATAL, "Cannot create RTCP Thread!\n");
 
 			rtsp_th->status = READY;

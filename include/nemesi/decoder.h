@@ -34,6 +34,7 @@
 #include <sys/time.h>
 #include <pthread.h>
 
+#include <nemesi/rtsp.h>
 #include <nemesi/rtp.h>
 #include <nemesi/comm.h>
 #include <nemesi/bufferpool.h>
@@ -41,7 +42,8 @@
 
 void *decoder(void *);
 
-int dec_create(struct Dec_args *);
+//int dec_create(struct nmsRTPth *);
+pthread_t dec_create(struct RTSP_Ctrl *);
 void dec_idle(void);
 void dec_clean(void *);
 

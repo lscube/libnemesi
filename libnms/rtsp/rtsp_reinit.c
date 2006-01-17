@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_reinit.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -38,23 +38,25 @@ int rtsp_reinit(struct RTSP_Thread *rtsp_th)
 #if 1 // TODO: fix last teardown response wait
 	// check for active rtp/rtcp session
 	if(sess && sess->media_queue && sess->media_queue->rtp_sess) {
-		if(sess->media_queue->rtp_sess->rtcp_tid > 0){
-			nmsprintf(NMSML_DBG1, "Sending cancel signal to RTCP Thread (ID: %lu)\n", sess->media_queue->rtp_sess->rtcp_tid);
-			if (pthread_cancel(sess->media_queue->rtp_sess->rtcp_tid) != 0)
+		if(rtsp_th->rtp_th->rtcp_tid > 0){
+			nmsprintf(NMSML_DBG1, "Sending cancel signal to RTCP Thread (ID: %lu)\n", rtsp_th->rtp_th->rtcp_tid);
+			if (pthread_cancel(rtsp_th->rtp_th->rtcp_tid) != 0)
 				nmsprintf(NMSML_DBG2, "Error while sending cancelation to RTCP Thread.\n");
 			else
-				pthread_join(sess->media_queue->rtp_sess->rtcp_tid, (void **)&ret);
+				pthread_join(rtsp_th->rtp_th->rtcp_tid, (void **)&ret);
 			if ( ret != PTHREAD_CANCELED )
 				nmsprintf(NMSML_DBG2, "Warning! RTCP Thread joined, but  not canceled!\n");
+			rtsp_th->rtp_th->rtcp_tid = 0;
 		}
-		if(sess->media_queue->rtp_sess->rtp_tid > 0){
-			nmsprintf(NMSML_DBG1, "Sending cancel signal to RTP Thread (ID: %lu)\n", sess->media_queue->rtp_sess->rtp_tid);
-			if(pthread_cancel(sess->media_queue->rtp_sess->rtp_tid) != 0)
+		if(rtsp_th->rtp_th->rtp_tid > 0){
+			nmsprintf(NMSML_DBG1, "Sending cancel signal to RTP Thread (ID: %lu)\n", rtsp_th->rtp_th->rtp_tid);
+			if(pthread_cancel(rtsp_th->rtp_th->rtp_tid) != 0)
 				nmsprintf(NMSML_DBG2, "Error while sending cancelation to RTP Thread.\n");
 			else
-				pthread_join(sess->media_queue->rtp_sess->rtp_tid, (void **)&ret);
+				pthread_join(rtsp_th->rtp_th->rtp_tid, (void **)&ret);
 			if( ret != PTHREAD_CANCELED)
 				nmsprintf(NMSML_DBG2, "Warning! RTP Thread joined, but not canceled.\n");
+			rtsp_th->rtp_th->rtp_tid = 0;
 		}
 	}
 #endif

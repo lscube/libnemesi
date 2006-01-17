@@ -116,7 +116,8 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 		}
 	}
 	
-	if ( (rtsp_th->rtp_th = nms_rtp_init()) )
+	// hook to rtp lib
+	if ( !(rtsp_th->rtp_th = nms_rtp_init()) )
 		RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n")
 
 	cmd[0] = open_cmd;

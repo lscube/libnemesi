@@ -14,7 +14,7 @@
 
 #include "interface.h"
 #include "support.h"
-#include "callbacks.c"
+#include "callbacks.h"
 
 #include "gui_throbber.h"
 #include "gnmsprint.h"
@@ -70,12 +70,12 @@ int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints * ui_hints, int argc, char *argv
 
 	if (ui_hints->url) {
 		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
-		rtsp_open(rtsp_ctrl, ui_hints->url);
+		nmsOpen(rtsp_ctrl, ui_hints->url, gui_throbber, &rtsp_ctrl->busy);
+		while (gtk_events_pending ()) gtk_main_iteration ();
+		nmsPlay(rtsp_ctrl, NULL);
 		gui_throbber(&rtsp_ctrl->busy);
-	}			/* else
-				   nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
-				 */
-
+	}
+	
 	gtk_main();
 	return 0;
 }

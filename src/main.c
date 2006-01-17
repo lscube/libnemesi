@@ -31,6 +31,7 @@
 #include <nemesi/main.h>
 #include <nemesi/etui.h>
 #include <nemesi/egui.h>
+#include <nemesi/decoder.h>
 
 #define GLOBAL_RTP_DEFS
 #include <nemesi/rtpptdefs.h>
@@ -75,7 +76,6 @@ int main(int argc, char *argv[])
 
 	if ( !(rtsp_ctrl = rtsp_init(&rtsp_hints)) )
 		exit( nmsprintf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)) );
-
 	// UI interface function
 	if (argv[0]) // if we are called with the initial 'g' => start gui
 		if ((*argv[0]=='g') || ((slash=strrchr(argv[0],'/')) && (*(slash + 1) == 'g'))) {

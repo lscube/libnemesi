@@ -63,4 +63,13 @@ int output_uninit(void);
 int load_plugins(void);
 void unload_plugins(void);
 
+// commands to be used from ui
+// for some of these we need only the rtsp function so it will be just a macro.
+int nmsOpen(struct RTSP_Ctrl *, char *, void (*)(void *), void *);
+#define nmsPlay rtsp_play
+int nmsPause(struct RTSP_Ctrl *);
+#define nmsPause(x) rtsp_pause(x, 'z')
+#define nmsStop(x) rtsp_pause(x, 's')
+#define nmsClose rtsp_close // it will be replaced with function if decoder thread needs to be killed
+
 #endif

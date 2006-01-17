@@ -40,8 +40,7 @@ typedef struct {
 } GNMSThrobber;
 
 int create_throbber(GtkWidget *box);
-void destroy_throbber(void);
-int gui_throbber(uint8 *busy);
+void gui_throbber(void *);
 
 #endif // __GUI_THROBBER_H
 

@@ -26,20 +26,19 @@
  *  
  * */
 
-#include <nemesi/rtsp.h>
+#include <nemesi/main.h>
+#include <nemesi/decoder.h>
 
-int rtsp_open(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
+int nmsOpen(struct RTSP_Ctrl *rtsp_ctrl, char *urlname, void (*throbber_func)(void *), void *targ)
 {
-	if ( !*urlname)
-		return 1;
-
-	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
-		rtsp_ctrl->comm->opcode = OPEN;
-		strncpy(rtsp_ctrl->comm->arg, urlname, sizeof(rtsp_ctrl->comm->arg));
-		write(rtsp_ctrl->pipefd[1], "o", 1);
-		rtsp_ctrl->busy=1;
-	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
-	
+	rtsp_open(rtsp_ctrl, urlname);
+//		throbber(rtsp_ctrl);
+	if (throbber_func)
+		throbber_func(targ);
+	else
+		rtsp_wait(rtsp_ctrl);
+	if( !dec_create(rtsp_ctrl) )
+		exit( nmsprintf(NMSML_FATAL, "Cannot initialize decoder\n") );
+		
 	return 0;
 }
-

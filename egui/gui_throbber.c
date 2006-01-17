@@ -38,6 +38,7 @@
 
 static GNMSThrobber *throbber;
 static gint progress_timeout(gpointer data);
+static void destroy_throbber(void);
 
 int create_throbber(GtkWidget *box)
 {
@@ -68,27 +69,15 @@ int create_throbber(GtkWidget *box)
 	return 0;
 }
 
-void destroy_throbber(void)
+void gui_throbber(void *arg)
 {
-	unsigned int i;
-
-	gtk_widget_destroy(GTK_WIDGET(throbber->rest));
-	for(i=0;i<throbber->num_anim;i++)
-		gtk_widget_destroy(GTK_WIDGET(throbber->anim[i]));
-
-	free(throbber->anim);
-	free(throbber);
-}
-
-int gui_throbber(uint8 *busy)
-{
+	uint8 *busy = (uint8 *)arg;
 	static gint timer=-1;
 
 	update_toolbar();
 	if (timer > 0)
 		g_source_remove(timer);
 	timer = g_timeout_add(55, progress_timeout, (gpointer *) busy);
-	return 0;
 }
 
 static gint progress_timeout(gpointer data)
@@ -113,5 +102,17 @@ static gint progress_timeout(gpointer data)
 		return FALSE;
 	}
 	return TRUE;
+}
+
+static void destroy_throbber(void)
+{
+	unsigned int i;
+
+	gtk_widget_destroy(GTK_WIDGET(throbber->rest));
+	for(i=0;i<throbber->num_anim;i++)
+		gtk_widget_destroy(GTK_WIDGET(throbber->anim[i]));
+
+	free(throbber->anim);
+	free(throbber);
 }
 

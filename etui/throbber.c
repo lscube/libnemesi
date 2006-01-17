@@ -30,8 +30,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-int throbber(struct RTSP_Ctrl *rtsp_ctrl)
+void throbber(void *arg)
 {
+	struct RTSP_Ctrl *rtsp_ctrl = (struct RTSP_Ctrl *)arg;
 	struct timeval tv;
 	char throbber[20][13] = { "[=          ]",
 		"[ =         ]",
@@ -72,6 +73,4 @@ int throbber(struct RTSP_Ctrl *rtsp_ctrl)
 		select(0, NULL, NULL, NULL, &tv);
 	}
 	printf(" Done!\n");
-
-	return 0;
 }

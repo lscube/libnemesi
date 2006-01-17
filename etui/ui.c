@@ -38,6 +38,8 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 	// struct timeval seleep;
 	fd_set rdset;
 	int maxfd;
+	char interactive=1; // tmp
+	char event;
 
 #ifdef USE_UIPRINTF
 	int n;
@@ -65,7 +67,8 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 	*/
 	if (urlname != NULL) {
 		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", urlname);
-		rtsp_open(rtsp_ctrl, urlname);
+		nmsOpen(rtsp_ctrl, urlname, throbber, rtsp_ctrl);
+		nmsPlay(rtsp_ctrl, NULL);
 	} else
 		nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
 	
@@ -97,7 +100,8 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 			if((n=read(UIINPUT_FILENO, optstr, 256)) > 0)
 				write(STDERR_FILENO, optstr, n);
 		}
-#else // USE_UIPRINTF
+//#else // USE_UIPRINTF
+#endif // USE_UIPRINTF
 		if(FD_ISSET(STDIN_FILENO, &rdset)) {
 		/*
 			scanf("%s", optstr);
@@ -106,12 +110,20 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 		}
 		*/
 		// scanf("%s", optstr);
-		fgets(optstr, sizeof(optstr)-1, stdin);
-		optstr[strlen(optstr)-1] = '\0';
-		if ( strlen(optstr) && (parse_prompt(rtsp_ctrl, optstr) > 0) )
-			return 0;
+			if (interactive) {
+				fgets(optstr, sizeof(optstr)-1, stdin);
+				optstr[strlen(optstr)-1] = '\0';
+				if ( strlen(optstr) && (parse_prompt(rtsp_ctrl, optstr) > 0) )
+					return 0;
+			} else {
+				printf("\ntui event\n");
+//				event=getchar();
+				read(STDIN_FILENO, &event, 1);
+				printf("\ntui event\n");
+				if ( tui_event(rtsp_ctrl, event) > 0 )
+					return 0;
+			} 
 		}
-#endif // USE_UIPRINTF
 	}
 
 	return 0;

@@ -1,4 +1,4 @@
-SUBDIRS =	libNeMeSI \
+SUBDIRS =	libnms \
 			output \
 			decoder \
 			etui

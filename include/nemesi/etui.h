@@ -98,6 +98,7 @@
 int ui(struct RTSP_Ctrl *, NMSUiHints *, int, char **);
 int parse_cl(int, char **, NMSCLOptions *);
 int parse_prompt(struct RTSP_Ctrl *, char *);
-int throbber(struct RTSP_Ctrl *);
+int tui_event(struct RTSP_Ctrl *, char);
+void throbber(void *);
 
 #endif

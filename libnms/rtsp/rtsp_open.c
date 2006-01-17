@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,24 +26,20 @@
  *  
  * */
 
-#include <nemesi/rtcp.h>
+#include <nemesi/rtsp.h>
 
-int rtcp_thread_create(struct RTP_Session *rtp_sess_head)
+int rtsp_open(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
 {
-	struct RTP_Session *rtp_sess;
-	int n;
-	pthread_attr_t rtcp_attr;
-	pthread_t rtcp_tid;
+	if (!urlname || !*urlname)
+		return 1;
 
-	pthread_attr_init(&rtcp_attr);
-	if (pthread_attr_setdetachstate(&rtcp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		return nmsprintf(NMSML_FATAL, "Cannot set RTCP Thread attributes!\n");
-
-	if ((n=pthread_create(&rtcp_tid, &rtcp_attr, &rtcp, (void *)rtp_sess_head)) > 0)
-		return nmsprintf(NMSML_FATAL, "%s\n", strerror(n));
-
-	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
-		rtp_sess->rtcp_tid=rtcp_tid;
+	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
+		rtsp_ctrl->comm->opcode = OPEN;
+		strncpy(rtsp_ctrl->comm->arg, urlname, sizeof(rtsp_ctrl->comm->arg));
+		write(rtsp_ctrl->pipefd[1], "o", 1);
+		rtsp_ctrl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
 	
 	return 0;
 }
+
