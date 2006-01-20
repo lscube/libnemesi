@@ -32,6 +32,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <nemesi/rtpptdefs.h>
+#include <nemesi/decoder.h>
 #include <nemesi/comm.h>
 #include <stdlib.h>
 

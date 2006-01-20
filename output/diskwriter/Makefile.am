@@ -1,3 +1,5 @@
+libnmsdir = $(top_srcdir)/libnms
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libdiskwriter.la
@@ -8,4 +10,4 @@ libdiskwriter_la_SOURCES =	diskwriter.c \
 				diskwriter_close.c
 
 libdiskwriter_la_LDFLAGS = -static
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+INCLUDES = -I$(libnmsincludedir) -I$(nemesiincludedir) -I$(top_srcdir)

@@ -1,3 +1,6 @@
+libnmsdir = $(top_srcdir)/libnms
+
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir=$(top_srcdir)/include
 
 lib_LTLIBRARIES = mpglib.la
@@ -33,5 +36,5 @@ mpglib_la_LDFLAGS = -module -avoid-version
 #mpglib_la_LIBADD = -lm libmpglib.la # @LIBLTDL@
 mpglib_la_LIBADD = -lm # @LIBLTDL@
 
-INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir)
+INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir) -I$(libnmsincludedir)
 # INCLUDES += @INCLTDL@

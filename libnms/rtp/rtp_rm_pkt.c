@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,28 +26,9 @@
  *  
  * */
 
-#ifndef __DECODER_H
-#define __DECODER_H
-
-#include <config.h>
-
-#include <sys/time.h>
-#include <pthread.h>
-
-#include <nemesi/rtsp.h>
 #include <nemesi/rtp.h>
-#include <nemesi/comm.h>
-#include <nemesi/bufferpool.h>
-#include <nemesi/output.h>
-#include <nemesi/types.h>
 
-extern int (*decoders[128])(char *, int, NMSOutput *); // defined in decoder.c
-
-void *decoder(void *);
-
-//int dec_create(struct nmsRTPth *);
-pthread_t dec_create(struct RTSP_Ctrl *);
-void dec_idle(void);
-void dec_clean(void *);
-
-#endif
+inline int rtp_rm_pkt(struct RTP_Session *rtp_sess, struct Stream_Source *stm_src)
+{
+	return bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
+}

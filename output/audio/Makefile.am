@@ -1,3 +1,6 @@
+libnmsdir = $(top_srcdir)/libnms
+
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libaudio.la
@@ -16,4 +19,4 @@ endif
 
 libaudio_la_LDFLAGS = -static
 libaudio_la_LIBADD = @SDL_LIBS@
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir) @SDL_CFLAGS@
+INCLUDES = -I$(libnmsincludedir) -I$(nemesiincludedir) -I$(top_srcdir) @SDL_CFLAGS@

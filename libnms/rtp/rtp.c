@@ -27,7 +27,7 @@
  * */
 
 #include <nemesi/rtp.h>
-#include <nemesi/decoder.h>
+//#include <nemesi/decoder.h>
 
 #define PO_BUFF_SIZE_SEC 0
 #define PO_BUFF_SIZE_MSEC 700

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:bprmv.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -47,5 +47,6 @@ int bprmv(buffer_pool *bp, playout_buff * po, int index)
 	podel(po, index);
 	bpfree(bp, index);
 	pthread_cond_signal(&(bp->cond_full));
+	
 	return 0;
 }

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:poadd.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -85,6 +85,8 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 		pthread_mutex_unlock(&(po->po_mutex));
 		return PKT_MISORDERED;
 	}
+	
+	pthread_cond_signal(&(po->cond_empty));
 
 	pthread_mutex_unlock(&(po->po_mutex));
 

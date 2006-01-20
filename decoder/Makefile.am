@@ -5,6 +5,9 @@ if NEMESI_HAVE_AVC
 SUBDIRS += libffmpeg libffmp3 libffmpeg4
 endif
 
+libnmsdir = $(top_srcdir)/libnms
+
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libdecoder.la
@@ -16,4 +19,4 @@ libdecoder_la_SOURCES =	decoder.c \
 
 libdecoder_la_LDFLAGS = -static
 
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+INCLUDES = -I$(libnmsincludedir) -I$(nemesiincludedir) -I$(top_srcdir)

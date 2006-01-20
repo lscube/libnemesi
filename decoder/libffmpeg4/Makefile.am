@@ -1,3 +1,6 @@
+libnmsdir = $(top_srcdir)/libnms
+
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir=$(top_srcdir)/include
 
 lib_LTLIBRARIES = libffmpeg4.la
@@ -12,4 +15,4 @@ noinst_HEADERS =	ffmpeg4.h
 libffmpeg4_la_LDFLAGS = -module -avoid-version
 libffmpeg4_la_LIBADD = -lm -lavcodec
 
-INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir) 
+INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir) -I$(libnmsincludedir)

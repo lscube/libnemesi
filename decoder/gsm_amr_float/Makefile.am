@@ -1,3 +1,6 @@
+libnmsdir = $(top_srcdir)/libnms
+
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir=$(top_srcdir)/include
 
 noinst_LTLIBRARIES = libdec.la
@@ -21,4 +24,4 @@ gsm_amr_float_la_SOURCES = gsm-amr-float.c
 gsm_amr_float_la_LDFLAGS = -module -avoid-version
 gsm_amr_float_la_LIBADD = libdec.la
 
-INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir)
+INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir) -I$(libnmsincludedir)

@@ -1,4 +1,6 @@
-nemesiincludedir = $(top_srcdir)/include
+libnmsdir = $(top_srcdir)/libnms
+libnmsincludedir = $(libnmsdir)/include
+# nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libutils.la
 
@@ -25,4 +27,4 @@ libutils_la_SOURCES =	urltokenize.c \
 
 libutils_la_LDFLAGS = -static
 
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

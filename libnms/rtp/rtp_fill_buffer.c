@@ -26,8 +26,15 @@
  *  
  * */
 
-#include <nemesi/preferences.h>
-#include <nemesi/cc.h>
+#include <nemesi/rtp.h>
 
-int pref2ccmask(CCPermsMask *);
-
+int rtp_fill_buffer(struct Stream_Source *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+{
+	rtp_pkt *pkt;
+	int pkt_len, dst_used=0;
+	
+	pkt=rtp_get_pkt(stm_src, &pkt_len);
+	*timestamp = pkt->time;
+	
+	return dst_used;
+}

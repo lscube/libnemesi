@@ -34,7 +34,6 @@
 #include <nemesi/decoder.h>
 #include <nemesi/rtpptdefs.h>
 #include <nemesi/preferences.h>
-#include <nemesi/output.h>
 #include <nemesi/audio_format.h>
 
 #ifndef TS_SCHEDULE
@@ -42,6 +41,8 @@
 #endif
 
 #define SKIP 4
+
+int (*decoders[128])(char *, int, NMSOutput *);
 
 void *decoder(void *args)
 {
@@ -109,11 +110,10 @@ void *decoder(void *args)
 			/*by sbiro: ciclo per ogni sessione rtp*/
 			for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 			
-			/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
-			for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next){
-				if(stm_src->po.potail >= 0){
+				/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
+				for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next) {
 
-					pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
+					pkt=rtp_get_pkt(stm_src, &len);
 				/**/	
 					nmsprintf(NMSML_DBG3, "Version Number:%d\n", pkt->ver);
 					nmsprintf(NMSML_DBG3, "Payload Type:%d\n", pkt->pt);
@@ -140,7 +140,7 @@ void *decoder(void *args)
 						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
 							((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
 						*/
-						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
+//						len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
 						if (len) {
 							len -= ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad);
 						}
@@ -187,23 +187,19 @@ void *decoder(void *args)
 				 		nmsstatusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
 						nmsprintf(NMSML_DBG2, " - pkt len: %d\n", len);
-/**/				
-						bprmv(&(rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
+/**/	
+						rtp_rm_pkt(rtp_sess, stm_src);
 
 					}
-				}
 #ifdef TS_SCHEDULE
-				/* FV: controlli sul timestamp */
-				if(stm_src->po.potail >= 0) {
-					pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail); // pacchetto successivo
-					if ( !ts_min_next ) {
-						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
-						nmsprintf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
-						nmsprintf(NMSML_DBG3, "\nNuovo min: %3.2f\n", ts_min_next);
-					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
-						ts_min_next = min(ts_min_next, \
-								((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
-				}
+				/* FV: controls on timestamp */
+				pkt=rtp_get_pkt(stm_src, NULL); // next packet
+				if ( !ts_min_next ) {
+					ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
+					nmsprintf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
+					nmsprintf(NMSML_DBG3, "\nNuovo min: %3.2f\n", ts_min_next);
+				} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
+					ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
 #endif // TS_SCHEDULE
 			}
 #ifndef TS_SCHEDULE

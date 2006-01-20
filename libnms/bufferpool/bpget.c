@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:bpget.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -54,9 +54,9 @@ int bpget(buffer_pool *bp)
 	pthread_mutex_lock(&(bp->fl_mutex));
 	while(bp->flhead == -1)
 		pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
-		offset = bp->flhead;
-		bp->flhead = bp->freelist[bp->flhead];
-		bp->flcount++;
+	offset = bp->flhead;
+	bp->flhead = bp->freelist[bp->flhead];
+	bp->flcount++;
 	pthread_mutex_unlock(&(bp->fl_mutex));
 
 	return offset;

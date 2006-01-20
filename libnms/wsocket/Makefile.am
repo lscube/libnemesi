@@ -1,7 +1,9 @@
-
-nemesiincludedir = $(top_srcdir)/include
+libnmsdir = $(top_srcdir)/libnms
+libnmsincludedir = $(libnmsdir)/include
+# nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libwsocket.la
+
 libwsocket_la_SOURCES = 	server_connect.c \
 				server_create.c \
 				tcp_open.c \
@@ -19,5 +21,6 @@ libwsocket_la_SOURCES = 	server_connect.c \
 				sock_ntop_host.c \
 				addrcmp.c \
 				addr_ntop.c
+				
 libwsocket_la_LDFLAGS = -static
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

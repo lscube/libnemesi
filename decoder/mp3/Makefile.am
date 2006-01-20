@@ -1,3 +1,6 @@
+libnmsdir = $(top_srcdir)/libnms
+
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir=$(top_srcdir)/include
 
 noinst_LTLIBRARIES = libmp3.la
@@ -22,5 +25,5 @@ mp3_la_SOURCES = mp3.c
 mp3_la_LDFLAGS = -module -avoid-version 
 mp3_la_LIBADD = -lm libmp3.la # @LIBLTDL@
 
-INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir)
+INCLUDES = -I$(top_srcdir) -I$(nemesiincludedir) -I$(libnmsincludedir)
 # INCLUDES += @INCLTDL@

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:poinit.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -41,6 +41,7 @@
 int poinit(playout_buff *po, buffer_pool *bp)
 {
 	pthread_mutexattr_t mutex_attr;
+	pthread_condattr_t cond_attr;
 	int i;
 
 	po->bufferpool=&(bp->bufferpool);
@@ -56,6 +57,12 @@ int poinit(playout_buff *po, buffer_pool *bp)
 #endif
 #endif
 	if ((i = pthread_mutex_init(&(po->po_mutex), &mutex_attr)) > 0)
+		return i;
+		
+	// cond initialization
+	if ( (i = pthread_condattr_init(&cond_attr) ) > 0)
+		return i;
+	if ( (i = pthread_cond_init(&(po->cond_empty), &cond_attr) ) > 0)
 		return i;
 
 	return 0;

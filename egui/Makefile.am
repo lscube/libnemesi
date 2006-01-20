@@ -1,10 +1,12 @@
+libnmsdir = $(top_srcdir)/libnms
 
+libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir = $(top_srcdir)/include
 
 INCLUDES = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-I$(nemesiincludedir) -I$(top_srcdir)\
+	-I$(libnmsincludedir) -I$(nemesiincludedir) -I$(top_srcdir)\
 	@PACKAGE_CFLAGS@
 
 THROBBER_DIR = throbber

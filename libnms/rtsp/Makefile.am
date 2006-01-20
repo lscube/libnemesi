@@ -1,7 +1,9 @@
-
-nemesiincludedir = $(top_srcdir)/include
+libnmsdir = $(top_srcdir)/libnms
+libnmsincludedir = $(libnmsdir)/include
+# nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = librtsp.la
+
 librtsp_la_SOURCES =	body_exists.c \
 			check_response.c \
 			check_status.c \
@@ -53,4 +55,4 @@ librtsp_la_SOURCES =	body_exists.c \
 			stop_cmd.c
 			
 librtsp_la_LDFLAGS = -static
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

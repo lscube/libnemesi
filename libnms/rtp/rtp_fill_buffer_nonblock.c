@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,18 +26,12 @@
  *  
  * */
 
-#ifndef __NEMESI_TYPES_H
-#define __NEMESI_TYPES_H
+#include <nemesi/rtp.h>
 
-#include <inttypes.h>
-
-typedef uint8_t uint8;
-typedef uint16_t uint16;
-typedef uint32_t uint32;
-typedef uint64_t uint64;
-typedef int8_t int8;
-typedef int16_t	int16;
-typedef int32_t	int32;
-typedef int64_t	int64;
-
-#endif
+int rtp_fill_buffer_nonblock(struct Stream_Source *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+{
+	rtp_pkt *pkt;
+	int pkt_len, dst_used=0;
+	
+	return dst_used;
+}

@@ -1,7 +1,9 @@
-
-nemesiincludedir = $(top_srcdir)/include
+libnmsdir = $(top_srcdir)/libnms
+libnmsincludedir = $(libnmsdir)/include
+# nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = librtcp.la
+
 librtcp_la_SOURCES =	rtcp_clean.c \
 			rtcp.c \
 			rtcp_thread_create.c \
@@ -25,4 +27,4 @@ librtcp_la_SOURCES =	rtcp_clean.c \
 			rtcp_clean_events.c
 
 librtcp_la_LDFLAGS = -static
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

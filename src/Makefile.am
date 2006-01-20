@@ -1,7 +1,9 @@
 .NOTPARALLEL: nemesi
 
-nemesiincludedir = $(top_srcdir)/include
 libnmsdir = $(top_srcdir)/libnms
+
+libnmsincludedir = $(libnmsdir)/include
+nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libplugins.la
 
@@ -13,9 +15,9 @@ libplugins_la_LDFLAGS = -static
 bin_PROGRAMS = nemesi
 
 nemesi_SOURCES =	main.c \
-				output_init.c \
-				output_uninit.c \
-				nmsOpen.c
+			output_init.c \
+			output_uninit.c \
+			nmsOpen.c
 
 
 nemesi_LDADD =	$(top_srcdir)/etui/libetui.la
@@ -24,12 +26,13 @@ if NEMESI_HAVE_GTK
 nemesi_LDADD +=	$(top_srcdir)/egui/libegui.la
 endif
 
-nemesi_LDADD += $(libnmsdir)/libnemesi.la\
-				$(top_srcdir)/decoder/libdecoder.la \
-				$(top_srcdir)/src/libplugins.la \
-				$(top_srcdir)/output/audio/libaudio.la \
-				$(top_srcdir)/output/video/libvideo.la \
-				$(top_srcdir)/output/diskwriter/libdiskwriter.la
+nemesi_LDADD += \
+		$(top_srcdir)/decoder/libdecoder.la \
+		$(libnmsdir)/libnemesi.la \
+		$(top_srcdir)/src/libplugins.la \
+		$(top_srcdir)/output/audio/libaudio.la \
+		$(top_srcdir)/output/video/libvideo.la \
+		$(top_srcdir)/output/diskwriter/libdiskwriter.la
 				
 # nemesi_LDADD +=	$(top_srcdir)/rtsp/librtsp.la \
 #		$(top_srcdir)/sdp/libsdp.la \
@@ -50,7 +53,7 @@ if NEMESI_EFENCE
 nemesi_LDFLAGS = -lefence
 endif
 
-INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+INCLUDES = -I$(libnmsincludedir) -I$(nemesiincludedir) -I$(top_srcdir)
 
 $(OBJECTS): libtool
 libtool: $(LIBTOOL_DEPS)
