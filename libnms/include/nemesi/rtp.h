@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtp.h 271 2006-01-20 18:45:51Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -84,6 +84,10 @@ typedef struct {
 	uint32 ssrc;	/* synchronization source identifier */
 	uint8 data[1];	/* beginning of RTP data */
 } rtp_pkt;
+
+#define RTP_PKT_TS(x) x->time
+#define RTP_PKT_SEQ(x) x->seq
+#define RTP_PKT_DATA(x) x->data
 
 #define RTP_TRANSPORT_SPEC		10
 #define RTP_TRANSPORT_DELIVERY		20
@@ -227,16 +231,20 @@ int rtp_hdr_val_chk(rtp_pkt *, int);
 int ssrc_check(struct RTP_Session *, uint32, struct Stream_Source **, NMSsockaddr *, enum proto_types);
 int set_stm_src(struct RTP_Session *, struct Stream_Source **, uint32, NMSsockaddr *,  enum proto_types);
 
+#define RTP_FILL_OK 0
 #define RTP_FILL_EMPTY -1
 #define RTP_FILL_ERROR -2
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 // wrappers for rtp_pkt
 rtp_pkt *rtp_get_pkt(struct Stream_Source *, int *);
-rtp_pkt *rtp_get_pkt_nonblock(struct Stream_Source *, int *);
 inline int rtp_rm_pkt(struct RTP_Session *, struct Stream_Source *);
-int rtp_fill_buffer(struct Stream_Source *, char *, size_t, uint32 *);
-int rtp_fill_buffer_nonblock(struct Stream_Source *, char *, size_t, uint32 *);
+int rtp_fill_buffer(struct RTP_Session *, struct Stream_Source *, char *, size_t, uint32 *);
+double rtp_get_next_ts(struct Stream_Source *);
+// non blocking versions of above functions
+rtp_pkt *rtp_get_pkt_nonblock(struct Stream_Source *, int *);
+int rtp_fill_buffer_nonblock(struct RTP_Session *, struct Stream_Source *, char *, size_t, uint32 *);
+double rtp_get_next_ts_nonblock(struct Stream_Source *);
 
 // rtp transport setup functions
 int rtp_transport_set(struct RTP_Session *, int, void *);

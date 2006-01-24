@@ -27,22 +27,20 @@
  * */
 
 #include <nemesi/rtp.h>
+#include <nemesi/rtpptdefs.h>
 
-int rtp_fill_buffer(struct RTP_Session *rtp_sess, struct Stream_Source *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+double rtp_get_next_ts(struct Stream_Source *stm_src)
 {
 	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
+//	double ts;
 	
-	pkt=rtp_get_pkt(stm_src, (int *)&pkt_len);
-	*timestamp = RTP_PKT_TS(pkt);
+	pthread_mutex_lock(&(stm_src->po.po_mutex));
+	if(stm_src->po.potail < 0)
+		pthread_cond_wait(&(stm_src->po.cond_empty), &(stm_src->po.po_mutex));
+	pthread_mutex_unlock(&(stm_src->po.po_mutex));
 	
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
+	pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
+	return /*ts=*/((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
 	
-	return dst_used;
+//	return ts;
 }

@@ -35,16 +35,19 @@
  * Once the packet is decoded it must be removed from rtp queue using \see rtp_rm_pkt.
  * WARNING: returned pointer looks at a memory space not locked by mutex. This because
  * we suppose that there is only one reader for each playout buffer.
+ * We lock mutex only for read potail var.
  * shawill: this function put his dirty hands on bufferpool internals!!!
+ * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */ 
 rtp_pkt *rtp_get_pkt(struct Stream_Source *stm_src, int *len)
 {
 	pthread_mutex_lock(&(stm_src->po.po_mutex));
 	if(stm_src->po.potail < 0)
 		pthread_cond_wait(&(stm_src->po.cond_empty), &(stm_src->po.po_mutex));
+	pthread_mutex_unlock(&(stm_src->po.po_mutex));
 	if (len)
 		*len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
-	pthread_mutex_unlock(&(stm_src->po.po_mutex));
+//	pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
 	
 	return (rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
 }

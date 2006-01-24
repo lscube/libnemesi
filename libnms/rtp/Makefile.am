@@ -8,6 +8,8 @@ librtp_la_SOURCES =	nms_rtp_init.c \
 					rtp_clean.c \
 					rtp_fill_buffer.c \
 					rtp_fill_buffer_nonblock.c \
+					rtp_get_next_ts.c \
+					rtp_get_next_ts_nonblock.c \
 					rtp_get_pkt.c \
 					rtp_get_pkt_nonblock.c \
 					rtp.c \
