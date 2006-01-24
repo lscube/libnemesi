@@ -32,21 +32,21 @@
 int output_uninit(void)
 {
 
-	if ( (nmsoutc->video) && (nmsoutc->video->init) ) {
-		nmsoutc->video->functions->uninit();
-		nmsoutc->video->init = 0;
-		free(nmsoutc->video);
+	if ( (nms_outc->video) && (nms_outc->video->init) ) {
+		nms_outc->video->functions->uninit();
+		nms_outc->video->init = 0;
+		free(nms_outc->video);
 	}
-	if ( (nmsoutc->audio) && (nmsoutc->audio->init) ) {
-		nmsoutc->audio->functions->uninit();
-		nmsoutc->audio->init = 0;
-		free(nmsoutc->audio);
+	if ( (nms_outc->audio) && (nms_outc->audio->init) ) {
+		nms_outc->audio->functions->uninit();
+		nms_outc->audio->init = 0;
+		free(nms_outc->audio);
 	}
-	if ( (nmsoutc->diskwriter) )
-		diskwriter_close(nmsoutc->diskwriter);
+	if ( (nms_outc->diskwriter) )
+		diskwriter_close(nms_outc->diskwriter);
 
 	// free the global output contex
-	free(nmsoutc);
+	free(nms_outc);
 	
 	return 0;
 }

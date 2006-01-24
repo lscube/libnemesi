@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:server_create.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -45,7 +45,7 @@ int server_create(char *host, char *port, int *sock)
 	hints.ai_socktype = SOCK_DGRAM;
 
 	if ((n = gethostinfo(&res, host, port, &hints)) != 0)
-		return nmsprintf(NMSML_ERR, "(%s) %s\n", PROG_NAME, gai_strerror(n));
+		return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME, gai_strerror(n));
 
 	ressave = res;
 
@@ -57,7 +57,7 @@ int server_create(char *host, char *port, int *sock)
 			break;
 
 		if (close(*sock) < 0)
-			return nmsprintf(NMSML_ERR, "(%s) %s\n", PROG_NAME, strerror(errno));
+			return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME, strerror(errno));
 
 
 	} while ((res = res->ai_next) != NULL);

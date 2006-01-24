@@ -45,17 +45,17 @@
 #define RESAMPLED
 
 int get_plugin_pt(void);
-int decode(char *, int, NMSOutput *);
+int decode(char *, int, nms_output *);
 
 int get_plugin_pt(void)
 {
 	return 14;
 }
 
-int decode(char *data, int len, NMSOutput *outc)
+int decode(char *data, int len, nms_output *outc)
 {
 	
-	NMSAFunctions *funcs = NULL; // = outc->audio->functions;
+	nms_au_fnc *funcs = NULL; // = outc->audio->functions;
 	static	AVCodec *codec;
     	static AVCodecContext *c= NULL;
 	int out_size;

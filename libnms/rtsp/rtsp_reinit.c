@@ -28,10 +28,10 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_reinit(struct RTSP_Thread *rtsp_th)
+int rtsp_reinit(struct rtsp_thread *rtsp_th)
 {
-	struct RTSP_Medium *med, *pmed;
-	struct RTSP_Session *sess, *psess;
+	struct rtsp_medium *med, *pmed;
+	struct rtsp_session *sess, *psess;
 	void *ret;
 	
 	sess=psess=rtsp_th->rtsp_queue;
@@ -39,23 +39,23 @@ int rtsp_reinit(struct RTSP_Thread *rtsp_th)
 	// check for active rtp/rtcp session
 	if(sess && sess->media_queue && sess->media_queue->rtp_sess) {
 		if(rtsp_th->rtp_th->rtcp_tid > 0){
-			nmsprintf(NMSML_DBG1, "Sending cancel signal to RTCP Thread (ID: %lu)\n", rtsp_th->rtp_th->rtcp_tid);
+			nms_printf(NMSML_DBG1, "Sending cancel signal to RTCP Thread (ID: %lu)\n", rtsp_th->rtp_th->rtcp_tid);
 			if (pthread_cancel(rtsp_th->rtp_th->rtcp_tid) != 0)
-				nmsprintf(NMSML_DBG2, "Error while sending cancelation to RTCP Thread.\n");
+				nms_printf(NMSML_DBG2, "Error while sending cancelation to RTCP Thread.\n");
 			else
 				pthread_join(rtsp_th->rtp_th->rtcp_tid, (void **)&ret);
 			if ( ret != PTHREAD_CANCELED )
-				nmsprintf(NMSML_DBG2, "Warning! RTCP Thread joined, but  not canceled!\n");
+				nms_printf(NMSML_DBG2, "Warning! RTCP Thread joined, but  not canceled!\n");
 			rtsp_th->rtp_th->rtcp_tid = 0;
 		}
 		if(rtsp_th->rtp_th->rtp_tid > 0){
-			nmsprintf(NMSML_DBG1, "Sending cancel signal to RTP Thread (ID: %lu)\n", rtsp_th->rtp_th->rtp_tid);
+			nms_printf(NMSML_DBG1, "Sending cancel signal to RTP Thread (ID: %lu)\n", rtsp_th->rtp_th->rtp_tid);
 			if(pthread_cancel(rtsp_th->rtp_th->rtp_tid) != 0)
-				nmsprintf(NMSML_DBG2, "Error while sending cancelation to RTP Thread.\n");
+				nms_printf(NMSML_DBG2, "Error while sending cancelation to RTP Thread.\n");
 			else
 				pthread_join(rtsp_th->rtp_th->rtp_tid, (void **)&ret);
 			if( ret != PTHREAD_CANCELED)
-				nmsprintf(NMSML_DBG2, "Warning! RTP Thread joined, but not canceled.\n");
+				nms_printf(NMSML_DBG2, "Warning! RTP Thread joined, but not canceled.\n");
 			rtsp_th->rtp_th->rtp_tid = 0;
 		}
 	}

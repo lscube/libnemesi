@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:sockaddrdup.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,11 +28,11 @@
 
 #include <nemesi/wsocket.h>
 
-int sockaddrdup(NMSsockaddr *dst, NMSsockaddr *src)
+int sockaddrdup(nms_sockaddr *dst, nms_sockaddr *src)
 {
 
 	if( !(dst->addr=malloc(src->addr_len)) )
-		return -nmsprintf(NMSML_FATAL, "Cannot allocate memory\n");
+		return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 	memcpy(dst->addr, src->addr, src->addr_len);
 	dst->addr_len = src->addr_len;
 	

@@ -44,10 +44,10 @@
 
 void *video_th(void *outc)
 {
-	NMSVideo *videoc = ((NMSOutput *)outc)->video;
-	NMSAudio *audioc = ((NMSOutput *)outc)->audio;
-	NMSVFunctions *vfuncs = videoc->functions;
-	NMSAFunctions *afuncs=NULL;
+	nms_video *videoc = ((nms_output *)outc)->video;
+	nms_audio *audioc = ((nms_output *)outc)->audio;
+	nms_vid_fnc *vfuncs = videoc->functions;
+	nms_au_fnc *afuncs=NULL;
 	struct timeval tvsleep, tvstart, tvstop;
 	float fps=DEF_FPS;
 	double last_pts = 0, next_pts = 0;
@@ -66,16 +66,16 @@ void *video_th(void *outc)
 
 	if (videoc->fps) {
 		fps = videoc->fps;
-		nmsprintf(NMSML_VERB, "Video Thread Started: fps = %f\n", fps);
+		nms_printf(NMSML_VERB, "Video Thread Started: fps = %f\n", fps);
 	} else {
-		nmsprintf(NMSML_VERB, "Video Thread Started: using default fps = %f\n", fps);
+		nms_printf(NMSML_VERB, "Video Thread Started: using default fps = %f\n", fps);
 	}
 #if 1
 	tvsleep.tv_sec = 1/fps;// SLEEP_MS / 1000;
 	tvsleep.tv_usec = (long)(1000000/fps) % 1000000; //(SLEEP_MS % 1000) * 1000;
 #else
-	tvsleep.tv_sec = ((NMSOutput *)outc)->sysbuff_ms / 1000;
-	tvsleep.tv_usec = (((NMSOutput *)outc)->sysbuff_ms * 1000 ) % 1000000;
+	tvsleep.tv_sec = ((nms_output *)outc)->sysbuff_ms / 1000;
+	tvsleep.tv_usec = (((nms_output *)outc)->sysbuff_ms * 1000 ) % 1000000;
 #endif
 	gettimeofday(&tvstart, NULL);
 	tvstop.tv_sec = tvstart.tv_sec;
@@ -84,12 +84,12 @@ void *video_th(void *outc)
 	for (;;) {
 		timeval_add(&tvstart, &tvstart, &tvsleep);
 		if ( !timeval_subtract(&tvstop, &tvstart, &tvstop) && (tvstop.tv_usec > 10000) ) {
-			nmsprintf(NMSML_DBG3, "sleep for: %ld %ld\n", tvstop.tv_sec, tvstop.tv_usec);
+			nms_printf(NMSML_DBG3, "sleep for: %ld %ld\n", tvstop.tv_sec, tvstop.tv_usec);
 			select(0, NULL, NULL, NULL, &tvstop);
 		} else
-			nmsprintf(NMSML_DBG3, "didn't sleep\n");
+			nms_printf(NMSML_DBG3, "didn't sleep\n");
 		vfuncs->update_screen(&next_pts);
-		nmsprintf(NMSML_DBG2, "next presentation timestamp is: %3.2f\n", next_pts);
+		nms_printf(NMSML_DBG2, "next presentation timestamp is: %3.2f\n", next_pts);
 		// gettimeofday(&tvstop, NULL);
 		if ( !next_pts )
 			next_pts = last_pts + 1000/fps;
@@ -97,7 +97,7 @@ void *video_th(void *outc)
 		if (audioc && audioc->init)
 			afuncs->control(ACTRL_GET_ELAPTM, &audio_elapsed);
 		if ( audio_elapsed ) {
-			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms\tA: %3.2lfms\tsync A-V: %3.2lfms", last_pts, audio_elapsed, next_pts-audio_elapsed);
+			nms_statusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms\tA: %3.2lfms\tsync A-V: %3.2lfms", last_pts, audio_elapsed, next_pts-audio_elapsed);
 			if ( next_pts < audio_elapsed )
 				tvsleep.tv_sec = tvsleep.tv_usec = 0;
 			else /*if ( next_pts - audio_elapsed > MAX_AV_THRES ) {
@@ -109,7 +109,7 @@ void *video_th(void *outc)
 			}
 		} else {
 #endif // AV_SYNC
-			nmsstatusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms", last_pts);
+			nms_statusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms", last_pts);
 			tvsleep.tv_sec = (next_pts - last_pts) / 1000;
 			tvsleep.tv_usec = ( next_pts - last_pts - tvsleep.tv_sec * 1000 ) * 1000;
 		}
@@ -117,7 +117,7 @@ void *video_th(void *outc)
 		else {
 			tvsleep.tv_sec = 1/fps;
 			tvsleep.tv_usec = (long)(1000000/fps) % 1000000;
-			nmsprintf(NMSML_DBG2, "\n\tnextp_pts = 0\n");
+			nms_printf(NMSML_DBG2, "\n\tnextp_pts = 0\n");
 		}
 		*/
 		last_pts = next_pts;

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:full_msg_rcvd.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,9 +28,9 @@
 
 #include <nemesi/rtsp.h>
 
-int full_msg_rcvd( struct RTSP_Thread *rtsp_th )
+int full_msg_rcvd( struct rtsp_thread *rtsp_th )
 {
-	struct RTSP_buffer *in_buffer=&(rtsp_th->in_buffer);
+	struct rtsp_buffer *in_buffer=&(rtsp_th->in_buffer);
 	char *back_n; /* puntatore ai caratteri newline */
 	char *head_end; /* puntatore alla fine dell'header */
 	unsigned int body_len;

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:cc_printmask.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,7 +29,7 @@
 #include <nemesi/cc.h>
 #include <nemesi/comm.h>
 
-void cc_printmask(CCPermsMask mask)
+void cc_printmask(cc_perm_mask mask)
 {
 	unsigned int i;
 	CC_BITMASK_T spec_l = (CC_BITMASK_T)mask.spec_license;
@@ -37,17 +37,17 @@ void cc_printmask(CCPermsMask mask)
 	if ( spec_l ) {
 		for (i=0; cc_spec_licenses[i].int_code; i++) {
 			if ( (cc_spec_licenses[i].int_code & spec_l) )
-				nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_spec_licenses[i].name, cc_spec_licenses[i].descr);
+				nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_spec_licenses[i].name, cc_spec_licenses[i].descr);
 		}
 	}
 	if ( mask.by )
-		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_by.name, cc_by.descr);
+		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_by.name, cc_by.descr);
 	if ( mask.nc )
-		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_nc.name, cc_nc.descr);
+		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_nc.name, cc_nc.descr);
 	if ( mask.nd )
-		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_nd.name, cc_nd.descr);
+		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_nd.name, cc_nd.descr);
 	if ( mask.sa )
-		nmsprintf(NMSML_ALWAYS, "%s: %s\n", cc_sa.name, cc_sa.descr);
-	nmsprintf(NMSML_ALWAYS, "\n");
+		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_sa.name, cc_sa.descr);
+	nms_printf(NMSML_ALWAYS, "\n");
 }
 

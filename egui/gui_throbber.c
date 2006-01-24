@@ -47,11 +47,11 @@ int create_throbber(GtkWidget *box)
 	char filename[127];
 
 	if ((new_throbber=malloc(sizeof(GNMSThrobber))) == NULL)
-		return nmsprintf(NMSML_FATAL, "Could not alloc throbber structure\n");
+		return nms_printf(NMSML_FATAL, "Could not alloc throbber structure\n");
 
 	new_throbber->num_anim = 9; // TODO: automatizzare
 	if ((new_throbber->anim=malloc(new_throbber->num_anim * sizeof(GtkWidget *))) == NULL)
-		return nmsprintf(NMSML_FATAL, "Could not alloc throbber animation vector\n");
+		return nms_printf(NMSML_FATAL, "Could not alloc throbber animation vector\n");
 
 	new_throbber->rest = GTK_IMAGE(create_pixmap(NULL, "rest.png"));
 	gtk_box_pack_end (GTK_BOX (box), GTK_WIDGET(new_throbber->rest), FALSE, FALSE, 0);
@@ -98,7 +98,7 @@ static gint progress_timeout(gpointer data)
 			throbber->shown = -1;
 		}
 		update_toolbar();
-		nmsprintf(NMSML_DBG3, "[gui] throbber done\n");
+		nms_printf(NMSML_DBG3, "[gui] throbber done\n");
 		return FALSE;
 	}
 	return TRUE;

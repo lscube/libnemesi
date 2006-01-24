@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:nmsprint.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -38,12 +38,12 @@
 #define DEFAULT_VERBOSITY NMSML_DBG1
 #endif // ENABLE_DEBUG
 
-int (*nmsprintf)(int level, const char *fmt, ...) = nmsprintf_default;
-int (*nmsstatusprintf)(int cmd, const char *fmt, ...) = nmsstatusprintf_default;
+int (*nms_printf)(int level, const char *fmt, ...) = nms_printf_default;
+int (*nms_statusprintf)(int cmd, const char *fmt, ...) = nms_status_printf_default;
 
 static int verbosity=DEFAULT_VERBOSITY;
 
-int nmsverbosity_set(int level){
+int nms_verbosity_set(int level){
 	if (level >= 0) {
 		if ( (level + NMSML_NORM) > NMSML_MAX)
 			verbosity = NMSML_MAX;
@@ -56,7 +56,7 @@ int nmsverbosity_set(int level){
 	return verbosity-NMSML_ALWAYS;
 }
 
-int nmsverbosity_get(void){
+int nms_verbosity_get(void){
 	return verbosity-NMSML_ALWAYS;
 }
 
@@ -74,7 +74,7 @@ int nmsverbosity_get(void){
  * \param ... variable list of arguments according with <tt>fmt</tt> description.
  * \return 1 if message type is an error, 0 otherwise.
  */
-int nmsprintf_default(int level, const char *fmt, ...)
+int nms_printf_default(int level, const char *fmt, ...)
 {
 	// int ret=0;
 	va_list args;
@@ -128,7 +128,7 @@ int nmsprintf_default(int level, const char *fmt, ...)
  * \return the number of characters written or negative value in case of error.
  */
 
-int nmsstatusprintf_default(int cmd, const char *fmt, ...)
+int nms_status_printf_default(int cmd, const char *fmt, ...)
 {
 	static char buffers[256]="\0";
 	static char elapsed[256]="\0";

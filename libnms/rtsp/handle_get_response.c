@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:handle_get_response.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,7 +30,7 @@
 #include <nemesi/utils.h>
 #include <nemesi/methods.h>
 
-int handle_get_response(struct RTSP_Thread *rtsp_th)
+int handle_get_response(struct rtsp_thread *rtsp_th)
 {
 	char *tkn; /* contains an RTSP description line */
 	char *prev_tkn; /* addresses first the previous token in order to check the end of RTSP header 
@@ -39,7 +39,7 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 	char *content_base=NULL;
 
 	if ( (prev_tkn=strtok((rtsp_th->in_buffer).data,"\n"))==NULL ) {
-		nmsprintf(NMSML_ERR, "Invalid RTSP-DESCRIBE response\n");
+		nms_printf(NMSML_ERR, "Invalid RTSP-DESCRIBE response\n");
 		return 1;
 	}
 	if ( check_status(prev_tkn, rtsp_th) < 0 ){
@@ -69,7 +69,7 @@ int handle_get_response(struct RTSP_Thread *rtsp_th)
 				description_format=DESCRIPTION_MH_FORMAT;
 			 */
 			else {
-				nmsprintf(NMSML_ERR, "Content-Type %s not recognized\n", prev_tkn);
+				nms_printf(NMSML_ERR, "Content-Type %s not recognized\n", prev_tkn);
 			}
 		}
 		else if ( !strncmpcase(prev_tkn, "Content-Base", 12) ) {

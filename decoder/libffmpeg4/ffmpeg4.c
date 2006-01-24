@@ -41,7 +41,7 @@
 // #endif
 
 int get_plugin_pt(void);
-int decode(char *, int, NMSOutput *);
+int decode(char *, int, nms_output *);
 
 
 int get_plugin_pt(void)
@@ -50,12 +50,12 @@ int get_plugin_pt(void)
 }
 
 
-int decode(char *data, int len, NMSOutput *outc)
+int decode(char *data, int len, nms_output *outc)
 {
-	NMSVideo *vc = NULL; // = outc->video;
-	NMSVFunctions *funcs = NULL; // vc->functions;
-	NMSPicture pict;
-	NMSPicture *pict_pt = &pict;
+	nms_video *vc = NULL; // = outc->video;
+	nms_vid_fnc *funcs = NULL; // vc->functions;
+	nms_picture pict;
+	nms_picture *pict_pt = &pict;
 	int decd_len=0, size;
 	static FFMpeg4Dec *ff=NULL;
 	// XXX: variabile temporanea temporanea temporanea

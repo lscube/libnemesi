@@ -37,54 +37,54 @@
 #include <nemesi/preferences.h>
 #include <nemesi/comm.h>
 
-int output_init(NMSOutputHints *hints)
+int output_init(nms_out_hints *hints)
 {
-	if (!(nmsoutc = malloc(sizeof(NMSOutput))))
-		return nmsprintf(NMSML_FATAL, "Could not alloc output struct");
+	if (!(nms_outc = malloc(sizeof(nms_output))))
+		return nms_printf(NMSML_FATAL, "Could not alloc output struct");
 
-	nmsoutc->elapsed=0;
-	nmsoutc->sysbuff_ms = (hints && hints->sysbuff_ms) ? hints->sysbuff_ms : DEF_SYSBUFF_MS;
+	nms_outc->elapsed=0;
+	nms_outc->sysbuff_ms = (hints && hints->sysbuff_ms) ? hints->sysbuff_ms : DEF_SYSBUFF_MS;
 
-	nmsprintf(NMSML_NORM, SEPARATOR);
+	nms_printf(NMSML_NORM, SEPARATOR);
 	// AUDIO MODULE INIT
-	// if ((nmsoutc->audio=audio_init("sdl")) == NULL) {
+	// if ((nms_outc->audio=audio_init("sdl")) == NULL) {
 	if (hints && hints->audio && !strcmp(hints->audio, "noaudio")) {
-		nmsprintf(NMSML_NORM, "No Audio\n");
-		nmsoutc->audio = NULL;
-	} else if ((nmsoutc->audio=audio_init(hints ? hints->audio : NULL, nmsoutc->sysbuff_ms)) == NULL) {
-		nmsprintf(NMSML_ERR, "Audio module not available\n");
+		nms_printf(NMSML_NORM, "No Audio\n");
+		nms_outc->audio = NULL;
+	} else if ((nms_outc->audio=audio_init(hints ? hints->audio : NULL, nms_outc->sysbuff_ms)) == NULL) {
+		nms_printf(NMSML_ERR, "Audio module not available\n");
 		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
 		// rem_avail_pref("output card");
 		// edit_pref("output disk");
 	}
 
-	nmsprintf(NMSML_NORM, SEPARATOR);
+	nms_printf(NMSML_NORM, SEPARATOR);
 	// VIDEO MODULE INIT
 	if (hints && hints->video && !strcmp(hints->video, "novideo")) {
-		nmsprintf(NMSML_NORM, "No Video\n");
-		nmsoutc->video = NULL;
-	} else if ((nmsoutc->video=video_preinit(hints ? hints->video : NULL, nmsoutc->sysbuff_ms)) == NULL) {
-		if (!nmsoutc->audio) {
-			nmsprintf(NMSML_ERR, "Video module not available: setting \"output\" to \"null\"\n");
+		nms_printf(NMSML_NORM, "No Video\n");
+		nms_outc->video = NULL;
+	} else if ((nms_outc->video=video_preinit(hints ? hints->video : NULL, nms_outc->sysbuff_ms)) == NULL) {
+		if (!nms_outc->audio) {
+			nms_printf(NMSML_ERR, "Video module not available: setting \"output\" to \"null\"\n");
 			rem_avail_pref("output card");
 			// edit_pref("output disk");
 		} else
-			nmsprintf(NMSML_ERR, "Video module not available");
+			nms_printf(NMSML_ERR, "Video module not available");
 	}
 
-	nmsprintf(NMSML_NORM, SEPARATOR);
+	nms_printf(NMSML_NORM, SEPARATOR);
 	// DISKWRITER MODULE INIT
 	if (hints && hints->diskwriter && !strcmp(hints->diskwriter, "nodisk")) {
-		nmsprintf(NMSML_NORM, "No DiskWriter\n");
-		nmsoutc->diskwriter = NULL;
-	} else if ( (nmsoutc->diskwriter=diskwriter_init(hints ? hints->diskwriter : NULL)) == NULL ) {
-		nmsprintf(NMSML_ERR, "Disk Writer module not available\n");
+		nms_printf(NMSML_NORM, "No DiskWriter\n");
+		nms_outc->diskwriter = NULL;
+	} else if ( (nms_outc->diskwriter=diskwriter_init(hints ? hints->diskwriter : NULL)) == NULL ) {
+		nms_printf(NMSML_ERR, "Disk Writer module not available\n");
 		rem_avail_pref("output disk");
 		if ( strcmp("card", get_pref("output")) )
-			return nmsprintf(NMSML_FATAL, "No output device available\n Cannot continue\n");
+			return nms_printf(NMSML_FATAL, "No output device available\n Cannot continue\n");
 	} else
-		nmsprintf(NMSML_NORM, "Diskwriter succesfully initialized\n");
-	nmsprintf(NMSML_NORM, SEPARATOR);
+		nms_printf(NMSML_NORM, "Diskwriter succesfully initialized\n");
+	nms_printf(NMSML_NORM, SEPARATOR);
 
 	return 0;
 }

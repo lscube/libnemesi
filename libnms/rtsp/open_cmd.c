@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:open_cmd.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,18 +32,18 @@
 /**
 * funzione che gestisce il comando open da parte della UI.
 * Si occupa di inizializzare la sessione e di mettere il thread nello stato READY.
-* @param rtap_t il puntatore che conterra la nuova struttura RTSP_Thread.
+* @param rtap_t il puntatore che conterra la nuova struttura rtsp_thread.
 * */
-int open_cmd(struct RTSP_Thread *rtsp_th, ...)
+int open_cmd(struct rtsp_thread *rtsp_th, ...)
 {
 	char *server;
 
 	if (rtsp_th->status != INIT) {
-		nmsprintf(NMSML_WARN, "Client already connected!\n");
+		nms_printf(NMSML_WARN, "Client already connected!\n");
 		return 1;
 	}
 	if ( !*rtsp_th->comm->arg ) {
-		nmsprintf(NMSML_ERR, "No address given\n");
+		nms_printf(NMSML_ERR, "No address given\n");
 		return 1;
 	}
 	if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
@@ -51,7 +51,7 @@ int open_cmd(struct RTSP_Thread *rtsp_th, ...)
 	urltokenize(rtsp_th->urlname, &server, NULL, NULL);
 	if (server_connect(server, rtsp_th->server_port, &(rtsp_th->fd), TCP)) {
 		rtsp_th->fd=-1;
-		return nmsprintf(NMSML_ERR, "Cannot connect to the server\n");
+		return nms_printf(NMSML_ERR, "Cannot connect to the server\n");
 	}
 	free(server);
 	if (send_get_request(rtsp_th))

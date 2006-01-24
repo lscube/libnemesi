@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_clean.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,8 +30,8 @@
 
 void rtcp_clean(void *args)
 {
-	struct RTP_Session *rtp_sess_head=(*(struct RTP_Session **)args);
-	struct RTP_Session *rtp_sess;
+	struct rtp_session *rtp_sess_head=(*(struct rtp_session **)args);
+	struct rtp_session *rtp_sess;
 	struct Stream_Source *stm_src;
 
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
@@ -39,5 +39,5 @@ void rtcp_clean(void *args)
 			if( stm_src->rtcptofd > 0)
 				close(stm_src->rtcptofd);
 	
-	nmsprintf(NMSML_DBG1, "RTCP Thread R.I.P.\n");
+	nms_printf(NMSML_DBG1, "RTCP Thread R.I.P.\n");
 }

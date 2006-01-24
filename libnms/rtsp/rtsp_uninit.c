@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_uninit.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,24 +28,24 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_uninit(struct RTSP_Ctrl *rtsp_ctrl)
+int rtsp_uninit(struct rtsp_ctrl *rtsp_ctrl)
 {
 	void *ret=NULL;
 
 	/* THREAD CANCEL */	
-	nmsprintf(NMSML_DBG1, "Sending cancel signal to all threads\n");
+	nms_printf(NMSML_DBG1, "Sending cancel signal to all threads\n");
 	if(rtsp_ctrl->rtsp_tid > 0){
-		nmsprintf(NMSML_DBG1, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_ctrl->rtsp_tid);
+		nms_printf(NMSML_DBG1, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_ctrl->rtsp_tid);
 		if (pthread_cancel(rtsp_ctrl->rtsp_tid) != 0)
-			nmsprintf(NMSML_DBG2, "Error while sending cancelation to RTSP Thread.\n");
+			nms_printf(NMSML_DBG2, "Error while sending cancelation to RTSP Thread.\n");
 		else
 			pthread_join(rtsp_ctrl->rtsp_tid, (void **)&ret);
 		if ( ret != PTHREAD_CANCELED ) {
-			nmsprintf(NMSML_DBG2, "Warning! RTSP Thread joined, but  not canceled!\n");
+			nms_printf(NMSML_DBG2, "Warning! RTSP Thread joined, but  not canceled!\n");
 			return 1;
 		}
 	} else {
-		nmsprintf(NMSML_DBG1, "Cannot send cancel signal to RTSP Thread\n");
+		nms_printf(NMSML_DBG1, "Cannot send cancel signal to RTSP Thread\n");
 		return 1;
 	}
 

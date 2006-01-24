@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:send_play_request.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,12 +32,12 @@
 #include <nemesi/methods.h>
 #include <nemesi/wsocket.h>
 
-int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
+int send_play_request(struct rtsp_thread *rtsp_th, char *range)
 {
 	char b[256];
-	struct RTSP_Session *rtsp_sess;
-	struct RTSP_Medium *rtsp_med;
-	CCPermsMask cc_mask, cc_conflict;
+	struct rtsp_session *rtsp_sess;
+	struct rtsp_medium *rtsp_med;
+	cc_perm_mask cc_mask, cc_conflict;
 
 	// get_curr_sess(NULL, &rtsp_sess, NULL);
 	if (!(rtsp_sess=get_curr_sess(GCS_CUR_SESS)))
@@ -48,12 +48,12 @@ int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
 	memset(&cc_conflict, 0, sizeof(cc_conflict));
 	while ( rtsp_med ) {
 		pref2ccmask(&cc_mask);
-		if ( cc_prms_chk(rtsp_med->medium_info->cc, &cc_mask) )
+		if ( cc_perm_chk(rtsp_med->medium_info->cc, &cc_mask) )
 			*((CC_BITMASK_T *)&cc_conflict) |= *((CC_BITMASK_T *)&cc_mask);
 		rtsp_med = rtsp_med->next;
 	}
 	if (*((CC_BITMASK_T *)&cc_conflict)) {
-		nmsprintf(NMSML_ERR, "You didn't accept some requested conditions of license:\n");
+		nms_printf(NMSML_ERR, "You didn't accept some requested conditions of license:\n");
 		cc_printmask(cc_conflict);
 		return 1;
 	}
@@ -77,7 +77,7 @@ int send_play_request(struct RTSP_Thread *rtsp_th, char *range)
 	strcat(b, RTSP_EL);
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(NMSML_ERR, "Cannot send PLAY request...\n");
+		nms_printf(NMSML_ERR, "Cannot send PLAY request...\n");
 		return 1;
 	}
 

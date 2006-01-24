@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:sock_get_addr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/wsocket.h>
 
-int sock_get_addr(const struct sockaddr *sockaddr, NMSaddr *retaddr)
+int sock_get_addr(const struct sockaddr *sockaddr, nms_addr *retaddr)
 {
 	if ( !sockaddr || !retaddr)
 		return 1;

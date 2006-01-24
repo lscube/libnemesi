@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_open(struct RTSP_Ctrl *rtsp_ctrl, char *urlname)
+int rtsp_open(struct rtsp_ctrl *rtsp_ctrl, char *urlname)
 {
 	if (!urlname || !*urlname)
 		return 1;

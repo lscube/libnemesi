@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtp_transport_set.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,9 +30,9 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 
-static int convert_addr_str(const char *, NMSaddr *);
+static int convert_addr_str(const char *, nms_addr *);
 
-int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
+int rtp_transport_set(struct rtp_session *rtp_sess, int par, void *value)
 {
 	int ret = RTP_TRANSPORT_NOTSET;
 	// switch here for parameters that do NOT need value
@@ -51,7 +51,7 @@ int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SRCADDR:
-			memcpy(&rtp_sess->transport.srcaddr, (NMSaddr *)value, sizeof(NMSaddr));
+			memcpy(&rtp_sess->transport.srcaddr, (nms_addr *)value, sizeof(nms_addr));
 			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_SRCADDRSTR:
@@ -59,7 +59,7 @@ int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 				ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_DSTADDR:
-			memcpy(&rtp_sess->transport.dstaddr, (NMSaddr *)value, sizeof(NMSaddr));
+			memcpy(&rtp_sess->transport.dstaddr, (nms_addr *)value, sizeof(nms_addr));
 			ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_DSTADDRSTR:
@@ -135,24 +135,24 @@ int rtp_transport_set(struct RTP_Session *rtp_sess, int par, void *value)
 /* static function that converts strings address in in*_addr struct
  * \return 0 on OK, 1 if string is not valid address.
  * */
-static int convert_addr_str(const char *address, NMSaddr *retaddr)
+static int convert_addr_str(const char *address, nms_addr *retaddr)
 {
 	int res;
 
 	retaddr->family = AF_UNSPEC;
 
 	if ( (res = inet_pton(AF_INET, address, &retaddr->addr.in)) > 0 ) {
-		nmsprintf(NMSML_DBG2, "IPv4 address converted (%s->%u)\n", address, retaddr->addr.in);
+		nms_printf(NMSML_DBG2, "IPv4 address converted (%s->%u)\n", address, retaddr->addr.in);
 		retaddr->family = AF_INET;
 	}
 #ifdef IPV6
 	else if ( (res = inet_pton(AF_INET6, address, &retaddr->addr.in6)) > 0 ) {
-		nmsprintf(NMSML_DBG2, "IPv6 address converted (%s->%u)\n", address, retaddr->addr.in6);
+		nms_printf(NMSML_DBG2, "IPv6 address converted (%s->%u)\n", address, retaddr->addr.in6);
 		retaddr->family = AF_INET6;
 	}
 #endif
 	else
-		nmsprintf(NMSML_ERR, "no address converted\n");
+		nms_printf(NMSML_ERR, "no address converted\n");
 
 	return res ? 0 : 1;
 }

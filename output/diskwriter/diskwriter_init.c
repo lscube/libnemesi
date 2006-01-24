@@ -31,15 +31,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-NMSDiskWriter *diskwriter_init(const char *basename)
+nms_diskwriter *diskwriter_init(const char *basename)
 {
-	NMSDiskWriter *dc;
+	nms_diskwriter *dc;
 	int fd;
 	// struct disk_buff *disk_buffer;
 
 	// use of calloc in order to initialize strings also
-	if ((dc=calloc(1, sizeof(NMSDiskWriter))) == NULL) {
-		nmsprintf(NMSML_FATAL, "Could not alloc disk writer structure\n");
+	if ((dc=calloc(1, sizeof(nms_diskwriter))) == NULL) {
+		nms_printf(NMSML_FATAL, "Could not alloc disk writer structure\n");
 		return NULL;
 	}
 

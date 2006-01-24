@@ -45,31 +45,31 @@ typedef struct {
 	char *video;
 	char *diskwriter;
 	int32 sysbuff_ms;
-} NMSOutputHints;
+} nms_out_hints;
 
 typedef struct {
 	uint8 gui;
 	char *url;
-} NMSUiHints;
+} nms_ui_hints;
 
 typedef struct {
-	NMSOutputHints *output;
-	NMSUiHints *ui;
-	NMSRtspHints *rtsp;
-} NMSCLOptions;
+	nms_out_hints *output;
+	nms_ui_hints *ui;
+	nms_rtsp_hints *rtsp;
+} nms_cl_opts;
 
-int output_init(NMSOutputHints *);
+int output_init(nms_out_hints *);
 int output_uninit(void);
 int load_plugins(void);
 void unload_plugins(void);
 
 // commands to be used from ui
 // for some of these we need only the rtsp function so it will be just a macro.
-int nmsOpen(struct RTSP_Ctrl *, char *, void (*)(void *), void *);
-#define nmsPlay rtsp_play
-int nmsPause(struct RTSP_Ctrl *);
-#define nmsPause(x) rtsp_pause(x, 'z')
-#define nmsStop(x) rtsp_pause(x, 's')
-#define nmsClose rtsp_close // it will be replaced with function if decoder thread needs to be killed
+int nms_open(struct rtsp_ctrl *, char *, void (*)(void *), void *);
+#define nms_play rtsp_play
+int nms_pause(struct rtsp_ctrl *);
+#define nms_pause(x) rtsp_pause(x, 'z')
+#define nms_stop(x) rtsp_pause(x, 's')
+#define nms_close rtsp_close // it will be replaced with function if decoder thread needs to be killed
 
 #endif

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:sdp_session_destroy.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,9 +30,9 @@
 
 #include <nemesi/sdp.h>
 
-void sdp_session_destroy(SDP_Session_info *session)
+void sdp_session_destroy(sdp_session_info *session)
 {
-	SDP_attr *sdp_attr, *sdp_attr_prev;
+	sdp_attr *sdp_attr, *sdp_attr_prev;
 
 	if (session) {
 		sdp_media_destroy(session->media_info_queue);

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_schedule.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,14 +28,14 @@
 
 #include <nemesi/rtcp.h>
 
-struct RTCP_Event *rtcp_schedule(struct RTCP_Event *head, struct RTP_Session *rtp_sess, struct timeval tv, rtcp_type_t type)
+struct RTCP_Event *rtcp_schedule(struct RTCP_Event *head, struct rtp_session *rtp_sess, struct timeval tv, rtcp_type_t type)
 {
 	struct RTCP_Event *new_event;
 	struct RTCP_Event *pevent=head;
 	struct RTCP_Event *event=head;
 	
 	if( (new_event=(struct RTCP_Event *)malloc(sizeof(struct RTCP_Event))) == NULL) {
-		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
+		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 		return NULL;
 	}
 	new_event->rtp_sess=rtp_sess;

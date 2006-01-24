@@ -36,9 +36,9 @@
 #define FACTOR_OVERSAMPLE 5
 #define ELEVEN 11
 
-int decode(char *data, int len, NMSOutput *outc)
+int decode(char *data, int len, nms_output *outc)
 {
-	NMSAFunctions *funcs = outc->audio->functions;
+	nms_au_fnc *funcs = outc->audio->functions;
 	int i, j, c;
 	/*
 	char outbuff[len*ELEVEN+len/40];

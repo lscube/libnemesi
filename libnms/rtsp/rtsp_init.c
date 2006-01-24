@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 
 #define RET_ERR(ret_level, ...) { \
-					nmsprintf(ret_level, __VA_ARGS__ ); \
+					nms_printf(ret_level, __VA_ARGS__ ); \
 					free(rtsp_th->comm); \
 					free(rtsp_th); \
 					return NULL; \
@@ -41,21 +41,21 @@
  * This function allocate structures and comunication pipe for reading commands
  * from user interface, then starts RTSP thread.
  *
- * \return RTSP_Ctrl structure. This is the interface structure between user
+ * \return rtsp_ctrl structure. This is the interface structure between user
  * interface and RTSP librarween user interface and RTSP library.
  */
-struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
+struct rtsp_ctrl *rtsp_init(nms_rtsp_hints *hints)
 {
-	struct RTSP_Thread *rtsp_th;
+	struct rtsp_thread *rtsp_th;
 	pthread_attr_t rtsp_attr;
 	pthread_mutexattr_t mutex_attr;
 	// pthread_condattr_t cond_attr;
 	int n;
 
-	// if ( !(rtsp_th = (struct RTSP_Thread *) malloc(sizeof(struct RTSP_Thread))) )
+	// if ( !(rtsp_th = (struct rtsp_thread *) malloc(sizeof(struct rtsp_thread))) )
 	// We use calloc so that we are not in need to initialize to zero below
-	if ( !(rtsp_th = (struct RTSP_Thread *) calloc(1, sizeof(struct RTSP_Thread))) ) {
-		nmsprintf(NMSML_FATAL, "Could not alloc memory!\n");
+	if ( !(rtsp_th = (struct rtsp_thread *) calloc(1, sizeof(struct rtsp_thread))) ) {
+		nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
 		return NULL;
 	}
 
@@ -112,7 +112,7 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 			else if (hints->first_rtp_port > 65535)
 				RET_ERR(NMSML_ERR, "Port number can't be greater than 65535\n")
 			rtsp_th->force_rtp_port = hints->first_rtp_port;
-			nmsprintf(NMSML_WARN, "RTP ports forced by user (not randomly generated)\n");
+			nms_printf(NMSML_WARN, "RTP ports forced by user (not randomly generated)\n");
 		}
 	}
 	
@@ -139,5 +139,5 @@ struct RTSP_Ctrl *rtsp_init(NMSRtspHints *hints)
 	if ((n = pthread_create(&rtsp_th->rtsp_tid, NULL, &rtsp, (void *) rtsp_th)) > 0)
 		RET_ERR(NMSML_FATAL, "Cannot create RTSP Thread: %s\n", strerror(n))
 
-	return (struct RTSP_Ctrl *)rtsp_th;
+	return (struct rtsp_ctrl *)rtsp_th;
 }

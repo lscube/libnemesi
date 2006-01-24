@@ -29,5 +29,5 @@
 #include <nemesi/preferences.h>
 #include <nemesi/cc.h>
 
-int pref2ccmask(CCPermsMask *);
+int pref2ccmask(cc_perm_mask *);
 

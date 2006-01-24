@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:seturlname.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int seturlname(struct RTSP_Thread *rtsp_th, char *urlname)
+int seturlname(struct rtsp_thread *rtsp_th, char *urlname)
 {
 	char *server = NULL, *port = NULL, *path = NULL;
 
@@ -40,7 +40,7 @@ int seturlname(struct RTSP_Thread *rtsp_th, char *urlname)
 		else
 			return 1;
 	}
-	nmsprintf(NMSML_DBG1, "server %s port %s\n", server, port);
+	nms_printf(NMSML_DBG1, "server %s port %s\n", server, port);
 
 	if ((rtsp_th->urlname =
 	     (char *) malloc(sizeof(char) * (strlen("rtsp://") + strlen(server) + strlen(path) + 1))) == NULL)

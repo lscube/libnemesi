@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_med_create.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,18 +28,18 @@
 
 #include <nemesi/rtsp.h>
 
-struct RTSP_Medium *rtsp_med_create(int fd)
+struct rtsp_medium *rtsp_med_create(int fd)
 {
-	struct RTSP_Medium *rtsp_m;
+	struct rtsp_medium *rtsp_m;
 	struct sockaddr_storage localaddr, peeraddr;
-	NMSsockaddr local = { (struct sockaddr *)&localaddr, sizeof(localaddr) };
-	NMSsockaddr peer = { (struct sockaddr *)&peeraddr, sizeof(peeraddr) };
+	nms_sockaddr local = { (struct sockaddr *)&localaddr, sizeof(localaddr) };
+	nms_sockaddr peer = { (struct sockaddr *)&peeraddr, sizeof(peeraddr) };
 
 	getsockname(fd, (struct sockaddr *)local.addr, &local.addr_len);
 	getpeername(fd, (struct sockaddr *)peer.addr, &peer.addr_len);
 	
-	if ( (rtsp_m=(struct RTSP_Medium *)malloc(sizeof(struct RTSP_Medium))) == NULL ) {
-		nmsprintf(NMSML_FATAL, "Cannot allocate memory.\n");
+	if ( (rtsp_m=(struct rtsp_medium *)malloc(sizeof(struct rtsp_medium))) == NULL ) {
+		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}
 

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_close(struct RTSP_Ctrl *rtsp_ctrl)
+int rtsp_close(struct rtsp_ctrl *rtsp_ctrl)
 {
 	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
 		rtsp_ctrl->comm->opcode = CLOSE;

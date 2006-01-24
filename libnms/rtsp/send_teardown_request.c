@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:send_teardown_request.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,12 +29,12 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int send_teardown_request(struct RTSP_Thread *rtsp_th)
+int send_teardown_request(struct rtsp_thread *rtsp_th)
 {
 
 	char b[256];
-	struct RTSP_Session *rtsp_sess;
-	struct RTSP_Medium *rtsp_med;
+	struct rtsp_session *rtsp_sess;
+	struct rtsp_medium *rtsp_med;
 
 	memset(b, 0, 256);
 
@@ -53,7 +53,7 @@ int send_teardown_request(struct RTSP_Thread *rtsp_th)
 	strcat(b, RTSP_EL);
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
+		nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
 		return 1;
 	}
 

@@ -29,12 +29,12 @@
 #include <nemesi/rtp.h>
 #include <nemesi/comm.h>
 
-struct nmsRTPth *nms_rtp_init(void)
+struct nms_rtp_th *nms_rtp_init(void)
 {
-	struct nmsRTPth *rtp_th;
+	struct nms_rtp_th *rtp_th;
 	
-	if ( !(rtp_th = (struct nmsRTPth *) calloc(1, sizeof(struct nmsRTPth))) ) {
-		nmsprintf(NMSML_FATAL, "Could not alloc memory!\n");
+	if ( !(rtp_th = (struct nms_rtp_th *) calloc(1, sizeof(struct nms_rtp_th))) ) {
+		nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
 		return NULL;
 	}
 	

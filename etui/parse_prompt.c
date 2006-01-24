@@ -30,7 +30,7 @@
 #include <nemesi/preferences.h>
 
 
-int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
+int parse_prompt(struct rtsp_ctrl *rtsp_ctrl, char *optstr)
 {
 	char argstr[256];
 	char opt;
@@ -41,34 +41,34 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 	switch (opt) {
 	case 'h':
 	case '?':
-		nmsprintf(NMSML_NORM, "\nHelp:\n");
-		nmsprintf(NMSML_NORM, "\t* help or ?           print this help\n");
-		nmsprintf(NMSML_NORM, "\t* quit                quit\n");
-		nmsprintf(NMSML_NORM, "\t* version             print infos about NeMeSI.\n");
-		nmsprintf(NMSML_NORM, "\t* open urlname        connect to urlname\n");
-		nmsprintf(NMSML_NORM, "\t* info                print info about the session\n");
-		nmsprintf(NMSML_NORM, "\t* play [range]        start the playback\n");
-		nmsprintf(NMSML_NORM, "\t* zause               pause the playback\n");
-		nmsprintf(NMSML_NORM, "\t* stop                stop the playback\n");
-		nmsprintf(NMSML_NORM, "\t* close               close the connection\n");
-		nmsprintf(NMSML_NORM, "\t* edit option value   change the value of specified option\n");
-		nmsprintf(NMSML_NORM, "\t* list                show list of editable options, with assigned values and short description\n");
-		nmsprintf(NMSML_NORM, "\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
+		nms_printf(NMSML_NORM, "\nHelp:\n");
+		nms_printf(NMSML_NORM, "\t* help or ?           print this help\n");
+		nms_printf(NMSML_NORM, "\t* quit                quit\n");
+		nms_printf(NMSML_NORM, "\t* version             print infos about NeMeSI.\n");
+		nms_printf(NMSML_NORM, "\t* open urlname        connect to urlname\n");
+		nms_printf(NMSML_NORM, "\t* info                print info about the session\n");
+		nms_printf(NMSML_NORM, "\t* play [range]        start the playback\n");
+		nms_printf(NMSML_NORM, "\t* zause               pause the playback\n");
+		nms_printf(NMSML_NORM, "\t* stop                stop the playback\n");
+		nms_printf(NMSML_NORM, "\t* close               close the connection\n");
+		nms_printf(NMSML_NORM, "\t* edit option value   change the value of specified option\n");
+		nms_printf(NMSML_NORM, "\t* list                show list of editable options, with assigned values and short description\n");
+		nms_printf(NMSML_NORM, "\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
 		break;
 	case 'q':
-		nmsClose(rtsp_ctrl);
+		nms_close(rtsp_ctrl);
 		return 1;
 	case 'v':
-		nmsprintf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
-		nmsprintf(NMSML_NORM, "Copyleft 2001 - mancho@cclif.polito.it\n");
-		nmsprintf(NMSML_NORM, "              - shawill@cclinf.polito.it\n\n");
+		nms_printf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+		nms_printf(NMSML_NORM, "Copyleft 2001 - mancho@cclif.polito.it\n");
+		nms_printf(NMSML_NORM, "              - shawill@cclinf.polito.it\n\n");
 		break;
 	case 'o':
 		if ( sscanf(optstr, "%*s %s", argstr) != 1)
-			nmsprintf(NMSML_ERR, "Can't connect: no address given\n");
+			nms_printf(NMSML_ERR, "Can't connect: no address given\n");
 		else {
-			nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"\n", argstr);
-			nmsOpen(rtsp_ctrl, argstr, throbber, rtsp_ctrl);
+			nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"\n", argstr);
+			nms_open(rtsp_ctrl, argstr, throbber, rtsp_ctrl);
 		}
 		break;
 	case 'i':
@@ -77,16 +77,16 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 	case 'p':
 		// fgets(argstr, 256, stdin);
 		sscanf(optstr, "%*s %s", argstr);
-		nmsPlay(rtsp_ctrl, argstr);
+		nms_play(rtsp_ctrl, argstr);
 		break;
 	case 'z':
-		nmsPause(rtsp_ctrl);
+		nms_pause(rtsp_ctrl);
 		break;
 	case 's':
-		nmsStop(rtsp_ctrl);
+		nms_stop(rtsp_ctrl);
 		break;
 	case 'c':
-		nmsClose(rtsp_ctrl);
+		nms_close(rtsp_ctrl);
 		break;
 	case 'e':
 		/*
@@ -97,14 +97,14 @@ int parse_prompt(struct RTSP_Ctrl *rtsp_ctrl, char *optstr)
 		if ( sscanf(optstr, "%*s %[^\n]", argstr) > 0)
 			edit_pref(argstr);
 		else
-			nmsprintf(NMSML_ERR, "No preference give to edit\n");
+			nms_printf(NMSML_ERR, "No preference give to edit\n");
 		break;
 	case 'l':
 		list_prefs();
 		break;
 	default:
-		nmsprintf(NMSML_ERR, "Unknown command: %s\n", optstr);
-		nmsprintf(NMSML_NORM, "Press \'h\' for help.\n\n");
+		nms_printf(NMSML_ERR, "Unknown command: %s\n", optstr);
+		nms_printf(NMSML_NORM, "Press \'h\' for help.\n\n");
 		break;
 	}
 	return 0;

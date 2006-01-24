@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:cc_newlicense.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,17 +30,17 @@
 
 #include <nemesi/cc.h>
 
-CCLicense *cc_newlicense(void)
+cc_license *cc_newlicense(void)
 {
 	/* if we need some other initializations:
-	CCLicense *new;
+	cc_license *new;
 
-	if (!(new=(CCLicense *)calloc(1, sizeof(CCLicense))))
+	if (!(new=(cc_license *)calloc(1, sizeof(cc_license))))
 		return NULL;
 
 	return new;
 	*/ // else:
 	// we use calloc for initialization tu NULL of all fields
-	return (CCLicense *)calloc(1, sizeof(CCLicense));
+	return (cc_license *)calloc(1, sizeof(cc_license));
 }
 

@@ -139,10 +139,10 @@ static GtkWidget *add_leaf(const GtkWidget *where)
 
 static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 {
-	struct RTSP_Ctrl *rtsp_ctrl = (struct RTSP_Ctrl *)user_data;
-	SDP_Session_info *sdp_s;
-	SDP_Medium_info *sdp_m;
-	CCLicense *cc;
+	struct rtsp_ctrl *rtsp_ctrl = (struct rtsp_ctrl *)user_data;
+	sdp_session_info *sdp_s;
+	sdp_medium_info *sdp_m;
+	cc_license *cc;
 	GtkWidget *root, *node, *leaf, *lbl;
 
 	if (gtk_toggle_button_get_active(togglebutton)) {
@@ -200,20 +200,20 @@ static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 	}
 }
 
-static gboolean cc_sdp_check(SDP_Medium_info *sdp_mqueue)
+static gboolean cc_sdp_check(sdp_medium_info *sdp_mqueue)
 {
-	SDP_Medium_info *sdp_m;
+	sdp_medium_info *sdp_m;
 	gboolean iscc=FALSE;
 	CC_BITMASK_T msk1st, mskcur;
-	CCPermsMask *msk=(CCPermsMask *)&msk1st;
+	cc_perm_mask *msk=(cc_perm_mask *)&msk1st;
 
 	cc_box_clear_pixmaps();
 	for (sdp_m=sdp_mqueue; sdp_m; sdp_m=sdp_m->next)
 		if(sdp_m->cc) {
 			if (!iscc)
-				cc_parse_urilicense(sdp_m->cc->uriLicense, (CCPermsMask *)(&msk1st));
+				cc_parse_urilicense(sdp_m->cc->uriLicense, (cc_perm_mask *)(&msk1st));
 			else {
-				cc_parse_urilicense(sdp_m->cc->uriLicense, (CCPermsMask *)(&mskcur));
+				cc_parse_urilicense(sdp_m->cc->uriLicense, (cc_perm_mask *)(&mskcur));
 				if(msk1st ^ mskcur) {
 					iscc=TRUE;
 					msk=NULL;
@@ -243,7 +243,7 @@ static gboolean cc_sdp_check(SDP_Medium_info *sdp_mqueue)
 
 static void cc_stbarw_upd(void *userdata)
 {
-	struct RTSP_Ctrl *rtsp_ctrl = (struct RTSP_Ctrl *)userdata;
+	struct rtsp_ctrl *rtsp_ctrl = (struct rtsp_ctrl *)userdata;
 
 	switch (rtsp_status(rtsp_ctrl)) {
 		case READY:
@@ -279,7 +279,7 @@ static void cc_stbarw_rm(GtkWidget *widget)
 	gtk_widget_destroy(widget);
 }
 
-int cc_stbarw_add(struct RTSP_Ctrl *rtsp_ctrl)
+int cc_stbarw_add(struct rtsp_ctrl *rtsp_ctrl)
 {
 	if (cc_box)
 		gtk_widget_destroy(cc_box);

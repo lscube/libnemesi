@@ -39,13 +39,13 @@
 /*!
   Init audio
   */
-NMSAudio *audio_init(char *drv_hint, uint32 sysbuff_ms)
+nms_audio *audio_init(char *drv_hint, uint32 sysbuff_ms)
 {
-	NMSAudio *ac;
-	// NMSAFunctions *funcs;
+	nms_audio *ac;
+	// nms_au_fnc *funcs;
 
-	if ((ac=malloc(sizeof(NMSAudio))) == NULL) {
-		nmsprintf(NMSML_FATAL, "Could not alloc audio structure\n");
+	if ((ac=malloc(sizeof(nms_audio))) == NULL) {
+		nms_printf(NMSML_FATAL, "Could not alloc audio structure\n");
 		return NULL;
 	}
 
@@ -61,7 +61,7 @@ NMSAudio *audio_init(char *drv_hint, uint32 sysbuff_ms)
 	} else
 		ac->init = 1;
 	
-	nmsprintf(NMSML_NORM, "Audio driver: %s\n", ac->functions->info->name);
+	nms_printf(NMSML_NORM, "Audio driver: %s\n", ac->functions->info->name);
 
 	return ac;
 }

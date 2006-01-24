@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_clean.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,8 +32,8 @@
 
 void rtsp_clean(void *rtsp_thread)
 {
-	// struct RTSP_Ctrl *rtsp_ctrl = (struct RTSP_Ctrl *)rtsp_control;
-	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)rtsp_thread;
+	// struct rtsp_ctrl *rtsp_ctrl = (struct rtsp_ctrl *)rtsp_control;
+	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_thread;
 	int n;
 #ifdef USE_UIPRINTF
 	char optstr[256];
@@ -43,28 +43,28 @@ void rtsp_clean(void *rtsp_thread)
 	char ch[1];
 
 	if ( (n = fcntl(command_fd, F_GETFL, 0)) < 0 )
-		nmsprintf(NMSML_ERR, "fcntl F_GETFL error\n");
+		nms_printf(NMSML_ERR, "fcntl F_GETFL error\n");
 	n |= O_NONBLOCK;
 	 if (fcntl(command_fd, F_SETFL, n) < 0)
-		 nmsprintf(NMSML_ERR, "fcntl F_SETFL error\n");
+		 nms_printf(NMSML_ERR, "fcntl F_SETFL error\n");
 #if 1 // We must read last teardown reply from server
-	nmsprintf(NMSML_DBG1, "Waiting for last Teardown response\n");
+	nms_printf(NMSML_DBG1, "Waiting for last Teardown response\n");
 	if((n=read(command_fd, ch, 1)) == 1)
 		if(cmd[comm->opcode] (rtsp_th, comm->arg))
 			return;
 	if( (*(rtsp_th->waiting_for)) && (rtsp_th->fd != -1) ) {
 		if ((n=rtsp_recv(rtsp_th)) < 0)
-			nmsprintf(NMSML_WARN, "No teardown response received\n");
+			nms_printf(NMSML_WARN, "No teardown response received\n");
 		else if (n > 0){
 			if (full_msg_rcvd(rtsp_th))
 				/*if (*/handle_rtsp_pkt(rtsp_th);/*)*/
-					/*nmsprintf(NMSML_ERR, "\nError!\n");*/
+					/*nms_printf(NMSML_ERR, "\nError!\n");*/
 		} else
-			nmsprintf(NMSML_ERR, "Server died prematurely!\n");
+			nms_printf(NMSML_ERR, "Server died prematurely!\n");
 	}
 #endif
 	rtsp_reinit(rtsp_th);
-	nmsprintf(NMSML_DBG1, "RTSP Thread R.I.P.\n");
+	nms_printf(NMSML_DBG1, "RTSP Thread R.I.P.\n");
 #ifdef USE_UIPRINTF
 	fprintf(stderr, "\r"); /* TODO Da ottimizzare */
 	while((n=read(UIINPUT_FILENO, optstr, 1)) > 0)

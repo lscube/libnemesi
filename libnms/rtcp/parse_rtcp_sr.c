@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:parse_rtcp_sr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,7 +30,7 @@
 
 int parse_rtcp_sr(struct Stream_Source *stm_src, rtcp_pkt *pkt)
 {
-	nmsprintf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
+	nms_printf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
 	gettimeofday(&(stm_src->ssrc_stats.lastsr), NULL);
 	stm_src->ssrc_stats.ntplastsr[0]=ntohl(pkt->r.sr.si.ntp_seq);
 	stm_src->ssrc_stats.ntplastsr[1]=ntohl(pkt->r.sr.si.ntp_frac);

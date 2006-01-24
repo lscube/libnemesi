@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:handle_rtcp_event.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,7 +33,7 @@ struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *event)
 
 	double t;
 	struct timeval tv, now;
-	struct RTP_Session *rtp_save;
+	struct rtp_session *rtp_save;
 	int n;
 	
 	gettimeofday(&now, NULL);
@@ -73,7 +73,7 @@ struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *event)
 			send_rtcp_bye(event->rtp_sess);
 			break;
 		default:
-			nmsprintf(NMSML_ERR, "RTCP Event not handled!\n");
+			nms_printf(NMSML_ERR, "RTCP Event not handled!\n");
 			break;
 	}
 	return event;

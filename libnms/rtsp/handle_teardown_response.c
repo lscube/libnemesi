@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:handle_teardown_response.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,12 +28,12 @@
 
 #include <nemesi/rtsp.h>
 
-int handle_teardown_response(struct RTSP_Thread *rtsp_th)
+int handle_teardown_response(struct rtsp_thread *rtsp_th)
 {
 	char *prev_tkn;
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
-		nmsprintf(NMSML_ERR, "Invalid RTSP-TEARDOWN response\n");
+		nms_printf(NMSML_ERR, "Invalid RTSP-TEARDOWN response\n");
 		return 1;
 	}
 	if ( check_status(prev_tkn, rtsp_th) < 0 ){

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:nmsheader.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,19 +26,22 @@
  *  
  * */
 
-#include <nemesi/main.h>
-#include <nemesi/decoder.h>
+#include <string.h>
 
-int nmsOpen(struct RTSP_Ctrl *rtsp_ctrl, char *urlname, void (*throbber_func)(void *), void *targ)
+#include <nemesi/version.h>
+#include <nemesi/comm.h>
+
+inline void nms_header(void)
 {
-	rtsp_open(rtsp_ctrl, urlname);
-//		throbber(rtsp_ctrl);
-	if (throbber_func)
-		throbber_func(targ);
-	else
-		rtsp_wait(rtsp_ctrl);
-	if( !dec_create(rtsp_ctrl) )
-		exit( nmsprintf(NMSML_FATAL, "Cannot initialize decoder\n") );
-		
-	return 0;
+	char svnrev[32] = "";
+#ifdef SVNREV
+	char *tkn;
+
+	// strcat(svnrev, SVNREV+1);
+	snprintf(svnrev, sizeof(svnrev), "- SVN %s", SVNREV + 1);
+	if ( (tkn=strchr(svnrev, '$')) )
+		*tkn = '\0';
+#endif
+	nms_printf(NMSML_ALWAYS, "\n"NMSCLR_BLUE_BOLD"%s - %s -- release %s %s(%s)\n\n"NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, svnrev, VERSION_NAME);
 }
+

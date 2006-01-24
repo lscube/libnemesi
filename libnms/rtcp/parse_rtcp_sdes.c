@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:parse_rtcp_sdes.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -35,7 +35,7 @@ int parse_rtcp_sdes(struct Stream_Source *stm_src, rtcp_pkt *pkt)
 	rtcp_sdes_item_t *rsp, *rspn;
 	rtcp_sdes_item_t *end=(rtcp_sdes_item_t *)((uint32 *)pkt + pkt->common.len + 1);
 		
-	nmsprintf(NMSML_DBG1, "Received SDES from SSRC: %u\n", pkt->r.sdes.src);
+	nms_printf(NMSML_DBG1, "Received SDES from SSRC: %u\n", pkt->r.sdes.src);
 	while (--count >= 0){
 		rsp=&(sdes->item[0]);
 		if ( rsp >= end )
@@ -52,7 +52,7 @@ int parse_rtcp_sdes(struct Stream_Source *stm_src, rtcp_pkt *pkt)
 		sdes = (rtcp_sdes_t *)((uint32 *)sdes +(((uint8 *)rsp - (uint8 *)sdes) >> 2) + 1);
 	}
 	if (count >= 0)
-		nmsprintf(NMSML_WARN, "Invalid RTCP SDES pkt format!\n");
+		nms_printf(NMSML_WARN, "Invalid RTCP SDES pkt format!\n");
 	else
 		stm_src->ssrc_stats.probation=0;
 	return 0;

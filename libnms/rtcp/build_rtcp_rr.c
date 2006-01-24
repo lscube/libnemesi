@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:build_rtcp_rr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-int build_rtcp_rr(struct RTP_Session *rtp_sess, rtcp_pkt *pkt)
+int build_rtcp_rr(struct rtp_session *rtp_sess, rtcp_pkt *pkt)
 {
 	struct timeval now, offset;
 	uint32 linear;

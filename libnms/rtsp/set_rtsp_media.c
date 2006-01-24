@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:set_rtsp_media.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -31,13 +31,13 @@
 #include <nemesi/utils.h>
 #include <nemesi/rtpptdefs.h>
 
-int set_rtsp_media(struct RTSP_Thread *rtsp_th)
+int set_rtsp_media(struct rtsp_thread *rtsp_th)
 {
 
-	struct RTSP_Session *curr_rtsp_s=rtsp_th->rtsp_queue;
-	struct RTSP_Medium *curr_rtsp_m=NULL;
-	SDP_Medium_info *sdp_m;
-	SDP_attr *sdp_attr;
+	struct rtsp_session *curr_rtsp_s=rtsp_th->rtsp_queue;
+	struct rtsp_medium *curr_rtsp_m=NULL;
+	sdp_medium_info *sdp_m;
+	sdp_attr *sdp_attr;
 	char *tkn, *ch;
 	uint8 pt;
 	
@@ -84,7 +84,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 							while ( *tkn == ' ' )
 								tkn++;
 							if ( !(ch=strchr(tkn, '/')) ){
-								nmsprintf(NMSML_WARN, "Invalid field rtpmap.\n");
+								nms_printf(NMSML_WARN, "Invalid field rtpmap.\n");
 								break;
 							}
 							if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){
@@ -106,7 +106,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 								rtp_pt_defs[pt].type=NA;
 						} else {
 							// shawill: should be an error or a warning?
-							nmsprintf(NMSML_WARN, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
+							nms_printf(NMSML_WARN, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
 						}
 					}
 				}
@@ -116,7 +116,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 			/* not yet implemented */
 			// break;
 		default :
-			nmsprintf(NMSML_ERR, "Unknown decription format.\n");
+			nms_printf(NMSML_ERR, "Unknown decription format.\n");
 			return 1;
 			break;
 	}
@@ -127,7 +127,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 		else
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
-			nmsprintf(NMSML_ERR, "Invalid Media description section.\n");
+			nms_printf(NMSML_ERR, "Invalid Media description section.\n");
 			return 1;
 		}
 		switch (*tkn) {
@@ -184,7 +184,7 @@ int set_rtsp_media(struct RTSP_Thread *rtsp_th)
 						while ( *(tkn) == ' ' )
 							tkn++;
 						if ( (ch=strchr(tkn, '/')) == NULL ){
-							nmsprintf(NMSML_WARN, "Invalid field rtpmap.\n");
+							nms_printf(NMSML_WARN, "Invalid field rtpmap.\n");
 							break;
 						}
 						if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){

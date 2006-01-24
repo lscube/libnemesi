@@ -31,7 +31,7 @@
 
 void dec_clean(void *args)
 {
-	NMSOutput *outc = (NMSOutput *)args;
+	nms_output *outc = (nms_output *)args;
 
 	// kill Video Thread
 	video_th_stop(outc->video);
@@ -48,5 +48,5 @@ void dec_clean(void *args)
 	if (outc->diskwriter)
 		close_files(outc->diskwriter->fd); 
 
-	nmsprintf(NMSML_DBG1, "Decoder Thread R.I.P.\n");
+	nms_printf(NMSML_DBG1, "Decoder Thread R.I.P.\n");
 }

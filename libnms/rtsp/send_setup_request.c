@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:send_setup_request.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,13 +29,13 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int send_setup_request(struct RTSP_Thread *rtsp_th)
+int send_setup_request(struct rtsp_thread *rtsp_th)
 {
 
 	char b[256];
 	char *options = NULL;
-	struct RTSP_Session *rtsp_sess;
-	struct RTSP_Medium *rtsp_med;
+	struct rtsp_session *rtsp_sess;
+	struct rtsp_medium *rtsp_med;
 	struct sockaddr_storage rtpaddr, rtcpaddr;
 	socklen_t rtplen=sizeof(rtpaddr), rtcplen=sizeof(rtcpaddr);
 	unsigned int rnd;
@@ -56,7 +56,7 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 		// RTP port number partially specified by user.
 		if ( rtsp_th->force_rtp_port % 2 ) {
 			rtsp_th->force_rtp_port++;
-			nmsprintf(NMSML_WARN, "First RTP port specified was odd number => corrected to %u\n", rtsp_th->force_rtp_port);
+			nms_printf(NMSML_WARN, "First RTP port specified was odd number => corrected to %u\n", rtsp_th->force_rtp_port);
 		}
 		rnd = rtsp_th->force_rtp_port;
 	}
@@ -91,14 +91,14 @@ int send_setup_request(struct RTSP_Thread *rtsp_th)
 	strcat(b, RTSP_EL); 
 
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(NMSML_ERR, "Cannot send SETUP request...\n");
+		nms_printf(NMSML_ERR, "Cannot send SETUP request...\n");
 		return 1;
 	}
 
 	// next rtp port forces
 	if ( rtsp_th->force_rtp_port ) {
 		rtsp_th->force_rtp_port += 2;
-		nmsprintf(NMSML_DBG2, "Next client ports will be %u-%u\n", rtsp_th->force_rtp_port, rtsp_th->force_rtp_port + 1);
+		nms_printf(NMSML_DBG2, "Next client ports will be %u-%u\n", rtsp_th->force_rtp_port, rtsp_th->force_rtp_port + 1);
 	}
 
 	sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE, rtsp_sess->CSeq);

@@ -28,12 +28,12 @@
 
 #include <nemesi/etui.h>
 
-int tui_event(struct RTSP_Ctrl *rtsp_ctrl, char event)
+int tui_event(struct rtsp_ctrl *rtsp_ctrl, char event)
 {
 	switch (event) {
 		case 'q':
-			nmsprintf(NMSML_ALWAYS, "quit!\n");
-			nmsClose(rtsp_ctrl);
+			nms_printf(NMSML_ALWAYS, "quit!\n");
+			nms_close(rtsp_ctrl);
 			return 1;
 			break;
 		default:

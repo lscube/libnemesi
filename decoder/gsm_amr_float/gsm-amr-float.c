@@ -69,9 +69,9 @@ void Copyright(void)
 
 #define L_FRAME 160
 
-int decode(char *data, int len, NMSOutput *outc)
+int decode(char *data, int len, nms_output *outc)
 {
-	NMSAFunctions *funcs = outc->audio->functions;
+	nms_au_fnc *funcs = outc->audio->functions;
 
 	short synth[L_FRAME];
 	int frames = 0;

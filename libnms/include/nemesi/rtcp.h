@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp.h 271 2006-01-20 18:45:51Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -150,7 +150,7 @@ typedef struct {
 } rtcp_pkt;
 
 struct RTCP_Event {
-	struct RTP_Session *rtp_sess;
+	struct rtp_session *rtp_sess;
 	struct timeval tv;
 	rtcp_type_t type;
 	struct RTCP_Event *next;
@@ -159,11 +159,11 @@ struct RTCP_Event {
 typedef struct rtcp_sdes rtcp_sdes_t;
 
 void *rtcp(void *);
-int rtcp_thread_create(struct nmsRTPth *);
+int rtcp_thread_create(struct nms_rtp_th *);
 void rtcp_clean(void *);
 void rtcp_clean_events(void *);
 
-int rtcp_recv(struct RTP_Session *);
+int rtcp_recv(struct rtp_session *);
 int rtcp_hdr_val_chk(rtcp_pkt *, int);
 
 int parse_rtcp_pkt(struct Stream_Source *, rtcp_pkt *, int);
@@ -177,13 +177,13 @@ int set_ssrc_sdes(struct Stream_Source *, rtcp_sdes_item_t *);
 
 double rtcp_interval(int, int, double, int, double, int);
 
-struct RTCP_Event *rtcp_schedule(struct RTCP_Event *, struct RTP_Session *, struct timeval, rtcp_type_t);
+struct RTCP_Event *rtcp_schedule(struct RTCP_Event *, struct rtp_session *, struct timeval, rtcp_type_t);
 struct RTCP_Event *rtcp_deschedule(struct RTCP_Event *);
 
 struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *);
-int send_rtcp_rr(struct RTP_Session *);
-int build_rtcp_rr(struct RTP_Session *, rtcp_pkt *);
-int build_rtcp_sdes(struct RTP_Session *, rtcp_pkt *, int);
-int send_rtcp_bye(struct RTP_Session *);
+int send_rtcp_rr(struct rtp_session *);
+int build_rtcp_rr(struct rtp_session *, rtcp_pkt *);
+int build_rtcp_sdes(struct rtp_session *, rtcp_pkt *, int);
+int send_rtcp_bye(struct rtp_session *);
 
 #endif

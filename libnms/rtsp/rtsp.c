@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,8 +33,8 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/version.h>
 
-int (*cmd[COMMAND_NUM]) (struct RTSP_Thread *, ...);
-int (*state_machine[STATES_NUM]) (struct RTSP_Thread *, short);
+int (*cmd[COMMAND_NUM]) (struct rtsp_thread *, ...);
+int (*state_machine[STATES_NUM]) (struct rtsp_thread *, short);
 
 /**
 * funzione che implementa il thread rtsp.
@@ -43,7 +43,7 @@ int (*state_machine[STATES_NUM]) (struct RTSP_Thread *, short);
 * */
 void *rtsp(void *rtsp_thread)
 {
-	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *) rtsp_thread;
+	struct rtsp_thread *rtsp_th = (struct rtsp_thread *) rtsp_thread;
 	struct command *comm = rtsp_th->comm;
 	int command_fd = rtsp_th->pipefd[0];
 	fd_set readset;
@@ -61,7 +61,7 @@ void *rtsp(void *rtsp_thread)
 		if (rtsp_th->fd != -1)
 			FD_SET(rtsp_th->fd, &readset);
 		if (select(max(rtsp_th->fd, command_fd) + 1 , &readset, NULL, NULL, NULL) < 0){
-			nmsprintf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
+			nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
 			pthread_exit(NULL);
 		}
 		if (rtsp_th->fd != -1)
@@ -71,20 +71,20 @@ void *rtsp(void *rtsp_thread)
 				else if (n > 0){
 					if (full_msg_rcvd(rtsp_th))
 						if (handle_rtsp_pkt(rtsp_th)) {
-							// nmsprintf(NMSML_ERR, "\nError!\n");
+							// nms_printf(NMSML_ERR, "\nError!\n");
 							rtsp_reinit(rtsp_th);
 						}
 				} else {
-					nmsprintf(NMSML_ERR, "Server died prematurely!\n");
+					nms_printf(NMSML_ERR, "Server died prematurely!\n");
 					rtsp_reinit(rtsp_th);
-					nmsprintf(NMSML_NORM, "Session closed.\n");
+					nms_printf(NMSML_NORM, "Session closed.\n");
 				}
 			}
 		if (FD_ISSET(command_fd, &readset)) {
 			pthread_mutex_lock(&(rtsp_th->comm_mutex));
 			read(command_fd, ch, 1);
 			if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
-				nmsprintf(NMSML_DBG3, "Error handling user command.\n\n");
+				nms_printf(NMSML_DBG3, "Error handling user command.\n\n");
 				rtsp_th->busy = 0;
 			}
 			rtsp_th->comm->opcode = NONE;

@@ -21,7 +21,7 @@
 #include <nemesi/egui.h>
 #include <nemesi/comm.h>
 
-int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints * ui_hints, int argc, char *argv[])
+int gui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints * ui_hints, int argc, char *argv[])
 {
 	GtkWidget *nemesi;
 	char *path;
@@ -37,19 +37,19 @@ int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints * ui_hints, int argc, char *argv
 	path = getenv(NEMESI_THROBBER_DIR_ENV);
 	if (!path) {
 		add_pixmap_directory(NEMESI_THROBBER_DIR_DEFAULT);
-		nmsprintf(NMSML_DBG1, "NEMESI_THROBBER_DIR_DEFAULT: " NEMESI_THROBBER_DIR_DEFAULT "\n");
+		nms_printf(NMSML_DBG1, "NEMESI_THROBBER_DIR_DEFAULT: " NEMESI_THROBBER_DIR_DEFAULT "\n");
 	} else {
 		add_pixmap_directory(path);
-		nmsprintf(NMSML_DBG1, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
+		nms_printf(NMSML_DBG1, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
 	}
 	// pixmaps folder
 	path = getenv(NEMESI_PIXMAPS_DIR_ENV);
 	if (!path) {
 		add_pixmap_directory(NEMESI_PIXMAPS_DIR_DEFAULT);
-		nmsprintf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_DEFAULT: " NEMESI_PIXMAPS_DIR_DEFAULT "\n");
+		nms_printf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_DEFAULT: " NEMESI_PIXMAPS_DIR_DEFAULT "\n");
 	} else {
 		add_pixmap_directory(path);
-		nmsprintf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_ENV: %s\n", path);
+		nms_printf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_ENV: %s\n", path);
 	}
 
 	/*
@@ -62,17 +62,17 @@ int gui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints * ui_hints, int argc, char *argv
 	save_static_data(nemesi, rtsp_ctrl);	// must be done fist of all
 
 	if (create_throbber(lookup_widget(nemesi, "hbox3")))
-		nmsprintf(NMSML_ERR, "no throbber available\n");
+		nms_printf(NMSML_ERR, "no throbber available\n");
 
 	gnmsprint_init();
 	update_toolbar();
 	gtk_widget_show(nemesi);
 
 	if (ui_hints->url) {
-		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
-		nmsOpen(rtsp_ctrl, ui_hints->url, gui_throbber, &rtsp_ctrl->busy);
+		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
+		nms_open(rtsp_ctrl, ui_hints->url, gui_throbber, &rtsp_ctrl->busy);
 		while (gtk_events_pending ()) gtk_main_iteration ();
-		nmsPlay(rtsp_ctrl, NULL);
+		nms_play(rtsp_ctrl, NULL);
 		gui_throbber(&rtsp_ctrl->busy);
 	}
 	

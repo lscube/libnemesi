@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_sess_dup.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,16 +28,16 @@
 
 #include <nemesi/rtsp.h>
 
-struct RTSP_Session *rtsp_sess_dup(struct RTSP_Session *curr_rtsp_s)
+struct rtsp_session *rtsp_sess_dup(struct rtsp_session *curr_rtsp_s)
 {
-	struct RTSP_Session *new_rtsp_s;
+	struct rtsp_session *new_rtsp_s;
 
-	if ( (new_rtsp_s=(struct RTSP_Session *)malloc(sizeof(struct RTSP_Session))) == NULL ) {
-		nmsprintf(NMSML_FATAL, "Cannot allocate memory.\n");
+	if ( (new_rtsp_s=(struct rtsp_session *)malloc(sizeof(struct rtsp_session))) == NULL ) {
+		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}
 
-	memcpy(new_rtsp_s, curr_rtsp_s, sizeof(struct RTSP_Session));
+	memcpy(new_rtsp_s, curr_rtsp_s, sizeof(struct rtsp_session));
 
 	new_rtsp_s->Session_ID=0;
 	new_rtsp_s->next=NULL;

@@ -30,7 +30,7 @@
 #include <nemesi/comm.h>
 #include <nemesi/etui.h>
 
-int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
+int ui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints *ui_hints, int argc, char **argv)
 {
 	char *urlname = ui_hints->url; // NULL;
 	char optstr[256];
@@ -55,7 +55,7 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 	}
 	*/
 	if (fcntl(UIINPUT_FILENO, F_SETFL, O_NONBLOCK) < 0)
-		return nmsprintf(NMSML_FATAL, "fcntl() error!\n");
+		return nms_printf(NMSML_FATAL, "fcntl() error!\n");
 
 #endif // USE_UIPRINTF
 	memset(optstr, '\0', sizeof(optstr));
@@ -66,11 +66,11 @@ int ui(struct RTSP_Ctrl *rtsp_ctrl, NMSUiHints *ui_hints, int argc, char **argv)
 
 	*/
 	if (urlname != NULL) {
-		nmsprintf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", urlname);
-		nmsOpen(rtsp_ctrl, urlname, throbber, rtsp_ctrl);
-		nmsPlay(rtsp_ctrl, NULL);
+		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", urlname);
+		nms_open(rtsp_ctrl, urlname, throbber, rtsp_ctrl);
+		nms_play(rtsp_ctrl, NULL);
 	} else
-		nmsprintf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
+		nms_printf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
 	
 	while (1) {
 		if(rtsp_is_busy(rtsp_ctrl))

@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int init_state(struct RTSP_Thread *rtsp_th, short event)
+int init_state(struct rtsp_thread *rtsp_th, short event)
 {
 	switch (event) {
 	case RTSP_GET_RESPONSE:
@@ -62,11 +62,11 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 			rtsp_th->rtp_th->rtp_sess_head = rtsp_th->rtsp_queue->media_queue->rtp_sess;
 			/* Esecuzione del Thread RTP: uno per ogni sessione RTSP */
 			if (rtp_thread_create(rtsp_th->rtp_th))
-				return nmsprintf(NMSML_FATAL, "Cannot create RTP Thread!\n");
+				return nms_printf(NMSML_FATAL, "Cannot create RTP Thread!\n");
 
 			/* Esecuzione del Thread RTCP: uno per ogni sessione RTSP */
 			if (rtcp_thread_create(rtsp_th->rtp_th))
-				return nmsprintf(NMSML_FATAL, "Cannot create RTCP Thread!\n");
+				return nms_printf(NMSML_FATAL, "Cannot create RTCP Thread!\n");
 
 			rtsp_th->status = READY;
 			rtsp_unbusy(rtsp_th);
@@ -80,7 +80,7 @@ int init_state(struct RTSP_Thread *rtsp_th, short event)
 			return 1;
 		break;
 	default:
-		nmsprintf(NMSML_ERR, "Could not handle method in INIT state\n");
+		nms_printf(NMSML_ERR, "Could not handle method in INIT state\n");
 		return 1;
 		break;
 	}

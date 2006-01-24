@@ -42,7 +42,7 @@ GNMSurl *gnmsurl_init(void)
 	GtkTreeIter iter;
 
 	if (!(new=malloc(sizeof(GNMSurl)))) {
-		nmsprintf(NMSML_FATAL, "Could not alloc memory for completion struct\n");
+		nms_printf(NMSML_FATAL, "Could not alloc memory for completion struct\n");
 		return NULL;
 	}
 
@@ -62,14 +62,14 @@ gboolean gnmscompletion_machfunc(GtkEntryCompletion *completion, const gchar *ke
 	gchar *str_data;
 	gboolean match;
 	
-	nmsprintf(NMSML_DBG3, "key to comp %s\n", key);
+	nms_printf(NMSML_DBG3, "key to comp %s\n", key);
 	
 	gtk_tree_model_get (gnmsurl->model, iter, 0, &str_data, -1);
 	if (!str_data) {
-		nmsprintf(NMSML_DBG3, "no string to match\n");
+		nms_printf(NMSML_DBG3, "no string to match\n");
 		return FALSE;
 	}
-	nmsprintf(NMSML_DBG3, "%s\n", str_data);
+	nms_printf(NMSML_DBG3, "%s\n", str_data);
 	if (strstr(str_data, key))
 		match = TRUE;
 	else

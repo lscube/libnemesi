@@ -30,14 +30,14 @@
 
 void rtp_clean(void *args)
 {
-	struct nmsRTPth *rtp_th = (struct nmsRTPth *)args;
-	struct RTP_Session *rtp_sess=rtp_th->rtp_sess_head;
-	struct RTP_Session *prev_rtp_sess;
+	struct nms_rtp_th *rtp_th = (struct nms_rtp_th *)args;
+	struct rtp_session *rtp_sess=rtp_th->rtp_sess_head;
+	struct rtp_session *prev_rtp_sess;
 	struct Stream_Source *csrc, *psrc;
 	struct Conflict *conf, *pconf;
 	int i;
 	
-	nmsprintf(NMSML_DBG1, "RTP Thread is dying suicide!\n");
+	nms_printf(NMSML_DBG1, "RTP Thread is dying suicide!\n");
 	pthread_mutex_lock(&rtp_th->syn);
 	
 	while(rtp_sess != NULL) {
@@ -75,5 +75,5 @@ void rtp_clean(void *args)
 	}
 	rtp_th->rtp_sess_head = NULL;
 
-	nmsprintf(NMSML_DBG1, "RTP Thread R.I.P.\n");
+	nms_printf(NMSML_DBG1, "RTP Thread R.I.P.\n");
 }

@@ -34,7 +34,7 @@ static GNMSurl *gnmsurl = NULL;
 
 static gint infowidth = 0;
 
-static struct RTSP_Ctrl *rtsp_ctrl;
+static struct rtsp_ctrl *rtsp_ctrl;
 
 static gboolean internal_call = FALSE;
 // end of static variables declarations
@@ -179,9 +179,9 @@ on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
 	if (internal_call)
 		return;
 	if (gtk_toggle_tool_button_get_active(togglebutton))
-		nmsPlay(rtsp_ctrl, argstr);
+		nms_play(rtsp_ctrl, argstr);
 	else
-		nmsPause(rtsp_ctrl);
+		nms_pause(rtsp_ctrl);
 
 	gui_throbber(&rtsp_ctrl->busy);
 
@@ -191,7 +191,7 @@ void
 on_stop_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-	nmsPause(rtsp_ctrl);
+	nms_pause(rtsp_ctrl);
 	gui_throbber(&rtsp_ctrl->busy);
 }
 
@@ -200,7 +200,7 @@ void
 on_close_cmd_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-	nmsClose(rtsp_ctrl);
+	nms_close(rtsp_ctrl);
 	gui_throbber(&rtsp_ctrl->busy);
 }
 
@@ -275,16 +275,16 @@ on_opendialog_response                 (GtkDialog       *dialog,
 
 	switch (response_id) {
 		case GTK_RESPONSE_NONE:
-			nmsprintf(NMSML_DBG3, "response: NONE\n");
+			nms_printf(NMSML_DBG3, "response: NONE\n");
 			break;
 		case GTK_RESPONSE_REJECT:
-			nmsprintf(NMSML_DBG3, "response: REJECT\n");
+			nms_printf(NMSML_DBG3, "response: REJECT\n");
 			break;
 		case GTK_RESPONSE_ACCEPT:
-			nmsprintf(NMSML_DBG3, "response: ACCEPT\n");
+			nms_printf(NMSML_DBG3, "response: ACCEPT\n");
 			break;
 		case GTK_RESPONSE_OK:
-			nmsprintf(NMSML_DBG3, "response: OK\n");
+			nms_printf(NMSML_DBG3, "response: OK\n");
 			combo_box = lookup_widget(opendialog, "urlname");
 				
 			// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
@@ -294,11 +294,11 @@ on_opendialog_response                 (GtkDialog       *dialog,
 			list_store = gtk_combo_box_get_model(GTK_COMBO_BOX(combo_box));
 			valid = gtk_tree_model_get_iter_first(list_store, &iter);
 		
-			nmsprintf(NMSML_DBG1, "List of urls\n");
+			nms_printf(NMSML_DBG1, "List of urls\n");
 			while (valid) {
 				gchar *str_data;
 				gtk_tree_model_get (list_store, &iter, txt_col, &str_data, -1);
-				nmsprintf(NMSML_DBG1, "%s\n", str_data);
+				nms_printf(NMSML_DBG1, "%s\n", str_data);
 				if (!strcmp(url, str_data)) {
 					found = TRUE;
 					break;
@@ -306,7 +306,7 @@ on_opendialog_response                 (GtkDialog       *dialog,
 				g_free(str_data);
 				valid = gtk_tree_model_iter_next (list_store, &iter);
 			}
-			nmsprintf(NMSML_DBG1, "ENDOF List of urls\n");
+			nms_printf(NMSML_DBG1, "ENDOF List of urls\n");
 			if (!found)
 				gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), url);
 		
@@ -316,30 +316,30 @@ on_opendialog_response                 (GtkDialog       *dialog,
 			/*
 			gtk_widget_hide(opendialog);
 			*/
-			nmsprintf(NMSML_DBG1, "%s\n", true_url);
-			nmsOpen(rtsp_ctrl, true_url, gui_throbber, &rtsp_ctrl->busy);
+			nms_printf(NMSML_DBG1, "%s\n", true_url);
+			nms_open(rtsp_ctrl, true_url, gui_throbber, &rtsp_ctrl->busy);
 			break;
 		case GTK_RESPONSE_CLOSE:
-			nmsprintf(NMSML_DBG3, "response: CLOSE\n");
+			nms_printf(NMSML_DBG3, "response: CLOSE\n");
 			break;
 		case GTK_RESPONSE_YES:
-			nmsprintf(NMSML_DBG3, "response: YES\n");
+			nms_printf(NMSML_DBG3, "response: YES\n");
 			break;
 		case GTK_RESPONSE_NO:
-			nmsprintf(NMSML_DBG3, "response: NO\n");
+			nms_printf(NMSML_DBG3, "response: NO\n");
 			break;
 		case GTK_RESPONSE_APPLY:
-			nmsprintf(NMSML_DBG3, "response: APPLY\n");
+			nms_printf(NMSML_DBG3, "response: APPLY\n");
 			break;
 		case GTK_RESPONSE_HELP:
-			nmsprintf(NMSML_DBG3, "response: HELP\n");
+			nms_printf(NMSML_DBG3, "response: HELP\n");
 			break;
 		case GTK_RESPONSE_CANCEL:
 		case GTK_RESPONSE_DELETE_EVENT:
 		default:
 			gtk_widget_destroy(opendialog);
 			opendialog = NULL;
-			nmsprintf(NMSML_DBG3, "opendialog closed\n");
+			nms_printf(NMSML_DBG3, "opendialog closed\n");
 			break;
 	}
 
@@ -356,7 +356,7 @@ on_aboutdialog_realize                 (GtkWidget       *widget,
 	GtkWidget *aboutimage;
 	GtkWidget *aboutlabel;
 
-	nmsprintf(NMSML_DBG3, "about dialog realized\n");
+	nms_printf(NMSML_DBG3, "about dialog realized\n");
 	aboutimage = create_pixmap(NULL, "about-nemesi.png");
 	gtk_widget_set_name(aboutimage, "aboutimage");
 	g_object_set_data_full (G_OBJECT (aboutdialog), "aboutimage", gtk_widget_ref (aboutimage), (GDestroyNotify) gtk_widget_unref);
@@ -380,7 +380,7 @@ on_aboutdialog_response                (GtkDialog       *dialog,
 
 	switch (response_id) {
 		case 1: // show credits
-			nmsprintf(NMSML_DBG3, "response: CREDITS\n");
+			nms_printf(NMSML_DBG3, "response: CREDITS\n");
 			aboutimage = lookup_widget(aboutdialog, "aboutimage");
 			credits = lookup_widget(aboutdialog, "creditscroller");
 			creditsview = lookup_widget(aboutdialog, "creditsview");
@@ -394,45 +394,45 @@ on_aboutdialog_response                (GtkDialog       *dialog,
 			gtk_widget_show(lookup_widget(aboutdialog, "backabout"));
 			break;
 		case 2: // return back
-			nmsprintf(NMSML_DBG3, "response: BACK\n");
+			nms_printf(NMSML_DBG3, "response: BACK\n");
 			gtk_widget_hide(lookup_widget(aboutdialog, "creditscroller"));
 			gtk_widget_show(lookup_widget(aboutdialog, "aboutimage"));
 			gtk_widget_hide(lookup_widget(aboutdialog, "backabout"));
 			gtk_widget_show(lookup_widget(aboutdialog, "credits"));
 			break;
 		case GTK_RESPONSE_NONE:
-			nmsprintf(NMSML_DBG3, "response: NONE\n");
+			nms_printf(NMSML_DBG3, "response: NONE\n");
 			break;
 		case GTK_RESPONSE_REJECT:
-			nmsprintf(NMSML_DBG3, "response: REJECT\n");
+			nms_printf(NMSML_DBG3, "response: REJECT\n");
 			break;
 		case GTK_RESPONSE_ACCEPT:
-			nmsprintf(NMSML_DBG3, "response: ACCEPT\n");
+			nms_printf(NMSML_DBG3, "response: ACCEPT\n");
 			break;
 		case GTK_RESPONSE_OK:
-			nmsprintf(NMSML_DBG3, "response: OK\n");
+			nms_printf(NMSML_DBG3, "response: OK\n");
 			break;
 		case GTK_RESPONSE_CANCEL:
 		case GTK_RESPONSE_CLOSE:
 		case GTK_RESPONSE_DELETE_EVENT:
-			nmsprintf(NMSML_DBG3, "response: CLOSE\n");
+			nms_printf(NMSML_DBG3, "response: CLOSE\n");
 			gtk_widget_destroy(aboutdialog);
 			aboutdialog = NULL;
 			break;
 		case GTK_RESPONSE_YES:
-			nmsprintf(NMSML_DBG3, "response: YES\n");
+			nms_printf(NMSML_DBG3, "response: YES\n");
 			break;
 		case GTK_RESPONSE_NO:
-			nmsprintf(NMSML_DBG3, "response: NO\n");
+			nms_printf(NMSML_DBG3, "response: NO\n");
 			break;
 		case GTK_RESPONSE_APPLY:
-			nmsprintf(NMSML_DBG3, "response: APPLY\n");
+			nms_printf(NMSML_DBG3, "response: APPLY\n");
 			break;
 		case GTK_RESPONSE_HELP:
-			nmsprintf(NMSML_DBG3, "response: HELP\n");
+			nms_printf(NMSML_DBG3, "response: HELP\n");
 			break;
 		default:
-			nmsprintf(NMSML_DBG3, "NO EVENT\n");
+			nms_printf(NMSML_DBG3, "NO EVENT\n");
 			break;
 	}
 }

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:playing_state.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int playing_state(struct RTSP_Thread *rtsp_th, short event)
+int playing_state(struct rtsp_thread *rtsp_th, short event)
 {
 	switch(event){
 	case RTSP_PAUSE_RESPONSE:
@@ -41,7 +41,7 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 			rtsp_th->status = READY;
 			rtsp_unbusy(rtsp_th);
 			// rtsp_th->busy = 0;
-			nmsprintf(NMSML_NORM, "----- Play paused -----\n");
+			nms_printf(NMSML_NORM, "----- Play paused -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);
@@ -60,7 +60,7 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 			rtsp_reinit(rtsp_th);
 			rtsp_unbusy(rtsp_th);
 			// rtsp_th->busy = 0;
-			nmsprintf(NMSML_NORM, "----- All Connections closed -----\n");
+			nms_printf(NMSML_NORM, "----- All Connections closed -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);
@@ -70,7 +70,7 @@ int playing_state(struct RTSP_Thread *rtsp_th, short event)
 			return 1;
 		break;
 	default:
-		nmsprintf(NMSML_ERR, "Could not handle method in PLAYING state\n");
+		nms_printf(NMSML_ERR, "Could not handle method in PLAYING state\n");
 		return 1;
 		break;
 	

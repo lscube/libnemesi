@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:cc_prms_chk.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -36,26 +36,26 @@
  * second parameter. Exiting, the function will return in <tt>mask</tt>
  * parameter the mask of permissions that conflict with license.
  *
- * \param license CCLicense struct of license.
+ * \param license cc_license struct of license.
  *
  * \param mask pointer to permission mask used as input paramter for
  * accepted permissions by user and as return value for conflicting
  * permissions.
  */
-int cc_prms_chk(CCLicense *license, CCPermsMask *mask)
+int cc_perm_chk(cc_license *license, cc_perm_mask *mask)
 {
-	CCPermsMask parsedmsk;
+	cc_perm_mask parsedmsk;
 
 	if (!license) {
-		nmsprintf(NMSML_DBG1, "no CC license defined\n");
+		nms_printf(NMSML_DBG1, "no CC license defined\n");
 		return 0;
 	}
 
 	// uriLicense parse
 	if (!license->uriLicense)
-		return nmsprintf(NMSML_ERR, "no uriLicense present: could not parse license uri\n");
+		return nms_printf(NMSML_ERR, "no uriLicense present: could not parse license uri\n");
 	if ( (cc_parse_urilicense(license->uriLicense, &parsedmsk)) )
-		return nmsprintf(NMSML_ERR, "cannot parse uriLicense (cc_prms_mask)\n");
+		return nms_printf(NMSML_ERR, "cannot parse uriLicense (cc_prms_mask)\n");
 
 	*((CC_BITMASK_T *)mask) = ~(*((CC_BITMASK_T *)mask)) & *((CC_BITMASK_T *)&parsedmsk);
 

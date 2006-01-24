@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:init_rtp_sess.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,18 +29,18 @@
 #include <nemesi/rtp.h>
 
 #define RET_ERR(err_level, ...)	{ \
-					nmsprintf(err_level, __VA_ARGS__ ); \
+					nms_printf(err_level, __VA_ARGS__ ); \
 					free(rtp_sess); \
 					return NULL; \
 				}
 
-struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
+struct rtp_session *init_rtp_sess(nms_sockaddr *local, nms_sockaddr *peer)
 {
-	struct RTP_Session *rtp_sess;
-	NMSaddr nms_addr;
+	struct rtp_session *rtp_sess;
+	nms_addr nms_addr;
 
-	if((rtp_sess=(struct RTP_Session *)calloc(1, sizeof(struct RTP_Session))) == NULL) {
-		nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
+	if((rtp_sess=(struct rtp_session *)calloc(1, sizeof(struct rtp_session))) == NULL) {
+		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 		return NULL;
 	}
 
@@ -61,10 +61,10 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 		RET_ERR(NMSML_ERR, "Could not set srcaddr in transport string\n")
 	switch (nms_addr.family) {
 		case AF_INET:
-			nmsprintf(NMSML_DBG1, "IPv4 address\n");
+			nms_printf(NMSML_DBG1, "IPv4 address\n");
 			break;
 		case AF_INET6:
-			nmsprintf(NMSML_DBG1, "IPv6 address\n");
+			nms_printf(NMSML_DBG1, "IPv6 address\n");
 			break;
 	}
 	// --- local address
@@ -74,10 +74,10 @@ struct RTP_Session *init_rtp_sess(NMSsockaddr *local, NMSsockaddr *peer)
 		RET_ERR(NMSML_ERR, "Could not set dstaddr in transport string\n")
 	switch (nms_addr.family) {
 		case AF_INET:
-			nmsprintf(NMSML_DBG1, "IPv4 local address\n");
+			nms_printf(NMSML_DBG1, "IPv4 local address\n");
 			break;
 		case AF_INET6:
-			nmsprintf(NMSML_DBG1, "IPv6 local address\n");
+			nms_printf(NMSML_DBG1, "IPv6 local address\n");
 			break;
 	}
 	// ---

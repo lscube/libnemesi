@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:cc_id3v2.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -101,7 +101,7 @@ static uint8 enc_synchsafe_int(uint8 *enc_chr, uint32 num)
 	return encoded;
 }
 
-int cc_id3v2(CCLicense *license, CCTag *tag)
+int cc_id3v2(cc_license *license, cc_tag *tag)
 {
 	uint32 id3len=0;
 	struct id3tag *id3;

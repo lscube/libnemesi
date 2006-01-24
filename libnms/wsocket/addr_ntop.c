@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:addr_ntop.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/wsocket.h>
 
-char *addr_ntop(const NMSaddr *addr, char *str, size_t len)
+char *addr_ntop(const nms_addr *addr, char *str, size_t len)
 {
 	switch (addr->family) {
 		case AF_INET:
@@ -44,7 +44,7 @@ char *addr_ntop(const NMSaddr *addr, char *str, size_t len)
 			break;
 #endif
 			
-#if 0 // not yet supported by NMSaddr
+#if 0 // not yet supported by nms_addr
 #ifdef	AF_UNIX
 		case AF_UNIX:
 			/* OK to have no pathname bound to the socket: happens on

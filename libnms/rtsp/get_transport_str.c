@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:get_transport_str.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
+int get_transport_str(struct rtp_session *rtp_sess, char *buff)
 {
 	char *tkna, *tknb;
 	char str[256];
@@ -68,7 +68,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			str[tknb++-tkna]='\0';
 
 			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, str)) {
-				nmsprintf(NMSML_ERR, "Source IP Address not valid!\n");
+				nms_printf(NMSML_ERR, "Source IP Address not valid!\n");
 				return 1;
 			}
 			continue;
@@ -81,7 +81,7 @@ int get_transport_str(struct RTP_Session *rtp_sess, char *buff)
 			str[tknb++-tkna]='\0';
 			
 			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, str)) {
-				nmsprintf(NMSML_ERR, "Destination IP Address not valid!\n");
+				nms_printf(NMSML_ERR, "Destination IP Address not valid!\n");
 				return 1;
 			}
 			continue;

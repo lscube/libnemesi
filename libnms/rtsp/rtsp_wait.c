@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_wait.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,9 +28,9 @@
 
 #include <nemesi/rtsp.h>
 
-void rtsp_wait(struct RTSP_Ctrl *rtsp_ctrl)
+void rtsp_wait(struct rtsp_ctrl *rtsp_ctrl)
 {
-	struct RTSP_Thread *rtsp_th = (struct RTSP_Thread *)rtsp_ctrl;
+	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_ctrl;
 
 	pthread_mutex_lock(&(rtsp_th->comm_mutex));
 	while (rtsp_th->busy)

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:handle_setup_response.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,21 +29,21 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int handle_setup_response(struct RTSP_Thread *rtsp_th)
+int handle_setup_response(struct rtsp_thread *rtsp_th)
 {
 	char *tkn;		/* contiene una riga di descrizione */
 	char *prev_tkn;		/* punta prima al token precedente per il controllo sulla fine dell'header
 				   e poi ai vari componenti della riga di comando */
 	
-	struct RTSP_Session *rtsp_sess;
-	struct RTSP_Medium *rtsp_med;
+	struct rtsp_session *rtsp_sess;
+	struct rtsp_medium *rtsp_med;
 
 	// if (get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
 	if ( !(rtsp_sess=get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med=get_curr_sess(GCS_CUR_MED)))
 		return 1;
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
-		nmsprintf(NMSML_ERR, "Invalid RTSP-SETUP response\n");
+		nms_printf(NMSML_ERR, "Invalid RTSP-SETUP response\n");
 		return 1;
 	}
 	if ( check_status(prev_tkn, rtsp_th) < 0 ){

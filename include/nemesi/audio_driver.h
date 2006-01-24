@@ -45,7 +45,7 @@ static void audio_resume(void);
 static void reset(void);
 static void uninit(void);
 
-#define NMS_LIB_AUDIO(x) NMSAFunctions nms_audio_##x =\
+#define NMS_LIB_AUDIO(x) nms_au_fnc nms_audio_##x =\
 {\
 	&info, \
 	init, \

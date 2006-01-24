@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_hdr_val_chk.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,15 +33,15 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 	rtcp_pkt *end;
 
 	if (len < (int)sizeof(rtcp_common_t)) {
-		nmsprintf(NMSML_ERR, "RTCP packet too small!!! (%d)\n", len);
+		nms_printf(NMSML_ERR, "RTCP packet too small!!! (%d)\n", len);
 		return 1;
 	}
 
 	if (len/4 > (ntohs((pkt->common).len) + 1)){
 		/* This is a fu**ing compound pkt */
-		nmsprintf(NMSML_DBG2, "RTCP Compound packet arrived (total len=%d)\n", len);
+		nms_printf(NMSML_DBG2, "RTCP Compound packet arrived (total len=%d)\n", len);
 		if ( ( *(uint16 *)pkt & RTCP_VALID_MASK) != RTCP_VALID_VALUE) {
-			nmsprintf(NMSML_WARN, "RTCP Header not valid: first pkt of Compound is not a SR (or RR)!\n"BLANK_LINE);
+			nms_printf(NMSML_WARN, "RTCP Header not valid: first pkt of Compound is not a SR (or RR)!\n"BLANK_LINE);
 			return 1;
 		}
 		end = (rtcp_pkt *)((uint32 *)pkt + len/4);
@@ -49,21 +49,21 @@ int rtcp_hdr_val_chk(rtcp_pkt *pkt, int len)
 		while ((pkt < end) && ((pkt->common).ver == 2));
 
 		if (pkt != end) {
-			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching lenght (%d)!\n"BLANK_LINE, len);
+			nms_printf(NMSML_WARN, "RTCP Header not valid: mismatching lenght (%d)!\n"BLANK_LINE, len);
 			return 1;
 		}
 	} else {
-		nmsprintf(NMSML_DBG2, "RTCP packet arrived (total len=%d)\n", len);
+		nms_printf(NMSML_DBG2, "RTCP packet arrived (total len=%d)\n", len);
 		if ( (pkt->common).ver != RTP_VERSION ){
-			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching RTP version number!\n"BLANK_LINE);
+			nms_printf(NMSML_WARN, "RTCP Header not valid: mismatching RTP version number!\n"BLANK_LINE);
 			return 1;
 		}
 		if ( ! (((pkt->common).pt>=200) && ((pkt->common).pt<=204)) ){
-			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching payload type!\n"BLANK_LINE);
+			nms_printf(NMSML_WARN, "RTCP Header not valid: mismatching payload type!\n"BLANK_LINE);
 			return 1;
 		}
 		if ( ((pkt->common).pad) && ( *(((uint8 *)pkt)+len-1) > (pkt->common).len*4) ){
-			nmsprintf(NMSML_WARN, "RTCP Header not valid: mismatching lenght!\n"BLANK_LINE);
+			nms_printf(NMSML_WARN, "RTCP Header not valid: mismatching lenght!\n"BLANK_LINE);
 			return 1;
 		}
 	}

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:sdp_session_setup.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,14 +32,14 @@
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>
 
-SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
+sdp_session_info *sdp_session_setup(char *descr, int descr_len)
 {
-	SDP_Session_info *new;
+	sdp_session_info *new;
 	char *tkn=NULL;
 	char error=0; // error flag
 
 	// we use calloc, so it's all already initialized to NULL
-	if (!(new=(SDP_Session_info *)calloc(1, sizeof(SDP_Session_info))))
+	if (!(new=(sdp_session_info *)calloc(1, sizeof(sdp_session_info))))
 		return NULL;
 
 	do {
@@ -48,7 +48,7 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 		else
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
-			nmsprintf(NMSML_ERR, "Invalid SDP description body... discarding\n");
+			nms_printf(NMSML_ERR, "Invalid SDP description body... discarding\n");
 			error=1;
 			break;
 			// return NULL;
@@ -96,7 +96,7 @@ SDP_Session_info *sdp_session_setup(char *descr, int descr_len)
 			case 'a':
 				tkn+=2;
 				if (sdp_set_attr(&(new->attr_list), tkn)) {
-					nmsprintf(NMSML_ERR, "Error setting SDP session attribute\n");
+					nms_printf(NMSML_ERR, "Error setting SDP session attribute\n");
 					error=1;
 					break;
 					// return NULL;

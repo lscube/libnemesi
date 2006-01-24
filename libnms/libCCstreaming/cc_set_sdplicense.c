@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:cc_set_sdplicense.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -38,7 +38,7 @@
  * function does't copy the string, it sets just the right pointer to sdp_l, so
  * the sdp_l parameter cannot be a temporary string.
  */
-int cc_set_sdplicense(CCLicense *cc, char *sdp_l)
+int cc_set_sdplicense(cc_license *cc, char *sdp_l)
 {
 	char *cclicenses[][2] = CC_LICENSE;
 	unsigned int i;
@@ -47,7 +47,7 @@ int cc_set_sdplicense(CCLicense *cc, char *sdp_l)
 	for(i=0; i<sizeof(cclicenses)/sizeof(*cclicenses); i++) {
 		if (!strncmpcase(sdp_l, cclicenses[i][CC_ATTR_NAME], strlen(cclicenses[i][CC_ATTR_NAME]))) {
 			// XXX: we do not duplicate the string!!! Do we have to do that?
-			/* set the correct field using CCLicense struct like an array of strings
+			/* set the correct field using cc_license struct like an array of strings
 			 * skipping the sdp param and setting the pointer after the colon */
 			((char **)cc)[i] = sdp_l + strlen(cclicenses[i][CC_ATTR_NAME]) + 1;
 			return 0;

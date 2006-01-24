@@ -43,16 +43,16 @@
 #define BUFFER 8192 
 
 int get_plugin_pt(void);
-int decode(char *, int, NMSOutput *);
+int decode(char *, int, nms_output *);
 
 int get_plugin_pt(void)
 {
 	return 96;
 }
 
-int decode(char *data, int len, NMSOutput *outc)
+int decode(char *data, int len, nms_output *outc)
 {
-	NMSAFunctions *funcs = outc->audio->functions;
+	nms_au_fnc *funcs = outc->audio->functions;
 	static struct mpstr *mp = NULL;
 
 	int size;

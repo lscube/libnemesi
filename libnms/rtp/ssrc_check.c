@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:ssrc_check.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,11 +32,11 @@
  * check for ssrc of incoming packet.
  * \return SSRC_KNOWN, SSRC_NEW, SSRC_COLLISION, -1 on internal fatal error.
  * */
-int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source **stm_src, NMSsockaddr *recfrom, enum proto_types proto_type)
+int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct Stream_Source **stm_src, nms_sockaddr *recfrom, enum proto_types proto_type)
 {
 	struct Conflict *stm_conf=rtp_sess->conf_queue;
 	struct sockaddr_storage sockaddr;
-	NMSsockaddr sock = { (struct sockaddr *)&sockaddr, sizeof(sockaddr) };
+	nms_sockaddr sock = { (struct sockaddr *)&sockaddr, sizeof(sockaddr) };
 	uint8 local_collision;
 	
 
@@ -48,10 +48,10 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 		/* nuovo SSRC */
 		/* inserimento in testa */
 		pthread_mutex_lock(&rtp_sess->syn);	
-		nmsprintf(NMSML_DBG1, "new SSRC\n");
+		nms_printf(NMSML_DBG1, "new SSRC\n");
 		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 			pthread_mutex_unlock(&rtp_sess->syn);	
-			return -nmsprintf(NMSML_ERR, "Error while setting new Stream Source\n");
+			return -nms_printf(NMSML_ERR, "Error while setting new Stream Source\n");
 		}
 
 		poinit(&((*stm_src)->po),&(rtp_sess->bp));
@@ -69,7 +69,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			
 			if (!(*stm_src)->rtp_from.addr) {
 				sockaddrdup(&(*stm_src)->rtp_from, recfrom);
-				nmsprintf(NMSML_DBG1, "new SSRC for RTP\n");
+				nms_printf(NMSML_DBG1, "new SSRC for RTP\n");
 				local_collision = SSRC_RTPNEW;
 			}
 			sock.addr = (*stm_src)->rtp_from.addr;
@@ -79,17 +79,17 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			
 			if (!(*stm_src)->rtcp_from.addr) {
 				sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
-				nmsprintf(NMSML_DBG1, "new SSRC for RTCP\n");
+				nms_printf(NMSML_DBG1, "new SSRC for RTCP\n");
 				local_collision = SSRC_RTCPNEW;
 			}
 			sock.addr = (*stm_src)->rtcp_from.addr;
 			sock.addr_len = (*stm_src)->rtcp_from.addr_len;
 
 			if (!(*stm_src)->rtcp_to.addr) {
-				NMSaddr nms_addr;
+				nms_addr nms_addr;
 
 				if (sock_get_addr(recfrom->addr, &nms_addr))
-					return -nmsprintf(NMSML_ERR, "Invalid address for received packet\n");
+					return -nms_printf(NMSML_ERR, "Invalid address for received packet\n");
 				
 				// if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).srv_ports[1]) < 0 )
 				if ( rtcp_to_connect(*stm_src, &nms_addr, (rtp_sess->transport).srv_ports[1]) < 0 )
@@ -98,13 +98,13 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 		}
 
 		if( sockaddrcmp(sock.addr, sock.addr_len, recfrom->addr, recfrom->addr_len) ){
-			nmsprintf(NMSML_ERR, "An identifier collision or a loop is indicated\n");
+			nms_printf(NMSML_ERR, "An identifier collision or a loop is indicated\n");
 			
 			/* An identifier collision or a loop is indicated */
 			
 			if( ssrc != rtp_sess->local_ssrc ){
 				/* OPTIONAL error counter step not implemented */
-				nmsprintf(NMSML_VERB, "Warning! An identifier collision or a loop is indicated.\n");
+				nms_printf(NMSML_VERB, "Warning! An identifier collision or a loop is indicated.\n");
 				return SSRC_COLLISION;
 			}
 
@@ -124,7 +124,7 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					
 					/* New collision, change SSRC identifier */
 					
-					nmsprintf(NMSML_VERB, "SSRC collision detected: getting new!\n");
+					nms_printf(NMSML_VERB, "SSRC collision detected: getting new!\n");
 					
 
 					/* Send RTCP BYE pkt */
@@ -136,14 +136,14 @@ int ssrc_check(struct RTP_Session *rtp_sess, uint32 ssrc, struct Stream_Source *
 			
 					/* New entry in SSRC queue with conflicting ssrc */
 					if( (stm_conf=(struct Conflict *)malloc(sizeof(struct Conflict))) == NULL)
-						return -nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
+						return -nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 
 					/* inserimento in testa */
 					/* insert at the beginning of Stream Sources queue */
 					pthread_mutex_lock(&rtp_sess->syn);	
 					if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 						pthread_mutex_unlock(&rtp_sess->syn);	
-						return -nmsprintf(NMSML_ERR, "Error while setting new Stream Source\n");
+						return -nms_printf(NMSML_ERR, "Error while setting new Stream Source\n");
 					}
 					poinit(&((*stm_src)->po),&(rtp_sess->bp));
 					pthread_mutex_unlock(&rtp_sess->syn);	

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:cc_tag_file.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -37,24 +37,24 @@
 #define CC_PT_MPA 14
 
 static char cc_taginit=0;
-static CCTag *cc_tags=NULL;
+static cc_tag *cc_tags=NULL;
 static char **cc_exts=NULL;
 
 static int cc_tagsinit(void)
 {
 	// if ( (!cc_headers) && (!(cc_headers=calloc(128, sizeof(char *)))))
-	if ( (!cc_tags) && (!(cc_tags=calloc(128, sizeof(CCTag)))))
-		return nmsprintf(NMSML_FATAL, "cc_tag: could not alloc static tags\n");
+	if ( (!cc_tags) && (!(cc_tags=calloc(128, sizeof(cc_tag)))))
+		return nms_printf(NMSML_FATAL, "cc_tag: could not alloc static tags\n");
 	
 	if ( (!cc_exts) && (!(cc_exts=calloc(128, sizeof(char *)))))
-		return nmsprintf(NMSML_FATAL, "cc_tag: could not alloc static extensions\n");
+		return nms_printf(NMSML_FATAL, "cc_tag: could not alloc static extensions\n");
 
 	cc_taginit=1;
 
 	return 0;
 }
 
-int cc_setag(int pt, CCLicense *license)
+int cc_setag(int pt, cc_license *license)
 {
 	if (!license)
 		return 0;
@@ -75,7 +75,7 @@ int cc_setag(int pt, CCLicense *license)
 	return 0;
 }
 
-int cc_getag(int pt, CCTag **tag, char **ext)
+int cc_getag(int pt, cc_tag **tag, char **ext)
 {
 	if ( (!cc_taginit) && (cc_tagsinit()) )
 		return 1;

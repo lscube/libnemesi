@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:play_cmd.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -36,7 +36,7 @@
 * @return 0 in caso di successo, 1 altrimenti.
 * @see send_play_request.
 * */
-int play_cmd(struct RTSP_Thread *rtsp_th, ...)
+int play_cmd(struct rtsp_thread *rtsp_th, ...)
 {
 	va_list ap;
 	char *args;
@@ -45,12 +45,12 @@ int play_cmd(struct RTSP_Thread *rtsp_th, ...)
 	args = va_arg(ap, char *);
 
 	if (rtsp_th->status == INIT) {
-		nmsprintf(NMSML_ERR, "Player not initialized!\n");
+		nms_printf(NMSML_ERR, "Player not initialized!\n");
 		va_end(ap);
 		return 1;
 	}
 	if (rtsp_th->status == RECORDING) {
-		nmsprintf(NMSML_ERR, "Still recording...\n");
+		nms_printf(NMSML_ERR, "Still recording...\n");
 		va_end(ap);
 		return 1;
 	}

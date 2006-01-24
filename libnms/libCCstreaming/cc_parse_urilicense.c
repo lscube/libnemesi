@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:cc_parse_urilicense.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -31,15 +31,15 @@
 #include <nemesi/cc.h>
 #include <nemesi/utils.h>
 
-/*! \brief Parses Licenes URI and fills CCPermissions data structure.
+/*! \brief Parses Licenes URI and fills cc_perms data structure.
  *
  * To know what are the conditions of the license we parse the uri and look for
  * short names.
  *
  * \param uri license uri to parse.
- * \param conds CCPermissions structure to be filled.
+ * \param conds cc_perms structure to be filled.
  */
-int cc_parse_urilicense(char *uri, CCPermsMask *mask)
+int cc_parse_urilicense(char *uri, cc_perm_mask *mask)
 {
 	char *tkn, *permstr;
 	unsigned int i;
@@ -53,12 +53,12 @@ int cc_parse_urilicense(char *uri, CCPermsMask *mask)
 		tkn = uri + 7;
 
 	if(strncmpcase(tkn, BASE_URI_LICENSE, strlen(BASE_URI_LICENSE))) // TODO: must continue or give an error, or ask what to to?
-		return nmsprintf(NMSML_ERR, "the base URI of license is not \"%s\", so it can't be considered valid\n");
+		return nms_printf(NMSML_ERR, "the base URI of license is not \"%s\", so it can't be considered valid\n");
 
 	tkn = tkn + strlen(BASE_URI_LICENSE);
 	while(*tkn == '/') tkn++;
 	if (!(permstr = strdup(tkn)))
-		return nmsprintf(NMSML_FATAL, "memory error in cc_parse_urilicense\n");
+		return nms_printf(NMSML_FATAL, "memory error in cc_parse_urilicense\n");
 	if ((tkn = strchr(permstr, '/')))
 		*tkn = '\0';
 

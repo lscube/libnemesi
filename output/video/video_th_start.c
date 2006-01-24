@@ -33,8 +33,8 @@
 // #include <nemesi/video.h>
 #include <nemesi/output.h>
 
-// int video_th_start(NMSVideo *vc)
-int video_th_start(NMSOutput *outc)
+// int video_th_start(nms_video *vc)
+int video_th_start(nms_output *outc)
 {
 	pthread_attr_t vth_attr;
 	int n;
@@ -45,12 +45,12 @@ int video_th_start(NMSOutput *outc)
 	pthread_attr_init(&vth_attr);
 
 	if ((n = pthread_attr_setdetachstate(&vth_attr, PTHREAD_CREATE_JOINABLE)) != 0) {
-		return nmsprintf(NMSML_FATAL, "Cannot set Video Thread attributes!: %s\n", strerror(n));
+		return nms_printf(NMSML_FATAL, "Cannot set Video Thread attributes!: %s\n", strerror(n));
 	}
 
 	/* Create Video Thread */
 	if ((n = pthread_create(&(outc->video->tid), &vth_attr, &video_th, (void *)outc)) > 0) {
-		return nmsprintf(NMSML_FATAL, "Cannot create Video Thread: %s\n", strerror(n));
+		return nms_printf(NMSML_FATAL, "Cannot create Video Thread: %s\n", strerror(n));
 	}
 
 	return 0;

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:send_get_request.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -31,7 +31,7 @@
 #include <nemesi/methods.h>
 #include <nemesi/wsocket.h>
 
-int send_get_request(struct RTSP_Thread *rtsp_th)
+int send_get_request(struct rtsp_thread *rtsp_th)
 {
 	char b[256];
 
@@ -42,7 +42,7 @@ int send_get_request(struct RTSP_Thread *rtsp_th)
 		VERSION_NAME);
 	strcat(b, RTSP_EL);
 	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
-		nmsprintf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
+		nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
 		return 1;
 	}
 	sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);

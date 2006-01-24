@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:bpinit.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -50,10 +50,10 @@ int bpinit(buffer_pool *bp)
 	pthread_condattr_t cond_attr;
 	int i;
 
-	if (((bp->bufferpool) = (BP_SLOT *) malloc(BP_SLOT_NUM*sizeof(BP_SLOT))) == NULL) {
+	if (((bp->bufferpool) = (bp_slot *) malloc(BP_SLOT_NUM*sizeof(bp_slot))) == NULL) {
 		return 1;
 	}
-	memset(bp->bufferpool, 0, BP_SLOT_NUM*sizeof(BP_SLOT));
+	memset(bp->bufferpool, 0, BP_SLOT_NUM*sizeof(bp_slot));
 	for (i = 0; i < BP_SLOT_NUM; bp->freelist[i] = i + 1, i++);
 	bp->freelist[BP_SLOT_NUM - 1] = -1;
 	bp->flhead = 0;

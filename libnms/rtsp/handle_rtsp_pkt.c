@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:handle_rtsp_pkt.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int handle_rtsp_pkt(struct RTSP_Thread *rtsp_th)
+int handle_rtsp_pkt(struct rtsp_thread *rtsp_th)
 {
 	char ver[32];
 	int opcode;

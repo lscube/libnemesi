@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:get_curr_sess.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,14 +33,14 @@
 void *get_curr_sess(int cmd, ...)
 {
 	va_list ap;
-	struct RTSP_Thread *rtsp_th;
-	static struct RTSP_Session *static_sess = NULL;
-	static struct RTSP_Medium *static_med = NULL;
+	struct rtsp_thread *rtsp_th;
+	static struct rtsp_session *static_sess = NULL;
+	static struct rtsp_medium *static_med = NULL;
 
 	switch (cmd) {
 		case GCS_INIT:
 			va_start(ap, cmd);
-			rtsp_th = va_arg(ap, struct RTSP_Thread *);
+			rtsp_th = va_arg(ap, struct rtsp_thread *);
 			static_sess = rtsp_th->rtsp_queue;
 			static_med = static_sess->media_queue;
 			va_end(ap);
@@ -106,10 +106,10 @@ void *get_curr_sess(int cmd, ...)
 * sessioni ne' media RTSP da scandire.
 * */
 
-int get_curr_sess(struct RTSP_Thread *rtsp_th, struct RTSP_Session **rtsp_sess, struct RTSP_Medium **rtsp_med)
+int get_curr_sess(struct rtsp_thread *rtsp_th, struct rtsp_session **rtsp_sess, struct rtsp_medium **rtsp_med)
 {
-	static struct RTSP_Session *static_sess = NULL;
-	static struct RTSP_Medium *static_med = NULL;
+	static struct rtsp_session *static_sess = NULL;
+	static struct rtsp_medium *static_med = NULL;
 
 	if ((rtsp_th == NULL) && (rtsp_sess == NULL) && (rtsp_med == NULL)) {
 		static_sess = NULL;

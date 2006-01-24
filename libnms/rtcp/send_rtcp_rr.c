@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:send_rtcp_rr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-int send_rtcp_rr(struct RTP_Session *rtp_sess)
+int send_rtcp_rr(struct rtp_session *rtp_sess)
 {
 	rtcp_pkt *pkt;
 	int len;
@@ -45,9 +45,9 @@ int send_rtcp_rr(struct RTP_Session *rtp_sess)
 	for(stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next)
 		if (stm_src->rtcptofd > 0) {
 			if( write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0 )
-				nmsprintf(NMSML_WARN, "WARNING! Error while sending RTCP pkt\n");
+				nms_printf(NMSML_WARN, "WARNING! Error while sending RTCP pkt\n");
 			else
-				nmsprintf(NMSML_DBG1, "RTCP RR packet sent\n");
+				nms_printf(NMSML_DBG1, "RTCP RR packet sent\n");
 		}
 	
 	return len;	

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:parse_rtcp_bye.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,6 +32,6 @@
 int parse_rtcp_bye(rtcp_pkt *pkt)
 {
 	// TODO: handle bye packet
-	nmsprintf(NMSML_DBG1, "Received BYE from SSRC: %u\n", pkt->r.bye.src);
+	nms_printf(NMSML_DBG1, "Received BYE from SSRC: %u\n", pkt->r.bye.src);
 	return 0;
 }

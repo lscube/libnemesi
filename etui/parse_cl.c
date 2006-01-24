@@ -33,11 +33,11 @@
 #include <nemesi/video_drivers.h>
 #include <nemesi/audio_drivers.h>
 
-int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
+int parse_cl(int argc, char **argv, nms_cl_opts *cl_opt)
 {
-	NMSOutputHints *output_hints = cl_opt->output;
-	NMSUiHints *ui_hints = cl_opt->ui;
-	NMSRtspHints *rtsp_hints = cl_opt->rtsp;
+	nms_out_hints *output_hints = cl_opt->output;
+	nms_ui_hints *ui_hints = cl_opt->ui;
+	nms_rtsp_hints *rtsp_hints = cl_opt->rtsp;
 	int ret = 0;
 	char usage = 0; // printf usage at the end of function
 	// getopt variables
@@ -64,12 +64,12 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			break;
 		case 'v':	/* verbose */
 			//! salvo in v il livello di "verbosity" corrente
-			v = nmsverbosity_get();
+			v = nms_verbosity_get();
 			if (optarg) {
 				if (*optarg == 'v') {
 					for(i=0;optarg[i]=='v'; i++);
 					if (optarg[i]!='\0') {
-						nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
+						nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 						usage = 1;
 						ret = -1;
 					}
@@ -77,12 +77,12 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 				} else if ( (isdigit(*optarg)) ) {
 					v = strtol(optarg, &v_err, 10);
 					if ( (*v_err) ) {
-						nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
+						nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 						usage = 1;
 						ret = -1;
 					}
 				} else {
-					nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
+					nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 					usage = 1;
 					ret = -1;
 				}
@@ -95,29 +95,29 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 					v++;
 			} else
 				v++;
-			if ( v != nmsverbosity_get() )
-				nmsverbosity_set(v);
-				nmsprintf(NMSML_DBG1, "Verbosity level set to %d\n", nmsverbosity_get());
+			if ( v != nms_verbosity_get() )
+				nms_verbosity_set(v);
+				nms_printf(NMSML_DBG1, "Verbosity level set to %d\n", nms_verbosity_get());
 			break;
 		case 'p':
 			// we check here the correct value for first RTP port in order not to deceive user!!!
 			// new check will be done in the correct place in RTSP lib.
 			rtsp_hints->first_rtp_port = strtol(optarg, &v_err, 10);
 			if ( (*v_err) ) {
-				nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
+				nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 				usage = 1;
 				ret = -1;
 			} else if (rtsp_hints->first_rtp_port < 0) {
-				nmsprintf(NMSML_ERR, "Port number must be greater than zero!\n");
+				nms_printf(NMSML_ERR, "Port number must be greater than zero!\n");
 				ret = -1;
 			} else if (rtsp_hints->first_rtp_port < RTSP_MIN_RTP_PORT) {
-				nmsprintf(NMSML_ERR, "For security reasons RTSP Library imposes that port number should be greater than %d\n", RTSP_MIN_RTP_PORT);
+				nms_printf(NMSML_ERR, "For security reasons RTSP Library imposes that port number should be greater than %d\n", RTSP_MIN_RTP_PORT);
 				ret = -1;
 			} else if (rtsp_hints->first_rtp_port > 65535) {
-				nmsprintf(NMSML_ERR, "Port number can't be greater than 65535\n");
+				nms_printf(NMSML_ERR, "Port number can't be greater than 65535\n");
 				ret = -1;
 			} else
-				nmsprintf(NMSML_DBG1, "First RTP port hint: %d\n", rtsp_hints->first_rtp_port);
+				nms_printf(NMSML_DBG1, "First RTP port hint: %d\n", rtsp_hints->first_rtp_port);
 			break;
 		case 1: // audio out driver selection
 			if ( !strcmp(optarg, "help") ) {
@@ -137,8 +137,8 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			output_hints->sysbuff_ms = strtol(optarg, &v_err, 10);
 			if ( *v_err ) {
 				if ( (*v_err == '.') || (*v_err == ',') )
-					nmsprintf(NMSML_ERR, "Argument to \"%s\" option must be an integer number of milliseconds\n", long_options[option_index].name);
-				nmsprintf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
+					nms_printf(NMSML_ERR, "Argument to \"%s\" option must be an integer number of milliseconds\n", long_options[option_index].name);
+				nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n", long_options[option_index].name);
 				usage = 1;
 				ret = -1;
 			}
@@ -147,7 +147,7 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			ui_hints->gui = 1;
 			// not break, because in gui mode we don't want status string on terminal
 		case 5: // do not show buffers status and elapsed time
-			nmsstatusprintf(NO_STATUS, NULL);
+			nms_statusprintf(NO_STATUS, NULL);
 			break;
 		case 6: // use textual user interface
 			ui_hints->gui = 0;
@@ -162,15 +162,15 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 			output_hints->diskwriter = strdup("nodisk");
 			break;
 		case ':':
-			nmsprintf(NMSML_ERR, "Missing argument for option \"%s\"\n", argv[optind-1]);
+			nms_printf(NMSML_ERR, "Missing argument for option \"%s\"\n", argv[optind-1]);
 			usage = 1;
 			ret = -1;
 			break;
 		case '?':
 			if (isprint(optopt))
-				nmsprintf(NMSML_ERR, "Unknown option `-%c'.\n", optopt);
+				nms_printf(NMSML_ERR, "Unknown option `-%c'.\n", optopt);
 			else
-				nmsprintf(NMSML_ERR, "Unknown option character `\\x%x'.\n", optopt);
+				nms_printf(NMSML_ERR, "Unknown option character `\\x%x'.\n", optopt);
 			// ch = 'h';
 			usage = 1;
 			ret = -1;
@@ -182,13 +182,13 @@ int parse_cl(int argc, char **argv, NMSCLOptions *cl_opt)
 	if ( usage )
 		usage();
 	if ( ret < 0 )
-		nmsprintf(NMSML_ERR, "Error parsing command line... exit\n");
+		nms_printf(NMSML_ERR, "Error parsing command line... exit\n");
 	if (optind < argc) {
 		if ( argc == optind+1 ) {
 			if ( !(ui_hints->url = strdup(argv[optind])) )
-				return nmsprintf(NMSML_FATAL, "Could not store urlname given in command line\n");
+				return nms_printf(NMSML_FATAL, "Could not store urlname given in command line\n");
 		} else
-			return nmsprintf(NMSML_ERR, "You can specify only one media URL\n");
+			return nms_printf(NMSML_ERR, "You can specify only one media URL\n");
 	}
 	return ret;
 }

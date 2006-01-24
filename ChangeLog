@@ -156,7 +156,7 @@ WARNING: from rev. 174 nemesi could not behave right.
 ------------------------------------------------------------------------
 r176 | shawill | 2005-05-12 12:26:28 +0200 (Thu, 12 May 2005) | 3 lines
 
-nmsprintf format error in init_rtp.c
+nms_printf format error in init_rtp.c
 
 
 ------------------------------------------------------------------------
@@ -276,7 +276,7 @@ Changed paths:
    M /trunk/etui/ui.c
    M /trunk/include/nemesi/comm.h
    M /trunk/libCCstreaming/cc_parse_urilicense.c
-   M /trunk/libCCstreaming/cc_prms_chk.c
+   M /trunk/libCCstreaming/cc_perm_chk.c
    M /trunk/libCCstreaming/cc_tag_file.c
    M /trunk/output/audio/ab_init.c
    M /trunk/output/audio/audio_init.c
@@ -312,13 +312,13 @@ Changed paths:
    D /trunk/src/nmserror.c
    M /trunk/src/nmsprint.c
 
-nmserror completely removed: now nmsprintf(NNMSML_ERR, ...) or
-nmsprintf(NMSML_FATAL, ...) do the same job marvellously done by old nmserror
+nmserror completely removed: now nms_printf(NNMSML_ERR, ...) or
+nms_printf(NMSML_FATAL, ...) do the same job marvellously done by old nmserror
 'till now. We all will remember you for ever!!! :-(((
-By now nmsprintf and nmsstatusprintf (as said in the last commit) is a pointer
+By now nms_printf and nmsstatusprintf (as said in the last commit) is a pointer
 to function. if some different ui would like to reimplement the functions these
 are the specifications:
-int (*nmsprintf)(int level, const char *fmt, ...)
+int (*nms_printf)(int level, const char *fmt, ...)
 for return value: ( level < NMSML_WARN ) ? 1 : 0;
 
 
@@ -336,7 +336,7 @@ Changed paths:
    M /trunk/include/nemesi/comm.h
    M /trunk/include/nemesi/etui.h
    M /trunk/libCCstreaming/cc_printmask.c
-   M /trunk/libCCstreaming/cc_prms_chk.c
+   M /trunk/libCCstreaming/cc_perm_chk.c
    M /trunk/libCCstreaming/issdplicense.c
    M /trunk/output/audio/ab_get.c
    M /trunk/output/audio/audio_init.c
@@ -408,7 +408,7 @@ Changed paths:
    M /trunk/src/main.c
    M /trunk/src/nmserror.c
    A /trunk/src/nmsprint.c
-   D /trunk/src/nmsprintf.c
+   D /trunk/src/nms_printf.c
    D /trunk/src/nmsstatusprintf.c
    M /trunk/src/output_init.c
    M /trunk/src/uiprintf.c
@@ -416,7 +416,7 @@ Changed paths:
    M /trunk/wsocket/server_create.c
    M /trunk/wsocket/tcp_open.c
 
-new nmsprintf: now nmsprintf and nmsstatusprintf are pointer to function.
+new nms_printf: now nms_printf and nmsstatusprintf are pointer to function.
 There are default implementations of two print functions, but a user interface could redefine it's own print functions.
 This way the GUI can implement its messege windows or status bar reports very easily.
 
@@ -572,7 +572,7 @@ reply status defines added in methods.h
 r150 | shawill | 2005-01-26 18:59:39 +0100 (Wed, 26 Jan 2005) | 6 lines
 
 RTSP redirect 3xx done.
-Changed RTSP_Thread struct
+Changed rtsp_thread struct
 Added RTSPCtrl struct in rtsp.h
 Removed RTSP_args from main.h
 Someting changed in etui: scanf->fgets.

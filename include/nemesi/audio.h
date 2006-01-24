@@ -62,8 +62,8 @@ typedef struct {
 	// audio settings
 	AUDIO_SETTINGS
 	//! Functions for the specific audio output driver
-	NMSAFunctions *functions;
-} NMSAudio;
+	nms_au_fnc *functions;
+} nms_audio;
 
 /* Audio Buffer defines */
 #define MSECONDS 500
@@ -82,13 +82,13 @@ typedef struct audio_buff {
 	uint32 len; //!< len of data in buffer
 	pthread_mutex_t syn;
 	pthread_cond_t cond_full;
-} NMSAudioBuffer;
+} nms_audio_buffer;
 
-NMSAudioBuffer *ab_init(uint32);
+nms_audio_buffer *ab_init(uint32);
 uint8 *ab_get(uint32, ...);
-void ab_uninit(NMSAudioBuffer *);
+void ab_uninit(nms_audio_buffer *);
 /* end of Audio Buffer defines */
 
-NMSAudio *audio_init(char *, uint32);
+nms_audio *audio_init(char *, uint32);
 
 #endif

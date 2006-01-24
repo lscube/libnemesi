@@ -28,7 +28,7 @@
 
 #include <nemesi/audio.h>
 
-void ab_uninit(NMSAudioBuffer *ab)
+void ab_uninit(nms_audio_buffer *ab)
 {
 	pthread_mutex_unlock(&(ab->syn));
 

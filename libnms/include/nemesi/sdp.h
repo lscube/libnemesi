@@ -57,15 +57,15 @@
  * not predictable and so a dymanic list is needed.
  *
  * \see Medium_info
- * \see RTSP_Session_info
+ * \see rtsp_session_info
  * */
-typedef struct _SDP_attr {
+typedef struct _sdp_attr {
 	char *a;		/*!< Pointer to the string containig the
 				  attribute. */
-	struct _SDP_attr *next;	/*!< Pointer to the next element of attributes
+	struct _sdp_attr *next;	/*!< Pointer to the next element of attributes
 				  list. \c NULL if the current element is the
 				  last. */
-} SDP_attr;
+} sdp_attr;
 
 #define SDP_MEDIA_FIELDS	"Multimedia Type & Transport Address", \
 				"Medium Title", \
@@ -81,17 +81,17 @@ typedef struct _SDP_attr {
  * For further informations about efficency of char pointers here adopted we
  * suggest to read documentation about <tt>\ref SDP_Session_Info</tt>.
  *
- * \see RTSP_Session_info
+ * \see rtsp_session_info
  * */
-typedef struct _SDP_Medium_info {
+typedef struct _sdp_medium_info {
 	char *m;		/*!< medium name and transport address */
 	char *i;		/*!< medium title */
 	char *c;		/*!< connection information - optional if included at session-level */
 	char *b;		/*!< bandwidth information */
 	char *k;		/*!< encryption key */
-	SDP_attr *attr_list;	/*!< zero or more medium attribute lines */
+	sdp_attr *attr_list;	/*!< zero or more medium attribute lines */
 
-	CCLicense *cc;		/*!< Creative Commons License struct*/
+	cc_license *cc;		/*!< Creative Commons License struct*/
 	/*! informations from media description string (m=) */
 	char media_type;	/*!< possibile values: A=Audio, V=Video, P=aPplication, D=Data, C=Control */
 	int port;		/*!< port of stream*/	
@@ -99,8 +99,8 @@ typedef struct _SDP_Medium_info {
 	char transport[8];	/*!< transport string */
 	char *fmts;		/*!< media formats: AVP payload types for audio/video*/
 
-	struct _SDP_Medium_info *next;	/*!< Next medium informatioin struct */
-} SDP_Medium_info;
+	struct _sdp_medium_info *next;	/*!< Next medium informatioin struct */
+} sdp_medium_info;
 
 #define SDP_SESSION_FIELDS	"Protocol Version", \
 				"Session Identifier & Creator", \
@@ -134,7 +134,7 @@ typedef struct _SDP_Medium_info {
  * Furthermore we avoid many \c malloc in the code that would make heavier the
  * execution of the program.
  *
- * \see SDP_Medium_info
+ * \see sdp_medium_info
  * */
 typedef struct {
 	char *v;		/*!< protocol version */
@@ -153,19 +153,19 @@ typedef struct {
 	char *z;		/*!< time zone adjustments */
 	char *k;		/*!< encryption key */
 
-	SDP_attr *attr_list;	/*!< zero or more session attribute lines */
+	sdp_attr *attr_list;	/*!< zero or more session attribute lines */
 
-	CCLicense *cc;		/*!< Creative Commons License struct */
+	cc_license *cc;		/*!< Creative Commons License struct */
 
-	SDP_Medium_info *media_info_queue; /*!< Media information queue */
-} SDP_Session_info;
+	sdp_medium_info *media_info_queue; /*!< Media information queue */
+} sdp_session_info;
 
-SDP_Session_info *sdp_session_setup(char *descr, int descr_len);
-SDP_Medium_info *sdp_media_setup(char **descr, int descr_len);
-int sdp_set_attr(SDP_attr **attr_list, char *a);
-void sdp_session_destroy(SDP_Session_info *);
-void sdp_media_destroy(SDP_Medium_info *);
-int sdp_parse_m_descr(SDP_Medium_info *, char *);
+sdp_session_info *sdp_session_setup(char *descr, int descr_len);
+sdp_medium_info *sdp_media_setup(char **descr, int descr_len);
+int sdp_set_attr(sdp_attr **attr_list, char *a);
+void sdp_session_destroy(sdp_session_info *);
+void sdp_media_destroy(sdp_medium_info *);
+int sdp_parse_m_descr(sdp_medium_info *, char *);
 
 #endif // __SDP_H
 /* @} */

@@ -8,7 +8,7 @@ libCCstreaming_la_SOURCES =	issdplicense.c \
 				cc_newlicense.c \
 				cc_set_sdplicense.c \
 				cc_parse_urilicense.c \
-				cc_prms_chk.c \
+				cc_perm_chk.c \
 				cc_printmask.c \
 				cc_tag_file.c \
 				cc_id3v2.c

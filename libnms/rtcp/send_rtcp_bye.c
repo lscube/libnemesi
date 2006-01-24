@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:send_rtcp_bye.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,9 +28,9 @@
 
 #include <nemesi/rtcp.h>
 
-int send_rtcp_bye(struct RTP_Session *rtp_sess)
+int send_rtcp_bye(struct rtp_session *rtp_sess)
 {
 	// TODO: really send bye packet
-	nmsprintf(NMSML_DBG1, "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!", rtp_sess->local_ssrc);
+	nms_printf(NMSML_DBG1, "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!", rtp_sess->local_ssrc);
 	return 0;
 }

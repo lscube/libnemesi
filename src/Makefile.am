@@ -17,7 +17,7 @@ bin_PROGRAMS = nemesi
 nemesi_SOURCES =	main.c \
 			output_init.c \
 			output_uninit.c \
-			nmsOpen.c
+			nms_open.c
 
 
 nemesi_LDADD =	$(top_srcdir)/etui/libetui.la

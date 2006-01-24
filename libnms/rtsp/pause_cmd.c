@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:pause_cmd.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <stdarg.h>
 
-int pause_cmd(struct RTSP_Thread *rtsp_th, ...)
+int pause_cmd(struct rtsp_thread *rtsp_th, ...)
 {
 	va_list ap;
 	char *args;
@@ -38,12 +38,12 @@ int pause_cmd(struct RTSP_Thread *rtsp_th, ...)
 	args = va_arg(ap, char *);
 	
 	if (rtsp_th->status == INIT) {
-		nmsprintf(NMSML_ERR, "Player not initialized!\n");
+		nms_printf(NMSML_ERR, "Player not initialized!\n");
 		va_end(ap);
 		return 1;
 	}
 	if (rtsp_th->status == READY) {
-		nmsprintf(NMSML_ERR, "I don't think you're yet playinq or recording\n");
+		nms_printf(NMSML_ERR, "I don't think you're yet playinq or recording\n");
 		va_end(ap);
 		return 0;
 	}

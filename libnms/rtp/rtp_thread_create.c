@@ -28,17 +28,17 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_thread_create(struct nmsRTPth *rtp_th)
+int rtp_thread_create(struct nms_rtp_th *rtp_th)
 {
 	int n;
 	pthread_attr_t rtp_attr;
 
 	pthread_attr_init(&rtp_attr);
 	if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		return nmsprintf(NMSML_FATAL, "Cannot set RTP Thread attributes (detach state)\n");
+		return nms_printf(NMSML_FATAL, "Cannot set RTP Thread attributes (detach state)\n");
 
 	if ((n=pthread_create(&rtp_th->rtp_tid, &rtp_attr, &rtp, (void *)rtp_th)) > 0)
-		return nmsprintf(NMSML_FATAL, "%s\n", strerror(n));
+		return nms_printf(NMSML_FATAL, "%s\n", strerror(n));
 	
 	return 0;
 }

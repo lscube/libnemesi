@@ -99,17 +99,17 @@ typedef struct {
          * Closes driver. Should restore the original state of the system.
          */
         void (*uninit)(void);
-} NMSAFunctions;
+} nms_au_fnc;
 
 #if 0
-extern NMSAFunctions nms_audio_oss;
+extern nms_au_fnc nms_audio_oss;
 #if HAVE_SDL
-extern NMSAFunctions nms_audio_sdl;
+extern nms_au_fnc nms_audio_sdl;
 #endif
 #endif
 
 void list_audio_out(void);
-NMSAFunctions *init_best_audio_out(char *,uint32 *, uint8 *, uint32 *, uint32);
+nms_au_fnc *init_best_audio_out(char *,uint32 *, uint8 *, uint32 *, uint32);
 /*
 char *ao_format_name(int format);
 int ao_init(void);

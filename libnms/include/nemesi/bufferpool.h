@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:bufferpool.h 271 2006-01-20 18:45:51Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -103,7 +103,7 @@ typedef struct {
 	char x[BP_SLOT_SIZE]; /*!< Zona di memoria che immagazzinerà i
 				pacchetti RTP provenienti dalla rete. MAI
 				UTILIZZATA DIRETTAMENTE!. */
-} BP_SLOT;
+} bp_slot;
 
 /*!
 * \brief La struttura che rappresenta un elemento della lista double-linked del
@@ -133,7 +133,7 @@ typedef struct {
  * \see podel
  * */
 typedef struct {
-	BP_SLOT **bufferpool; /*!< Pointer to memory space allocated for Bufferpool
+	bp_slot **bufferpool; /*!< Pointer to memory space allocated for Bufferpool
 							and defined elsewhere. \see bpinit */
 	poitem pobuff[BP_SLOT_NUM]; /*!< Array that will keep the sorted list of
 									slots containing arrived packets. */
@@ -157,7 +157,7 @@ typedef struct {
 * \see bprmv
 * */
 typedef struct {
-	BP_SLOT *bufferpool; /*!< Puntatore alla zona di memoria allocata per
+	bp_slot *bufferpool; /*!< Puntatore alla zona di memoria allocata per
 			       il Bufferpool. \see bpinit */
 	pthread_mutex_t fl_mutex; /*!< Variabile di mutua esclusione per il
 				    controllo di accesso alle strutture

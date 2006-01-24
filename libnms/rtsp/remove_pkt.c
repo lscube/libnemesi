@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:remove_pkt.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,14 +28,14 @@
 
 #include <nemesi/rtsp.h>
 
-int remove_pkt(struct RTSP_Thread *rtsp_th)
+int remove_pkt(struct rtsp_thread *rtsp_th)
 {
 
 	char *buff=NULL;
 
 	if ((rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size)){
 		if((buff=(char *)malloc(sizeof(char)*(rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size))) == NULL)
-			return nmsprintf(NMSML_FATAL, "remove_pkt: Cannot allocate memory!\n");
+			return nms_printf(NMSML_FATAL, "remove_pkt: Cannot allocate memory!\n");
 
 		memcpy(buff, rtsp_th->in_buffer.data+rtsp_th->in_buffer.first_pkt_size, \
 				(rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size)*sizeof(char));

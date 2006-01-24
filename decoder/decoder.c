@@ -42,13 +42,13 @@
 
 #define SKIP 4
 
-int (*decoders[128])(char *, int, NMSOutput *);
+int (*decoders[128])(char *, int, nms_output *);
 
 void *decoder(void *args)
 {
-	struct nmsRTPth *rtp_th=(struct nmsRTPth *)args;
-	struct RTP_Session *rtp_sess_head; // =rtp_th->rtp_sess_head;
-	struct RTP_Session *rtp_sess;
+	struct nms_rtp_th *rtp_th=(struct nms_rtp_th *)args;
+	struct rtp_session *rtp_sess_head; // =rtp_th->rtp_sess_head;
+	struct rtp_session *rtp_sess;
 	struct timeval startime;
 	struct timeval tvsleep;
 	struct timeval tvstart, tvstop;
@@ -81,7 +81,7 @@ void *decoder(void *args)
 	/* pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
 
 	/* by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente" */
-	pthread_cleanup_push(dec_clean, (void *)nmsoutc /*audio_buffer */);
+	pthread_cleanup_push(dec_clean, (void *)nms_outc /*audio_buffer */);
 	
 	// tvdiff.tv_sec=tvsleep.tv_sec=rtp_th->startime.tv_sec;
 	// tvdiff.tv_usec=tvsleep.tv_usec=rtp_th->startime.tv_usec;
@@ -100,7 +100,7 @@ void *decoder(void *args)
 		
 /*	
 #ifndef TS_SCHEDULE
-		nmsprintf(NMSML_DBG3, "sum: %7ld - select: %7ld - body: %7ld - diff: %7ld - offset: %7ld - sleep %7ld - cycles: %3hu \n",\
+		nms_printf(NMSML_DBG3, "sum: %7ld - select: %7ld - body: %7ld - diff: %7ld - offset: %7ld - sleep %7ld - cycles: %3hu \n",\
 				select_usec + body_usec, select_usec, body_usec, diff_usec, offset_usec, tvdiff.tv_usec, cycles);
 #endif // TS_SCHEDULE
 */
@@ -115,11 +115,11 @@ void *decoder(void *args)
 
 					pkt=rtp_get_pkt(stm_src, &len); // this line will block untill rtp cannot give a valid rtp packet.
 				/**/	
-					nmsprintf(NMSML_DBG3, "Version Number:%d\n", pkt->ver);
-					nmsprintf(NMSML_DBG3, "Payload Type:%d\n", pkt->pt);
-					nmsprintf(NMSML_DBG3, "Sequence Number:%d\n", ntohs(pkt->seq));
-					nmsprintf(NMSML_DBG3, "SSRC Number:%lu\n", ntohl(pkt->ssrc));
-					nmsprintf(NMSML_DBG3, "RTP Timestamp:%lu\n", ntohl(pkt->time));
+					nms_printf(NMSML_DBG3, "Version Number:%d\n", pkt->ver);
+					nms_printf(NMSML_DBG3, "Payload Type:%d\n", pkt->pt);
+					nms_printf(NMSML_DBG3, "Sequence Number:%d\n", ntohs(pkt->seq));
+					nms_printf(NMSML_DBG3, "SSRC Number:%lu\n", ntohl(pkt->ssrc));
+					nms_printf(NMSML_DBG3, "RTP Timestamp:%lu\n", ntohl(pkt->time));
 				/**/	
 					ts_elapsed=((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
 					tv_elapsed.tv_sec=(long)ts_elapsed;
@@ -147,29 +147,29 @@ void *decoder(void *args)
 						strcpy(output_pref, get_pref("output"));
 						
 						if ( (len != 0) && (!strcmp(output_pref, "disk")) ) {
-							if (nmsoutc->diskwriter)
-								diskwriter( nmsoutc->diskwriter, pkt->pt, ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
+							if (nms_outc->diskwriter)
+								diskwriter( nms_outc->diskwriter, pkt->pt, ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
 						} else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
-								nmsoutc->elapsed = ts_elapsed * 1000;
-								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nmsoutc);
-								if (nmsoutc->audio)
-									nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
-								if (nmsoutc->video)
-									nmsoutc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
+								nms_outc->elapsed = ts_elapsed * 1000;
+								decoders[pkt->pt](((char *)pkt->data + pkt->cc), len, nms_outc);
+								if (nms_outc->audio)
+									nms_outc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+								if (nms_outc->video)
+									nms_outc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
 
 								// AUDIO
 								if(buffering_audio) {
 									if (audio_sysbuff > /*0.1*/ AUDIO_SYS_BUFF /*0.99*/ ) {
 										buffering_audio = 0;
 										// start playing audio
-										nmsoutc->audio->functions->resume();
+										nms_outc->audio->functions->resume();
 									}
 								}
 								// VIDEO
-								if((nmsoutc->video) && (nmsoutc->video->init) && (!nmsoutc->video->tid))
-									video_th_start(nmsoutc);
+								if((nms_outc->video) && (nms_outc->video->init) && (!nms_outc->video->tid))
+									video_th_start(nms_outc);
 							}
 							/* XXX: not supported any more
 							     else if ( !strcmp(output_pref, "diskdecoded") ) {
@@ -180,13 +180,13 @@ void *decoder(void *args)
 							} */
 						}
 /*
-				 		nmsprintf(NMSML_DBG2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
+				 		nms_printf(NMSML_DBG2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - pkt data len: %d   ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, len);
 */				
 /**/				
-				 		nmsstatusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
+				 		nms_statusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
-						nmsprintf(NMSML_DBG2, " - pkt len: %d\n", len);
+						nms_printf(NMSML_DBG2, " - pkt len: %d\n", len);
 /**/	
 						rtp_rm_pkt(rtp_sess, stm_src);
 
@@ -197,8 +197,8 @@ void *decoder(void *args)
 				if ( !ts_min_next ) {
 //					ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
 					ts_min_next = rtp_get_next_ts(stm_src);
-					nmsprintf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
-					nmsprintf(NMSML_DBG3, "\nNuovo min: %3.2f\n", ts_min_next);
+					nms_printf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
+					nms_printf(NMSML_DBG3, "\nNuovo min: %3.2f\n", ts_min_next);
 				} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
 //					ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
 					ts_min_next = min(ts_min_next, rtp_get_next_ts(stm_src));
@@ -240,7 +240,7 @@ void *decoder(void *args)
 		if ( !strcmp(get_pref("output"), "card") ) {
 			// cycles+=get_sys_buff();
 			// VF: new audio sysbuff len request
-			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+			nms_outc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
 			if (audio_sysbuff < MIN_AUDIO_SYS_BUFF)
 				cycles += 2;
 		}
@@ -253,9 +253,9 @@ void *decoder(void *args)
 			timeval_add(&tv_min_next, &tv_min_next, &startime);
 			   // timeval_subtract(&tv_min_next, &tv_min_next, &tv_sys_buff);
 
-			// nmsprintf(NMSML_DBG3, "tv_min_next: %ld.%ld tv_stop: %ld.%ld\n", tv_min_next.tv_sec, tv_min_next.tv_usec, tvstop.tv_sec, tvstop.tv_usec);
+			// nms_printf(NMSML_DBG3, "tv_min_next: %ld.%ld tv_stop: %ld.%ld\n", tv_min_next.tv_sec, tv_min_next.tv_usec, tvstop.tv_sec, tvstop.tv_usec);
 			if ( !timeval_subtract(&tvsleep, &tv_min_next, &tvstop) && (tvsleep.tv_usec > 10000) ) {
-				nmsprintf(NMSML_DBG3, "\n\tWe sleep for: %lds e %ldus\n", tvsleep.tv_sec, tvsleep.tv_usec);
+				nms_printf(NMSML_DBG3, "\n\tWe sleep for: %lds e %ldus\n", tvsleep.tv_sec, tvsleep.tv_usec);
 				select(0, NULL, NULL, NULL, &tvsleep);
 			}
 			ts_min_next = 0;
@@ -264,13 +264,13 @@ void *decoder(void *args)
 			dec_idle();
 /**/
 			/*
-			nmsoutc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
-			nmsoutc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
-			nmsstatusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
+			nms_outc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
+			nms_outc->video->functions->control(VCTRL_GET_SYSBUF, &video_sysbuff);
+			nms_statusprintf(BUFFERS_STATUS, "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",\
 					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
 			*/
 			/*
-	 		nmsprintf(NMSML_DBG2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - no pkt   ",\
+	 		nms_printf(NMSML_DBG2, "\rPlayout Buffer Status: %4.1f %% full - System Buffer Status: %4.1f %% full - no pkt   ",\
 					(((float)((rtp_sess_head->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0);
 			*/
 			len = 0;

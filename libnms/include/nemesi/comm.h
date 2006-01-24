@@ -115,7 +115,7 @@ extern int uipipe[2];
 			NMSCLR_GREEN
 #endif
 
-int nmsprintf_default(int level, const char *fmt, ...);
+int nms_printf_default(int level, const char *fmt, ...);
 
 #define NO_STATUS 0
 #define PRINT_STATUS 1
@@ -123,12 +123,12 @@ int nmsprintf_default(int level, const char *fmt, ...);
 #define BUFFERS_STATUS 3
 #define ELAPSED_STATUS_VERBOSITY NMSML_NORM
 #define BUFFERS_STATUS_VERBOSITY NMSML_VERB
-int nmsstatusprintf_default(int cmd, const char *fmt, ...);
+int nms_status_printf_default(int cmd, const char *fmt, ...);
 
-int nmsverbosity_set(int);
-int nmsverbosity_get(void);
-extern int (*nmsprintf)(int level, const char *fmt, ...);
-extern int (*nmsstatusprintf)(int cmd, const char *fmt, ...);
+int nms_verbosity_set(int);
+int nms_verbosity_get(void);
+extern int (*nms_printf)(int level, const char *fmt, ...);
+extern int (*nms_statusprintf)(int cmd, const char *fmt, ...);
 
 #ifdef USE_UIPRINTF
 int uiprintf(const char *fmt, ...);
@@ -136,6 +136,6 @@ int uierror(const char *fmt, ...);
 
 #endif // USE_UIPRINTF
 
-inline void nmsheader(void);
+inline void nms_header(void);
 
 #endif

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_unbusy.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-void rtsp_unbusy(struct RTSP_Thread *rtsp_th)
+void rtsp_unbusy(struct rtsp_thread *rtsp_th)
 {
 	pthread_mutex_lock(&(rtsp_th->comm_mutex));
 

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:random32.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -41,7 +41,7 @@
 
 static uint32 md_32(char *string, int length)
 {
-	MD5_CTX context;
+	md5_ctx context;
 	union {
 		char c[16];
 		uint32 x[4];
@@ -49,9 +49,9 @@ static uint32 md_32(char *string, int length)
 	uint32 r;
 	int i;
 
-	MD5Init(&context);
-	MD5Update(&context, string, length);
-	MD5Final((unsigned char *)&digest, &context);
+	md5_init(&context);
+	md5_update(&context, string, length);
+	md5_final((unsigned char *)&digest, &context);
 	r=0;
 	for (i=0; i<3; i++)
 		r ^= digest.x[i];

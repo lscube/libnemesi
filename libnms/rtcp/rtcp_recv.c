@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_recv.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,13 +30,13 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_recv(struct RTP_Session *rtp_sess)
+int rtcp_recv(struct rtp_session *rtp_sess)
 {
 	uint8 buffer[1024];
 	struct Stream_Source *stm_src;
 
 	struct sockaddr_storage serveraddr;
-	NMSsockaddr server= { (struct sockaddr *)&serveraddr, sizeof(serveraddr) };
+	nms_sockaddr server= { (struct sockaddr *)&serveraddr, sizeof(serveraddr) };
 
 	rtcp_pkt *pkt;
 	int ret, n;
@@ -46,22 +46,22 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 	if ( (n=recvfrom(rtp_sess->rtcpfd, buffer, 1024, 0, server.addr, &server.addr_len)) == -1 ) {
 		switch (errno) {
 			case EBADF:
-				nmsprintf(NMSML_ERR, "RTCP recvfrom: invalid descriptor\n");
+				nms_printf(NMSML_ERR, "RTCP recvfrom: invalid descriptor\n");
 				break;
 			case ENOTSOCK:
-				nmsprintf(NMSML_ERR, "RTCP recvfrom: not a socket\n");
+				nms_printf(NMSML_ERR, "RTCP recvfrom: not a socket\n");
 				break;
 			case EINTR:
-				nmsprintf(NMSML_ERR, "RTCP recvfrom: The receive was interrupted by delivery of a signal\n");
+				nms_printf(NMSML_ERR, "RTCP recvfrom: The receive was interrupted by delivery of a signal\n");
 				break;
 			case EFAULT:
-				nmsprintf(NMSML_ERR, "RTCP recvfrom: The buffer points outside userspace\n");
+				nms_printf(NMSML_ERR, "RTCP recvfrom: The buffer points outside userspace\n");
 				break;
 			case EINVAL:
-				nmsprintf(NMSML_ERR, "RTCP recvfrom: Invalid argument passed.\n");
+				nms_printf(NMSML_ERR, "RTCP recvfrom: Invalid argument passed.\n");
 				break;
 			default:
-				nmsprintf(NMSML_ERR, "in RTCP recvfrom\n");
+				nms_printf(NMSML_ERR, "in RTCP recvfrom\n");
 				break;
 		}
 		return 1;
@@ -70,7 +70,7 @@ int rtcp_recv(struct RTP_Session *rtp_sess)
 	pkt=(rtcp_pkt *)buffer;
 
 	if (rtcp_hdr_val_chk(pkt, n)) {
-		nmsprintf(NMSML_WARN, "RTCP Header Validity Check failed!"BLANK_LINE);
+		nms_printf(NMSML_WARN, "RTCP Header Validity Check failed!"BLANK_LINE);
 		return 1;
 	}
 

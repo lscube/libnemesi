@@ -30,8 +30,8 @@
 
 void *rtcp(void *args)
 {
-	struct RTP_Session *rtp_sess_head=((struct nmsRTPth *)args)->rtp_sess_head;
-	struct RTP_Session *rtp_sess;
+	struct rtp_session *rtp_sess_head=((struct nms_rtp_th *)args)->rtp_sess_head;
+	struct rtp_session *rtp_sess;
 	struct RTCP_Event *head=NULL;
 	int maxfd=0, ret;
 	double t;

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:check_response.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,7 +30,7 @@
 #include <nemesi/methods.h>
 #include <nemesi/utils.h>
 
-int check_response(struct RTSP_Thread *rtsp_th)
+int check_response(struct rtsp_thread *rtsp_th)
 {
 	int wait_res;
 	uint64 wait_s_id;
@@ -43,7 +43,7 @@ int check_response(struct RTSP_Thread *rtsp_th)
 	sscanf(rtsp_th->waiting_for, "%d", &wait_res);
 	/* cerco il numero di sequenza del pacchetto arrivato */
 	if ((str_pos = strstrcase((rtsp_th->in_buffer).data, "CSeq")) == NULL) {
-		nmsprintf(NMSML_ERR, "ERROR: CANNOT find CSeq number in server response.\n");
+		nms_printf(NMSML_ERR, "ERROR: CANNOT find CSeq number in server response.\n");
 		return 1;
 	}
 	str_pos+=5;

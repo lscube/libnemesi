@@ -28,23 +28,23 @@
 
 #include <nemesi/decoder.h>
 
-pthread_t dec_create(struct RTSP_Ctrl *rtsp_ctrl)
+pthread_t dec_create(struct rtsp_ctrl *rtsp_ctrl)
 {
-	struct RTP_Session *rtp_sess_head=((struct RTSP_Thread *)rtsp_ctrl)->rtp_th->rtp_sess_head;
-	struct RTP_Session *rtp_sess;
+	struct rtp_session *rtp_sess_head=((struct rtsp_thread *)rtsp_ctrl)->rtp_th->rtp_sess_head;
+	struct rtp_session *rtp_sess;
 	int n;
 	pthread_attr_t dec_attr;
 	pthread_t dec_tid;
 
 	pthread_attr_init(&dec_attr);
 	if ( pthread_attr_setdetachstate(&dec_attr, PTHREAD_CREATE_JOINABLE) != 0) {
-		nmsprintf(NMSML_FATAL, "Cannot set Decoder Thread attributes!\n");
+		nms_printf(NMSML_FATAL, "Cannot set Decoder Thread attributes!\n");
 		return 0;
 	}
 
 /*	pthread_attr_setschedpolicy(&dec_attr, SCHED_RR);*/
-	if((n=pthread_create(&dec_tid, &dec_attr, &decoder, (void *) ((struct RTSP_Thread *)rtsp_ctrl)->rtp_th)) > 0) {
-		nmsprintf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n", strerror(n));
+	if((n=pthread_create(&dec_tid, &dec_attr, &decoder, (void *) ((struct rtsp_thread *)rtsp_ctrl)->rtp_th)) > 0) {
+		nms_printf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n", strerror(n));
 		return 0;
 	}
 

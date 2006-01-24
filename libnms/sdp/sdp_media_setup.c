@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:sdp_media_setup.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -33,9 +33,9 @@
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>
 
-SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
+sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
 {
-	SDP_Medium_info *queue=NULL, *curr_sdp_m=NULL;
+	sdp_medium_info *queue=NULL, *curr_sdp_m=NULL;
 	char *tkn=NULL;
 	char error=0; // error flag
 	// for cc tagging
@@ -48,18 +48,18 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 		else
 			tkn=strtok(NULL, "\r\n");
 		if ( tkn==NULL ) {
-			nmsprintf(NMSML_ERR, "Invalid SDP Media description section.\n");
+			nms_printf(NMSML_ERR, "Invalid SDP Media description section.\n");
 			return NULL;
 		}
 		switch (*tkn) {
 			case 'm':  /* create struct for new medium */
 				if (!curr_sdp_m) { // first medium description
 					// we use calloc, so it's all already initialized to NULL
-					if (!(queue=curr_sdp_m=(SDP_Medium_info *)calloc(1, sizeof(SDP_Medium_info))))
+					if (!(queue=curr_sdp_m=(sdp_medium_info *)calloc(1, sizeof(sdp_medium_info))))
 						return NULL;
 				} else { // not first medium in sdp session
 					// we use calloc, so it's all already initialized to NULL
-					if (!(curr_sdp_m->next=(SDP_Medium_info *)calloc(1, sizeof(SDP_Medium_info)))) {
+					if (!(curr_sdp_m->next=(sdp_medium_info *)calloc(1, sizeof(sdp_medium_info)))) {
 						error=1;
 						break;
 						// return NULL;
@@ -85,7 +85,7 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 			case 'a':
 				tkn+=2;
 				if (sdp_set_attr(&(curr_sdp_m->attr_list), tkn)) {
-					nmsprintf(NMSML_ERR, "Error setting SDP media atrtibute\n");
+					nms_printf(NMSML_ERR, "Error setting SDP media atrtibute\n");
 					error=1;
 					break;
 					// return NULL;
@@ -93,7 +93,7 @@ SDP_Medium_info *sdp_media_setup(char **descr, int descr_len)
 				if (issdplicense(tkn)) {
 					if (!curr_sdp_m->cc)
 						if (!(curr_sdp_m->cc=cc_newlicense())) {
-							nmsprintf(NMSML_ERR, "Could not get new CC license struct\n");
+							nms_printf(NMSML_ERR, "Could not get new CC license struct\n");
 							error=1;
 							break;
 							// return NULL;

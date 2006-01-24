@@ -32,12 +32,12 @@
 // #include <nemesi/audio_drivers.h>
 #include <nemesi/comm.h>
 
-extern NMSAFunctions nms_audio_oss;
+extern nms_au_fnc nms_audio_oss;
 #ifdef HAVE_SDL
-extern NMSAFunctions nms_audio_sdl;
+extern nms_au_fnc nms_audio_sdl;
 #endif
 
-static NMSAFunctions *audio_out_drivers[] = {
+static nms_au_fnc *audio_out_drivers[] = {
 #if HAVE_SDL
 	&nms_audio_sdl,
 #endif
@@ -49,15 +49,15 @@ void list_audio_out(void)
 {
 	int i;
 
-	nmsprintf(NMSML_NORM, "Avalilable audio out drivers are:\n");
+	nms_printf(NMSML_NORM, "Avalilable audio out drivers are:\n");
 	for (i=0; audio_out_drivers[i]; i++) {
-		nmsprintf(NMSML_ALWAYS, "\t%s\t%s\n", audio_out_drivers[i]->info->short_name, \
+		nms_printf(NMSML_ALWAYS, "\t%s\t%s\n", audio_out_drivers[i]->info->short_name, \
 				audio_out_drivers[i]->info->name);
 	}
-	nmsprintf(NMSML_ALWAYS, "\n");
+	nms_printf(NMSML_ALWAYS, "\n");
 }
 
-NMSAFunctions *init_best_audio_out(char *drv, uint32 *rate, uint8 *channels, uint32 *format, uint32 sysbuff_ms)
+nms_au_fnc *init_best_audio_out(char *drv, uint32 *rate, uint8 *channels, uint32 *format, uint32 sysbuff_ms)
 {
 	int i;
 	char *device, *sub_device = NULL;
@@ -67,9 +67,9 @@ NMSAFunctions *init_best_audio_out(char *drv, uint32 *rate, uint8 *channels, uin
 		while ( device && *device && strcmp(device, "...") ) {
 			for (i=0;audio_out_drivers[i] && strcmp(device, audio_out_drivers[i]->info->short_name);i++);
 			if (!audio_out_drivers[i])
-				nmsprintf(NMSML_ERR, "Could not find audio driver %s\n", device);
+				nms_printf(NMSML_ERR, "Could not find audio driver %s\n", device);
 			else {
-				nmsprintf(NMSML_VERB, "Found audio output driver %s\n", audio_out_drivers[i]->info->name);
+				nms_printf(NMSML_VERB, "Found audio output driver %s\n", audio_out_drivers[i]->info->name);
 				if (!audio_out_drivers[i]->init(rate, channels, format, sysbuff_ms, 0, NULL)) {
 					return audio_out_drivers[i];
 				}
@@ -78,14 +78,14 @@ NMSAFunctions *init_best_audio_out(char *drv, uint32 *rate, uint8 *channels, uin
 		}
 		if (!device)
 			return NULL;
-		nmsprintf(NMSML_NORM, "Falling back to drivers not hinted\n");
+		nms_printf(NMSML_NORM, "Falling back to drivers not hinted\n");
 	}
 	for (i=0; audio_out_drivers[i]; i++) {
 		if (!audio_out_drivers[i]->init(rate, channels, format, sysbuff_ms, 0, NULL))
 			return audio_out_drivers[i];
 	}
 
-	nmsprintf(NMSML_ERR, "Could not find any working audio driver\n");
+	nms_printf(NMSML_ERR, "Could not find any working audio driver\n");
 
 	return NULL;
 }

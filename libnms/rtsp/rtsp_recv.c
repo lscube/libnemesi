@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_recv.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -31,7 +31,7 @@
 #ifndef BUFFERSIZE
 #define BUFFERSIZE 163840
 #endif
-int rtsp_recv(struct RTSP_Thread *rtsp_th)
+int rtsp_recv(struct rtsp_thread *rtsp_th)
 {
 	int n;
 	char buffer[BUFFERSIZE];
@@ -39,20 +39,20 @@ int rtsp_recv(struct RTSP_Thread *rtsp_th)
 	memset(buffer, '\0', BUFFERSIZE);
 
 	if ((n = tcp_read(rtsp_th->fd, buffer, BUFFERSIZE)) < 0) {
-		nmsprintf(NMSML_ERR, "ERROR reading from TCP socket\n");
+		nms_printf(NMSML_ERR, "ERROR reading from TCP socket\n");
 		return n;
 	}
 	
 	if (((rtsp_th->in_buffer).size) == 0) {
 		if (((rtsp_th->in_buffer).data = (char *) malloc((n + 1) * sizeof(char))) == NULL)
-			return nmsprintf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
+			return nms_printf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
 
 		strcpy((rtsp_th->in_buffer).data, buffer);
 	} else {
 		if (((rtsp_th->in_buffer).data = (char *) realloc((rtsp_th->in_buffer).data,
 								  (n + (rtsp_th->in_buffer).size +
 								   1) * sizeof(char))) == NULL)
-			return nmsprintf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
+			return nms_printf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
 			
 		strcat((rtsp_th->in_buffer).data, buffer);
 	}

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_fill_buffer_nonblock(struct RTP_Session *rtp_sess, struct Stream_Source *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+int rtp_fill_buffer_nonblock(struct rtp_session *rtp_sess, struct Stream_Source *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 {	
 	rtp_pkt *pkt;
 	size_t pkt_len, dst_used=0;

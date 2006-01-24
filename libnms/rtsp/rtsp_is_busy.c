@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_is_busy.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_is_busy(struct RTSP_Ctrl *rtsp_ctrl)
+int rtsp_is_busy(struct rtsp_ctrl *rtsp_ctrl)
 {
 	return rtsp_ctrl->busy;
 }

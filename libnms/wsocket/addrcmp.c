@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:addrcmp.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/wsocket.h>
 
-int addrcmp(const NMSaddr *addr1, const NMSaddr *addr2)
+int addrcmp(const nms_addr *addr1, const nms_addr *addr2)
 {
 	if ( addr1->family != addr2->family )
 		return WSOCK_ERRFAMILY;

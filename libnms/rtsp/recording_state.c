@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:recording_state.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,11 +28,11 @@
 
 #include <nemesi/rtsp.h>
 
-int recording_state(struct RTSP_Thread *rtsp_th, short event)
+int recording_state(struct rtsp_thread *rtsp_th, short event)
 {
 	switch(event){
 		default:
-			nmsprintf(NMSML_WARN, "Event %d in RTSP state %d (RECORDING) not yet implemented!\n", event, rtsp_th->status);
+			nms_printf(NMSML_WARN, "Event %d in RTSP state %d (RECORDING) not yet implemented!\n", event, rtsp_th->status);
 			break;
 	}
 	return 0;

@@ -30,12 +30,12 @@
 
 #include <nemesi/ccprefs.h>
 
-int pref2ccmask(CCPermsMask *mask)
+int pref2ccmask(cc_perm_mask *mask)
 {
 	if (!strcmp(get_pref("acceptAll"),"yes"))
-		memset(mask, 0xFF, sizeof(CCPermsMask));
+		memset(mask, 0xFF, sizeof(cc_perm_mask));
 	else {
-		memset(mask, 0, sizeof(CCPermsMask));
+		memset(mask, 0, sizeof(cc_perm_mask));
 		if (!strcmp(get_pref("attribution"), "yes"))
 			mask->by = 1;
 		if (!strcmp(get_pref("nonCommercial"), "yes"))

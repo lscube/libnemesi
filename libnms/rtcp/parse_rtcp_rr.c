@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:parse_rtcp_rr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,6 +32,6 @@
 int parse_rtcp_rr(rtcp_pkt *pkt)
 {
 	// TODO: handle rr packet
-	nmsprintf(NMSML_DBG1, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
+	nms_printf(NMSML_DBG1, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
 	return 0;
 }

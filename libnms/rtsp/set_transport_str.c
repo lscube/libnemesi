@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:set_transport_str.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/utils.h>
 
-int set_transport_str(struct RTP_Session *rtp_sess, char **str)
+int set_transport_str(struct rtp_session *rtp_sess, char **str)
 {
 	char buff[256];
 	char addr[128];		/* Unix domain is largest */
@@ -69,7 +69,7 @@ int set_transport_str(struct RTP_Session *rtp_sess, char **str)
 	*(buff+strlen(buff)-1)='\0';
 
 	if (!(*str=strdup(buff)))
-		return nmsprintf(NMSML_FATAL, "set_transport_str: Could not duplicate string!\n");
+		return nms_printf(NMSML_FATAL, "set_transport_str: Could not duplicate string!\n");
 
 	return 0;
 }

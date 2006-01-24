@@ -28,17 +28,17 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_thread_create(struct nmsRTPth *rtp_th)
+int rtcp_thread_create(struct nms_rtp_th *rtp_th)
 {
 	int n;
 	pthread_attr_t rtcp_attr;
 
 	pthread_attr_init(&rtcp_attr);
 	if (pthread_attr_setdetachstate(&rtcp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		return nmsprintf(NMSML_FATAL, "Cannot set RTCP Thread attributes!\n");
+		return nms_printf(NMSML_FATAL, "Cannot set RTCP Thread attributes!\n");
 
 	if ((n=pthread_create(&rtp_th->rtcp_tid, &rtcp_attr, &rtcp, (void *)rtp_th)) > 0)
-		return nmsprintf(NMSML_FATAL, "%s\n", strerror(n));
+		return nms_printf(NMSML_FATAL, "%s\n", strerror(n));
 	
 	return 0;
 }

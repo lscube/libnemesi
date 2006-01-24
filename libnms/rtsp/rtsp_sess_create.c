@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtsp_sess_create.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,12 +28,12 @@
 
 #include <nemesi/rtsp.h>
 
-struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
+struct rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
 {
-	struct RTSP_Session *rtsp_s;
+	struct rtsp_session *rtsp_s;
 
-	if ( (rtsp_s=(struct RTSP_Session *)malloc(sizeof(struct RTSP_Session))) == NULL ) {
-		nmsprintf(NMSML_FATAL, "rtsp_sess_create: Cannot allocate memory.\n");
+	if ( (rtsp_s=(struct rtsp_session *)malloc(sizeof(struct rtsp_session))) == NULL ) {
+		nms_printf(NMSML_FATAL, "rtsp_sess_create: Cannot allocate memory.\n");
 		return NULL;
 	}
 	if ( content_base == NULL ){
@@ -42,7 +42,7 @@ struct RTSP_Session *rtsp_sess_create(char *urlname, char *content_base)
 	} else {
 		/* shawill: using strdup insted
 		if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(sizeof(char)*(strlen(content_base)+1)))==NULL) {
-			nmsprintf(NMSML_FATAL, "Cannot allocate memory!\n");
+			nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 			return NULL;
 		}
 		strcpy(rtsp_s->content_base,content_base);

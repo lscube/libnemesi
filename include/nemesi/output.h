@@ -45,15 +45,15 @@
 typedef struct {
 	double elapsed;
 	uint32 sysbuff_ms;
-	NMSAudio *audio;
-	NMSVideo *video;
-	NMSDiskWriter *diskwriter;
-} NMSOutput;
+	nms_audio *audio;
+	nms_video *video;
+	nms_diskwriter *diskwriter;
+} nms_output;
 
-OUTPUT_EXTERN NMSOutput *nmsoutc;
+OUTPUT_EXTERN nms_output *nms_outc;
 
-int video_th_start(NMSOutput *);
-int video_th_stop(NMSVideo *);
+int video_th_start(nms_output *);
+int video_th_stop(nms_video *);
 void *video_th(void *);
 
 #undef NMS_GLOBAL_OUTPUT

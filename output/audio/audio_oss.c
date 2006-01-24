@@ -54,7 +54,7 @@ NMS_LIB_AUDIO(oss);
 static struct oss_priv_s {
 	int audiofd;
 	char *audiodev;
-	NMSAudioBuffer *audio_buffer;
+	nms_audio_buffer *audio_buffer;
 	int capabilities;
 	uint32 freq;
 	uint32 channels;
@@ -71,15 +71,15 @@ static uint32 oss_init(const char *arg)
 		oss_priv.audiodev = strdup(DEF_AUDIODEV);
 /*
 	if ( (audio_fd=open("prova.wav", O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR )) == -1){
-		nmsprintf(NMSML_ERR, "Could not open the file\n");
+		nms_printf(NMSML_ERR, "Could not open the file\n");
 	}
 
 */	
 
 	if ( (oss_priv.audiofd=open(oss_priv.audiodev, O_WRONLY | O_NONBLOCK, 0)) == -1)
-		return nmsprintf(NMSML_ERR, "Could not open %s\n", oss_priv.audiodev);
+		return nms_printf(NMSML_ERR, "Could not open %s\n", oss_priv.audiodev);
 	else
-		nmsprintf(NMSML_NORM, "OSS Audio device %s opened\n", oss_priv.audiodev);
+		nms_printf(NMSML_NORM, "OSS Audio device %s opened\n", oss_priv.audiodev);
 	// TODO: probably we have to remove NON BLOCKING flag
 
 	return 0;
@@ -109,33 +109,33 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 			oss_priv.bytes_x_sample = 2;
 			break;
 		default:
-			return nmsprintf(NMSML_ERR, "SDL: Unsupported audio format: %s (0x%x).\n", audio_format_name(*format), *format);
+			return nms_printf(NMSML_ERR, "SDL: Unsupported audio format: %s (0x%x).\n", audio_format_name(*format), *format);
 			break;
 	}
 	
 	// Audio Buffer initialization
 	if (!buff_ms) {
 		buff_size = AUDIO_BUFF_SIZE;
-		nmsprintf(NMSML_DBG1, "Setting default audio system buffer\n");
+		nms_printf(NMSML_DBG1, "Setting default audio system buffer\n");
 	} else
 		buff_size = buff_ms * (*rate) * (*channels) * oss_priv.bytes_x_sample / 1000;
 	if ( (oss_priv.audio_buffer=ab_init(buff_size)) == NULL )
-		return nmsprintf(NMSML_FATAL, "[OSS] Failed while initializing Audio Buffer\n");
-	nmsprintf(NMSML_DBG1, "Audio system buffer: %u\n", buff_size);
+		return nms_printf(NMSML_FATAL, "[OSS] Failed while initializing Audio Buffer\n");
+	nms_printf(NMSML_DBG1, "Audio system buffer: %u\n", buff_size);
 
-	nmsprintf(NMSML_DBG1, "[OSS] Requested Rate is: %d\n", *rate);
-	nmsprintf(NMSML_DBG1, "[OSS] Requested Channel number is: %d\n", *channels);
-	nmsprintf(NMSML_DBG1, "[OSS] Requested Format is: %d\n", *format);
+	nms_printf(NMSML_DBG1, "[OSS] Requested Rate is: %d\n", *rate);
+	nms_printf(NMSML_DBG1, "[OSS] Requested Channel number is: %d\n", *channels);
+	nms_printf(NMSML_DBG1, "[OSS] Requested Format is: %d\n", *format);
 
 	ioctl(oss_priv.audiofd, SNDCTL_DSP_GETCAPS, &oss_priv.capabilities);
 	// TODO; init card
 	req_format=0x7FFF000D;
 	// req_format=0x7FFF000A;
 	if (ioctl(oss_priv.audiofd, SNDCTL_DSP_SETFRAGMENT, &req_format))
-		return nmsprintf(NMSML_ERR, "[OSS] Could not set dsp fragments\n");;
+		return nms_printf(NMSML_ERR, "[OSS] Could not set dsp fragments\n");;
 	if (ioctl(oss_priv.audiofd, SNDCTL_DSP_GETOSPACE, &info))
-		return nmsprintf(NMSML_ERR, "[OSS] Could not get hw buffer parameters\n");
-	nmsprintf(NMSML_VERB, "\nFrag: %d\nFrag total: %d\nFrag Size: %d\n", info.fragments, info.fragstotal, info.fragsize);
+		return nms_printf(NMSML_ERR, "[OSS] Could not get hw buffer parameters\n");
+	nms_printf(NMSML_VERB, "\nFrag: %d\nFrag total: %d\nFrag Size: %d\n", info.fragments, info.fragstotal, info.fragsize);
 
 	if (oss_priv.capabilities & DSP_CAP_TRIGGER) {
 		req_format= ~PCM_ENABLE_OUTPUT;
@@ -144,25 +144,25 @@ static uint32 init(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms
 	
 	// Setup format
 	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_GETFMTS, &req_format)) == -1 )
-		nmsprintf(NMSML_VERB, "Could not get formats supported\n");
+		nms_printf(NMSML_VERB, "Could not get formats supported\n");
 	if (req_format & *format) {
 		oss_priv.format = *format;
 		if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_SETFMT, &oss_priv.format)) == -1 ) {
-			return nmsprintf(NMSML_ERR, "OSS: Could not set format\n");
+			return nms_printf(NMSML_ERR, "OSS: Could not set format\n");
 		}
 	} else
-		return nmsprintf(NMSML_ERR, "OSS: Format %s not supported: exiting...\n", audio_format_name(oss_priv.format));
+		return nms_printf(NMSML_ERR, "OSS: Format %s not supported: exiting...\n", audio_format_name(oss_priv.format));
 
 	// set channels
 	oss_priv.channels = *channels;
 	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_CHANNELS, &oss_priv.channels)) == -1 )
-		return nmsprintf(NMSML_ERR, "OSS: Could not set number of channels\n");
-	nmsprintf(NMSML_VERB, "Channels: %d\n", oss_priv.channels);
+		return nms_printf(NMSML_ERR, "OSS: Could not set number of channels\n");
+	nms_printf(NMSML_VERB, "Channels: %d\n", oss_priv.channels);
 
 	oss_priv.freq = *rate;
 	if ( (result=ioctl(oss_priv.audiofd, SNDCTL_DSP_SPEED, &oss_priv.freq)) == -1 )
-		return nmsprintf(NMSML_ERR, "Could not set rate\n");
-	nmsprintf(NMSML_VERB, "Sample rate: %d\n", oss_priv.freq);
+		return nms_printf(NMSML_ERR, "Could not set rate\n");
+	nms_printf(NMSML_VERB, "Sample rate: %d\n", oss_priv.freq);
 
 	// set output parameters
 	*rate = oss_priv.freq;
@@ -213,7 +213,7 @@ static uint8 *get_buff(uint32 len)
 
 static uint32 play_buff(uint8 *data, uint32 len, double pts)
 {
-	NMSAudioBuffer *audio_buffer = oss_priv.audio_buffer;
+	nms_audio_buffer *audio_buffer = oss_priv.audio_buffer;
 	int audiofd = oss_priv.audiofd;
 	audio_buf_info info;
 	uint32 bytes_to_copy, to_valid, prev_to_valid;
@@ -274,7 +274,7 @@ static void audio_resume(void)
 
 static void reset(void)
 {
-	NMSAudioBuffer *ab = oss_priv.audio_buffer;
+	nms_audio_buffer *ab = oss_priv.audio_buffer;
 
 	// reset audio buffer
 	ab->len = ab->read_pos = ab->write_pos = ab->valid_data = 0;
@@ -285,7 +285,7 @@ static void reset(void)
 
 static void uninit(void)
 {
-	NMSAudioBuffer *ab = oss_priv.audio_buffer;
+	nms_audio_buffer *ab = oss_priv.audio_buffer;
 
 	if (ab) {
 		ab_uninit(ab);
@@ -294,7 +294,7 @@ static void uninit(void)
 	if((oss_priv.audiofd) > 0) 
 		close(oss_priv.audiofd);
 
-	nmsprintf(NMSML_NORM, "OSS Audio closed\n");
+	nms_printf(NMSML_NORM, "OSS Audio closed\n");
 
 	return;
 }

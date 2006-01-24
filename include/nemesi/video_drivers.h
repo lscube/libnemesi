@@ -47,10 +47,10 @@ typedef struct {
         const char *author;
         /* any additional comments */
         const char *comment;
-} NMSVDrvInfo;
+} nms_drv_info;
 
 typedef struct {
-	NMSVDrvInfo *info;
+	nms_drv_info *info;
 	/*
 	 * Preinitializes driver (real INITIALIZATION)
 	 *   arg - currently it's vo_subdevice
@@ -76,19 +76,19 @@ typedef struct {
 	 * params:
 	 *	w: width of requested picture
 	 *	h: height of requested picture
-	 *	pict: the pointer to a NMSPicture struct that will contain data allocated.
+	 *	pict: the pointer to a nms_picture struct that will contain data allocated.
 	 * returns 1 on error, 0 otherwise
 	 */
-	uint32 (*get_picture)(int w, int h, NMSPicture *pict);
+	uint32 (*get_picture)(int w, int h, nms_picture *pict);
 	/*
 	 * This function must be called by decoder after the whole picture has
-	 * been written on the allocated NMSPicture, in order to unlock
+	 * been written on the allocated nms_picture, in order to unlock
 	 * previously locked data by "get_picture".
 	 * params:
 	 *    pict: picture to draw. // XXX: For now we don't need it, but in future... (?)
 	 * retuns 1 on error, 0 otherwise
 	 */
-	uint32 (*draw_picture)(NMSPicture *pict, double pts);
+	uint32 (*draw_picture)(nms_picture *pict, double pts);
 
         /*
          * Display a new RGB/BGR frame of the video to the screen.
@@ -102,16 +102,16 @@ typedef struct {
          * Closes driver. Should restore the original state of the system.
          */
         void (*uninit)(void);
-} NMSVFunctions;
+} nms_vid_fnc;
 
 #if 0
 #if HAVE_SDL
-extern NMSVFunctions nms_video_sdl;
+extern nms_vid_fnc nms_video_sdl;
 #endif
 #endif
 
 void list_video_out(void);
-NMSVFunctions *init_best_video_out(char *, uint32);
+nms_vid_fnc *init_best_video_out(char *, uint32);
 
 /*
 char *vo_format_name(int format);

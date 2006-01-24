@@ -41,12 +41,12 @@
 #include <nemesi/output.h>
 #include <nemesi/types.h>
 
-extern int (*decoders[128])(char *, int, NMSOutput *); // defined in decoder.c
+extern int (*decoders[128])(char *, int, nms_output *); // defined in decoder.c
 
 void *decoder(void *);
 
-//int dec_create(struct nmsRTPth *);
-pthread_t dec_create(struct RTSP_Ctrl *);
+//int dec_create(struct nms_rtp_th *);
+pthread_t dec_create(struct rtsp_ctrl *);
 void dec_idle(void);
 void dec_clean(void *);
 

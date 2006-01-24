@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtp_transport_get.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -31,7 +31,7 @@
 #include <nemesi/rtp.h>
 #include <nemesi/utils.h>
 
-int rtp_transport_get(struct RTP_Session *rtp_sess, int par, void *value, uint32 len)
+int rtp_transport_get(struct rtp_session *rtp_sess, int par, void *value, uint32 len)
 {
 	int ret = RTP_TRANSPORT_NOTSET;
 	// switch here for parameters that do NOT need value
@@ -48,8 +48,8 @@ int rtp_transport_get(struct RTP_Session *rtp_sess, int par, void *value, uint32
 			*(enum deliveries *)value = rtp_sess->transport.mode;
 			break;
 		case RTP_TRANSPORT_SRCADDR:
-			memcpy((NMSaddr *)value, &rtp_sess->transport.srcaddr, min(sizeof(NMSaddr), len));
-			if (len < sizeof(NMSaddr))
+			memcpy((nms_addr *)value, &rtp_sess->transport.srcaddr, min(sizeof(nms_addr), len));
+			if (len < sizeof(nms_addr))
 				errno = ENOSPC;
 			ret = RTP_TRANSPORT_SET;
 			break;
@@ -58,8 +58,8 @@ int rtp_transport_get(struct RTP_Session *rtp_sess, int par, void *value, uint32
 				ret = RTP_TRANSPORT_SET;
 			break;
 		case RTP_TRANSPORT_DSTADDR:
-			memcpy((NMSaddr *)value, &rtp_sess->transport.dstaddr, min(sizeof(NMSaddr), len));
-			if (len < sizeof(NMSaddr))
+			memcpy((nms_addr *)value, &rtp_sess->transport.dstaddr, min(sizeof(nms_addr), len));
+			if (len < sizeof(nms_addr))
 				errno = ENOSPC;
 			ret = RTP_TRANSPORT_SET;
 			break;

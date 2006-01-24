@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:tcp_open.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -40,10 +40,10 @@ int tcp_open(struct sockaddr *name, int namelen)
 	int f;
 
 	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return nmsprintf(NMSML_ERR, "socket() error in tcp_open.\n");
+		return nms_printf(NMSML_ERR, "socket() error in tcp_open.\n");
 
 	if (connect(f, name, namelen) < 0)
-		return nmsprintf(NMSML_ERR, "connect() error in tcp_open.\n");
+		return nms_printf(NMSML_ERR, "connect() error in tcp_open.\n");
 
 	return f;
 }

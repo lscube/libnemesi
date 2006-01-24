@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:close_cmd.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,12 +29,12 @@
 #include <nemesi/rtsp.h>
 #include <stdarg.h>
 
-int close_cmd(struct RTSP_Thread *rtsp_th, ...)
+int close_cmd(struct rtsp_thread *rtsp_th, ...)
 {
 
 	if(rtsp_th->status == INIT){
-		nmsprintf(NMSML_NORM, BLANK_LINE);
-		nmsprintf(NMSML_NORM, "No Connection to close\n");
+		nms_printf(NMSML_NORM, BLANK_LINE);
+		nms_printf(NMSML_NORM, "No Connection to close\n");
 		return 1;
 	}
 	// get_curr_sess(NULL, NULL, NULL);

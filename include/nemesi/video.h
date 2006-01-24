@@ -51,13 +51,13 @@ typedef struct {
 	// frame rate
 	float fps;
 	//! functions for the specific video output driver
-	NMSVFunctions *functions;
+	nms_vid_fnc *functions;
 	// void *functions;
-} NMSVideo;
+} nms_video;
 
-NMSVideo *video_preinit(char *, uint32);
-// int video_th_start(NMSVideo *);
-// int video_th_stop(NMSVideo *);
+nms_video *video_preinit(char *, uint32);
+// int video_th_start(nms_video *);
+// int video_th_stop(nms_video *);
 // void *video_th(void *);
 
 #endif // __VIDEO_H

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtp_recv.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,7 +29,7 @@
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 
-int rtp_recv(struct RTP_Session *rtp_sess)
+int rtp_recv(struct rtp_session *rtp_sess)
 {
 
 	int n;
@@ -42,32 +42,32 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 	int32 delta;
 
 	struct sockaddr_storage serveraddr;
-	NMSsockaddr server = { (struct sockaddr *)&serveraddr, sizeof(serveraddr) };
+	nms_sockaddr server = { (struct sockaddr *)&serveraddr, sizeof(serveraddr) };
 
 	if( (slot=bpget(&(rtp_sess->bp))) < 0) {
-		nmsprintf(NMSML_VERB, "No more space in Playout Buffer!"BLANK_LINE);
+		nms_printf(NMSML_VERB, "No more space in Playout Buffer!"BLANK_LINE);
 		return 1;
 	}
 	
 	if ( (n=recvfrom(rtp_sess->rtpfd, &((rtp_sess->bp).bufferpool[slot]), BP_SLOT_SIZE, 0, server.addr, &server.addr_len)) == -1 ) {
 		switch (errno) {
 			case EBADF:
-				nmsprintf(NMSML_ERR, "RTP recvfrom: invalid descriptor\n");
+				nms_printf(NMSML_ERR, "RTP recvfrom: invalid descriptor\n");
 				break;
 			case ENOTSOCK:
-				nmsprintf(NMSML_ERR, "RTP recvfrom: not a socket\n");
+				nms_printf(NMSML_ERR, "RTP recvfrom: not a socket\n");
 				break;
 			case EINTR:
-				nmsprintf(NMSML_ERR, "RTP recvfrom: The receive was interrupted by delivery of a signal\n");
+				nms_printf(NMSML_ERR, "RTP recvfrom: The receive was interrupted by delivery of a signal\n");
 				break;
 			case EFAULT:
-				nmsprintf(NMSML_ERR, "RTP recvfrom: The buffer points outside userspace\n");
+				nms_printf(NMSML_ERR, "RTP recvfrom: The buffer points outside userspace\n");
 				break;
 			case EINVAL:
-				nmsprintf(NMSML_ERR, "RTP recvfrom: Invalid argument passed.\n");
+				nms_printf(NMSML_ERR, "RTP recvfrom: Invalid argument passed.\n");
 				break;
 			default:
-				nmsprintf(NMSML_ERR, "in RTP recvfrom\n");
+				nms_printf(NMSML_ERR, "in RTP recvfrom\n");
 				break;
 		}
 		return 1;
@@ -77,7 +77,7 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 	pkt=(rtp_pkt *)&((rtp_sess->bp).bufferpool[slot]);
 
 	if ( rtp_hdr_val_chk(pkt, n) ) {
-		nmsprintf(NMSML_NORM, "RTP header validity check FAILED!\n");
+		nms_printf(NMSML_NORM, "RTP header validity check FAILED!\n");
 		bpfree(&(rtp_sess->bp), slot);
 		return 0;
 	}
@@ -124,12 +124,12 @@ int rtp_recv(struct RTP_Session *rtp_sess)
 
 	switch ( poadd(&(stm_src->po), slot, (stm_src->ssrc_stats).cycles) ) {
 		case PKT_DUPLICATED:
-			nmsprintf(NMSML_VERB, "WARNING: Duplicate pkt found... discarded\n");
+			nms_printf(NMSML_VERB, "WARNING: Duplicate pkt found... discarded\n");
 			bpfree(&(rtp_sess->bp), slot);
 			return 0;
 			break;
 		case PKT_MISORDERED:
-			nmsprintf(NMSML_VERB, "WARNING: Misordered pkt found... reordered\n");
+			nms_printf(NMSML_VERB, "WARNING: Misordered pkt found... reordered\n");
 			break;
 		default:
 			break;

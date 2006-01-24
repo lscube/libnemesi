@@ -56,10 +56,10 @@ typedef struct {
   UINT4 state[4];                                   /* state (ABCD) */
   UINT4 count[2];        /* number of bits, modulo 2^64 (lsb first) */
   unsigned char buffer[64];                         /* input buffer */
-} MD5_CTX;
+} md5_ctx;
 
-void MD5Init PROTO_LIST ((MD5_CTX *));
-void MD5Update PROTO_LIST
-  ((MD5_CTX *, unsigned char *, unsigned int));
-void MD5Final PROTO_LIST ((unsigned char [16], MD5_CTX *));
+void md5_init PROTO_LIST ((md5_ctx *));
+void md5_update PROTO_LIST
+  ((md5_ctx *, unsigned char *, unsigned int));
+void md5_final PROTO_LIST ((unsigned char [16], md5_ctx *));
 

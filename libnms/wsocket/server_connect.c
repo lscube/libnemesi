@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:server_connect.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -58,7 +58,7 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 		hints.ai_socktype = SOCK_DGRAM;
 
 	if ((n = gethostinfo(&res, host, port, &hints)) != 0) {
-		nmsprintf(NMSML_ERR, "%s: %s\n", PROG_NAME, gai_strerror(n));
+		nms_printf(NMSML_ERR, "%s: %s\n", PROG_NAME, gai_strerror(n));
 		return 1;
 	}
 
@@ -72,14 +72,14 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 			break;
 
 		if (close(*sock) < 0)
-			return nmsprintf(NMSML_ERR, "(%s) %s", PROG_NAME, strerror(errno));
+			return nms_printf(NMSML_ERR, "(%s) %s", PROG_NAME, strerror(errno));
 
 	} while ((res = res->ai_next) != NULL);
 
 	freeaddrinfo(ressave);
 
 	if ( !res )
-		return nmsprintf(NMSML_ERR, "Server connect error for \"%s:%s\"", host, port);
+		return nms_printf(NMSML_ERR, "Server connect error for \"%s:%s\"", host, port);
 
 	return 0;
 }

@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:sdp_set_attr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -31,13 +31,13 @@
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>
 
-int sdp_set_attr(SDP_attr **attr_list, char *a)
+int sdp_set_attr(sdp_attr **attr_list, char *a)
 {
-	SDP_attr *new, **i;
+	sdp_attr *new, **i;
 
 	// we use calloc, so it's all already initialized to NULL
-	if (!(new=(SDP_attr *)calloc(1, sizeof(SDP_attr))))
-		return nmsprintf(NMSML_FATAL, "Could not allocate memory\n");
+	if (!(new=(sdp_attr *)calloc(1, sizeof(sdp_attr))))
+		return nms_printf(NMSML_FATAL, "Could not allocate memory\n");
 
 	new->a = a;
 

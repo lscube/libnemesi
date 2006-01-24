@@ -29,13 +29,13 @@
 #include <nemesi/audio.h>
 
 #define RET_ERR(ret_level, ...) { \
-				nmsprintf(ret_level, __VA_ARGS__ ); \
+				nms_printf(ret_level, __VA_ARGS__ ); \
 				free(buff->audio_data); \
 				free(buff); \
 				return NULL; \
 			}
 
-NMSAudioBuffer *ab_init(uint32 buff_size)
+nms_audio_buffer *ab_init(uint32 buff_size)
 {
 	struct audio_buff *buff;
 	pthread_mutexattr_t mutex_attr;
@@ -43,7 +43,7 @@ NMSAudioBuffer *ab_init(uint32 buff_size)
 	// int n;
 
 	if ( (buff = (struct audio_buff *)malloc(sizeof(struct audio_buff))) == NULL ) {
-		nmsprintf(NMSML_FATAL, "Cannot allocate memory.\n");
+		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}
 

@@ -33,10 +33,10 @@
 #include <nemesi/utils.h>
 
 #if HAVE_SDL
-extern NMSVFunctions nms_video_sdl;
+extern nms_vid_fnc nms_video_sdl;
 #endif
 
-static NMSVFunctions *video_out_drivers[] = {
+static nms_vid_fnc *video_out_drivers[] = {
 #if HAVE_SDL
 	&nms_video_sdl,
 #endif
@@ -47,18 +47,18 @@ void list_video_out(void)
 {
 	int i;
 
-	nmsprintf(NMSML_NORM, "Available video out drivers are:\n");
+	nms_printf(NMSML_NORM, "Available video out drivers are:\n");
 	for (i=0; video_out_drivers[i]; i++) {
-		nmsprintf(NMSML_ALWAYS, "\t%s\t%s\n", video_out_drivers[i]->info->short_name, \
+		nms_printf(NMSML_ALWAYS, "\t%s\t%s\n", video_out_drivers[i]->info->short_name, \
 			video_out_drivers[i]->info->name);
 	}
-	nmsprintf(NMSML_ALWAYS, "\n");
+	nms_printf(NMSML_ALWAYS, "\n");
 }
 
 /*!
  * params drv coma separated list of device drivers in the form <driver:option>
  */
-NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
+nms_vid_fnc *init_best_video_out(char *drv, uint32 sysbuff_ms)
 {
 	int i;
 	char *device, *sub_device = NULL;
@@ -68,9 +68,9 @@ NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
 		while ( device && *device && strcmp(device, "...") ) {
 			for (i=0;video_out_drivers[i] && strcmp(device, video_out_drivers[i]->info->short_name);i++);
 			if (!video_out_drivers[i])
-				nmsprintf(NMSML_ERR, "Could not find video driver %s", device);
+				nms_printf(NMSML_ERR, "Could not find video driver %s", device);
 			else {
-				nmsprintf(NMSML_VERB, "Found video output driver %s\n", video_out_drivers[i]->info->name);
+				nms_printf(NMSML_VERB, "Found video output driver %s\n", video_out_drivers[i]->info->name);
 				if (!video_out_drivers[i]->preinit(sub_device, sysbuff_ms)) {
 					return video_out_drivers[i];
 				}
@@ -79,14 +79,14 @@ NMSVFunctions *init_best_video_out(char *drv, uint32 sysbuff_ms)
 		}
 		if (!device)
 			return NULL;
-		nmsprintf(NMSML_NORM, "Falling Back to drivers not hinted\n");
+		nms_printf(NMSML_NORM, "Falling Back to drivers not hinted\n");
 	}
 	for (i=0; video_out_drivers[i]; i++) {
 		if (!video_out_drivers[i]->preinit(NULL, sysbuff_ms))
 			return video_out_drivers[i];
 	}
 
-	nmsprintf(NMSML_ERR, "Could not find any working video driver\n");
+	nms_printf(NMSML_ERR, "Could not find any working video driver\n");
 
 	return NULL;
 }

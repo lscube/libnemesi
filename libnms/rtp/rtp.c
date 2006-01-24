@@ -34,9 +34,9 @@
 
 void *rtp(void *args)
 {
-	struct RTP_Session *rtp_sess_head=((struct nmsRTPth *)args)->rtp_sess_head;
-	pthread_mutex_t *syn = &((struct nmsRTPth *)args)->syn;
-	struct RTP_Session *rtp_sess;
+	struct rtp_session *rtp_sess_head=((struct nms_rtp_th *)args)->rtp_sess_head;
+	pthread_mutex_t *syn = &((struct nms_rtp_th *)args)->syn;
+	struct rtp_session *rtp_sess;
 	struct timeval tv;
 	int maxfd=0;
 	
@@ -77,12 +77,12 @@ void *rtp(void *args)
 						pthread_mutex_unlock(syn);
 						buffering=0;
 					} else { // TODO: buffering based on rtp jitter
-						nmsprintf(NMSML_NORM, "\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
+						nms_printf(NMSML_NORM, "\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
 					}
 				}
 				if(rtp_recv(rtp_sess)){
 					/* Waiting 20 msec for decoder ready */
-					nmsprintf(NMSML_NORM, "Waiting for decoder ready!\n");
+					nms_printf(NMSML_NORM, "Waiting for decoder ready!\n");
 					tv.tv_sec=0;
 					tv.tv_usec=20*(1000);
 					select(0, NULL, NULL, NULL, &tv);
