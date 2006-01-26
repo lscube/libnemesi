@@ -149,41 +149,41 @@ typedef struct {
 	} r;
 } rtcp_pkt;
 
-struct RTCP_Event {
+struct rtcp_event {
 	struct rtp_session *rtp_sess;
 	struct timeval tv;
 	rtcp_type_t type;
-	struct RTCP_Event *next;
+	struct rtcp_event *next;
 };
 
 typedef struct rtcp_sdes rtcp_sdes_t;
 
 void *rtcp(void *);
-int rtcp_thread_create(struct nms_rtp_th *);
+int rtcp_thread_create(struct rtp_thread *);
 void rtcp_clean(void *);
 void rtcp_clean_events(void *);
 
 int rtcp_recv(struct rtp_session *);
 int rtcp_hdr_val_chk(rtcp_pkt *, int);
 
-int parse_rtcp_pkt(struct rtp_ssrc *, rtcp_pkt *, int);
-int parse_rtcp_sr(struct rtp_ssrc *, rtcp_pkt *);
-int parse_rtcp_sdes(struct rtp_ssrc *, rtcp_pkt *);
-int parse_rtcp_rr(rtcp_pkt *);
-int parse_rtcp_bye(rtcp_pkt *);
-int parse_rtcp_app(rtcp_pkt *);
+int rtcp_parse_pkt(struct rtp_ssrc *, rtcp_pkt *, int);
+int rtcp_parse_sr(struct rtp_ssrc *, rtcp_pkt *);
+int rtcp_parse_sdes(struct rtp_ssrc *, rtcp_pkt *);
+int rtcp_parse_rr(rtcp_pkt *);
+int rtcp_parse_bye(rtcp_pkt *);
+int rtcp_parse_app(rtcp_pkt *);
 
-int set_ssrc_sdes(struct rtp_ssrc *, rtcp_sdes_item_t *);
+int rtcp_set_ssrc_sdes(struct rtp_ssrc *, rtcp_sdes_item_t *);
 
 double rtcp_interval(int, int, double, int, double, int);
 
-struct RTCP_Event *rtcp_schedule(struct RTCP_Event *, struct rtp_session *, struct timeval, rtcp_type_t);
-struct RTCP_Event *rtcp_deschedule(struct RTCP_Event *);
+struct rtcp_event *rtcp_schedule(struct rtcp_event *, struct rtp_session *, struct timeval, rtcp_type_t);
+struct rtcp_event *rtcp_deschedule(struct rtcp_event *);
 
-struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *);
-int send_rtcp_rr(struct rtp_session *);
-int build_rtcp_rr(struct rtp_session *, rtcp_pkt *);
-int build_rtcp_sdes(struct rtp_session *, rtcp_pkt *, int);
-int send_rtcp_bye(struct rtp_session *);
+struct rtcp_event *rtcp_handle_event(struct rtcp_event *);
+int rtcp_send_rr(struct rtp_session *);
+int rtcp_build_rr(struct rtp_session *, rtcp_pkt *);
+int rtcp_build_sdes(struct rtp_session *, rtcp_pkt *, int);
+int rtcp_send_bye(struct rtp_session *);
 
 #endif

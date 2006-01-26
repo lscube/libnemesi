@@ -1,5 +1,5 @@
 /* * 
- *  $Id:send_rtcp_bye.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,11 +26,23 @@
  *  
  * */
 
-#include <nemesi/rtcp.h>
+#include <nemesi/rtp.h>
+#include <nemesi/comm.h>
 
-int send_rtcp_bye(struct rtp_session *rtp_sess)
+struct rtp_thread *rtp_init(void)
 {
-	// TODO: really send bye packet
-	nms_printf(NMSML_DBG1, "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!", rtp_sess->local_ssrc);
-	return 0;
+	struct rtp_thread *rtp_th;
+	
+	if ( !(rtp_th = (struct rtp_thread *) calloc(1, sizeof(struct rtp_thread))) ) {
+		nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
+		return NULL;
+	}
+	
+	
+	if ( pthread_mutex_init(&(rtp_th->syn), NULL) )
+		return NULL;
+	/* Decoder blocked 'till buffering is complete */
+	pthread_mutex_lock(&(rtp_th->syn));
+	
+	return rtp_th;
 }

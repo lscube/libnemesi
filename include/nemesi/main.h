@@ -68,7 +68,7 @@ void unload_plugins(void);
 int nms_open(struct rtsp_ctrl *, char *, void (*)(void *), void *);
 #define nms_play rtsp_play
 #define nms_pause(x) rtsp_pause(x)
-#define nms_stop(x) rtsp_pause(x)
+#define nms_stop(x) rtsp_stop(x)
 #define nms_close rtsp_close // it will be replaced with function if decoder thread needs to be killed
 
 #endif

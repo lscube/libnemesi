@@ -82,7 +82,7 @@ int rtp_recv(struct rtp_session *rtp_sess)
 		return 0;
 	}
 
-	switch ( ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, &server, RTP) ) {
+	switch ( rtp_ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, &server, RTP) ) {
 		case SSRC_KNOWN:
 			update_seq(stm_src, ntohs(pkt->seq));
 			

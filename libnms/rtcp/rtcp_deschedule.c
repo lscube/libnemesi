@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_deschedule.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,9 +28,9 @@
 
 #include <nemesi/rtcp.h>
 
-struct RTCP_Event *rtcp_deschedule(struct RTCP_Event *head)
+struct rtcp_event *rtcp_deschedule(struct rtcp_event *head)
 {
-	struct RTCP_Event *phead=head;
+	struct rtcp_event *phead=head;
 	
 	head=head->next;
 	free(phead);

@@ -112,7 +112,7 @@ Merge tries... dummy commit
 ------------------------------------------------------------------------
 r186 | shawill | 2005-05-20 10:54:16 +0200 (Fri, 20 May 2005) | 2 lines
 
-Sorry, a little/big bug in init_rtp_sess... to much work... to much things in mind!!!
+Sorry, a little/big bug in rtp_session_init... to much work... to much things in mind!!!
 
 ------------------------------------------------------------------------
 r185 | shawill | 2005-05-19 13:56:03 +0200 (Thu, 19 May 2005) | 2 lines
@@ -300,11 +300,11 @@ Changed paths:
    M /trunk/rtcp/rtcp_schedule.c
    M /trunk/rtcp/rtcp_thread_create.c
    M /trunk/rtcp/set_ssrc_sdes.c
-   M /trunk/rtp/init_rtp_sess.c
+   M /trunk/rtp/rtp_session_init.c
    M /trunk/rtp/rtp.c
    M /trunk/rtp/rtp_thread_create.c
-   M /trunk/rtp/set_stm_src.c
-   M /trunk/rtp/ssrc_check.c
+   M /trunk/rtp/rtp_ssrc_init.c
+   M /trunk/rtp/rtp_rtp_rtp_ssrc_check.c
    M /trunk/rtsp/init_state.c
    M /trunk/rtsp/remove_pkt.c
    M /trunk/rtsp/rtsp_clean.c
@@ -373,8 +373,8 @@ Changed paths:
    M /trunk/rtp/rtp_clean.c
    M /trunk/rtp/rtp_hdr_val_chk.c
    M /trunk/rtp/rtp_recv.c
-   M /trunk/rtp/set_stm_src.c
-   M /trunk/rtp/ssrc_check.c
+   M /trunk/rtp/rtp_ssrc_init.c
+   M /trunk/rtp/rtp_rtp_rtp_ssrc_check.c
    M /trunk/rtsp/check_response.c
    M /trunk/rtsp/check_status.c
    M /trunk/rtsp/close_cmd.c
@@ -521,8 +521,8 @@ Changed paths:
    M /trunk/rtcp/rtcp_clean.c
    A /trunk/rtcp/rtcp_clean_events.c
    M /trunk/rtp/rtp_clean.c
-   M /trunk/rtp/set_stm_src.c
-   M /trunk/rtp/ssrc_check.c
+   M /trunk/rtp/rtp_ssrc_init.c
+   M /trunk/rtp/rtp_rtp_rtp_ssrc_check.c
    M /trunk/rtsp/init_rtsp.c
    M /trunk/rtsp/open_cmd.c
    M /trunk/rtsp/rtsp_clean.c

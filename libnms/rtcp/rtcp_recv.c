@@ -74,7 +74,7 @@ int rtcp_recv(struct rtp_session *rtp_sess)
 		return 1;
 	}
 
-	switch ( ssrc_check(rtp_sess, ntohl((pkt->r).sr.ssrc), &stm_src, &server, RTCP) ) {
+	switch ( rtp_ssrc_check(rtp_sess, ntohl((pkt->r).sr.ssrc), &stm_src, &server, RTCP) ) {
 		case SSRC_NEW:
 			if (pkt->common.pt == RTCP_SR)
 				rtp_sess->sess_stats.senders++;
@@ -88,7 +88,7 @@ int rtcp_recv(struct rtp_session *rtp_sess)
 			break;
 	}
 
-	if((ret=parse_rtcp_pkt(stm_src, pkt, n)) != 0)
+	if((ret=rtcp_parse_pkt(stm_src, pkt, n)) != 0)
 		return ret;
 	else
 		rtp_sess->sess_stats.avg_rtcp_size = n/16. + rtp_sess->sess_stats.avg_rtcp_size * 15./16.;

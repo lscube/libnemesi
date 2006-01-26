@@ -1,5 +1,5 @@
 /* * 
- *  $Id:ssrc_check.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtp_ssrc_check.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -32,7 +32,7 @@
  * check for ssrc of incoming packet.
  * \return SSRC_KNOWN, SSRC_NEW, SSRC_COLLISION, -1 on internal fatal error.
  * */
-int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct rtp_ssrc **stm_src, nms_sockaddr *recfrom, enum proto_types proto_type)
+int rtp_ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct rtp_ssrc **stm_src, nms_sockaddr *recfrom, enum rtp_protos proto_type)
 {
 	struct rtp_conflict *stm_conf=rtp_sess->conf_queue;
 	struct sockaddr_storage sockaddr;
@@ -49,7 +49,7 @@ int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct rtp_ssrc **stm_
 		/* inserimento in testa */
 		pthread_mutex_lock(&rtp_sess->syn);	
 		nms_printf(NMSML_DBG1, "new SSRC\n");
-		if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
+		if ( rtp_ssrc_init(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 			pthread_mutex_unlock(&rtp_sess->syn);	
 			return -nms_printf(NMSML_ERR, "Error while setting new Stream Source\n");
 		}
@@ -141,7 +141,7 @@ int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct rtp_ssrc **stm_
 					/* inserimento in testa */
 					/* insert at the beginning of Stream Sources queue */
 					pthread_mutex_lock(&rtp_sess->syn);	
-					if ( set_stm_src(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
+					if ( rtp_ssrc_init(rtp_sess, stm_src, ssrc, recfrom, proto_type) < 0) {
 						pthread_mutex_unlock(&rtp_sess->syn);	
 						return -nms_printf(NMSML_ERR, "Error while setting new Stream Source\n");
 					}

@@ -30,7 +30,7 @@
 
 void rtp_clean(void *args)
 {
-	struct nms_rtp_th *rtp_th = (struct nms_rtp_th *)args;
+	struct rtp_thread *rtp_th = (struct rtp_thread *)args;
 	struct rtp_session *rtp_sess=rtp_th->rtp_sess_head;
 	struct rtp_session *prev_rtp_sess;
 	struct rtp_ssrc *csrc, *psrc;

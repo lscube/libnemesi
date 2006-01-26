@@ -43,7 +43,7 @@ struct rtsp_medium *rtsp_med_create(int fd)
 		return NULL;
 	}
 
-	if((rtsp_m->rtp_sess=init_rtp_sess(&local, &peer)) == NULL)
+	if((rtsp_m->rtp_sess=rtp_session_init(&local, &peer)) == NULL)
 		return NULL;
 	rtsp_m->next=NULL;
 	rtsp_m->filename=NULL;

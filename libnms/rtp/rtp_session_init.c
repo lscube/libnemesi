@@ -1,5 +1,5 @@
 /* * 
- *  $Id:init_rtp_sess.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtp_session_init.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -34,7 +34,7 @@
 					return NULL; \
 				}
 
-struct rtp_session *init_rtp_sess(nms_sockaddr *local, nms_sockaddr *peer)
+struct rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 {
 	struct rtp_session *rtp_sess;
 	nms_addr nms_addr;

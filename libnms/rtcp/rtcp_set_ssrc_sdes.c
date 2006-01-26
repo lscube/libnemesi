@@ -1,5 +1,5 @@
 /* * 
- *  $Id:send_rtcp_rr.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtcp_rtcp_set_ssrc_sdes.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,28 +28,26 @@
 
 #include <nemesi/rtcp.h>
 
-int send_rtcp_rr(struct rtp_session *rtp_sess)
+int rtcp_set_ssrc_sdes(struct rtp_ssrc *stm_src, rtcp_sdes_item_t *item)
 {
-	rtcp_pkt *pkt;
-	int len;
-	uint32 rr_buff[MAX_PKT_SIZE];
-	struct rtp_ssrc *stm_src;
+	char *str=((char **)(&(stm_src->ssrc_sdes)))[item->type];
 
-	memset(rr_buff, 0, MAX_PKT_SIZE*sizeof(uint32));
-	pkt=(rtcp_pkt *)rr_buff;
+	if ( str != NULL ){
+		if ( memcmp(str, item->data, item->len) != 0){
+			free(str);
+			if ( (str=(((char **)(&(stm_src->ssrc_sdes)))[item->type])=(char *)malloc(sizeof(char)*(item->len+1))) == NULL )
+				return nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 
-	len = build_rtcp_rr(rtp_sess, pkt); /* in 32 bit words */
-	pkt=(rtcp_pkt *)(rr_buff+len);
-	len += build_rtcp_sdes(rtp_sess, pkt, (MAX_PKT_SIZE >> 2) - len); /* in 32 bit words */
-
-	for(stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next)
-		if (stm_src->rtcptofd > 0) {
-			if( write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0 )
-				nms_printf(NMSML_WARN, "WARNING! Error while sending RTCP pkt\n");
-			else
-				nms_printf(NMSML_DBG1, "RTCP RR packet sent\n");
+			memcpy(str, item->data, item->len);
+			str[item->len]=0;
 		}
-	
-	return len;	
-}
+			
+	} else {
+		if ( (str=((char **)(&(stm_src->ssrc_sdes)))[item->type]=(char *)malloc(sizeof(char)*(item->len+1))) == NULL )
+			return nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 
+		memcpy(str, item->data, item->len);
+		str[item->len]=0;
+	}
+	return 0;
+}

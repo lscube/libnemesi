@@ -1,5 +1,5 @@
 /* * 
- *  $Id:set_stm_src.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtp_ssrc_init.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-int set_stm_src(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 ssrc, nms_sockaddr *recfrom, enum proto_types proto_type)
+int rtp_ssrc_init(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 ssrc, nms_sockaddr *recfrom, enum rtp_protos proto_type)
 {
 	int addrcmp_err;
 	nms_addr nms_addr;
@@ -47,12 +47,12 @@ int set_stm_src(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 
 	
 	if (proto_type == RTP){
 		sockaddrdup(&(*stm_src)->rtp_from, recfrom);
-		nms_printf(NMSML_DBG2, "RTP/set_stm_src: proto RTP\n");
+		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTP\n");
 		// we do not need to reset memory area 'cause we use calloc
 		// memset(&((*stm_src)->rtcp_from), 0, sizeof(nms_sockaddr));
 	} else if (proto_type == RTCP){
 		sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
-		nms_printf(NMSML_DBG2, "RTP/set_stm_src: proto RTCP\n");
+		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTCP\n");
 		// we do not need to reset memory area 'cause we use calloc
 		// memset(&((*stm_src)->rtp_from), 0, sizeof(nms_sockaddr));
 	}
@@ -72,7 +72,7 @@ int set_stm_src(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 
 		 * informations to set transport address for RTCP connection */
 		if ( rtcp_to_connect(*stm_src, &rtp_sess->transport.srcaddr, (rtp_sess->transport).srv_ports[1]) < 0 )
 			return -1;
-		nms_printf(NMSML_DBG2, "RTP/set_stm_src: from RTSP\n");
+		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTSP\n");
 
 	} else if (proto_type == RTCP){
 		/* IT: In mancanza di informazioni assumiamo che l'indirizzo di rete
@@ -83,7 +83,7 @@ int set_stm_src(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 
 		 * specified in RTSP*/
 		if ( rtcp_to_connect(*stm_src, &nms_addr, (rtp_sess->transport).srv_ports[1]) < 0 )
 			return -1;
-		nms_printf(NMSML_DBG2, "RTP/set_stm_src: from RTP\n");
+		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
 	} else {
 		switch (addrcmp_err) {
 			case WSOCK_ERRFAMILY:
@@ -96,7 +96,7 @@ int set_stm_src(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 
 				nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILYUNKNOWN\n");
 				break;
 		}
-		nms_printf(NMSML_DBG2, "RTP/set_stm_src: rtcp_to NOT set!!!\n");
+		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: rtcp_to NOT set!!!\n");
 		// return -1;
 	}
 

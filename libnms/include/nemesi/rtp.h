@@ -207,7 +207,7 @@ struct rtp_session {
 	pthread_mutex_t syn;
 };
 
-struct nms_rtp_th {
+struct rtp_thread {
 	struct rtp_session *rtp_sess_head;
 	// struct timeval startime;
 	pthread_mutex_t syn;
@@ -215,21 +215,21 @@ struct nms_rtp_th {
 	pthread_t rtcp_tid;
 };
 
-enum proto_types {
+enum rtp_protos {
 	RTP,
 	RTCP	
 };
 
 void *rtp(void *);
 
-struct nms_rtp_th *nms_rtp_init(void);
-struct rtp_session *init_rtp_sess(nms_sockaddr *, nms_sockaddr *);
-int rtp_thread_create(struct nms_rtp_th *); // something like rtp_run could be better?
+struct rtp_thread *rtp_init(void);
+struct rtp_session *rtp_session_init(nms_sockaddr *, nms_sockaddr *);
+int rtp_thread_create(struct rtp_thread *); // something like rtp_run could be better?
 
 int rtp_recv(struct rtp_session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
-int ssrc_check(struct rtp_session *, uint32, struct rtp_ssrc **, nms_sockaddr *, enum proto_types);
-int set_stm_src(struct rtp_session *, struct rtp_ssrc **, uint32, nms_sockaddr *,  enum proto_types);
+int rtp_ssrc_check(struct rtp_session *, uint32, struct rtp_ssrc **, nms_sockaddr *, enum rtp_protos);
+int rtp_ssrc_init(struct rtp_session *, struct rtp_ssrc **, uint32, nms_sockaddr *,  enum rtp_protos);
 
 #define RTP_FILL_OK 0
 #define RTP_FILL_EMPTY -1

@@ -224,7 +224,7 @@ struct rtsp_thread {
 	char *urlname;		/*!< Requested URL */
 	struct rtsp_buffer in_buffer;	/*!< Input buffer. */
 	// struct rtsp_session *rtsp_queue;/*!< Active sessions. */
-	struct nms_rtp_th *rtp_th;
+	struct rtp_thread *rtp_th;
 };
 
 struct rtsp_ctrl {

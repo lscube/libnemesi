@@ -1,5 +1,5 @@
 /* * 
- *  $Id:parse_rtcp_pkt.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtcp_parse_app.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -27,35 +27,11 @@
  * */
 
 #include <nemesi/rtcp.h>
+#include <nemesi/comm.h>
 
-int parse_rtcp_pkt(struct rtp_ssrc *stm_src, rtcp_pkt *pkt, int len)
+int rtcp_parse_app(rtcp_pkt *pkt)
 {
-	rtcp_pkt *end;
-	end = (rtcp_pkt *)((uint32 *)pkt + len/4);
-	
-	while ( pkt < end ){
-		switch ((pkt->common).pt) {
-			case RTCP_SR:
-				parse_rtcp_sr(stm_src, pkt);
-				break;
-			case RTCP_SDES:
-				if(parse_rtcp_sdes(stm_src, pkt))
-					return -1;
-				break;
-			case RTCP_RR:
-				parse_rtcp_rr(pkt);
-				break;
-			case RTCP_BYE:
-				parse_rtcp_bye(pkt);
-				break;
-			case RTCP_APP:
-				parse_rtcp_app(pkt);
-				break;
-			default:
-				nms_printf(NMSML_WARN, "Received unknown RTCP pkt\n");
-				return 1;
-		}
-		pkt=(rtcp_pkt *)((uint32 *)pkt + ntohs((pkt->common).len) + 1);
-	}
+	// TODO: handle app packet
+	nms_printf(NMSML_DBG1, "Received APP from SSRC: %u\n", pkt->r.app.src);
 	return 0;
 }

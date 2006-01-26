@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_clean_events.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -31,8 +31,8 @@
 
 void rtcp_clean_events(void *events)
 {
-	struct RTCP_Event *event=*(struct RTCP_Event **)events;
-	struct RTCP_Event *free_event;
+	struct rtcp_event *event=*(struct rtcp_event **)events;
+	struct rtcp_event *free_event;
 
 	while (event) {
 		// fprintf(stderr, "\n\n\nfreeing rtcp event\n\n\n");

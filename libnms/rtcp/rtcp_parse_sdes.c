@@ -1,5 +1,5 @@
 /* * 
- *  $Id:parse_rtcp_bye.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtcp_parse_sdes.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -27,11 +27,33 @@
  * */
 
 #include <nemesi/rtcp.h>
-#include <nemesi/comm.h>
 
-int parse_rtcp_bye(rtcp_pkt *pkt)
+int rtcp_parse_sdes(struct rtp_ssrc *stm_src, rtcp_pkt *pkt)
 {
-	// TODO: handle bye packet
-	nms_printf(NMSML_DBG1, "Received BYE from SSRC: %u\n", pkt->r.bye.src);
+	int8 count=pkt->common.count;
+	rtcp_sdes_t *sdes= &(pkt->r.sdes);
+	rtcp_sdes_item_t *rsp, *rspn;
+	rtcp_sdes_item_t *end=(rtcp_sdes_item_t *)((uint32 *)pkt + pkt->common.len + 1);
+		
+	nms_printf(NMSML_DBG1, "Received SDES from SSRC: %u\n", pkt->r.sdes.src);
+	while (--count >= 0){
+		rsp=&(sdes->item[0]);
+		if ( rsp >= end )
+			break;
+		for (; rsp->type; rsp=rspn){
+			rspn = (rtcp_sdes_item_t *)((uint8 *)rsp + rsp->len + 2);
+			if ( rspn >= end){
+				rsp = rspn;
+				break;
+			}
+			if(rtcp_set_ssrc_sdes(stm_src, rsp))
+				return 1;
+		}
+		sdes = (rtcp_sdes_t *)((uint32 *)sdes +(((uint8 *)rsp - (uint8 *)sdes) >> 2) + 1);
+	}
+	if (count >= 0)
+		nms_printf(NMSML_WARN, "Invalid RTCP SDES pkt format!\n");
+	else
+		stm_src->ssrc_stats.probation=0;
 	return 0;
 }

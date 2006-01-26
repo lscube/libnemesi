@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtcp_parse_pkt.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *	Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,23 +26,36 @@
  *  
  * */
 
-#include <nemesi/rtp.h>
-#include <nemesi/comm.h>
+#include <nemesi/rtcp.h>
 
-struct nms_rtp_th *nms_rtp_init(void)
+int rtcp_parse_pkt(struct rtp_ssrc *stm_src, rtcp_pkt *pkt, int len)
 {
-	struct nms_rtp_th *rtp_th;
+	rtcp_pkt *end;
+	end = (rtcp_pkt *)((uint32 *)pkt + len/4);
 	
-	if ( !(rtp_th = (struct nms_rtp_th *) calloc(1, sizeof(struct nms_rtp_th))) ) {
-		nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
-		return NULL;
+	while ( pkt < end ){
+		switch ((pkt->common).pt) {
+			case RTCP_SR:
+				rtcp_parse_sr(stm_src, pkt);
+				break;
+			case RTCP_SDES:
+				if(rtcp_parse_sdes(stm_src, pkt))
+					return -1;
+				break;
+			case RTCP_RR:
+				rtcp_parse_rr(pkt);
+				break;
+			case RTCP_BYE:
+				rtcp_parse_bye(pkt);
+				break;
+			case RTCP_APP:
+				rtcp_parse_app(pkt);
+				break;
+			default:
+				nms_printf(NMSML_WARN, "Received unknown RTCP pkt\n");
+				return 1;
+		}
+		pkt=(rtcp_pkt *)((uint32 *)pkt + ntohs((pkt->common).len) + 1);
 	}
-	
-	
-	if ( pthread_mutex_init(&(rtp_th->syn), NULL) )
-		return NULL;
-	/* Decoder blocked 'till buffering is complete */
-	pthread_mutex_lock(&(rtp_th->syn));
-	
-	return rtp_th;
+	return 0;
 }

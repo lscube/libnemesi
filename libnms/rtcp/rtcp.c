@@ -30,9 +30,9 @@
 
 void *rtcp(void *args)
 {
-	struct rtp_session *rtp_sess_head=((struct nms_rtp_th *)args)->rtp_sess_head;
+	struct rtp_session *rtp_sess_head=((struct rtp_thread *)args)->rtp_sess_head;
 	struct rtp_session *rtp_sess;
-	struct RTCP_Event *head=NULL;
+	struct rtcp_event *head=NULL;
 	int maxfd=0, ret;
 	double t;
 	struct timeval tv, now;
@@ -81,7 +81,7 @@ void *rtcp(void *args)
 
 		if (select(maxfd+1, &readset, NULL, NULL, &tv) == 0){
 			/* timer scaduto */
-			if ( (head=handle_rtcp_event(head)) == NULL)
+			if ( (head=rtcp_handle_event(head)) == NULL)
 				pthread_exit(NULL);
 		}
 		

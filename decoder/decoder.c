@@ -46,7 +46,7 @@ int (*decoders[128])(char *, int, nms_output *);
 
 void *decoder(void *args)
 {
-	struct nms_rtp_th *rtp_th=(struct nms_rtp_th *)args;
+	struct rtp_thread *rtp_th=(struct rtp_thread *)args;
 	struct rtp_session *rtp_sess_head; // =rtp_th->rtp_sess_head;
 	struct rtp_session *rtp_sess;
 	struct timeval startime;

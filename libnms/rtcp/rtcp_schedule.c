@@ -28,13 +28,13 @@
 
 #include <nemesi/rtcp.h>
 
-struct RTCP_Event *rtcp_schedule(struct RTCP_Event *head, struct rtp_session *rtp_sess, struct timeval tv, rtcp_type_t type)
+struct rtcp_event *rtcp_schedule(struct rtcp_event *head, struct rtp_session *rtp_sess, struct timeval tv, rtcp_type_t type)
 {
-	struct RTCP_Event *new_event;
-	struct RTCP_Event *pevent=head;
-	struct RTCP_Event *event=head;
+	struct rtcp_event *new_event;
+	struct rtcp_event *pevent=head;
+	struct rtcp_event *event=head;
 	
-	if( (new_event=(struct RTCP_Event *)malloc(sizeof(struct RTCP_Event))) == NULL) {
+	if( (new_event=(struct rtcp_event *)malloc(sizeof(struct rtcp_event))) == NULL) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 		return NULL;
 	}

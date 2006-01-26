@@ -1,5 +1,5 @@
 /* * 
- *  $Id:parse_rtcp_app.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtcp_parse_rr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -29,9 +29,9 @@
 #include <nemesi/rtcp.h>
 #include <nemesi/comm.h>
 
-int parse_rtcp_app(rtcp_pkt *pkt)
+int rtcp_parse_rr(rtcp_pkt *pkt)
 {
-	// TODO: handle app packet
-	nms_printf(NMSML_DBG1, "Received APP from SSRC: %u\n", pkt->r.app.src);
+	// TODO: handle rr packet
+	nms_printf(NMSML_DBG1, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
 	return 0;
 }

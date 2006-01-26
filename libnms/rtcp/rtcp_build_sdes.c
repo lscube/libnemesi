@@ -1,5 +1,5 @@
 /* * 
- *  $Id:build_rtcp_sdes.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtcp_build_sdes.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -30,7 +30,7 @@
 #include <nemesi/version.h>
 #include <pwd.h>
 
-int build_rtcp_sdes(struct rtp_session *rtp_sess, rtcp_pkt *pkt, int left)
+int rtcp_build_sdes(struct rtp_session *rtp_sess, rtcp_pkt *pkt, int left)
 {
 	struct passwd *pwitem=getpwuid(getuid());
 	rtcp_sdes_item_t *item;

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *event)
+struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 {
 
 	double t;
@@ -43,7 +43,7 @@ struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *event)
 		case RTCP_RR: case RTCP_SDES:
 			
 			if (event->rtp_sess->ssrc_queue){ 
-				n=send_rtcp_rr(event->rtp_sess);
+				n=rtcp_send_rr(event->rtp_sess);
 				event->rtp_sess->sess_stats.avg_rtcp_size = (1./16.)*n + (15./16.)*(event->rtp_sess->sess_stats.avg_rtcp_size);
 			}
 			event->rtp_sess->sess_stats.tp=now;
@@ -70,7 +70,7 @@ struct RTCP_Event *handle_rtcp_event(struct RTCP_Event *event)
 			break;
 
 		case RTCP_BYE:
-			send_rtcp_bye(event->rtp_sess);
+			rtcp_send_bye(event->rtp_sess);
 			break;
 		default:
 			nms_printf(NMSML_ERR, "RTCP Event not handled!\n");
