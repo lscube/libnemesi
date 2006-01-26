@@ -64,6 +64,9 @@ fi
 #	cp -f config/mkinstalldirs .
 #	cp -f libltdl/acinclude.m4 .
 #echo " done."
+cd libnms
+./autogen.sh
+cd -
 
 echo "All done. Bye."
 echo

@@ -39,9 +39,9 @@ AC_ARG_ENABLE(avc,
 AC_ARG_ENABLE(gui,
 [  --enable-gui            enable GUI [[default=autodetected]]],,
 	enable_gui="yes")
-AC_ARG_ENABLE(ipv6,
-[  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
-	enable_ipv6="yes")
+dnl AC_ARG_ENABLE(ipv6,
+dnl [  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
+dnl 	enable_ipv6="yes")
 
 dnl Check for programs.
 AC_PROG_CC
@@ -108,13 +108,13 @@ dnl AC_CHECK_MEMBERS(struct sockaddr_in.sin_len,,, [#include <netinet/in.h>])
 dnl CFLAGS=""
 
 dnl Check for IPv6 support
-if test "$enable_ipv6" = "yes"; then
-	AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
-else
-	AC_MSG_WARN([IPv6 disabled: check skipped.])
-	dnl AM_CONDITIONAL(NEMESI_HAVE_IPV6, /bin/false)
-	dnl NEMESI_HAVE_IPV6=no
-fi
+dnl if test "$enable_ipv6" = "yes"; then
+	dnl AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
+dnl else
+	dnl AC_MSG_WARN([IPv6 disabled: check skipped.])
+	dnl dnl AM_CONDITIONAL(NEMESI_HAVE_IPV6, /bin/false)
+	dnl dnl NEMESI_HAVE_IPV6=no
+dnl fi
 
 dnl Check for SDL libraryISL3880
 if test "$enable_sdl" = "yes"; then
@@ -286,22 +286,23 @@ AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name for th
 AC_DEFINE_UNQUOTED(NEMESI_PIXMAPS_DIR_DEFAULT, "$nemesi_pixmapdir", [Define default directory for NeMeSI pixmaps])
 AC_DEFINE(NEMESI_PIXMAPS_DIR_ENV, "NEMESI_PIXMAP_DIR",[Define the name for the ENV variable forn NeMeSI pixmaps dir])
 
+AC_CONFIG_SUBDIRS(libnms)
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([libnms/bufferpool/Makefile])
+dnl AC_CONFIG_FILES([libnms/bufferpool/Makefile])
 AC_CONFIG_FILES([etui/Makefile])
 
 dnl if test x$NEMESI_HAVE_GTK = xyes; then
 AC_CONFIG_FILES([egui/Makefile])
 dnl fi
 
-AC_CONFIG_FILES([libnms/libCCstreaming/Makefile])
-AC_CONFIG_FILES([libnms/rtp/Makefile])
-AC_CONFIG_FILES([libnms/rtcp/Makefile])
-AC_CONFIG_FILES([libnms/sdp/Makefile])
-AC_CONFIG_FILES([libnms/rtsp/Makefile])
+dnl AC_CONFIG_FILES([libnms/libCCstreaming/Makefile])
+dnl AC_CONFIG_FILES([libnms/rtp/Makefile])
+dnl AC_CONFIG_FILES([libnms/rtcp/Makefile])
+dnl AC_CONFIG_FILES([libnms/sdp/Makefile])
+dnl AC_CONFIG_FILES([libnms/rtsp/Makefile])
 AC_CONFIG_FILES([src/Makefile])
-AC_CONFIG_FILES([libnms/wsocket/Makefile])
-AC_CONFIG_FILES([libnms/Makefile])
+dnl AC_CONFIG_FILES([libnms/wsocket/Makefile])
+dnl AC_CONFIG_FILES([libnms/Makefile])
 AC_CONFIG_FILES([output/Makefile])
 AC_CONFIG_FILES([output/audio/Makefile])
 AC_CONFIG_FILES([output/video/Makefile])
@@ -316,8 +317,8 @@ AC_CONFIG_FILES([decoder/libffmpeg/Makefile])
 AC_CONFIG_FILES([decoder/libffmpeg4/Makefile])
 dnl fi
 
-AC_CONFIG_FILES([libnms/md5/Makefile])
-AC_CONFIG_FILES([libnms/utils/Makefile])
+dnl AC_CONFIG_FILES([libnms/md5/Makefile])
+dnl AC_CONFIG_FILES([libnms/utils/Makefile])
 AC_CONFIG_FILES([plugins/Makefile])
 AC_CONFIG_FILES([docs/Makefile])
 AC_OUTPUT

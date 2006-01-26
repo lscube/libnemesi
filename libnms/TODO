@@ -1,65 +1,7 @@
-----------------------------------
------------ TODO List ------------
-----------------------------------
--- Fri Mar 22 10:40:41 UTC 2002 --
-----------------------------------
+-- Api stabilization
 
---------------------
---- TODO::NeMeSI ---
---------------------
+-- Namespace cleanup
 
- * Distro & Packaging
+-- example code
 
-   :: Porting
-      >> FreeBSD
-      >> CygWin
-
- * Documentazione
-
-   :: Commentare il codice
-  
-      >> Documentazione integrata (Doc++, Doxygen, etc.)
-
-   :: Frequently Asked Questions
-  
-      >> Raccogliere e riordinare le mail
-
- * Revisione del codice
-
-   :: Bug hunting
-   :: Uniformare le interfacce
-   :: Correzione errori degli sintassi e grammatica
-   :: Ottimizzazione
-
- * Gestione della configurazione
-
-   :: Analisi di fattibilità
-      
-      >> Interazione con il codice esistente
-      >> Definizione delle nuove funzioni e strutture dati
-      >> Tempistiche
-      >> Quantità di lavoro
-
-   :: Caratteristiche richieste
-   
-      >> Configurazione a run-time
-      >> Opzioni per il buffer di rete (interazione col sottosistema di rete)
-      >> Opzioni per il buffer di sistema (interazione coi sottosistmi audio
-         e video)
-      >> Opzioni per la QoS
-      >> Opzioni per la sessione
-
- 
- * Interfaccia grafica evoluta
- 
-  :: Analisi fattibilità
-  
-     >> Tempistiche
-     >> Quantità di lavoro
-
-  :: Caratteristiche richieste
-    
-     >> Visualizzazione dello stato dei buffer
-     >> Visualizzzazione dei parametri QoS
-     >> Visualizzazione delle informazioni sulla sessione
-     >> Supporto degli skin
+-- netembryo/NeuTrino integration

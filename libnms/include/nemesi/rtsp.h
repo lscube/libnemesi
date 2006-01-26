@@ -5,7 +5,7 @@
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
+ *  Copyright (C) 2006 by
  *  	
  *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
  *	Francesco "shawill" Varano - shawill@infinto.it
@@ -27,18 +27,16 @@
  * */
 
 /*! \file rtsp.h
- * \brief Header contenente le definizioni della libreria \b rtsp.
+ * \brief \b rtsp library definitions.
  * */
 
 /*! \defgroup RTSP RTSP Library
  *
- * \brief Implementazione del protocollo Real Time Streaming Protocol (RTSP) -
- * rfc 2326.
+ * \brief Real Time Streaming Protocol (RTSP) implementation - rfc 2326.
  *
- * Il modulo RTSP si occupa della richiesta degli stream multimediali e della
- * negoziazione dei parametri con il server.  Una volta superata la fase
- * iniziale, si comporta come un <em>telecomando remoto</em> per il controllo
- * del flusso multimediale.
+ * The RTSP module requests the media streams and handles the service 
+ * handshake. Once this phase is complete it behaves like a <em>remote 
+ * controller</em> for the requested multimedia stream.
  *
  * @{ */
 
@@ -88,17 +86,7 @@ enum states { INIT, READY, PLAYING, RECORDING, STATES_NUM };
 enum opcodes { OPEN, PLAY, PAUSE, STOP, CLOSE, COMMAND_NUM, NONE };
 
 /*!
- * \brief Struttura per la comunicazione dei comandi tra la ui e il modulo
- * RTSP.
- *
- * All'immissione di un comando da console, il modulo di interfaccia utente
- * compila questa struttura impostando il codice del comando e, eventualmente,
- * i relativi parametri.  Il modulo che implementa il protocollo RTSP si occupa
- * di interpretare il comando e avviare la sequenza di procedure adatte, le
- * quali possono essere semplicemente un comando da mandare al sever oppure una
- * serie di operazioni più lunghe, come succede ad esempio nel caso di apertura
- * della connessione e impostazione dei parametri, che comporta più di un
- * comando RTSP.
+ * \brief Struct used for internal comunication
  *
  * */
 struct command {
@@ -107,105 +95,86 @@ struct command {
 };
 
 /*!
- * \brief Struttura di descrizione di un medium RTSP.
+ * \brief RTSP medium description.
  *
- * Tale struttura è un elemento di una lista single-linked che identificano
- * tutti i media appartenenti ad una sessione RTSP.  Attraverso questa
- * struttura, tramite il puntatore \c rtp_sess, si accede alla sessione RTP a
- * cui appartiene il medium descritto.
- *
- * \note I metodi SETUP e TEARDOWN sono definiti ``a livello medium'', vanno
- * cioè mandati per ognuno dei medium e si deve attendere una risposta dal
- * server per ognuno di essi.
+ * This struct is an item in a single-linked list that identifies all the media
+ * that belong to a RTSP session. Through the \c rtp_sess pointer is possible
+ * to get the RTP session of the described medium.
+ 
+ * \note The methods SETUP e TEARDOWN are defined on a ``per medium'' scope,
+ * they have to be sent for each medium and you must wait for a reply from 
+ * the server for each of them.
  *
  * \see Medium_info
  * \see rtsp_session
  * */
 struct rtsp_medium {
-	sdp_medium_info *medium_info;	/*!< Struttura delle informazioni
-					  relative al medium. */
-	struct rtp_session *rtp_sess;	/*!< Puntatore alla struttura della
-					  sessione RTP alla quale appartiene il
-					  medium. */
-	struct rtsp_medium *next;	/*!< Puntatore al successivo medium
-					  della sessione RTSP. */
-	char *filename;			/*!< Identificare del medium. Utilizato
-					  per i metodi ``a livello Medium''
+	sdp_medium_info *medium_info;	/*!< Medium informations. */
+	struct rtp_session *rtp_sess;	/*!< RTP session whom
+					  the medium belongs */
+	struct rtsp_medium *next;	/*!< Next medium. */
+	char *filename;			/*!< Medium identifier. Used for the
+					  ``per medium'' methods
 					  (SETUP, TEARDOWN). */
 };
 
 /*!
- * \brief Struttura di descrizione della sessione RTSP.
+ * \brief RTSP session description.
  *
- * Elemento della lista delle sessioni RTSP.
+ * Item of the RTSP sessions list.
  *
- * In questa struttura sono memorizzate tutte le informazioni utili per una
- * sessione RTSP.  Per ogni sessione c'è una coda di media che fanno parte
- * della stessa ``presentazione''.
+ * In this struct are present all the information used in a RTSP session.
+ * For each session there is a queue of media that belongs to the same
+ * ``presentation''
  *
- * \note Imetodi PLAY, PAUSE, RECORD sono definiti ``a livello sessione'',
- * vanno cioè mandati per ogni sessione attiva. In caso di media aggregati,
- * essi faranno parte della stessa sessione, quindi un metodo spedito per una
- * sessione interesserà tutti i media ad essa appartenenti. Ciò è utilissimo,
- * ad esempio, nel caso di audio e video appartenenti ad un unico flusso e che
- * debbano essere sincronizzati.
+ * \note The methods PLAY, PAUSE, RECORD are defined on a``per session'' scope,
+ * they have to be sent for each active session. Aggregated media belongs to
+ * the same session, so a session method will have effect to every of them.
+ * E.g a PLAY method on an Audio Video session will start both audio and video
+ * streams at the same time
  *
  * \see rtsp_session_info
  * \see rtsp_medium
  * */
 struct rtsp_session {
-	uint64 Session_ID;	/*!< Identificatore della sessione RTSP. */
-	int CSeq;		/*!< Numero di sequenza dell'ultimo pacchetto
-				  RTSP spedito. */
-	char *pathname;		/*!< Identificatore della sessione RTSP.
-				  Utilizzato per i metodi ``a livello
-				  sessione'' (PLAY, PAUSE, RECORD) */
-	char *content_base;	/*!< Questo campo è diverso da \c NULL se è
-				  stato trovato il campo Content-Base
-				  nell'hearder del pacchetto di risposta al
-				  metodo \em DESCRIBE. In tal caso il campo
-				  <tt>\ref pathname</tt> della sessione e di
-				  tutti gli <tt>\ref rtsp_medium</tt> ad essa
-				  appartenenti sono relativi el percorso
-				  memorizzato in \c content_base. */
-	sdp_session_info *info;	/*!< Struttura delle informazioni
-					  relative alla sessione */
-	struct rtsp_medium *media_queue;	/*!< Puntatore alla code dei
-						  media appertenenti alla
-						  sessione */
-	struct rtsp_session *next;	/*!< Puntatore alla sessione successiva
-					  della coda */
-	/*****************************/
-	/* Da non usare. MAI         */
-	/* SOLO PER INIZIALIZZAZIONE */
-	/*****************************/
-	char *body;		/*!< Puntatore alla zona di memoria dentro la
-				  quale c'è il corpo della risposta alla
-				  describe mandata dal server. Questa zona di
-				  memoria non è MAI direttamente utilizzata. È
-				  utilizzata solamente nella fase di settaggio
-				  dei puntatori della struttura delle
-				  informazioni come spiegato nella nota della
-				  documentazione relativa alla struttura
+	uint64 Session_ID;	/*!< RTSP identifier. */
+	int CSeq;		/*!< Last sent RTSP packet 
+				  sequence number */
+	char *pathname;		/*!< RTSP session identifier.
+				  Used for the ``per session''
+				  methods (PLAY, PAUSE, RECORD) */
+	char *content_base;	/*!< Not \c NULL if a Content-Base field
+				  is found in the response to the DESCRIBE 
+				  method. In this case the field
+				  <tt>\ref pathname</tt> and all the
+				  <tt>\ref rtsp_medium</tt> of the session
+				  are relative to \c content_base path. */
+	sdp_session_info *info;	/*!< Session informations */
+	
+	struct rtsp_medium *media_queue; /*!< Media queue */
+	struct rtsp_session *next;	/*!< Next session */
+	/********************************************/
+	/* Do NOT USE IT! JUST FOR INTERNAL USAGE!  */
+	/********************************************/
+	char *body;		/*!< Contains the raw describe response.
+				  It should be NEVER accessed directly.
+				  All the data is available through
 				  <tt>\ref rtsp_session_info</tt>. */
 };
 
 /*!
- * \brief Buffer di input per i pacchetti RTSP.
+ * \brief RTSP Packet buffer.
  *
- * Questa struttura rappresenta il buffer in cui vengono immagazzinati i
- * pacchetti letti sulla connessione RTSP.  Essendo RTSP un protocollo
- * testuale, è possibile che un suo pacchetto sia frammentato in più pacchetti
- * del livello di trasporto sottostante (TCP). Questo ci costringe a
- * controllare, prima di poterlo processare, che il pacchetto RTSP sia arrivato
- * completamente. In caso contrario si deve memorizzare il frammento arrivato e
- * aspettare che il resto arrivi successivamente.
+ * There the packets read on the RTSP port are composed and stored.
+ * Since it's possible that the message comes fragmented in many packets
+ * from the underlying transport protocol, we first check for completion and
+ * then the message will be processed.
  *
  * */
 struct rtsp_buffer {
-	int size;		/*!< Dimensione totale del buffer. */
-	int first_pkt_size;	/*!< Dimensione del primo pacchetto. */
-	char *data;		/*!< Puntatore alla zona dati. */
+	int size;		/*!< Full buffer size. */
+	int first_pkt_size;	/*!< First packet size. */
+	char *data;		/*!< Raw data. */
 };
 
 #define RTSP_READY	0
@@ -226,15 +195,13 @@ struct rtsp_buffer {
 			struct rtsp_session *rtsp_queue;/*!< List of active sessions. */
 
 /*!
- * \brief Struttura al vertice della piramide del modulo RTSP.
+ * \brief Main structure for the RTSP module.
  *
- * Questa struttura contiene i dati globali del modulo RTSP. Essi sono
- * principalmente lo stato corrente, la porta sulla quale è attiva la
- * connessione, il buffer di input dei pacchetti RTSP e la coda delle sessioni.
+ * It contains the global data: the current state, the connection port,
+ * the input buffer and the session queue.
  *
- * \note È presente un campo che indica il tipo di flusso multimediale attivo.
- * Questo serve perché in base al tipo di presentazione supportata dal server
- * il protocollo RTSP assume comporatamenti diversi.
+ * \note The \c type field shows the kind of media stream active, depending
+ * on it RTSP has different behaviours.
  * 
  * \see rtsp_session
  * \see buffer
@@ -244,22 +211,19 @@ struct rtsp_thread {
 	nms_rtsp_hints *hints;
 	uint16 force_rtp_port;
 	pthread_cond_t cond_busy;
-	int fd;		/*!< descrittore sul quale è attiva la connessione con
-			  il server, dal quale cioè, verranno letti i dati
-			  provenienti dal server */
-		/*! \enum types enum dei possibili tipi di flussi. */
-	enum types { M_ON_DEMAND, CONTAINER } type;	/*!< Tipo di flusso
-							  multimediale attivo:
-							  Media On Demand o
+	int fd;		/*!< file descriptor for reading the data coming 
+			  from the server */
+		/*! \enum types enum possible kind of stream. */
+	enum types { M_ON_DEMAND, CONTAINER } type;	/*!< Kind of active
+							  media stream:
+							  Media On Demand or
 							  Container. */
-	char waiting_for[64];	/*!< Stringa che contiene, eventualmente, la
-				  descrizione della risposta che si sta
-				  aspettando dal server. */
-	char *server_port;	/*!< Porta sulla quale è in ascolto il server.
+	char waiting_for[64];	/*!< Expected response from server. */
+	char *server_port;	/*!< Server listening port.
 				 */
-	char *urlname;		/*!< URL della richiesta. */
-	struct rtsp_buffer in_buffer;	/*!< Buffer di input dei dati. */
-	// struct rtsp_session *rtsp_queue;/*!< Lista delle sessioni attive. */
+	char *urlname;		/*!< Requested URL */
+	struct rtsp_buffer in_buffer;	/*!< Input buffer. */
+	// struct rtsp_session *rtsp_queue;/*!< Active sessions. */
 	struct nms_rtp_th *rtp_th;
 };
 

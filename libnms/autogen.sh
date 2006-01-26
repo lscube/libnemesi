@@ -16,7 +16,7 @@ function dots ()
 }
 
 echo
-echo "Bootstrapping NeMeSI package AutoTools configuration..."
+echo "Bootstrapping libnms package AutoTools configuration..."
 
 if ! test -d config; then
 	mkdir config;

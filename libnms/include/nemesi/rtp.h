@@ -236,11 +236,13 @@ int set_stm_src(struct rtp_session *, struct Stream_Source **, uint32, nms_socka
 #define RTP_FILL_ERROR -2
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
+
 // wrappers for rtp_pkt
 rtp_pkt *rtp_get_pkt(struct Stream_Source *, int *);
 inline int rtp_rm_pkt(struct rtp_session *, struct Stream_Source *);
 int rtp_fill_buffer(struct rtp_session *, struct Stream_Source *, char *, size_t, uint32 *);
 double rtp_get_next_ts(struct Stream_Source *);
+
 // non blocking versions of above functions
 rtp_pkt *rtp_get_pkt_nonblock(struct Stream_Source *, int *);
 int rtp_fill_buffer_nonblock(struct rtp_session *, struct Stream_Source *, char *, size_t, uint32 *);
@@ -249,7 +251,8 @@ double rtp_get_next_ts_nonblock(struct Stream_Source *);
 // rtp transport setup functions
 int rtp_transport_set(struct rtp_session *, int, void *);
 int rtp_transport_get(struct rtp_session *, int, void *, uint32);
-// rtp transport wrapper finctions for rtp_transport_get
+
+// rtp transport wrapper functions for rtp_transport_get
 inline char *rtp_transport_get_spec(struct rtp_session *);
 inline enum deliveries rtp_transport_get_delivery(struct rtp_session *);
 inline int rtp_trasnport_get_srcaddrstr(struct rtp_session *, char *, uint32);
@@ -270,7 +273,8 @@ inline int rtp_transport_get_cliports(struct rtp_session *, in_port_t [2]);
 inline in_port_t rtp_transport_get_clirtcpport(struct rtp_session *);
 inline in_port_t rtp_transport_get_clirtcpport(struct rtp_session *);
 inline uint32 rtp_transport_get_ssrc(struct rtp_session *);
-// rtp transport wrapper finctions for rtp_transport_set
+
+// rtp transport wrapper functions for rtp_transport_set
 // inline char *rtp_transport_set_spec(struct rtp_session *, char *); // not settable
 inline int rtp_transport_set_delivery(struct rtp_session *, enum deliveries);
 inline int rtp_trasnport_set_srcaddrstr(struct rtp_session *, char *);
@@ -294,6 +298,7 @@ inline int rtp_transport_set_ssrc(struct rtp_session *, uint32);
 
 // rtcp connection functions
 int rtcp_to_connect(struct Stream_Source *, nms_addr *, in_port_t);
+
 // SSRC management functions
 void init_seq(struct Stream_Source *, uint16);
 void update_seq(struct Stream_Source *, uint16);

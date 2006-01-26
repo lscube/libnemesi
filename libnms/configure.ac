@@ -183,16 +183,16 @@ dnl AC_SUBST(nemesi_bin)
 dnl nemesi_gui=g$nemesi_bin
 dnl AC_SUBST(nemesi_gui)
 
-nemesi_docsdir=$datadir/doc/$PACKAGE_NAME
-AC_SUBST(nemesi_docsdir)
+libnms_docsdir=$datadir/doc/$PACKAGE_NAME
+AC_SUBST(libnms_docsdir)
 
-nemesi_libdir="$prefix"/lib/$PACKAGE_NAME
-AC_SUBST(nemesi_libdir)
+libnms_libdir="$prefix"/lib/$PACKAGE_NAME
+AC_SUBST(libnms_libdir)
 dnl nemesi_plugindir="$nemesi_libdir"/plugins
 dnl AC_SUBST(nemesi_plugindir)
 
-nemesi_sharedir="$prefix"/share/$PACKAGE_NAME
-AC_SUBST(nemesi_sharedir)
+libnms_sharedir="$prefix"/share/$PACKAGE_NAME
+AC_SUBST(libnms_sharedir)
 dnl nemesi_throbberdir="$nemesi_sharedir"/throbber
 dnl AC_SUBST(nemesi_throbberdir)
 dnl nemesi_pixmapdir="$nemesi_sharedir"/pixmaps
@@ -212,56 +212,25 @@ dnl AC_DEFINE_UNQUOTED(NEMESI_PIXMAPS_DIR_DEFAULT, "$nemesi_pixmapdir", [Define 
 dnl AC_DEFINE(NEMESI_PIXMAPS_DIR_ENV, "NEMESI_PIXMAP_DIR",[Define the name for the ENV variable forn NeMeSI pixmaps dir])
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([libnms/bufferpool/Makefile])
-AC_CONFIG_FILES([etui/Makefile])
-
-dnl if test x$NEMESI_HAVE_GTK = xyes; then
-AC_CONFIG_FILES([egui/Makefile])
-dnl fi
-
-AC_CONFIG_FILES([libnms/libCCstreaming/Makefile])
-AC_CONFIG_FILES([libnms/rtp/Makefile])
-AC_CONFIG_FILES([libnms/rtcp/Makefile])
-AC_CONFIG_FILES([libnms/sdp/Makefile])
-AC_CONFIG_FILES([libnms/rtsp/Makefile])
-AC_CONFIG_FILES([src/Makefile])
-AC_CONFIG_FILES([libnms/wsocket/Makefile])
-AC_CONFIG_FILES([libnms/Makefile])
-AC_CONFIG_FILES([output/Makefile])
-AC_CONFIG_FILES([output/audio/Makefile])
-AC_CONFIG_FILES([output/video/Makefile])
-AC_CONFIG_FILES([output/diskwriter/Makefile])
-AC_CONFIG_FILES([decoder/Makefile])
-AC_CONFIG_FILES([decoder/L16_8k_m/Makefile])
-AC_CONFIG_FILES([decoder/gsm_amr_float/Makefile])
-
-dnl if test x$NEMESI_HAVE_AVC = xyes; then
-AC_CONFIG_FILES([decoder/libffmp3/Makefile])
-AC_CONFIG_FILES([decoder/libffmpeg/Makefile])
-AC_CONFIG_FILES([decoder/libffmpeg4/Makefile])
-dnl fi
-
-AC_CONFIG_FILES([libnms/md5/Makefile])
-AC_CONFIG_FILES([libnms/utils/Makefile])
-AC_CONFIG_FILES([plugins/Makefile])
-AC_CONFIG_FILES([docs/Makefile])
+AC_CONFIG_FILES([bufferpool/Makefile])
+AC_CONFIG_FILES([libCCstreaming/Makefile])
+AC_CONFIG_FILES([rtp/Makefile])
+AC_CONFIG_FILES([rtcp/Makefile])
+AC_CONFIG_FILES([sdp/Makefile])
+AC_CONFIG_FILES([rtsp/Makefile])
+AC_CONFIG_FILES([wsocket/Makefile])
+AC_CONFIG_FILES([md5/Makefile])
+AC_CONFIG_FILES([utils/Makefile])
+dnl AC_CONFIG_FILES([docs/Makefile])
 AC_OUTPUT
 
 AC_MSG_NOTICE([config files successfully generated!
  
-NeMeSI Install prefix .......... : $prefix
-NeMeSI Binary path ............. : $exec_prefix/bin/$nemesi_bin
-NeMeSI Plugins dir ............. : $nemesi_plugindir
-NeMeSI Throbbers dir ........... : $nemesi_throbberdir
-NeMeSI Pixmaps dir ............. : $nemesi_pixmapdir
+libnms Install prefix .......... : $prefix
+libnms Lib path ............. : $libnms_libdir
 
 Byte order ..................... : this is a $BIGENDIAN machine
 
-LibSDL support enabled ......... : $NEMESI_HAVE_SDL
-LibAVCodec support enabled ..... : $NEMESI_HAVE_AVC
-
-GUI support enabled ............ : $NEMESI_HAVE_GTK
-NeMeSI GUI Binary path ......... : $exec_prefix/bin/$nemesi_gui
 $debug_msg
 $efence_msg
 

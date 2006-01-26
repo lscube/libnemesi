@@ -1,7 +1,8 @@
-SUBDIRS =	libnms \
-			output \
-			decoder \
-			etui
+SUBDIRS =	output \
+		decoder \
+		etui
+
+SUBDIRS += libnms
 
 if NEMESI_HAVE_GTK
 SUBDIRS += egui
