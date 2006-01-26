@@ -1,14 +1,14 @@
 /* * 
- *  $Id:parse_rtcp_sr.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
+ *  Copyright (C) 2006 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,16 +26,17 @@
  *  
  * */
 
-#include <nemesi/rtcp.h>
+#include <nemesi/rtsp.h>
 
-int parse_rtcp_sr(struct rtp_ssrc *stm_src, rtcp_pkt *pkt)
+int rtsp_stop(struct rtsp_ctrl *rtsp_ctrl)
 {
-	nms_printf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
-	gettimeofday(&(stm_src->ssrc_stats.lastsr), NULL);
-	stm_src->ssrc_stats.ntplastsr[0]=ntohl(pkt->r.sr.si.ntp_seq);
-	stm_src->ssrc_stats.ntplastsr[1]=ntohl(pkt->r.sr.si.ntp_frac);
-	/* Per ora, non ci interessa altro. */
-	/* Forse le altre informazioni possono */
-	/* servire per un monitor RTP/RTCP */
+
+	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
+		rtsp_ctrl->comm->opcode= STOP;
+		write(rtsp_ctrl->pipefd[1], "s", 1);
+		*(rtsp_ctrl->comm->arg)='\0';
+		rtsp_ctrl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
+
 	return 0;
 }

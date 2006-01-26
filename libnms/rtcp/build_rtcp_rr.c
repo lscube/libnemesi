@@ -32,7 +32,7 @@ int build_rtcp_rr(struct rtp_session *rtp_sess, rtcp_pkt *pkt)
 {
 	struct timeval now, offset;
 	uint32 linear;
-	struct Stream_Source *stm_src;
+	struct rtp_ssrc *stm_src;
 	rtcp_rr_t *rr;
 	uint32 expected, expected_interval, received_interval, lost_interval;
 	int32 lost;

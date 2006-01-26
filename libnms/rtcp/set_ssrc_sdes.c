@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-int set_ssrc_sdes(struct Stream_Source *stm_src, rtcp_sdes_item_t *item)
+int set_ssrc_sdes(struct rtp_ssrc *stm_src, rtcp_sdes_item_t *item)
 {
 	char *str=((char **)(&(stm_src->ssrc_sdes)))[item->type];
 

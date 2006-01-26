@@ -33,8 +33,8 @@ void rtp_clean(void *args)
 	struct nms_rtp_th *rtp_th = (struct nms_rtp_th *)args;
 	struct rtp_session *rtp_sess=rtp_th->rtp_sess_head;
 	struct rtp_session *prev_rtp_sess;
-	struct Stream_Source *csrc, *psrc;
-	struct Conflict *conf, *pconf;
+	struct rtp_ssrc *csrc, *psrc;
+	struct rtp_conflict *conf, *pconf;
 	int i;
 	
 	nms_printf(NMSML_DBG1, "RTP Thread is dying suicide!\n");

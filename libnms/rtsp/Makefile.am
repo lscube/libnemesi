@@ -40,6 +40,7 @@ librtsp_la_SOURCES =	body_exists.c \
 			rtsp_reinit.c \
 			rtsp_sess_create.c \
 			rtsp_sess_dup.c \
+			rtsp_stop.c \
 			rtsp_unbusy.c \
 			rtsp_uninit.c \
 			rtsp_wait.c \

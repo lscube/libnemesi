@@ -32,9 +32,9 @@
  * check for ssrc of incoming packet.
  * \return SSRC_KNOWN, SSRC_NEW, SSRC_COLLISION, -1 on internal fatal error.
  * */
-int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct Stream_Source **stm_src, nms_sockaddr *recfrom, enum proto_types proto_type)
+int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct rtp_ssrc **stm_src, nms_sockaddr *recfrom, enum proto_types proto_type)
 {
-	struct Conflict *stm_conf=rtp_sess->conf_queue;
+	struct rtp_conflict *stm_conf=rtp_sess->conf_queue;
 	struct sockaddr_storage sockaddr;
 	nms_sockaddr sock = { (struct sockaddr *)&sockaddr, sizeof(sockaddr) };
 	uint8 local_collision;
@@ -135,7 +135,7 @@ int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					rtp_sess->transport.ssrc=rtp_sess->local_ssrc;
 			
 					/* New entry in SSRC queue with conflicting ssrc */
-					if( (stm_conf=(struct Conflict *)malloc(sizeof(struct Conflict))) == NULL)
+					if( (stm_conf=(struct rtp_conflict *)malloc(sizeof(struct rtp_conflict))) == NULL)
 						return -nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 
 					/* inserimento in testa */
@@ -148,7 +148,7 @@ int ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct Stream_Source *
 					poinit(&((*stm_src)->po),&(rtp_sess->bp));
 					pthread_mutex_unlock(&rtp_sess->syn);	
 				
-					/* New entry in SSRC Conflict queue */
+					/* New entry in SSRC rtp_conflict queue */
 					sockaddrdup(&stm_conf->transaddr, &sock);
 					stm_conf->time=time(NULL);
 					stm_conf->next=rtp_sess->conf_queue;

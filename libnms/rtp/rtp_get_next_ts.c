@@ -29,7 +29,7 @@
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 
-double rtp_get_next_ts(struct Stream_Source *stm_src)
+double rtp_get_next_ts(struct rtp_ssrc *stm_src)
 {
 	rtp_pkt *pkt;
 //	double ts;

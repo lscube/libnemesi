@@ -32,7 +32,7 @@ void rtcp_clean(void *args)
 {
 	struct rtp_session *rtp_sess_head=(*(struct rtp_session **)args);
 	struct rtp_session *rtp_sess;
-	struct Stream_Source *stm_src;
+	struct rtp_ssrc *stm_src;
 
 	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 		for(stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next)

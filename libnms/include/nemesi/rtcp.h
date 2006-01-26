@@ -166,14 +166,14 @@ void rtcp_clean_events(void *);
 int rtcp_recv(struct rtp_session *);
 int rtcp_hdr_val_chk(rtcp_pkt *, int);
 
-int parse_rtcp_pkt(struct Stream_Source *, rtcp_pkt *, int);
-int parse_rtcp_sr(struct Stream_Source *, rtcp_pkt *);
-int parse_rtcp_sdes(struct Stream_Source *, rtcp_pkt *);
+int parse_rtcp_pkt(struct rtp_ssrc *, rtcp_pkt *, int);
+int parse_rtcp_sr(struct rtp_ssrc *, rtcp_pkt *);
+int parse_rtcp_sdes(struct rtp_ssrc *, rtcp_pkt *);
 int parse_rtcp_rr(rtcp_pkt *);
 int parse_rtcp_bye(rtcp_pkt *);
 int parse_rtcp_app(rtcp_pkt *);
 
-int set_ssrc_sdes(struct Stream_Source *, rtcp_sdes_item_t *);
+int set_ssrc_sdes(struct rtp_ssrc *, rtcp_sdes_item_t *);
 
 double rtcp_interval(int, int, double, int, double, int);
 

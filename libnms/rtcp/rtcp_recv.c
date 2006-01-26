@@ -33,7 +33,7 @@
 int rtcp_recv(struct rtp_session *rtp_sess)
 {
 	uint8 buffer[1024];
-	struct Stream_Source *stm_src;
+	struct rtp_ssrc *stm_src;
 
 	struct sockaddr_storage serveraddr;
 	nms_sockaddr server= { (struct sockaddr *)&serveraddr, sizeof(serveraddr) };

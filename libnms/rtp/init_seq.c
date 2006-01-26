@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:init_seq.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,9 +28,9 @@
 
 #include <nemesi/rtp.h>
 
-void init_seq(struct Stream_Source *stm_src, uint16 seq)
+void init_seq(struct rtp_ssrc *stm_src, uint16 seq)
 {
-	struct SSRC_Stats *stats=&(stm_src->ssrc_stats);
+	struct rtp_ssrc_stats *stats=&(stm_src->ssrc_stats);
 
 	stats->base_seq = seq-1;
 	stats->max_seq = seq;

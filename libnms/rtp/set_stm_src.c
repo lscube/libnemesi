@@ -28,12 +28,12 @@
 
 #include <nemesi/rtp.h>
 
-int set_stm_src(struct rtp_session *rtp_sess, struct Stream_Source **stm_src, uint32 ssrc, nms_sockaddr *recfrom, enum proto_types proto_type)
+int set_stm_src(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 ssrc, nms_sockaddr *recfrom, enum proto_types proto_type)
 {
 	int addrcmp_err;
 	nms_addr nms_addr;
 	
-	if(((*stm_src)=(struct Stream_Source *)calloc(1, sizeof(struct Stream_Source))) == NULL)
+	if(((*stm_src)=(struct rtp_ssrc *)calloc(1, sizeof(struct rtp_ssrc))) == NULL)
 		return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 
 	(*stm_src)->next=rtp_sess->ssrc_queue;
@@ -42,8 +42,8 @@ int set_stm_src(struct rtp_session *rtp_sess, struct Stream_Source **stm_src, ui
 	(*stm_src)->ssrc=ssrc;
 	(*stm_src)->rtcptofd=-1;
 	// we do not need to reset memory area 'cause we use calloc
-	// memset(&(*stm_src)->ssrc_stats, 0, sizeof(struct SSRC_Stats));
-	// memset(&(*stm_src)->ssrc_sdes, 0, sizeof(struct SSRC_Description));
+	// memset(&(*stm_src)->ssrc_stats, 0, sizeof(struct rtp_ssrc_stats));
+	// memset(&(*stm_src)->ssrc_sdes, 0, sizeof(struct rtp_ssrc_descr));
 	
 	if (proto_type == RTP){
 		sockaddrdup(&(*stm_src)->rtp_from, recfrom);

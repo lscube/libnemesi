@@ -68,7 +68,7 @@ void *decoder(void *args)
 	char buffering_audio=1;
 	float audio_sysbuff=0;
 	float video_sysbuff=0;
-	struct Stream_Source *stm_src;
+	struct rtp_ssrc *stm_src;
 	rtp_pkt *pkt;
 	int len=0;
 	char output_pref[PREF_MAX_VALUE_LEN];

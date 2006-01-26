@@ -36,8 +36,8 @@
  * \param port remote rtcp port.
  * \return 0 on OK, 1 if connection went wrong, -1 on internal fatal error.
  * */
-// int rtcp_to_connect(struct Stream_Source *stm_src, nms_sockaddr *remoteaddr, uint16 port)
-int rtcp_to_connect(struct Stream_Source *stm_src, nms_addr *remoteaddr, in_port_t port)
+// int rtcp_to_connect(struct rtp_ssrc *stm_src, nms_sockaddr *remoteaddr, uint16 port)
+int rtcp_to_connect(struct rtp_ssrc *stm_src, nms_addr *remoteaddr, in_port_t port)
 {
 	char addr[128];		/* Unix domain is largest */
 	char port_str[256];
@@ -48,7 +48,7 @@ int rtcp_to_connect(struct Stream_Source *stm_src, nms_addr *remoteaddr, in_port
 		// sprintf(port_str,"%d", ntohs(port));
 		sprintf(port_str,"%d", port);
 	else
-		return nms_printf(NMSML_ERR, "Cannot connect to a port < 0\n");
+		return nms_printf(NMSML_ERR, "RTCP: Cannot connect to port (%d)\n", port);
 
 	if ( !addr_ntop(remoteaddr, addr, sizeof(addr)) ) {
 		nms_printf(NMSML_WARN, "RTP: Cannot get address from source\n");

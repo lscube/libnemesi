@@ -36,7 +36,7 @@ int rtp_recv(struct rtp_session *rtp_sess)
 	uint32 rate;
 	int slot;
 	rtp_pkt *pkt;
-	struct Stream_Source *stm_src;
+	struct rtp_ssrc *stm_src;
 	struct timeval now;
 	uint32 transit;
 	int32 delta;

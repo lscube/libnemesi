@@ -113,7 +113,7 @@ typedef struct {
 #define RTP_TRANSPORT_NOTSET		-1
 #define RTP_TRANSPORT_SET		0
 
-struct Transport {
+struct rtp_transport {
 	char *spec;
 	enum deliveries { unicast, multicast } delivery;
 	nms_addr srcaddr; //!< stored in network order
@@ -128,7 +128,7 @@ struct Transport {
 	uint32 ssrc;
 };
 
-struct SSRC_Stats {
+struct rtp_ssrc_stats {
 	uint16 max_seq;		/* highest seq number seen */
 	uint32 cycles;		/* shifted count of seq number cycles */
 	uint32 base_seq;	/* base seq number */
@@ -146,7 +146,7 @@ struct SSRC_Stats {
 	struct timeval firsttv;	/* first pkt timeval */
 };
 
-struct SSRC_Description {
+struct rtp_ssrc_descr {
 	char *end;
 	char *cname;
 	char *name;
@@ -158,7 +158,7 @@ struct SSRC_Description {
 	char *priv;
 };
 
-struct Session_Stats {
+struct rtp_session_stats {
 	struct timeval tp;	/* the last time an RTCP pkt was transmitted */
 	struct timeval tn;	/* the next scheduled transmission time of an RTCP pkt */
 	uint32 pmembers;	/* the estimated number of session members at time tm was last recomputed */
@@ -176,32 +176,32 @@ struct Session_Stats {
 #define SSRC_RTCPNEW	3
 #define SSRC_COLLISION	4
 
-struct Stream_Source {
+struct rtp_ssrc {
 	uint32 ssrc;
 	nms_sockaddr rtp_from;
 	nms_sockaddr rtcp_from;
 	nms_sockaddr rtcp_to;
 	int rtcptofd;
-	struct SSRC_Stats ssrc_stats;
-	struct SSRC_Description ssrc_sdes;
+	struct rtp_ssrc_stats ssrc_stats;
+	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
-	struct Stream_Source *next;
+	struct rtp_ssrc *next;
 };
 
-struct Conflict {
+struct rtp_conflict {
 	nms_sockaddr transaddr;
 	time_t time;
-	struct Conflict *next;
+	struct rtp_conflict *next;
 };
 
 struct rtp_session {
 	uint32 local_ssrc;
 	int rtpfd;
 	int rtcpfd;
-	struct Transport transport;
-	struct Session_Stats sess_stats;
-	struct Stream_Source *ssrc_queue;
-	struct Conflict *conf_queue;
+	struct rtp_transport transport;
+	struct rtp_session_stats sess_stats;
+	struct rtp_ssrc *ssrc_queue;
+	struct rtp_conflict *conf_queue;
 	buffer_pool bp;
 	struct rtp_session *next;
 	pthread_mutex_t syn;
@@ -228,8 +228,8 @@ int rtp_thread_create(struct nms_rtp_th *); // something like rtp_run could be b
 
 int rtp_recv(struct rtp_session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
-int ssrc_check(struct rtp_session *, uint32, struct Stream_Source **, nms_sockaddr *, enum proto_types);
-int set_stm_src(struct rtp_session *, struct Stream_Source **, uint32, nms_sockaddr *,  enum proto_types);
+int ssrc_check(struct rtp_session *, uint32, struct rtp_ssrc **, nms_sockaddr *, enum proto_types);
+int set_stm_src(struct rtp_session *, struct rtp_ssrc **, uint32, nms_sockaddr *,  enum proto_types);
 
 #define RTP_FILL_OK 0
 #define RTP_FILL_EMPTY -1
@@ -238,15 +238,15 @@ int set_stm_src(struct rtp_session *, struct Stream_Source **, uint32, nms_socka
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
 // wrappers for rtp_pkt
-rtp_pkt *rtp_get_pkt(struct Stream_Source *, int *);
-inline int rtp_rm_pkt(struct rtp_session *, struct Stream_Source *);
-int rtp_fill_buffer(struct rtp_session *, struct Stream_Source *, char *, size_t, uint32 *);
-double rtp_get_next_ts(struct Stream_Source *);
+rtp_pkt *rtp_get_pkt(struct rtp_ssrc *, int *);
+inline int rtp_rm_pkt(struct rtp_session *, struct rtp_ssrc *);
+int rtp_fill_buffer(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+double rtp_get_next_ts(struct rtp_ssrc *);
 
 // non blocking versions of above functions
-rtp_pkt *rtp_get_pkt_nonblock(struct Stream_Source *, int *);
-int rtp_fill_buffer_nonblock(struct rtp_session *, struct Stream_Source *, char *, size_t, uint32 *);
-double rtp_get_next_ts_nonblock(struct Stream_Source *);
+rtp_pkt *rtp_get_pkt_nonblock(struct rtp_ssrc *, int *);
+int rtp_fill_buffer_nonblock(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+double rtp_get_next_ts_nonblock(struct rtp_ssrc *);
 
 // rtp transport setup functions
 int rtp_transport_set(struct rtp_session *, int, void *);
@@ -297,11 +297,11 @@ inline int rtp_transport_set_clirtcpport(struct rtp_session *, in_port_t);
 inline int rtp_transport_set_ssrc(struct rtp_session *, uint32);
 
 // rtcp connection functions
-int rtcp_to_connect(struct Stream_Source *, nms_addr *, in_port_t);
+int rtcp_to_connect(struct rtp_ssrc *, nms_addr *, in_port_t);
 
 // SSRC management functions
-void init_seq(struct Stream_Source *, uint16);
-void update_seq(struct Stream_Source *, uint16);
+void init_seq(struct rtp_ssrc *, uint16);
+void update_seq(struct rtp_ssrc *, uint16);
 
 void rtp_clean(void *);
 #endif

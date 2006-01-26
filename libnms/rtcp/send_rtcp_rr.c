@@ -33,7 +33,7 @@ int send_rtcp_rr(struct rtp_session *rtp_sess)
 	rtcp_pkt *pkt;
 	int len;
 	uint32 rr_buff[MAX_PKT_SIZE];
-	struct Stream_Source *stm_src;
+	struct rtp_ssrc *stm_src;
 
 	memset(rr_buff, 0, MAX_PKT_SIZE*sizeof(uint32));
 	pkt=(rtcp_pkt *)rr_buff;

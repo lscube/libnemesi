@@ -191,7 +191,7 @@ void
 on_stop_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-	nms_pause(rtsp_ctrl);
+	nms_stop(rtsp_ctrl);
 	gui_throbber(&rtsp_ctrl->busy);
 }
 

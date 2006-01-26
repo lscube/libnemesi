@@ -39,7 +39,7 @@
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */ 
-rtp_pkt *rtp_get_pkt_nonblock(struct Stream_Source *stm_src, int *len)
+rtp_pkt *rtp_get_pkt_nonblock(struct rtp_ssrc *stm_src, int *len)
 {	
 	pthread_mutex_lock(&(stm_src->po.po_mutex));
 	if(stm_src->po.potail >= 0) {
