@@ -77,7 +77,8 @@ int parse_prompt(struct rtsp_ctrl *rtsp_ctrl, char *optstr)
 	case 'p':
 		// fgets(argstr, 256, stdin);
 		sscanf(optstr, "%*s %s", argstr);
-		nms_play(rtsp_ctrl, argstr);
+		// TODO parse argstr and pass range to play
+		nms_play(rtsp_ctrl, -1, -1);
 		break;
 	case 'z':
 		nms_pause(rtsp_ctrl);

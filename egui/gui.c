@@ -72,7 +72,7 @@ int gui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints * ui_hints, int argc, char *ar
 		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
 		nms_open(rtsp_ctrl, ui_hints->url, gui_throbber, &rtsp_ctrl->busy);
 		while (gtk_events_pending ()) gtk_main_iteration ();
-		nms_play(rtsp_ctrl, NULL);
+		nms_play(rtsp_ctrl, -1, -1);
 		gui_throbber(&rtsp_ctrl->busy);
 	}
 	

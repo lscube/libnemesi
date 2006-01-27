@@ -28,6 +28,27 @@
 
 #include <nemesi/rtsp.h>
 
+int rtsp_play(struct rtsp_ctrl *rtsp_ctrl, double start, double stop)
+{
+	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
+		rtsp_ctrl->comm->opcode= PLAY;
+		if ( (start>=0) && (stop>0) )
+			sprintf(rtsp_ctrl->comm->arg, "npt=%.2f-%.2f", start, stop);
+		else if (start>=0)
+			sprintf(rtsp_ctrl->comm->arg, "npt=%.2f-", start);
+		else if (stop>0)
+			sprintf(rtsp_ctrl->comm->arg, "npt=-%.2f", stop);
+		else
+			*(rtsp_ctrl->comm->arg)='\0';
+			
+		write(rtsp_ctrl->pipefd[1], "p", 1);
+		rtsp_ctrl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
+
+	return 0;
+}
+
+#if 0
 int rtsp_play(struct rtsp_ctrl *rtsp_ctrl, char *range)
 {
 	char *tkn;
@@ -121,3 +142,4 @@ int rtsp_play(struct rtsp_ctrl *rtsp_ctrl, char *range)
 
 	return 0;
 }
+#endif // #if 0

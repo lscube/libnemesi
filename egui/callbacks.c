@@ -179,7 +179,8 @@ on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
 	if (internal_call)
 		return;
 	if (gtk_toggle_tool_button_get_active(togglebutton))
-		nms_play(rtsp_ctrl, argstr);
+		// TODO parse argstr and pass range to play
+		nms_play(rtsp_ctrl, -1, -1);
 	else
 		nms_pause(rtsp_ctrl);
 
