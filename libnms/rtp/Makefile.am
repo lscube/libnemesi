@@ -1,3 +1,5 @@
+SUBDIRS = rtpframers
+
 libnmsdir = $(top_srcdir)
 libnmsincludedir = $(libnmsdir)/include
 # nemesiincludedir = $(top_srcdir)/include
