@@ -28,4 +28,90 @@
 
 #include "rtpframers.h"
 
-extern rtpfrmr *rtpfrmrs[];
+extern rtpfrmr rtp_frmr_mpa;
+
+rtpfrmr *rtpfrmrs[] = {
+	&rtp_frmr_mpa,
+	NULL
+};
+
+int rtp_def_frmr(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+int rtp_def_frmr_nonblock(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+
+int (*rtp_frmrs[128][2])(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *) = {
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock},
+	{rtp_def_frmr, rtp_def_frmr_nonblock}, {rtp_def_frmr, rtp_def_frmr_nonblock}
+};
+
+void rtp_frmrs_init(void)
+{
+
+}
+
+int rtp_frmr_reg(char *mime)
+{
+	return 0;
+}
+

@@ -26,10 +26,10 @@
  *  
  * */
 
-#ifndef RTPPTFRAMERS_H_
-#define RTPPTFRAMERS_H_
+#ifndef LOCAL_RTPFRAMERS_H_
+#define LOCAL_RTPFRAMERS_H_
 
-#include <nemesi/rtp.h>
+#include <nemesi/rtpframers.h>
 
 typedef struct {
 	uint16 static_pt;
@@ -42,11 +42,4 @@ typedef struct {
 	int (*fill_buffer_nonblock)(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 } rtpfrmr;
 
-#define RTP_FRM_ERROR		-1
-#define RTP_DST_TOO_SMALL	-2
-
-#define BLOCKING 0
-#define NON_BLOCKING 1
-extern int (*rtp_framers[128][2])(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-
-#endif /*RTPPTFRAMERS_H_*/
+#endif /*LOCAL_RTPFRAMERS_H_*/

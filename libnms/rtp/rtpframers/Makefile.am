@@ -4,12 +4,13 @@ libnmsincludedir = $(libnmsdir)/include
 
 
 noinst_HEADERS	=	\
-					rtpframer.h \
-					rtpframers.h
+			rtpframer.h \
+			rtpframers.h
 
 noinst_LTLIBRARIES = librtpframers.la
 
-librtpframers_la_SOURCES =	rtpframers.c \
+librtpframers_la_SOURCES =	rtp_def_frmr.c \
+				rtpframers.c \
 				rtp_mpa.c
 
 librtpframers_la_LDFLAGS = -static

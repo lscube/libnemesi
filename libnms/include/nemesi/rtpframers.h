@@ -26,8 +26,8 @@
  *  
  * */
 
-#ifndef RTPPTFRAMERS_H_
-#define RTPPTFRAMERS_H_
+#ifndef RTPFRAMERS_H_
+#define RTPFRAMERS_H_
 
 #include <nemesi/rtp.h>
 
@@ -36,6 +36,9 @@
 
 #define BLOCKING 0
 #define NON_BLOCKING 1
-extern int (*rtp_framers[128][2])(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+extern int (*rtp_frmrs[128][2])(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 
-#endif /*RTPPTFRAMERS_H_*/
+void rtp_frmrs_init(void);
+int rtp_frmr_reg(char *);
+
+#endif /*RTPFRAMERS_H_*/
