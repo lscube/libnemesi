@@ -27,8 +27,9 @@
  * */
 
 #include <nemesi/comm.h>
+#include <nemesi/utils.h>
 
-#include "rtpframers.h"
+#include "rtpparsers.h"
 
 extern rtpparser rtp_parser_mpa;
 
@@ -122,5 +123,22 @@ void rtp_parsers_init(void)
 
 int rtp_parser_reg(int16 pt, char *mime)
 {
+	int i, j;
+	
+	if (pt < 96) {
+		nms_printf(NMSML_ERR, "cannot dinamically register an rtp parser for static payload type (%d<96)\n");
+		return RTP_REG_STATIC;
+	}
+	
+	for (i=0; rtpparsers[i]; i++) {
+		for (j=0; rtpparsers[i]->served->mime[j]; j++) {
+			if ( !strcmpcase(rtpparsers[i]->served->mime[j], mime) ) {
+				rtp_parsers[pt][BLOCKING] = rtpparsers[i]->rtp_parse;
+				rtp_parsers[pt][NON_BLOCKING] = rtpparsers[i]->rtp_parse_nonblock;
+				return 0;
+			}
+		}
+	}
+	
 	return 0;
 }

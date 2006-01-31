@@ -31,8 +31,9 @@
 
 #include <nemesi/rtp.h>
 
-#define RTP_FRM_ERROR		-1
+#define RTP_PRSR_ERROR		-1
 #define RTP_DST_TOO_SMALL	-2
+#define RTP_REG_STATIC		-3
 
 #define BLOCKING 0
 #define NON_BLOCKING 1

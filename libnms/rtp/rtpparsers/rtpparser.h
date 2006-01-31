@@ -29,12 +29,12 @@
 #ifndef RTPPTFRAMER_H_
 #define RTPPTFRAMER_H_
 
-#include "rtpframers.h"
+#include "rtpparsers.h"
 
 static int rtp_parse(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 static int rtp_parse_nonblock(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 
-#define RTPFRMR(x) rtpparser rtp_parser_##x =\
+#define RTPPRSR(x) rtpparser rtp_parser_##x =\
 {\
 	&served, \
 	rtp_parse, \

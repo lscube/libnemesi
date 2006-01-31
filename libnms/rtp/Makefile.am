@@ -30,4 +30,5 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_transport_wrappers.c
 
 librtp_la_LDFLAGS = -static
+librtp_la_LIBADD = rtpparsers/librtpparsers.la
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

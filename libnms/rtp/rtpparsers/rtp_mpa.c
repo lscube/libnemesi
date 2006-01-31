@@ -26,14 +26,14 @@
  *  
  * */
 
-#include "rtpframer.h"
+#include "rtpparser.h"
 
 static rtpparser_info served = {
 	14,
 	{"MPA", NULL}
 };
 
-RTPFRMR(mpa);
+RTPPRSR(mpa);
 
 static int rtp_parse(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 {
