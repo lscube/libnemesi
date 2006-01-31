@@ -119,6 +119,9 @@ int parse_cl(int argc, char **argv, nms_cl_opts *cl_opt)
 			} else
 				nms_printf(NMSML_DBG1, "First RTP port hint: %d\n", rtsp_hints->first_rtp_port);
 			break;
+		case 'i':
+			ui_hints->interactive = 1;
+			break;
 		case 1: // audio out driver selection
 			if ( !strcmp(optarg, "help") ) {
 				list_audio_out();

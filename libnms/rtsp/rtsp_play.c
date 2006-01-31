@@ -28,28 +28,31 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_play(struct rtsp_ctrl *rtsp_ctrl, double start, double stop)
+int rtsp_play(struct rtsp_ctrl *rtsp_ctl, double start, double stop)
 {
-	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
-		rtsp_ctrl->comm->opcode= PLAY;
+	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
+		rtsp_ctl->comm->opcode= PLAY;
 		if ( (start>=0) && (stop>0) )
-			sprintf(rtsp_ctrl->comm->arg, "npt=%.2f-%.2f", start, stop);
+			sprintf(rtsp_ctl->comm->arg, "npt=%.2f-%.2f", start, stop);
 		else if (start>=0)
-			sprintf(rtsp_ctrl->comm->arg, "npt=%.2f-", start);
+			sprintf(rtsp_ctl->comm->arg, "npt=%.2f-", start);
 		else if (stop>0)
-			sprintf(rtsp_ctrl->comm->arg, "npt=-%.2f", stop);
+			sprintf(rtsp_ctl->comm->arg, "npt=-%.2f", stop);
 		else
-			*(rtsp_ctrl->comm->arg)='\0';
+			*(rtsp_ctl->comm->arg)='\0';
 			
-		write(rtsp_ctrl->pipefd[1], "p", 1);
-		rtsp_ctrl->busy=1;
-	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
+		write(rtsp_ctl->pipefd[1], "p", 1);
+		rtsp_ctl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
 	return 0;
 }
 
 #if 0
-int rtsp_play(struct rtsp_ctrl *rtsp_ctrl, char *range)
+/* This function was the previous rtsp_play... It is now obsolete, but it will NEVER be deleted from this file 
+ * 'cause it recalls us the amazing moments when we implemented the first lines of NeMeSI.
+*/
+int rtsp_play(struct rtsp_ctrl *rtsp_ctl, char *range)
 {
 	char *tkn;
 	char *meno;
@@ -128,17 +131,17 @@ int rtsp_play(struct rtsp_ctrl *rtsp_ctrl, char *range)
 			}
 		}
 	}
-	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
-		rtsp_ctrl->comm->opcode= PLAY;
+	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
+		rtsp_ctl->comm->opcode= PLAY;
 		if (range && *range){
-			sprintf(rtsp_ctrl->comm->arg, "%s-", start);
+			sprintf(rtsp_ctl->comm->arg, "%s-", start);
 			if (flag)
-				sprintf(rtsp_ctrl->comm->arg+strlen(rtsp_ctrl->comm->arg), "%s", stop);
+				sprintf(rtsp_ctl->comm->arg+strlen(rtsp_ctl->comm->arg), "%s", stop);
 		} else
-			*(rtsp_ctrl->comm->arg)='\0';
-		write(rtsp_ctrl->pipefd[1], "p", 1);
-		rtsp_ctrl->busy=1;
-	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
+			*(rtsp_ctl->comm->arg)='\0';
+		write(rtsp_ctl->pipefd[1], "p", 1);
+		rtsp_ctl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
 	return 0;
 }

@@ -32,7 +32,7 @@
 
 void throbber(void *arg)
 {
-	struct rtsp_ctrl *rtsp_ctrl = (struct rtsp_ctrl *)arg;
+	struct rtsp_ctrl *rtsp_ctl = (struct rtsp_ctrl *)arg;
 	struct timeval tv;
 	char throbber[20][13] = { "[=          ]",
 		"[ =         ]",
@@ -62,7 +62,7 @@ void throbber(void *arg)
 	setbuf(stdout, NULL);
 	
 	fprintf(stdout, "             ");
-	while ( rtsp_is_busy(rtsp_ctrl) ) {
+	while ( rtsp_is_busy(rtsp_ctl) ) {
 		tv.tv_sec=0;
 		tv.tv_usec=50000;
 		fprintf(stdout, "\b\b\b\b\b\b\b\b\b\b\b\b\b");

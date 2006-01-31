@@ -30,7 +30,7 @@
 #include <nemesi/preferences.h>
 
 
-int parse_prompt(struct rtsp_ctrl *rtsp_ctrl, char *optstr)
+int parse_prompt(struct rtsp_ctrl *rtsp_ctl, char *optstr)
 {
 	char argstr[256];
 	char opt;
@@ -56,7 +56,7 @@ int parse_prompt(struct rtsp_ctrl *rtsp_ctrl, char *optstr)
 		nms_printf(NMSML_NORM, "\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
 		break;
 	case 'q':
-		nms_close(rtsp_ctrl);
+		nms_close(rtsp_ctl, throbber, rtsp_ctl);
 		return 1;
 	case 'v':
 		nms_printf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
@@ -68,26 +68,26 @@ int parse_prompt(struct rtsp_ctrl *rtsp_ctrl, char *optstr)
 			nms_printf(NMSML_ERR, "Can't connect: no address given\n");
 		else {
 			nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"\n", argstr);
-			nms_open(rtsp_ctrl, argstr, throbber, rtsp_ctrl);
+			nms_open(rtsp_ctl, argstr, throbber, rtsp_ctl);
 		}
 		break;
 	case 'i':
-		rtsp_info_print(rtsp_ctrl);
+		rtsp_info_print(rtsp_ctl);
 		break;
 	case 'p':
 		// fgets(argstr, 256, stdin);
 		sscanf(optstr, "%*s %s", argstr);
 		// TODO parse argstr and pass range to play
-		nms_play(rtsp_ctrl, -1, -1);
+		nms_play(rtsp_ctl, -1, -1);
 		break;
 	case 'z':
-		nms_pause(rtsp_ctrl);
+		nms_pause(rtsp_ctl);
 		break;
 	case 's':
-		nms_stop(rtsp_ctrl);
+		nms_stop(rtsp_ctl);
 		break;
 	case 'c':
-		nms_close(rtsp_ctrl);
+		nms_close(rtsp_ctl, throbber, rtsp_ctl);
 		break;
 	case 'e':
 		/*

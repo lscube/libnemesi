@@ -30,7 +30,7 @@
 #include <nemesi/comm.h>
 #include <nemesi/etui.h>
 
-int ui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints *ui_hints, int argc, char **argv)
+int ui(struct rtsp_ctrl *rtsp_ctl, nms_ui_hints *ui_hints, int argc, char **argv)
 {
 	char *urlname = ui_hints->url; // NULL;
 	char optstr[256];
@@ -38,7 +38,6 @@ int ui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints *ui_hints, int argc, char **arg
 	// struct timeval seleep;
 	fd_set rdset;
 	int maxfd;
-	char interactive=1; // tmp
 	char event;
 
 #ifdef USE_UIPRINTF
@@ -67,16 +66,17 @@ int ui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints *ui_hints, int argc, char **arg
 	*/
 	if (urlname != NULL) {
 		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", urlname);
-		nms_open(rtsp_ctrl, urlname, throbber, rtsp_ctrl);
-		nms_play(rtsp_ctrl, -1, -1);
+		nms_open(rtsp_ctl, urlname, throbber, rtsp_ctl);
+		if (!ui_hints->interactive)
+			nms_play(rtsp_ctl, -1, -1);
 	} else
 		nms_printf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
 	
 	while (1) {
-		if(rtsp_is_busy(rtsp_ctrl))
-			// rtsp_wait(rtsp_ctrl);
-			throbber(rtsp_ctrl);
-		fprintf(stderr, "\r[ %s ] => ", statustostr(rtsp_status(rtsp_ctrl)));
+		if(rtsp_is_busy(rtsp_ctl))
+			// rtsp_wait(rtsp_ctl);
+			throbber(rtsp_ctl);
+		fprintf(stderr, "\r[ %s ] => ", statustostr(rtsp_status(rtsp_ctl)));
 
 		FD_ZERO(&rdset);
 		FD_SET(STDIN_FILENO, &rdset);
@@ -105,22 +105,22 @@ int ui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints *ui_hints, int argc, char **arg
 		if(FD_ISSET(STDIN_FILENO, &rdset)) {
 		/*
 			scanf("%s", optstr);
-			if (parse_prompt(rtsp_ctrl, optstr) > 0)
+			if (parse_prompt(rtsp_ctl, optstr) > 0)
 				return 0;
 		}
 		*/
 		// scanf("%s", optstr);
-			if (interactive) {
+			if (ui_hints->interactive) {
 				fgets(optstr, sizeof(optstr)-1, stdin);
 				optstr[strlen(optstr)-1] = '\0';
-				if ( strlen(optstr) && (parse_prompt(rtsp_ctrl, optstr) > 0) )
+				if ( strlen(optstr) && (parse_prompt(rtsp_ctl, optstr) > 0) )
 					return 0;
 			} else {
 				printf("\ntui event\n");
 //				event=getchar();
 				read(STDIN_FILENO, &event, 1);
 				printf("\ntui event\n");
-				if ( tui_event(rtsp_ctrl, event) > 0 )
+				if ( tui_event(rtsp_ctl, event) > 0 )
 					return 0;
 			} 
 		}

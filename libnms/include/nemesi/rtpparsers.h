@@ -35,9 +35,7 @@
 #define RTP_DST_TOO_SMALL	-2
 #define RTP_REG_STATIC		-3
 
-#define BLOCKING 0
-#define NON_BLOCKING 1
-extern int (*rtp_parsers[128][2])(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+extern int (*rtp_parsers[128])(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 
 void rtp_parsers_init(void);
 int rtp_parser_reg(int16, char *);

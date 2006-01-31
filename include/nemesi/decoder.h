@@ -48,6 +48,7 @@ void *decoder(void *);
 //int dec_create(struct rtp_thread *);
 pthread_t dec_create(struct rtsp_ctrl *);
 void dec_idle(void);
+int dec_destroy(pthread_t);
 void dec_clean(void *);
 
 #endif

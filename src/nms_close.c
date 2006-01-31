@@ -1,11 +1,11 @@
 /* * 
- *  $Id:rtp_def_parser.c 284 2006-01-31 11:37:48Z shawill $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
+ *  Copyright (C) 2006 by
  *  	
  *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
  *	Francesco "shawill" Varano - francesco.varano@polito.it
@@ -26,25 +26,20 @@
  *  
  * */
 
-#include <nemesi/rtpparsers.h>
 
-int rtp_def_parser(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+#include <nemesi/main.h>
+#include <nemesi/decoder.h>
+
+int nms_close(struct rtsp_ctrl *rtsp_ctl, void (*throbber_func)(void *), void *targ)
 {
-	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
-	
-	if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
-		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
-	
-	*timestamp = RTP_PKT_TS(pkt);
-	
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
-	
-	return dst_used;
+	rtsp_close(rtsp_ctl);
+//		throbber(rtsp_ctrl);
+	if (throbber_func)
+		throbber_func(targ);
+	else
+		rtsp_wait(rtsp_ctl);
+//	if( !dec_(rtsp_ctrl) )
+//		exit( nms_printf(NMSML_FATAL, "Cannot initialize decoder\n") );
+		
+	return 0;
 }

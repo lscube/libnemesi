@@ -29,15 +29,15 @@
 #include <nemesi/main.h>
 #include <nemesi/decoder.h>
 
-int nms_open(struct rtsp_ctrl *rtsp_ctrl, char *urlname, void (*throbber_func)(void *), void *targ)
+int nms_open(struct rtsp_ctrl *rtsp_ctl, char *urlname, void (*throbber_func)(void *), void *targ)
 {
-	rtsp_open(rtsp_ctrl, urlname);
-//		throbber(rtsp_ctrl);
+	rtsp_open(rtsp_ctl, urlname);
+//		throbber(rtsp_ctl);
 	if (throbber_func)
 		throbber_func(targ);
 	else
-		rtsp_wait(rtsp_ctrl);
-	if( !dec_create(rtsp_ctrl) )
+		rtsp_wait(rtsp_ctl);
+	if( !dec_create(rtsp_ctl) )
 		exit( nms_printf(NMSML_FATAL, "Cannot initialize decoder\n") );
 		
 	return 0;

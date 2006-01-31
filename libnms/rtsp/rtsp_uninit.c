@@ -28,18 +28,18 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_uninit(struct rtsp_ctrl *rtsp_ctrl)
+int rtsp_uninit(struct rtsp_ctrl *rtsp_ctl)
 {
 	void *ret=NULL;
 
 	/* THREAD CANCEL */	
 	nms_printf(NMSML_DBG1, "Sending cancel signal to all threads\n");
-	if(rtsp_ctrl->rtsp_tid > 0){
-		nms_printf(NMSML_DBG1, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_ctrl->rtsp_tid);
-		if (pthread_cancel(rtsp_ctrl->rtsp_tid) != 0)
+	if(rtsp_ctl->rtsp_tid > 0){
+		nms_printf(NMSML_DBG1, "Sending cancel signal to RTSP Thread (ID: %lu)\n", rtsp_ctl->rtsp_tid);
+		if (pthread_cancel(rtsp_ctl->rtsp_tid) != 0)
 			nms_printf(NMSML_DBG2, "Error while sending cancelation to RTSP Thread.\n");
 		else
-			pthread_join(rtsp_ctrl->rtsp_tid, (void **)&ret);
+			pthread_join(rtsp_ctl->rtsp_tid, (void **)&ret);
 		if ( ret != PTHREAD_CANCELED ) {
 			nms_printf(NMSML_DBG2, "Warning! RTSP Thread joined, but  not canceled!\n");
 			return 1;
@@ -49,8 +49,8 @@ int rtsp_uninit(struct rtsp_ctrl *rtsp_ctrl)
 		return 1;
 	}
 
-	free(rtsp_ctrl->comm);
-	free(rtsp_ctrl);
+	free(rtsp_ctl->comm);
+	free(rtsp_ctl);
 
 	return 0;
 }

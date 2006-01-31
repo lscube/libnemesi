@@ -85,6 +85,8 @@ typedef struct {
 	uint8 data[1];	/* beginning of RTP data */
 } rtp_pkt;
 
+#define RTP_PKT_PT(x) x->pt
+#define RTP_PKT_MARK(x) x->mark
 #define RTP_PKT_TS(x) x->time
 #define RTP_PKT_SEQ(x) x->seq
 #define RTP_PKT_DATA(x) x->data
@@ -232,21 +234,19 @@ int rtp_ssrc_check(struct rtp_session *, uint32, struct rtp_ssrc **, nms_sockadd
 int rtp_ssrc_init(struct rtp_session *, struct rtp_ssrc **, uint32, nms_sockaddr *,  enum rtp_protos);
 
 #define RTP_FILL_OK 0
-#define RTP_FILL_EMPTY -1
-#define RTP_FILL_ERROR -2
+#define RTP_BUFF_EMPTY -1
+#define RTP_PARSE_ERROR -2
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
-// wrappers for rtp_pkt
-rtp_pkt *rtp_get_pkt(struct rtp_ssrc *, int *);
-inline int rtp_rm_pkt(struct rtp_session *, struct rtp_ssrc *);
-int rtp_fill_buffer(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-double rtp_get_next_ts(struct rtp_ssrc *);
+typedef enum {rtp_blk, rtp_n_blk} rtp_fnc_type; // function blocking or non blocking
 
-// non blocking versions of above functions
-rtp_pkt *rtp_get_pkt_nonblock(struct rtp_ssrc *, int *);
-int rtp_fill_buffer_nonblock(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-double rtp_get_next_ts_nonblock(struct rtp_ssrc *);
+// wrappers for rtp_pkt
+rtp_pkt *rtp_get_pkt(rtp_fnc_type, struct rtp_ssrc *, int *);
+inline int rtp_rm_pkt(struct rtp_session *, struct rtp_ssrc *);
+int rtp_fill_buffer(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+double rtp_get_next_ts(rtp_fnc_type, struct rtp_ssrc *);
+int16 rtp_get_next_pt(rtp_fnc_type, struct rtp_ssrc *);
 
 // rtp transport setup functions
 int rtp_transport_set(struct rtp_session *, int, void *);

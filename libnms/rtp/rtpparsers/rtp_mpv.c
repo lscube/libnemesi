@@ -5,7 +5,7 @@
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
+ *  Copyright (C) 2006 by
  *  	
  *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
  *	Francesco "shawill" Varano - francesco.varano@polito.it
@@ -26,24 +26,50 @@
  *  
  * */
 
-#include <nemesi/rtp.h>
 
-int rtp_fill_buffer_nonblock(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
-{	
+#include "rtpparser.h"
+
+static rtpparser_info served = {
+	32,
+	{"MPV", NULL}
+};
+
+RTPPRSR(mpv);
+
+static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+{
+	uint16 pt;
 	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
+	size_t pkt_len; //, dst_used=0;
+	size_t to_cpy, tot_pkts=0;
+	int dst_used=0;
 	
-	if ( !(pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) )
-		return RTP_FILL_EMPTY;
+	if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
+		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
+	
+	pt = RTP_PKT_PT(pkt);
 	*timestamp = RTP_PKT_TS(pkt);
 	
 	do {
+		tot_pkts += pkt_len;
 		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
+		memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
 		dst_used += to_cpy;
 		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
+	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) && !RTP_PKT_MARK(pkt) && (RTP_PKT_PT(pkt)==pt) );
+	
+	if (tot_pkts > dst_used)
+		return RTP_DST_TOO_SMALL;
+	else
+		return dst_used;
+#if 0
+	do {
+		to_cpy = min(pkt_len, dst_size);
+		memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
+		dst_used += to_cpy;
+		rtp_rm_pkt(rtp_sess, stm_src);
+	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
 	
 	return dst_used;
+#endif
 }

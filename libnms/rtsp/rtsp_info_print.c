@@ -29,10 +29,10 @@
 #include <nemesi/rtsp.h>
 
 // shawill: TODO: modify for protocol abstraction
-void rtsp_info_print(struct rtsp_ctrl *rtsp_ctrl)
+void rtsp_info_print(struct rtsp_ctrl *rtsp_ctl)
 {
 	// tmp
-	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_ctrl;
+	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_ctl;
 	struct rtsp_session *sess;
 	struct rtsp_medium *med;
 	char **str;

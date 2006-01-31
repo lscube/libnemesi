@@ -27,6 +27,7 @@
  * */
 
 #include <nemesi/rtp.h>
+#include <nemesi/rtpparsers.h>
 #include <nemesi/comm.h>
 
 struct rtp_thread *rtp_init(void)
@@ -38,6 +39,7 @@ struct rtp_thread *rtp_init(void)
 		return NULL;
 	}
 	
+	rtp_parsers_init();
 	
 	if ( pthread_mutex_init(&(rtp_th->syn), NULL) )
 		return NULL;

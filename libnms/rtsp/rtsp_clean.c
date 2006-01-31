@@ -32,7 +32,7 @@
 
 void rtsp_clean(void *rtsp_thread)
 {
-	// struct rtsp_ctrl *rtsp_ctrl = (struct rtsp_ctrl *)rtsp_control;
+	// struct rtsp_ctrl *rtsp_ctl = (struct rtsp_ctrl *)rtsp_control;
 	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_thread;
 	int n;
 #ifdef USE_UIPRINTF

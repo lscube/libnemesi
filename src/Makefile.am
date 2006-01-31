@@ -17,6 +17,7 @@ bin_PROGRAMS = nemesi
 nemesi_SOURCES =	main.c \
 			output_init.c \
 			output_uninit.c \
+			nms_close.c \
 			nms_open.c
 
 

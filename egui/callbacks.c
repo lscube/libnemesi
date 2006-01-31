@@ -34,20 +34,20 @@ static GNMSurl *gnmsurl = NULL;
 
 static gint infowidth = 0;
 
-static struct rtsp_ctrl *rtsp_ctrl;
+static struct rtsp_ctrl *rtsp_ctl;
 
 static gboolean internal_call = FALSE;
 // end of static variables declarations
 
 // *** generic functions *** //
-void save_static_data(gpointer new_nemesi, gpointer new_rtsp_ctrl)
+void save_static_data(gpointer new_nemesi, gpointer new_rtsp_ctl)
 {
 	nemesi = new_nemesi;
-	rtsp_ctrl = new_rtsp_ctrl;
+	rtsp_ctl = new_rtsp_ctl;
 
 	// GUI statusbar initialization
 	gnms_stbar_init(GTK_BOX(lookup_widget(nemesi, "statushbox")));
-	cc_stbarw_add(rtsp_ctrl);
+	cc_stbarw_add(rtsp_ctl);
 }
 
 void update_toolbar(void)
@@ -58,7 +58,7 @@ void update_toolbar(void)
 	GtkWidget *stop_but;
 	GtkWidget *close_but;
 
-	if (rtsp_ctrl->busy) {
+	if (rtsp_ctl->busy) {
 		gtk_widget_set_sensitive(toolbar, FALSE);
 		return;
 	}
@@ -67,7 +67,7 @@ void update_toolbar(void)
 	stop_but = lookup_widget(nemesi, "stop_cmd");
 	close_but = lookup_widget(nemesi, "close_cmd");
 	internal_call = TRUE;
-	switch (rtsp_status(rtsp_ctrl)) {
+	switch (rtsp_status(rtsp_ctl)) {
 		case INIT:
 			gtk_widget_set_sensitive(open_but, TRUE);
 			gtk_widget_set_sensitive(play_tog, FALSE);
@@ -95,7 +95,7 @@ void update_toolbar(void)
 	internal_call = FALSE;
 	gtk_widget_set_sensitive(toolbar, TRUE);
 
-	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_status(rtsp_ctrl)));
+	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_status(rtsp_ctl)));
 	gnms_stbar_update();
 	gnms_showmsgs();
 
@@ -180,11 +180,11 @@ on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
 		return;
 	if (gtk_toggle_tool_button_get_active(togglebutton))
 		// TODO parse argstr and pass range to play
-		nms_play(rtsp_ctrl, -1, -1);
+		nms_play(rtsp_ctl, -1, -1);
 	else
-		nms_pause(rtsp_ctrl);
+		nms_pause(rtsp_ctl);
 
-	gui_throbber(&rtsp_ctrl->busy);
+	gui_throbber(&rtsp_ctl->busy);
 
 }
 
@@ -192,8 +192,8 @@ void
 on_stop_cmd_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-	nms_stop(rtsp_ctrl);
-	gui_throbber(&rtsp_ctrl->busy);
+	nms_stop(rtsp_ctl);
+	gui_throbber(&rtsp_ctl->busy);
 }
 
 
@@ -201,8 +201,8 @@ void
 on_close_cmd_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-	nms_close(rtsp_ctrl);
-	gui_throbber(&rtsp_ctrl->busy);
+	nms_close(rtsp_ctl, gui_throbber, &rtsp_ctl->busy);
+//	gui_throbber(&rtsp_ctl->busy);
 }
 
 
@@ -318,7 +318,7 @@ on_opendialog_response                 (GtkDialog       *dialog,
 			gtk_widget_hide(opendialog);
 			*/
 			nms_printf(NMSML_DBG1, "%s\n", true_url);
-			nms_open(rtsp_ctrl, true_url, gui_throbber, &rtsp_ctrl->busy);
+			nms_open(rtsp_ctl, true_url, gui_throbber, &rtsp_ctl->busy);
 			break;
 		case GTK_RESPONSE_CLOSE:
 			nms_printf(NMSML_DBG3, "response: CLOSE\n");

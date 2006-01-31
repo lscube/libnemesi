@@ -9,11 +9,9 @@ noinst_LTLIBRARIES = librtp.la
 librtp_la_SOURCES =	rtp_init.c \
 			rtp_clean.c \
 			rtp_fill_buffer.c \
-			rtp_fill_buffer_nonblock.c \
+			rtp_get_next_pt.c \
 			rtp_get_next_ts.c \
-			rtp_get_next_ts_nonblock.c \
 			rtp_get_pkt.c \
-			rtp_get_pkt_nonblock.c \
 			rtp.c \
 			rtp_thread_create.c \
 			rtp_session_init.c \

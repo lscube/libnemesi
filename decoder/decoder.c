@@ -113,7 +113,7 @@ void *decoder(void *args)
 				/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
 				for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next) {
 
-					pkt=rtp_get_pkt(stm_src, &len); // this line will block untill rtp cannot give a valid rtp packet.
+					pkt=rtp_get_pkt(rtp_blk, stm_src, &len); // this line will block untill rtp cannot give a valid rtp packet.
 				/**/	
 					nms_printf(NMSML_DBG3, "Version Number:%d\n", pkt->ver);
 					nms_printf(NMSML_DBG3, "Payload Type:%d\n", pkt->pt);
@@ -196,12 +196,12 @@ void *decoder(void *args)
 //				pkt=rtp_get_pkt(stm_src, NULL); // next packet
 				if ( !ts_min_next ) {
 //					ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
-					ts_min_next = rtp_get_next_ts(stm_src);
+					ts_min_next = rtp_get_next_ts(rtp_blk, stm_src);
 					nms_printf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
 					nms_printf(NMSML_DBG3, "\nNuovo min: %3.2f\n", ts_min_next);
 				} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
 //					ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
-					ts_min_next = min(ts_min_next, rtp_get_next_ts(stm_src));
+					ts_min_next = min(ts_min_next, rtp_get_next_ts(rtp_blk, stm_src));
 #endif // TS_SCHEDULE
 			}
 #ifndef TS_SCHEDULE

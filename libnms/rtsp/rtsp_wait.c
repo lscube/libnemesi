@@ -28,9 +28,9 @@
 
 #include <nemesi/rtsp.h>
 
-void rtsp_wait(struct rtsp_ctrl *rtsp_ctrl)
+void rtsp_wait(struct rtsp_ctrl *rtsp_ctl)
 {
-	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_ctrl;
+	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_ctl;
 
 	pthread_mutex_lock(&(rtsp_th->comm_mutex));
 	while (rtsp_th->busy)

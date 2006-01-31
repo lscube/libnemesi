@@ -27,22 +27,14 @@
  * */
 
 #include <nemesi/rtp.h>
+#include <nemesi/rtpparsers.h>
 
-int rtp_fill_buffer(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+int rtp_fill_buffer(rtp_fnc_type fnc_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 {
-	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
+	int16 pt;
 	
-	pkt=rtp_get_pkt(stm_src, (int *)&pkt_len);
-	*timestamp = RTP_PKT_TS(pkt);
+	if ( (pt=rtp_get_next_pt(fnc_type, stm_src))<0 )
+		return pt;  // valid only for NON blocking version.
 	
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
-	
-	return dst_used;
+	return rtp_parsers[pt](fnc_type, rtp_sess, stm_src, dst, dst_size, timestamp);
 }

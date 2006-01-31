@@ -139,21 +139,21 @@ static GtkWidget *add_leaf(const GtkWidget *where)
 
 static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 {
-	struct rtsp_ctrl *rtsp_ctrl = (struct rtsp_ctrl *)user_data;
+	struct rtsp_ctrl *rtsp_ctl = (struct rtsp_ctrl *)user_data;
 	sdp_session_info *sdp_s;
 	sdp_medium_info *sdp_m;
 	cc_license *cc;
 	GtkWidget *root, *node, *leaf, *lbl;
 
 	if (gtk_toggle_button_get_active(togglebutton)) {
-		if (!rtsp_ctrl->rtsp_queue)
+		if (!rtsp_ctl->rtsp_queue)
 			return;
 		if (!cc_info) {
 			root = add_root(&cc_info);
 
-			switch (rtsp_ctrl->descr_fmt) {
+			switch (rtsp_ctl->descr_fmt) {
 				case DESCRIPTION_SDP_FORMAT:
-					if ((sdp_s = rtsp_ctrl->rtsp_queue->info)) {
+					if ((sdp_s = rtsp_ctl->rtsp_queue->info)) {
 						gtk_expander_set_label(GTK_EXPANDER(cc_info), sdp_s->s);
 					}
 					for(sdp_m=sdp_s->media_info_queue; sdp_m; sdp_m=sdp_m->next) {
@@ -279,7 +279,7 @@ static void cc_stbarw_rm(GtkWidget *widget)
 	gtk_widget_destroy(widget);
 }
 
-int cc_stbarw_add(struct rtsp_ctrl *rtsp_ctrl)
+int cc_stbarw_add(struct rtsp_ctrl *rtsp_ctl)
 {
 	if (cc_box)
 		gtk_widget_destroy(cc_box);
@@ -293,10 +293,10 @@ int cc_stbarw_add(struct rtsp_ctrl *rtsp_ctrl)
 	cc_logo = create_pixmap(NULL, CC_SOMERIGHTS);
 	gtk_widget_show(cc_logo);
 	gtk_container_add (GTK_CONTAINER (cc_button), cc_logo);
-	g_signal_connect ((gpointer) cc_button, "toggled", G_CALLBACK (cc_button_toggled), (gpointer) rtsp_ctrl);
+	g_signal_connect ((gpointer) cc_button, "toggled", G_CALLBACK (cc_button_toggled), (gpointer) rtsp_ctl);
 	// gtk_widget_show (cc_button);
 
-	gnms_stbar_addwgt(cc_box, cc_stbarw_rm, cc_stbarw_upd, (gpointer)rtsp_ctrl, TRUE);
+	gnms_stbar_addwgt(cc_box, cc_stbarw_rm, cc_stbarw_upd, (gpointer)rtsp_ctl, TRUE);
 
 	return 0;
 }

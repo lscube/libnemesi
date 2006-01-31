@@ -38,74 +38,41 @@ rtpparser *rtpparsers[] = {
 	NULL
 };
 
-int rtp_def_parser(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-int rtp_def_parser_nonblock(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+int rtp_def_parser(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 
-int (*rtp_parsers[128][2])(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *) = {
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock},
-	{rtp_def_parser, rtp_def_parser_nonblock}, {rtp_def_parser, rtp_def_parser_nonblock}
+int (*rtp_parsers[128])(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *) = {
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
+	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser
 };
 
 void rtp_parsers_init(void)
@@ -114,8 +81,8 @@ void rtp_parsers_init(void)
 	
 	for (i=0; rtpparsers[i]; i++) {
 		if (rtpparsers[i]->served->static_pt < 96) {
-			rtp_parsers[rtpparsers[i]->served->static_pt][BLOCKING] = rtpparsers[i]->rtp_parse;
-			rtp_parsers[rtpparsers[i]->served->static_pt][NON_BLOCKING] = rtpparsers[i]->rtp_parse_nonblock;
+			rtp_parsers[rtpparsers[i]->served->static_pt] = rtpparsers[i]->rtp_parse;
+			nms_printf(NMSML_DBG1, "Added rtp parser for pt %d\n", rtpparsers[i]->served->static_pt);
 		} else
 			nms_printf(NMSML_ERR, "rtp framer could not serve %d (>=96) payload as static... rejected\n");
 	}
@@ -133,8 +100,7 @@ int rtp_parser_reg(int16 pt, char *mime)
 	for (i=0; rtpparsers[i]; i++) {
 		for (j=0; rtpparsers[i]->served->mime[j]; j++) {
 			if ( !strcmpcase(rtpparsers[i]->served->mime[j], mime) ) {
-				rtp_parsers[pt][BLOCKING] = rtpparsers[i]->rtp_parse;
-				rtp_parsers[pt][NON_BLOCKING] = rtpparsers[i]->rtp_parse_nonblock;
+				rtp_parsers[pt] = rtpparsers[i]->rtp_parse;
 				return 0;
 			}
 		}

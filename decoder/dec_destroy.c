@@ -5,7 +5,7 @@
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
+ *  Copyright (C) 2006 by
  *  	
  *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
  *	Francesco "shawill" Varano - francesco.varano@polito.it
@@ -25,25 +25,22 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
  * */
+ 
+ #include <nemesi/decoder.h>
 
-#include <nemesi/rtp.h>
-#include <nemesi/rtpptdefs.h>
-
-double rtp_get_next_ts_nonblock(struct rtp_ssrc *stm_src)
+int dec_destroy(pthread_t tid)
 {
-	rtp_pkt *pkt;
-//	double ts;
-	
-	pthread_mutex_lock(&(stm_src->po.po_mutex));
-	
-	if(stm_src->po.potail >= 0) {
-		pthread_mutex_unlock(&(stm_src->po.po_mutex));
-		pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
-		return /*ts=*/((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
-	
-//		return ts;
-	} else {
-		pthread_mutex_unlock(&(stm_src->po.po_mutex));
-		return -1;
+	void *ret;
+
+	if (tid) {
+		nms_printf(NMSML_DBG1, "Sending cancel signal to Decoder (ID: %u)\n", tid);
+		if (pthread_cancel(tid) != 0)
+			nms_printf(NMSML_DBG2, "Error while sending cancelation to Decoder Thread.\n");
+		else
+			pthread_join(tid, (void **)&ret);
+		if ( ret != PTHREAD_CANCELED )
+			nms_printf(NMSML_DBG2, "Warning! Decoder Thread joined, but not canceled!\n");
 	}
+
+	return 0;
 }

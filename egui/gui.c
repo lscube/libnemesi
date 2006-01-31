@@ -21,7 +21,7 @@
 #include <nemesi/egui.h>
 #include <nemesi/comm.h>
 
-int gui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints * ui_hints, int argc, char *argv[])
+int gui(struct rtsp_ctrl *rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
 {
 	GtkWidget *nemesi;
 	char *path;
@@ -59,7 +59,7 @@ int gui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints * ui_hints, int argc, char *ar
 	 */
 	nemesi = create_nemesi();
 
-	save_static_data(nemesi, rtsp_ctrl);	// must be done fist of all
+	save_static_data(nemesi, rtsp_ctl);	// must be done fist of all
 
 	if (create_throbber(lookup_widget(nemesi, "hbox3")))
 		nms_printf(NMSML_ERR, "no throbber available\n");
@@ -70,10 +70,10 @@ int gui(struct rtsp_ctrl *rtsp_ctrl, nms_ui_hints * ui_hints, int argc, char *ar
 
 	if (ui_hints->url) {
 		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
-		nms_open(rtsp_ctrl, ui_hints->url, gui_throbber, &rtsp_ctrl->busy);
+		nms_open(rtsp_ctl, ui_hints->url, gui_throbber, &rtsp_ctl->busy);
 		while (gtk_events_pending ()) gtk_main_iteration ();
-		nms_play(rtsp_ctrl, -1, -1);
-		gui_throbber(&rtsp_ctrl->busy);
+		nms_play(rtsp_ctl, -1, -1);
+		gui_throbber(&rtsp_ctl->busy);
 	}
 	
 	gtk_main();

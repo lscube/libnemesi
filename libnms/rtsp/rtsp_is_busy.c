@@ -28,8 +28,8 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_is_busy(struct rtsp_ctrl *rtsp_ctrl)
+inline int rtsp_is_busy(struct rtsp_ctrl *rtsp_ctl)
 {
-	return rtsp_ctrl->busy;
+	return rtsp_ctl->busy;
 }
 

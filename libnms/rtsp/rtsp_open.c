@@ -28,17 +28,17 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_open(struct rtsp_ctrl *rtsp_ctrl, char *urlname)
+int rtsp_open(struct rtsp_ctrl *rtsp_ctl, char *urlname)
 {
 	if (!urlname || !*urlname)
 		return 1;
 
-	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
-		rtsp_ctrl->comm->opcode = OPEN;
-		strncpy(rtsp_ctrl->comm->arg, urlname, sizeof(rtsp_ctrl->comm->arg));
-		write(rtsp_ctrl->pipefd[1], "o", 1);
-		rtsp_ctrl->busy=1;
-	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
+	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
+		rtsp_ctl->comm->opcode = OPEN;
+		strncpy(rtsp_ctl->comm->arg, urlname, sizeof(rtsp_ctl->comm->arg));
+		write(rtsp_ctl->pipefd[1], "o", 1);
+		rtsp_ctl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 	
 	return 0;
 }

@@ -238,7 +238,7 @@ struct rtsp_ctrl {
 	// |- int init_rtsp(void);
 	// \- struct rtsp_ctrl *init_rtsp(void);
 struct rtsp_ctrl *rtsp_init(nms_rtsp_hints *);
-int rtsp_is_busy(struct rtsp_ctrl *);
+inline int rtsp_is_busy(struct rtsp_ctrl *);
 void rtsp_wait(struct rtsp_ctrl *);
 int rtsp_close(struct rtsp_ctrl *);
 int rtsp_open(struct rtsp_ctrl *, char *);

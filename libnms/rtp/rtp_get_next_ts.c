@@ -29,18 +29,12 @@
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 
-double rtp_get_next_ts(struct rtp_ssrc *stm_src)
+double rtp_get_next_ts(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src)
 {
 	rtp_pkt *pkt;
-//	double ts;
-	
-	pthread_mutex_lock(&(stm_src->po.po_mutex));
-	if(stm_src->po.potail < 0)
-		pthread_cond_wait(&(stm_src->po.cond_empty), &(stm_src->po.po_mutex));
-	pthread_mutex_unlock(&(stm_src->po.po_mutex));
-	
-	pkt=(rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
-	return /*ts=*/((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
-	
-//	return ts;
+
+	if ( !(pkt=rtp_get_pkt(fnc_type, stm_src, NULL)) )
+			return RTP_BUFF_EMPTY;
+			
+	return ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
 }

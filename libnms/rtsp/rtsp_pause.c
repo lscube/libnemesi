@@ -28,15 +28,15 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_pause(struct rtsp_ctrl *rtsp_ctrl)
+int rtsp_pause(struct rtsp_ctrl *rtsp_ctl)
 {
 
-	pthread_mutex_lock(&(rtsp_ctrl->comm_mutex));
-		rtsp_ctrl->comm->opcode= PAUSE;
-		write(rtsp_ctrl->pipefd[1], "z", 1);
-		*(rtsp_ctrl->comm->arg)='\0';
-		rtsp_ctrl->busy=1;
-	pthread_mutex_unlock(&(rtsp_ctrl->comm_mutex));
+	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
+		rtsp_ctl->comm->opcode= PAUSE;
+		write(rtsp_ctl->pipefd[1], "z", 1);
+		*(rtsp_ctl->comm->arg)='\0';
+		rtsp_ctl->busy=1;
+	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
 	return 0;
 }

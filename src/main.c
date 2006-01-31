@@ -41,9 +41,9 @@
 
 int main(int argc, char *argv[])
 {
-	struct rtsp_ctrl *rtsp_ctrl;
+	struct rtsp_ctrl *rtsp_ctl;
 	nms_out_hints output_hints = {NULL, NULL, NULL, 0};
-	nms_ui_hints ui_hints = { 0, NULL };
+	nms_ui_hints ui_hints = { 0, 0, NULL };
 	nms_rtsp_hints rtsp_hints = { -1 };
 	nms_cl_opts cl_opt = { &output_hints, &ui_hints, &rtsp_hints };
 	int n;
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	if (output_init(&output_hints))
 		exit( nms_printf(NMSML_FATAL, "Error initializing output module\n") );
 
-	if ( !(rtsp_ctrl = rtsp_init(&rtsp_hints)) )
+	if ( !(rtsp_ctl = rtsp_init(&rtsp_hints)) )
 		exit( nms_printf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)) );
 	// UI interface function
 	if (argv[0]) // if we are called with the initial 'g' => start gui
@@ -84,15 +84,15 @@ int main(int argc, char *argv[])
 		}
 	if (ui_hints.gui)
 #if HAVE_GUI
-		gui(rtsp_ctrl, &ui_hints, argc, argv);
+		gui(rtsp_ctl, &ui_hints, argc, argv);
 	else
 #else	// HAVE_GUI
 		nms_printf(NMSML_ERR, "no GUI present: falling back to e-TUI\n");
 #endif	// HAVE_GUI
-		if ((n=ui(rtsp_ctrl, &ui_hints, argc, argv)) > 0)
+		if ((n=ui(rtsp_ctl, &ui_hints, argc, argv)) > 0)
 			exit(1);
 
-	rtsp_uninit(rtsp_ctrl);
+	rtsp_uninit(rtsp_ctl);
 
 	output_uninit();
 

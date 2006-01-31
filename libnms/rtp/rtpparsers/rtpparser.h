@@ -31,14 +31,12 @@
 
 #include "rtpparsers.h"
 
-static int rtp_parse(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-static int rtp_parse_nonblock(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+static int rtp_parse(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 
 #define RTPPRSR(x) rtpparser rtp_parser_##x =\
 {\
 	&served, \
-	rtp_parse, \
-	rtp_parse_nonblock \
+	rtp_parse \
 }
 
 #endif /*RTPPTFRAMER_H_*/
