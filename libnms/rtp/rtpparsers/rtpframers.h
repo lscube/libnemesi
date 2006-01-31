@@ -29,17 +29,17 @@
 #ifndef LOCAL_RTPFRAMERS_H_
 #define LOCAL_RTPFRAMERS_H_
 
-#include <nemesi/rtpframers.h>
+#include <nemesi/rtpparsers.h>
 
 typedef struct {
-	uint16 static_pt;
+	int16 static_pt; // -1 terminated list of served static payload numbers (MUST be <96)
 	char *mime[]; // NULL terminated list of served mime tipes in the form "type/subtype"
-} rtpfrmr_info;
+} rtpparser_info;
 
 typedef struct {
-	rtpfrmr_info *served;
-	int (*fill_buffer)(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-	int (*fill_buffer_nonblock)(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-} rtpfrmr;
+	rtpparser_info *served;
+	int (*rtp_parse)(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+	int (*rtp_parse_nonblock)(struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+} rtpparser;
 
 #endif /*LOCAL_RTPFRAMERS_H_*/

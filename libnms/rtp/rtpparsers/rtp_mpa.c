@@ -28,14 +28,14 @@
 
 #include "rtpframer.h"
 
-static rtpfrmr_info served = {
+static rtpparser_info served = {
 	14,
 	{"MPA", NULL}
 };
 
 RTPFRMR(mpa);
 
-static int fill_buffer(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+static int rtp_parse(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 {
 	rtp_pkt *pkt;
 	size_t pkt_len; //, dst_used=0;
@@ -64,7 +64,7 @@ static int fill_buffer(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, c
 #endif
 }
 
-static int fill_buffer_nonblock(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+static int rtp_parse_nonblock(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 {	
 	rtp_pkt *pkt;
 	size_t pkt_len; //, dst_used=0;

@@ -7,7 +7,7 @@ noinst_HEADERS	=	bufferpool.h \
 					methods.h \
 					preferences.h \
 					rtcp.h \
-					rtpframers.h
+					rtpparsers.h
 					rtp.h \
 					rtpptdefs.h \
 					rtsp.h \

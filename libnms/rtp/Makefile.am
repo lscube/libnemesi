@@ -1,4 +1,4 @@
-SUBDIRS = rtpframers
+SUBDIRS = rtpparsers
 
 libnmsdir = $(top_srcdir)
 libnmsincludedir = $(libnmsdir)/include
