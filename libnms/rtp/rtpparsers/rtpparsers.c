@@ -32,9 +32,11 @@
 #include "rtpparsers.h"
 
 extern rtpparser rtp_parser_mpa;
+extern rtpparser rtp_parser_mpv;
 
 rtpparser *rtpparsers[] = {
 	&rtp_parser_mpa,
+	&rtp_parser_mpv,
 	NULL
 };
 

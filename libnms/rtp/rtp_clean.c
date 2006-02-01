@@ -39,6 +39,7 @@ void rtp_clean(void *args)
 	
 	nms_printf(NMSML_DBG1, "RTP Thread is dying suicide!\n");
 	pthread_mutex_lock(&rtp_th->syn);
+//	pthread_mutex_trylock(&rtp_th->syn);
 	
 	while(rtp_sess != NULL) {
 		close(rtp_sess->rtpfd);

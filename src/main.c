@@ -33,9 +33,6 @@
 #include <nemesi/egui.h>
 #include <nemesi/decoder.h>
 
-#define GLOBAL_RTP_DEFS
-#include <nemesi/rtpptdefs.h>
-
 #define GLOBAL_PREFERENCES
 #include <nemesi/preferences.h>
 

@@ -32,14 +32,15 @@
 
 int nms_close(struct rtsp_ctrl *rtsp_ctl, void (*throbber_func)(void *), void *targ)
 {
+//	if( !dec_(rtsp_ctrl) )
+//		exit( nms_printf(NMSML_FATAL, "Cannot initialize decoder\n") );
+
 	rtsp_close(rtsp_ctl);
-//		throbber(rtsp_ctrl);
+	
 	if (throbber_func)
 		throbber_func(targ);
 	else
 		rtsp_wait(rtsp_ctl);
-//	if( !dec_(rtsp_ctrl) )
-//		exit( nms_printf(NMSML_FATAL, "Cannot initialize decoder\n") );
 		
 	return 0;
 }

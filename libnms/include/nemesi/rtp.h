@@ -187,6 +187,7 @@ struct rtp_ssrc {
 	struct rtp_ssrc_stats ssrc_stats;
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
+	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payolad changes at its best.
 	struct rtp_ssrc *next;
 };
 

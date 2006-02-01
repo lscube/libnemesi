@@ -57,7 +57,7 @@ void *decoder(void *args)
 	double ts_elapsed;
 #ifdef TS_SCHEDULE
 	struct timeval tv_min_next;
-	double ts_min_next = 0;
+	double ts_min_next = 0, ts_next;
 #else // utilizzo lo scheduler basato su FAST CYCLES
 	struct timeval tvcheck;
 	struct timeval tvdiff; 
@@ -110,10 +110,10 @@ void *decoder(void *args)
 			/*by sbiro: ciclo per ogni sessione rtp*/
 			for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 			
-				/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
-				for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next) {
+			/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
+			for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next) {
 
-					pkt=rtp_get_pkt(rtp_blk, stm_src, &len); // this line will block untill rtp cannot give a valid rtp packet.
+				if ( (pkt=rtp_get_pkt(rtp_n_blk, stm_src, &len)) ) {
 				/**/	
 					nms_printf(NMSML_DBG3, "Version Number:%d\n", pkt->ver);
 					nms_printf(NMSML_DBG3, "Payload Type:%d\n", pkt->pt);
@@ -190,18 +190,22 @@ void *decoder(void *args)
 /**/	
 						rtp_rm_pkt(rtp_sess, stm_src);
 
-					}
+					} else
+						nms_printf(NMSML_DBG3, "*** not taken:%d\n", ntohs(pkt->seq));
+				}
 #ifdef TS_SCHEDULE
 				/* FV: controls on timestamp */
 //				pkt=rtp_get_pkt(stm_src, NULL); // next packet
-				if ( !ts_min_next ) {
-//					ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
-					ts_min_next = rtp_get_next_ts(rtp_blk, stm_src);
-					nms_printf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
-					nms_printf(NMSML_DBG3, "\nNuovo min: %3.2f\n", ts_min_next);
-				} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
-//					ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
-					ts_min_next = min(ts_min_next, rtp_get_next_ts(rtp_blk, stm_src));
+				if ( (ts_next=rtp_get_next_ts(rtp_n_blk, stm_src)) >= 0 ) {
+					if ( !ts_min_next ) {
+//						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
+						ts_min_next = ts_next;
+						nms_printf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
+						nms_printf(NMSML_DBG3, "\nNew min: %3.2f\n", ts_min_next);
+					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
+//						ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
+						ts_min_next = min(ts_min_next, ts_next);
+				}
 #endif // TS_SCHEDULE
 			}
 #ifndef TS_SCHEDULE
