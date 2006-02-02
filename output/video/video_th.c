@@ -48,7 +48,7 @@ void *video_th(void *outc)
 	nms_audio *audioc = ((nms_output *)outc)->audio;
 	nms_vid_fnc *vfuncs = videoc->functions;
 	nms_au_fnc *afuncs=NULL;
-	struct timeval tvsleep, tvstart, tvstop;
+	struct timeval tvsleep={0,0}, tvstart, tvstop;
 	float fps=DEF_FPS;
 	double last_pts = 0, next_pts = 0;
 #ifdef AV_SYNC
@@ -70,20 +70,17 @@ void *video_th(void *outc)
 	} else {
 		nms_printf(NMSML_VERB, "Video Thread Started: using default fps = %f\n", fps);
 	}
-#if 1
-	tvsleep.tv_sec = 1/fps;// SLEEP_MS / 1000;
-	tvsleep.tv_usec = (long)(1000000/fps) % 1000000; //(SLEEP_MS % 1000) * 1000;
-#else
-	tvsleep.tv_sec = ((nms_output *)outc)->sysbuff_ms / 1000;
-	tvsleep.tv_usec = (((nms_output *)outc)->sysbuff_ms * 1000 ) % 1000000;
-#endif
+
+//	tvsleep.tv_sec = 1/fps;// SLEEP_MS / 1000;
+//	tvsleep.tv_usec = (long)(1000000/fps) % 1000000; //(SLEEP_MS % 1000) * 1000;
+
 	gettimeofday(&tvstart, NULL);
 	tvstop.tv_sec = tvstart.tv_sec;
 	tvstop.tv_usec = tvstart.tv_usec;
 
 	for (;;) {
 		timeval_add(&tvstart, &tvstart, &tvsleep);
-		if ( !timeval_subtract(&tvstop, &tvstart, &tvstop) && (tvstop.tv_usec > 10000) ) {
+		if ( !timeval_subtract(&tvstop, &tvstart, &tvstop) && ((tvstop.tv_sec > 0) || (tvstop.tv_usec > 10000)) ) {
 			nms_printf(NMSML_DBG3, "sleep for: %ld %ld\n", tvstop.tv_sec, tvstop.tv_usec);
 			select(0, NULL, NULL, NULL, &tvstop);
 		} else

@@ -244,6 +244,7 @@ typedef enum {rtp_blk, rtp_n_blk} rtp_fnc_type; // function blocking or non bloc
 
 // wrappers for rtp_pkt
 rtp_pkt *rtp_get_pkt(rtp_fnc_type, struct rtp_ssrc *, int *);
+rtp_pkt *rtp_get_n_pkt(rtp_fnc_type, struct rtp_ssrc *, int *, uint32);
 inline int rtp_rm_pkt(struct rtp_session *, struct rtp_ssrc *);
 int rtp_fill_buffer(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 double rtp_get_next_ts(rtp_fnc_type, struct rtp_ssrc *);

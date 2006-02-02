@@ -305,7 +305,7 @@ static uint32 config(uint32 width, uint32 height, uint32 d_width, uint32 d_heigh
 	if (!priv->sysbuff_ms || !fps )
 		buff_size = VBUFFER_SIZE;
 	else
-		buff_size = ( fps * priv->sysbuff_ms + 500 ) / 1000;
+		buff_size = ( fps * priv->sysbuff_ms + 500 /*rounded to the higher frame*/ ) / 1000;
 	if (priv->vbuffer)
 		free_vbuffer(priv->vbuffer);
 	priv->vbuffer = new_vbuffer(buff_size);

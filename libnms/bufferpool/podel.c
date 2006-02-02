@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:podel.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -58,6 +58,8 @@ int podel(playout_buff *po, int index)
 		po->pobuff[po->pobuff[index].prev].next = po->pobuff[index].next;
 	else
 		po->pohead = po->pobuff[index].next;
+		
+	po->pocount--;
 
 	pthread_mutex_unlock(&(po->po_mutex));
 

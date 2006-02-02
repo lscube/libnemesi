@@ -141,6 +141,7 @@ typedef struct {
 									shared structures of playout buffer. */
 	pthread_cond_t cond_empty; /*!< Conditional variable used for signaling
 									in case of playout buffer empty */
+	int pocount;/*!< List members count. */
 	int pohead; /*!< List head. */
 	int potail; /*!< List tail. */
 	uint32 cycles; /*!< Indice che tiene memoria dei cicli del campo \c

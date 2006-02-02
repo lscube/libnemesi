@@ -47,7 +47,7 @@ nms_audio_buffer *ab_init(uint32 buff_size)
 		return NULL;
 	}
 
-	if ( ((buff->audio_data) = (uint8 *)malloc(buff_size*sizeof(uint8))) ==NULL )
+	if ( ((buff->audio_data) = (uint8 *)malloc(buff_size*sizeof(uint8))) == NULL )
 		RET_ERR(NMSML_FATAL, "Cannot allocate memory.\n")
 
 	buff->read_pos=buff->write_pos=buff->valid_data=buff->len=0;

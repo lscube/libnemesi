@@ -47,6 +47,7 @@ int poinit(playout_buff *po, buffer_pool *bp)
 	po->bufferpool=&(bp->bufferpool);
 	po->pohead = po->potail = -1;
 	po->cycles = 0;
+	po->pocount = 0;
 
 	if ((i = pthread_mutexattr_init(&mutex_attr)) > 0)
 		return i;

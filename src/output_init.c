@@ -63,7 +63,7 @@ int output_init(nms_out_hints *hints)
 	if (hints && hints->video && !strcmp(hints->video, "novideo")) {
 		nms_printf(NMSML_NORM, "No Video\n");
 		nms_outc->video = NULL;
-	} else if ((nms_outc->video=video_preinit(hints ? hints->video : NULL, nms_outc->sysbuff_ms)) == NULL) {
+	} else if ((nms_outc->video=video_preinit(hints ? hints->video : NULL, nms_outc->sysbuff_ms *2 /*XXX: tmp*/ )) == NULL) {
 		if (!nms_outc->audio) {
 			nms_printf(NMSML_ERR, "Video module not available: setting \"output\" to \"null\"\n");
 			rem_avail_pref("output card");

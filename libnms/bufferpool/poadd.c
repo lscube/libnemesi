@@ -70,6 +70,8 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 			po->pobuff[i].prev = index;
 		po->pobuff[index].prev = -1;
 		po->cycles=cycles;
+		
+		po->pocount++;
 	} else {		
 		if (i == -1) { /* inserimento in coda*/
 			i = po->potail;
@@ -81,6 +83,8 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 		po->pobuff[index].next = po->pobuff[i].next;
 		po->pobuff[i].next = index;
 		po->pobuff[index].prev = i;
+		
+		po->pocount++;
 		
 		pthread_mutex_unlock(&(po->po_mutex));
 		return PKT_MISORDERED;

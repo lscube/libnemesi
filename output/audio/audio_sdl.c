@@ -247,8 +247,8 @@ static uint32 control(uint32 cmd, void *arg)
 			break;
 		case ACTRL_GET_ELAPTM:
 			if (sdl_priv.last_pts)
-				*((double *)arg) = sdl_priv.last_pts - ((double)(sdl_priv.audio_buffer->len + sdl_priv.aspec.size) * 1000.0 ) / (double)(sdl_priv.aspec.freq * \
-					sdl_priv.aspec.channels * sdl_priv.bytes_x_sample);
+				*((double *)arg) = sdl_priv.last_pts - ((double)( sdl_priv.aspec.size + sdl_priv.audio_buffer->buff_size/*len*/) * 1000.0 ) / \
+					(double)(sdl_priv.aspec.freq * sdl_priv.aspec.channels * sdl_priv.bytes_x_sample);
 			else
 				*((double *)arg) = 0;
 			break;

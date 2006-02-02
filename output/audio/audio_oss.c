@@ -193,8 +193,8 @@ static uint32 control(uint32 cmd, void *arg)
 #ifdef SNDCTL_DSP_GETODELAY
 				}
 #endif
-				*((double *)arg) = oss_priv.last_pts - ( (double)( bytes + oss_priv.audio_buffer->len) * 1000.0 ) / (double)(oss_priv.freq * oss_priv.channels * \
-						oss_priv.bytes_x_sample);
+				*((double *)arg) = oss_priv.last_pts - ( (double)( bytes + oss_priv.audio_buffer->buff_size /*len*/) * 1000.0 ) / \
+					(double)(oss_priv.freq * oss_priv.channels * oss_priv.bytes_x_sample);
 			} else
 				*((double *)arg) = 0;
 			break;
