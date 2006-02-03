@@ -46,11 +46,11 @@ rtp_pkt *rtp_get_n_pkt(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src, int *len
 	int i;
 	
 	pthread_mutex_lock(&(stm_src->po.po_mutex));
-	if (stm_src->po.pocount < n+1) {
-		pthread_mutex_unlock(&(stm_src->po.po_mutex));
-		return NULL;
+	i = stm_src->po.potail;
+	while ( (i >= 0) && (n-- > 0) ) {
+		i = stm_src->po.pobuff[i].next;
 	}
-	if(stm_src->po.potail < 0) {
+	if(i < 0) {
 		if (fnc_type == rtp_blk)
 			pthread_cond_wait(&(stm_src->po.cond_empty), &(stm_src->po.po_mutex));
 		else {
@@ -62,8 +62,8 @@ rtp_pkt *rtp_get_n_pkt(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src, int *len
 	
 	
 	if (len)
-		*len = (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
+		*len = (stm_src->po.pobuff[i]).pktlen;
 //	pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
 	
-	return (rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
+	return (rtp_pkt *)(*(stm_src->po.bufferpool)+i);
 }
