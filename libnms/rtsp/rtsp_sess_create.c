@@ -41,7 +41,7 @@ struct rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
 			rtsp_s->pathname=urlname;
 	} else {
 		/* shawill: using strdup insted
-		if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(sizeof(char)*(strlen(content_base)+1)))==NULL) {
+		if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(strlen(content_base)+1))==NULL) {
 			nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 			return NULL;
 		}

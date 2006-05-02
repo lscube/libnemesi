@@ -35,7 +35,7 @@ int rtcp_set_ssrc_sdes(struct rtp_ssrc *stm_src, rtcp_sdes_item_t *item)
 	if ( str != NULL ){
 		if ( memcmp(str, item->data, item->len) != 0){
 			free(str);
-			if ( (str=(((char **)(&(stm_src->ssrc_sdes)))[item->type])=(char *)malloc(sizeof(char)*(item->len+1))) == NULL )
+			if ( (str=(((char **)(&(stm_src->ssrc_sdes)))[item->type])=(char *)malloc(item->len+1)) == NULL )
 				return nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 
 			memcpy(str, item->data, item->len);
@@ -43,7 +43,7 @@ int rtcp_set_ssrc_sdes(struct rtp_ssrc *stm_src, rtcp_sdes_item_t *item)
 		}
 			
 	} else {
-		if ( (str=((char **)(&(stm_src->ssrc_sdes)))[item->type]=(char *)malloc(sizeof(char)*(item->len+1))) == NULL )
+		if ( (str=((char **)(&(stm_src->ssrc_sdes)))[item->type]=(char *)malloc(item->len+1)) == NULL )
 			return nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 
 		memcpy(str, item->data, item->len);

@@ -44,14 +44,13 @@ int rtsp_recv(struct rtsp_thread *rtsp_th)
 	}
 	
 	if (((rtsp_th->in_buffer).size) == 0) {
-		if (((rtsp_th->in_buffer).data = (char *) malloc((n + 1) * sizeof(char))) == NULL)
+		if (((rtsp_th->in_buffer).data = (char *) malloc(n + 1)) == NULL)
 			return nms_printf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
 
 		strcpy((rtsp_th->in_buffer).data, buffer);
 	} else {
 		if (((rtsp_th->in_buffer).data = (char *) realloc((rtsp_th->in_buffer).data,
-								  (n + (rtsp_th->in_buffer).size +
-								   1) * sizeof(char))) == NULL)
+								  n + (rtsp_th->in_buffer).size + 1)) == NULL)
 			return nms_printf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
 			
 		strcat((rtsp_th->in_buffer).data, buffer);

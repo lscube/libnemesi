@@ -73,7 +73,7 @@ int load_plugins(void)
 			if(lt_dlsetsearchpath(NEMESI_PLUGIN_DIR_DEFAULT))
 				return 1;
 			/* use strdup
-			if ((path = (char *) malloc((strlen(NEMESI_PLUGIN_DIR_DEFAULT) + 1) * sizeof(char))) == NULL)
+			if ((path = (char *) malloc(strlen(NEMESI_PLUGIN_DIR_DEFAULT) + 1)) == NULL)
 				return nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 			strcpy(path, NEMESI_PLUGIN_DIR_DEFAULT);
 			*/
@@ -88,7 +88,7 @@ int load_plugins(void)
 	while ((dentry = readdir(plug_dir)) != NULL) {
 
 		free(str);
-		if ((str=(char *)malloc((strlen(path) + strlen(dentry->d_name) + 2)*sizeof(char)))==NULL)
+		if ((str=(char *)malloc(strlen(path) + strlen(dentry->d_name) + 2))==NULL)
 			return nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 		strcpy(str, path);
 		strcat(str, "/");
@@ -106,7 +106,7 @@ int load_plugins(void)
 		if (plugins == NULL){
 			plugins=(struct plugin *)malloc(sizeof(struct plugin));
 			/* use strdup
-			plugins->path=(char *)malloc(sizeof(char)*(strlen(str)+1));
+			plugins->path=(char *)malloc(strlen(str)+1);
 			strcpy(plugins->path,str);
 			*/
 			plugins->path = strdup(str);
@@ -118,7 +118,7 @@ int load_plugins(void)
 		if (pp->next == NULL && strcmp(pp->path, str)){
 			pp->next=(struct plugin *)malloc(sizeof(struct plugin));
 			/* use strdup
-			pp->next->path=(char *)malloc(sizeof(char)*(strlen(str)+1));
+			pp->next->path=(char *)malloc(strlen(str)+1);
 			strcpy(pp->next->path,str);
 			*/
 			pp->next->path = strdup(str);

@@ -39,9 +39,9 @@ int set_rtsp_sessions(struct rtsp_thread *rtsp_th, int content_length, char *con
 			if ( !(rtsp_th->rtsp_queue=rtsp_sess_create(rtsp_th->urlname, content_base)) )
 				return 1;
 
-			if ( !(rtsp_th->rtsp_queue->body=(char *)malloc((content_length+1)*sizeof(char))) )
+			if ( !(rtsp_th->rtsp_queue->body=(char *)malloc(content_length+1)) )
 				return nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
-			memcpy(rtsp_th->rtsp_queue->body, body, content_length*sizeof(char));
+			memcpy(rtsp_th->rtsp_queue->body, body, content_length);
 			rtsp_th->rtsp_queue->body[content_length]='\0';
 
 			rtsp_th->type=M_ON_DEMAND;

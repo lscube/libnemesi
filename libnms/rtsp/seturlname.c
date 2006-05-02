@@ -35,7 +35,7 @@ int seturlname(struct rtsp_thread *rtsp_th, char *urlname)
 	if (urltokenize(urlname, &server, &port, &path) > 0)
 		return 1;
 	if (port == NULL) {
-		if ( (port = (char *) malloc(sizeof(char) * 4)) )
+		if ( (port = (char *) malloc(4)) )
 			sprintf(port, "%d", RTSP_DEFAULT_PORT);
 		else
 			return 1;
@@ -43,13 +43,13 @@ int seturlname(struct rtsp_thread *rtsp_th, char *urlname)
 	nms_printf(NMSML_DBG1, "server %s port %s\n", server, port);
 
 	if ((rtsp_th->urlname =
-	     (char *) malloc(sizeof(char) * (strlen("rtsp://") + strlen(server) + strlen(path) + 1))) == NULL)
+	     (char *) malloc(strlen("rtsp://") + strlen(server) + strlen(path) + 1)) == NULL)
 		return 1;
 	strcpy(rtsp_th->urlname, "rtsp://");
 	strcat(rtsp_th->urlname, server);
 	strcat(rtsp_th->urlname, path);
 #if 0 // port is already an allocated space => we use this without duplicating string;
-	if ((rtsp_th->server_port = (char *) malloc(sizeof(char) * (strlen(port) + 1))) == NULL)
+	if ((rtsp_th->server_port = (char *) malloc(strlen(port) + 1)) == NULL)
 		return 1;
 	strcpy(rtsp_th->server_port, port);
 #endif

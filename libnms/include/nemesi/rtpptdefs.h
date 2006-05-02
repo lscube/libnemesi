@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rtpptdefs.h 271 2006-01-20 18:45:51Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -49,6 +49,13 @@ typedef enum {
 	AV = 2,
 	NA = 3
 } rtp_media_type_t;
+
+typedef struct {
+	uint8 channels;				/* Channels */
+} rtp_audio_t;
+
+typedef struct {
+} rtp_video_t;
 
 struct rtp_pt_def {
 	char name[RTP_DEF_MAX_NAME_LEN];	/* Encoding Name */

@@ -35,7 +35,7 @@ char *strdup(const char *s)
 {
 	char *dup;
 
-	if ((dup = (char *) malloc(sizeof(char) * (strlen(s) + 1))) == NULL) {
+	if ((dup = (char *) malloc(strlen(s) + 1)) == NULL) {
 		perror("strdup");
 		return NULL;
 	}

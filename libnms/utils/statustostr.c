@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:statustostr.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -34,21 +34,21 @@ char *statustostr(int status)
 
 	switch(status){
 		case INIT:
-			// return strcpy((char *)calloc(4+1,sizeof(char)),"INIT");
+			// return strcpy((char *)calloc(4+1, 1),"INIT");
 			return "INIT";
 		case READY:
-			// return strcpy((char *)calloc(5+1,sizeof(char)),"READY");
+			// return strcpy((char *)calloc(5+1, 1),"READY");
 			return "READY";
 		case PLAYING:
-			// return strcpy((char *)calloc(7+1,sizeof(char)),"PLAYING");
+			// return strcpy((char *)calloc(7+1, 1),"PLAYING");
 			return "PLAYING";
 		case RECORDING:
-			// return strcpy((char *)calloc(9+1,sizeof(char)),"RECORDING");
+			// return strcpy((char *)calloc(9+1, 1),"RECORDING");
 			return "RECORDING";
 		default:
 			break;
 	}
-	// return strcpy((char *)calloc(4+1,sizeof(char)),"BOUH");
+	// return strcpy((char *)calloc(4+1, 1),"BOUH");
 	return "BOUH";
 
 }

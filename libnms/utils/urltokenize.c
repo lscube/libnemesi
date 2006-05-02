@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:urltokenize.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -38,7 +38,7 @@ int urltokenize(char *urlname, char **host, char **port, char **path)
 	if (host)
 		*host = NULL;
 
-	if ((tokenda = (char *) malloc(sizeof(char) * (strlen(urlname) + 1))) == NULL)
+	if ((tokenda = (char *) malloc(strlen(urlname) + 1)) == NULL)
 		return 1;
 	strcpy(tokenda, urlname);
 	if ((token = strstr(tokenda, "://")) != NULL) {
