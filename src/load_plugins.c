@@ -163,10 +163,10 @@ int load_plugins(void)
 				decoders[pt]=NULL;
 				nms_printf(NMSML_NORM, "lt_dsym() failed loading decode function for plugin %s: %s\n", pp->path, lt_dlerror());
 			}
-			if (!rtp_pt_defs[pt].rate)
-				rtp_pt_defs[pt].rate=RTP_DEF_CLK_RATE;
-			if (!rtp_pt_defs[pt].channels)
-				rtp_pt_defs[pt].channels=1;
+			if (!rtp_pt_defs[pt]->rate)
+				rtp_pt_defs[pt]->rate=RTP_DEF_CLK_RATE;
+			if ((rtp_pt_defs[pt]->type == AU) && !((rtp_audio *)rtp_pt_defs[pt])->channels)
+				((rtp_audio *)rtp_pt_defs[pt])->channels=1;
 			nms_printf(NMSML_NORM, "Ok! Loaded plugin for RTP Payload Type %d.\n", pt);
 		}
 	}

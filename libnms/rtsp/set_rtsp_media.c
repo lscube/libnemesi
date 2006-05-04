@@ -88,22 +88,23 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 								break;
 							}
 							if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){
-								strncpy(rtp_pt_defs[pt].name, tkn, (RTP_DEF_MAX_NAME_LEN - 1));
-								rtp_pt_defs[pt].name[(RTP_DEF_MAX_NAME_LEN - 1)]=0;
+								strncpy(rtp_pt_defs[pt]->name, tkn, (RTP_DEF_MAX_NAME_LEN - 1));
+								rtp_pt_defs[pt]->name[(RTP_DEF_MAX_NAME_LEN - 1)]=0;
 							}
 							else {
-								strncpy(rtp_pt_defs[pt].name, tkn, ch - tkn);
-								rtp_pt_defs[pt].name[ch-tkn]=0;
+								strncpy(rtp_pt_defs[pt]->name, tkn, ch - tkn);
+								rtp_pt_defs[pt]->name[ch-tkn]=0;
 							}
 							tkn=++ch;
-							sscanf(tkn, "%u/%u", (unsigned *)&(rtp_pt_defs[pt].rate), (unsigned *)&(rtp_pt_defs[pt].channels));
 
-							if ( !strncmpcase(sdp_m->m, "audio", 5/*strlen("audio")*/) )
-								rtp_pt_defs[pt].type=AU;
-							else if ( !strncmpcase(sdp_m->m, "video", 5/*strlen("video")*/) )
-								rtp_pt_defs[pt].type=VI;
-							else
-								rtp_pt_defs[pt].type=NA;
+							if ( !strncmpcase(sdp_m->m, "audio", 5/*strlen("audio")*/) ) {
+								rtp_pt_defs[pt]->type=AU;
+								sscanf(tkn, "%u/%u", (unsigned *)&(rtp_pt_defs[pt]->rate), (unsigned *)&(((rtp_audio *)rtp_pt_defs[pt])->channels));
+							} else if ( !strncmpcase(sdp_m->m, "video", 5/*strlen("video")*/) ) {
+								rtp_pt_defs[pt]->type=VI;
+								sscanf(tkn, "%u", (unsigned *)&(rtp_pt_defs[pt]->rate));
+							} else
+								rtp_pt_defs[pt]->type=NA;
 						} else {
 							// shawill: should be an error or a warning?
 							nms_printf(NMSML_WARN, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");

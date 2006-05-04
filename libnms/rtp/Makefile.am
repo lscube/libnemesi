@@ -26,7 +26,8 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtcp_to_connect.c \
 			rtp_transport_set.c \
 			rtp_transport_get.c \
-			rtp_transport_wrappers.c
+			rtp_transport_wrappers.c \
+			rtpptdefs.c
 
 librtp_la_LDFLAGS = -static
 librtp_la_LIBADD = rtpparsers/librtpparsers.la

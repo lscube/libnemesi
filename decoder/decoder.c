@@ -121,7 +121,7 @@ void *decoder(void *args)
 					nms_printf(NMSML_DBG3, "SSRC Number:%lu\n", ntohl(pkt->ssrc));
 					nms_printf(NMSML_DBG3, "RTP Timestamp:%lu\n", ntohl(pkt->time));
 				/**/	
-					ts_elapsed=((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
+					ts_elapsed=((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt]->rate;
 					tv_elapsed.tv_sec=(long)ts_elapsed;
 					tv_elapsed.tv_usec=(long)((ts_elapsed-tv_elapsed.tv_sec)*1000000);
 
@@ -198,12 +198,12 @@ void *decoder(void *args)
 //				pkt=rtp_get_pkt(stm_src, NULL); // next packet
 				if ( (ts_next=rtp_get_next_ts(rtp_n_blk, stm_src)) >= 0 ) {
 					if ( !ts_min_next ) {
-//						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate;
+//						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt]->rate;
 						ts_min_next = ts_next;
-						nms_printf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt].rate);
+						nms_printf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_pt_defs[pkt->pt]->rate);
 						nms_printf(NMSML_DBG3, "\nNew min: %3.2f\n", ts_min_next);
 					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
-//						ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt].rate);
+//						ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_pt_defs[pkt->pt]->rate);
 						ts_min_next = min(ts_min_next, ts_next);
 				}
 #endif // TS_SCHEDULE
