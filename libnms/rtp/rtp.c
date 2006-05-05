@@ -28,10 +28,6 @@
 
 #include <nemesi/rtp.h>
 
-// #define GLOBAL_RTP_DEFS
-// #include <nemesi/rtpptdefs.h>
-
-
 #define PO_BUFF_SIZE_SEC 0
 #define PO_BUFF_SIZE_MSEC 700
 

@@ -48,6 +48,7 @@
 #include <nemesi/types.h>
 #include <nemesi/utils.h>
 #include <nemesi/wsocket.h>
+#include <nemesi/rtpptdefs.h>
 
 #define RTP_VERSION 2
 
@@ -206,6 +207,7 @@ struct rtp_session {
 	struct rtp_ssrc *ssrc_queue;
 	struct rtp_conflict *conf_queue;
 	buffer_pool bp;
+	rtp_pt **rtpptdefs;
 	struct rtp_session *next;
 	pthread_mutex_t syn;
 };
