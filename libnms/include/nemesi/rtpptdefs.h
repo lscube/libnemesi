@@ -77,6 +77,7 @@ typedef struct rtp_pt_def {
 
 extern rtp_pt *rtp_pt_defs[128];
 
+rtp_pt **rtpptdefs_new(void);
 rtp_audio *rtp_audio_new(char *enc_name);
 rtp_video *rtp_video_new(char *enc_name);
 rtp_audio_video *rtp_audio_video_new(char *enc_name);

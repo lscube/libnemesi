@@ -136,7 +136,14 @@ rtp_pt *rtp_pt_defs[128] = {
 
 rtp_pt **rtpptdefs_new(void)
 {
-	return NULL;
+	rtp_pt **new_defs;
+	
+	if ( !(new_defs=malloc(sizeof(rtp_pt_defs))) )
+		return NULL;
+		
+	memcpy(new_defs, rtp_pt_defs, sizeof(rtp_pt_defs));
+	
+	return new_defs;
 }
 
 rtp_audio *rtp_audio_new(char *enc_name)

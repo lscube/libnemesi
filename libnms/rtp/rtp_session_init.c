@@ -89,6 +89,9 @@ struct rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 	rtp_sess->sess_stats.initial=1;
 	rtp_sess->sess_stats.avg_rtcp_size=200; /* RR + SDES ~= 200 Bytes */
 	rtp_sess->sess_stats.rtcp_bw=BANDWIDTH;
+	
+	// RP Payload types definitions:
+	rtp_sess->rtpptdefs = rtpptdefs_new();
 
 	return rtp_sess;
 }
