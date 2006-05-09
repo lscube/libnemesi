@@ -74,13 +74,12 @@ typedef struct rtp_pt_def {
 } rtp_pt;
 
 #define RTP_PT(x) ((rtp_pt *)x)
-
-extern rtp_pt *rtp_pt_defs[128];
+#define RTP_AUDIO(x) ((rtp_audio *)x)
+#define RTP_VIDEO(x) ((rtp_video *)x)
+#define RTP_AUDIO_VIDEO(x) ((rtp_audio_video *)x)
 
 rtp_pt **rtpptdefs_new(void);
-rtp_audio *rtp_audio_new(char *enc_name);
-rtp_video *rtp_video_new(char *enc_name);
-rtp_audio_video *rtp_audio_video_new(char *enc_name);
+rtp_pt *rtp_pt_new(rtp_media_type mtype, char *enc_name);
 int rtp_dynpt_set (rtp_pt *defs[], rtp_pt *pt, uint8 value);
 
 #endif

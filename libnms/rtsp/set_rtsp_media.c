@@ -40,7 +40,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 	sdp_attr *sdp_attr;
 	char *tkn, *ch;
 	uint8 pt;
-	
+	rtp_pt *rtppt;
 
 	switch (rtsp_th->descr_fmt) {
 		case DESCRIPTION_SDP_FORMAT :
@@ -87,24 +87,27 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 								nms_printf(NMSML_WARN, "Invalid field rtpmap.\n");
 								break;
 							}
-							if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){
-								strncpy(rtp_pt_defs[pt]->name, tkn, (RTP_DEF_MAX_NAME_LEN - 1));
-								rtp_pt_defs[pt]->name[(RTP_DEF_MAX_NAME_LEN - 1)]=0;
+							*ch = '\0';
+							switch (sdp_m->media_type) {
+								case 'A':
+									if ( !(rtppt = rtp_pt_new(AU, tkn)) )
+										return 1;
+									sscanf(ch+1, "%u/%c", &rtppt->rate, &RTP_AUDIO(rtppt)->channels);
+									break;
+								case 'V':
+									if ( !(rtppt = rtp_pt_new(VI, tkn)) )
+										return 1;
+									sscanf(ch+1, "%u", &rtppt->rate);
+									break;
+								default:
+									// not recognized
+									if ( !(rtppt = rtp_pt_new(NA, tkn)) )
+										return 1;
+									break;
 							}
-							else {
-								strncpy(rtp_pt_defs[pt]->name, tkn, ch - tkn);
-								rtp_pt_defs[pt]->name[ch-tkn]=0;
-							}
+							rtp_dynpt_set(curr_rtsp_m->rtp_sess->rtpptdefs, rtppt, pt);
+							*ch='/';
 							tkn=++ch;
-
-							if ( !strncmpcase(sdp_m->m, "audio", 5/*strlen("audio")*/) ) {
-								rtp_pt_defs[pt]->type=AU;
-								sscanf(tkn, "%u/%u", (unsigned *)&(rtp_pt_defs[pt]->rate), (unsigned *)&(((rtp_audio *)rtp_pt_defs[pt])->channels));
-							} else if ( !strncmpcase(sdp_m->m, "video", 5/*strlen("video")*/) ) {
-								rtp_pt_defs[pt]->type=VI;
-								sscanf(tkn, "%u", (unsigned *)&(rtp_pt_defs[pt]->rate));
-							} else
-								rtp_pt_defs[pt]->type=NA;
 						} else {
 							// shawill: should be an error or a warning?
 							nms_printf(NMSML_WARN, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
@@ -121,90 +124,6 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 			return 1;
 			break;
 	}
-#if 0
-	do {
-		if ( tkn==NULL )
-			tkn=strtok(*media_des, "\r\n");
-		else
-			tkn=strtok(NULL, "\r\n");
-		if ( tkn==NULL ) {
-			nms_printf(NMSML_ERR, "Invalid Media description section.\n");
-			return 1;
-		}
-		switch (*tkn) {
-			case 'm':  /* creo la struttura per il nuovo medium */
-				if ( curr_rtsp_m==NULL ) {
-					/* primo medium */
-					if ( ( curr_rtsp_s->media_queue=curr_rtsp_m=rtsp_med_create(rtsp_th->fd) )==NULL )
-						return 1;
-				} else if ( rtsp_th->type==CONTAINER ) {
-					/* media nella stessa sessione */
-					if ( (curr_rtsp_m->next=rtsp_med_create(rtsp_th->fd))==NULL )
-						return 1;
-					curr_rtsp_m->rtp_sess->next=curr_rtsp_m->next->rtp_sess;
-					curr_rtsp_m=curr_rtsp_m->next;
-				} else if ( rtsp_th->type==M_ON_DEMAND ) {
-					/* una sessione per ogni medium */
-					if ( (curr_rtsp_s->next=rtsp_sess_dup(curr_rtsp_s))==NULL )
-						return 1;
-					curr_rtsp_s=curr_rtsp_s->next;
-					if ( (curr_rtsp_s->media_queue=rtsp_med_create(rtsp_th->fd))==NULL )
-						return 1;
-					curr_rtsp_m->rtp_sess->next=curr_rtsp_s->media_queue->rtp_sess;
-					curr_rtsp_m=curr_rtsp_s->media_queue;
-				}
-				(curr_rtsp_m->medium_info).m=tkn+2;
-				break;
-			case 'i':
-				(curr_rtsp_m->medium_info).i=tkn+2;
-				break;
-			case 'c':
-				(curr_rtsp_m->medium_info).c=tkn+2;
-				break;
-			case 'b':
-				(curr_rtsp_m->medium_info).b=tkn+2;
-				break;
-			case 'k':
-				(curr_rtsp_m->medium_info).k=tkn+2;
-				break;
-			case 'a':
-				tkn+=2;
-				if ( !strncmpcase(tkn, "control", 7) ) {
-					tkn+=7;
-					while ( (*(tkn)==' ') || (*(tkn)==':') )
-						tkn++;
-					curr_rtsp_m->filename=tkn;
-				}
-				if ( !strncmpcase(tkn, "rtpmap", 6) ) {
-					/* We assume the string in the format:
-					 * rtpmap:PaloadType EncodingName/ClockRate/Channels */
-					tkn+=6;
-					while ( (*(tkn)==' ') || (*(tkn)==':') )
-						tkn++;
-					if ( ((pt=(uint8)strtoul(tkn, &tkn, 10)) >= 96) && ( pt <= 127 ) ){
-						while ( *(tkn) == ' ' )
-							tkn++;
-						if ( (ch=strchr(tkn, '/')) == NULL ){
-							nms_printf(NMSML_WARN, "Invalid field rtpmap.\n");
-							break;
-						}
-						if ( (ch - tkn) > (RTP_DEF_MAX_NAME_LEN - 1) ){
-							strncpy(rtp_pt_defs[pt].name, tkn, (RTP_DEF_MAX_NAME_LEN - 1));
-							rtp_pt_defs[pt].name[(RTP_DEF_MAX_NAME_LEN - 1)]=0;
-						}
-						else {
-							strncpy(rtp_pt_defs[pt].name, tkn, ch - tkn);
-							rtp_pt_defs[pt].name[ch-tkn]=0;
-						}
-						tkn=++ch;
-						sscanf(tkn, "%u/%u", (unsigned *)&(rtp_pt_defs[pt].rate), (unsigned *)&(rtp_pt_defs[pt].channels));
-						rtp_pt_defs[pt].type=NA;
-					}
-				}
-				break;
-		}
-	} while ( (tkn+strlen(tkn)-*media_des+2)<length );
-	*media_des=tkn;
-#endif // comment
+
 	return 0;
 }

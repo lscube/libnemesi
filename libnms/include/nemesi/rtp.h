@@ -188,6 +188,7 @@ struct rtp_ssrc {
 	struct rtp_ssrc_stats ssrc_stats;
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
+	rtp_pt **rtpptdefs; // convenience pointer to the same struct as rtp_session. (not to be freed here)
 	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payolad changes at its best.
 	struct rtp_ssrc *next;
 };
@@ -239,6 +240,7 @@ int rtp_ssrc_init(struct rtp_session *, struct rtp_ssrc **, uint32, nms_sockaddr
 #define RTP_FILL_OK 0
 #define RTP_BUFF_EMPTY -1
 #define RTP_PARSE_ERROR -2
+#define RTP_PKT_UNKNOWN -3
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 

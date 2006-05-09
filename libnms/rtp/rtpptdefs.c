@@ -99,7 +99,7 @@
 /* dyn */ static rtp_video h263_1998		= { "H263-1998", VI, 90000, NULL};
 #endif
 
-rtp_pt *rtp_pt_defs[128] = {
+static rtp_pt *rtp_pt_defs[128] = {
 /*   0 */ RTP_PT(&pcmu),		/*   1 */ NULL /* res AU */,	/*   2 */ NULL /* res AU */,	/*   3 */ RTP_PT(&gsm),
 /*   4 */ RTP_PT(&g723),		/*   5 */ RTP_PT(&dvi4_8000),	/*   6 */ RTP_PT(&dvi4_16000),	/*   7 */ RTP_PT(&lpc),
 /*   8 */ RTP_PT(&pcma),		/*   9 */ RTP_PT(&g722),		/*  10 */ RTP_PT(&l16_2),		/*  11 */ RTP_PT(&l16_1),
@@ -146,47 +146,37 @@ rtp_pt **rtpptdefs_new(void)
 	return new_defs;
 }
 
-rtp_audio *rtp_audio_new(char *enc_name)
+rtp_pt *rtp_pt_new(rtp_media_type mtype, char *enc_name)
 {
-	rtp_audio *new;
+	rtp_pt *new;
+	size_t struct_size;
 	
-	if (!(new=malloc(sizeof(rtp_audio))))
+	switch (mtype) {
+		case AU:
+			struct_size = sizeof(rtp_audio);
+			break;
+		case VI:
+			struct_size = sizeof(rtp_video);
+			break;
+		case AV:
+			struct_size = sizeof(rtp_audio_video);
+			break;
+		case NA:
+			struct_size = sizeof(rtp_pt);
+			break;
+		default:
+			return NULL;
+			break;
+	}
+	
+	if ( !(new=calloc(1, struct_size)) )
 		return NULL;
 		
 	strncpy(new->name, enc_name, sizeof(new->name));
 	new->name[sizeof(new->name)]='\0'; // safety end-of-string
 	
-	new->type = AU;
+	new->type = mtype;
 	
-	return new;
-}
-
-rtp_video *rtp_video_new(char *enc_name)
-{
-	rtp_video *new;
-	
-	if (!(new=malloc(sizeof(rtp_video))))
-		return NULL;
-		
-	strncpy(new->name, enc_name, sizeof(new->name));
-	new->name[sizeof(new->name)]='\0'; // safety end-of-string
-	
-	new->type = VI;
-	
-	return new;
-}
-
-rtp_audio_video *rtp_audio_video_new(char *enc_name)
-{
-	rtp_audio_video *new;
-	
-	if (!(new=malloc(sizeof(rtp_audio_video))))
-		return NULL;
-		
-	strncpy(new->name, enc_name, sizeof(new->name));
-	new->name[sizeof(new->name)]='\0'; // safety end-of-string
-	
-	new->type = AV;
 	return new;
 }
 
