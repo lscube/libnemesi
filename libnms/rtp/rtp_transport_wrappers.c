@@ -39,7 +39,7 @@ inline enum deliveries rtp_transport_get_delivery(struct rtp_session *rtp_sess)
 	return rtp_sess->transport.delivery;
 }
 
-inline int rtp_trasnport_get_srcaddrstr(struct rtp_session *rtp_sess, char *addrstr, uint32 strlen)
+inline int rtp_transport_get_srcaddrstr(struct rtp_session *rtp_sess, char *addrstr, uint32 strlen)
 {
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addrstr, strlen);
 }
@@ -49,7 +49,7 @@ inline nms_addr *rtp_transport_get_srcaddr(struct rtp_session *rtp_sess)
 	return &rtp_sess->transport.srcaddr;
 }
 
-inline int rtp_trasnport_get_dstaddrstr(struct rtp_session *rtp_sess, char *addrstr, uint32 strlen)
+inline int rtp_transport_get_dstaddrstr(struct rtp_session *rtp_sess, char *addrstr, uint32 strlen)
 {
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addrstr, strlen);
 }
@@ -135,7 +135,7 @@ inline int rtp_transport_set_delivery(struct rtp_session *rtp_sess, enum deliver
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DELIVERY, &delivery);
 }
 
-inline int rtp_trasnport_set_srcaddrstr(struct rtp_session *rtp_sess, char *address)
+inline int rtp_transport_set_srcaddrstr(struct rtp_session *rtp_sess, char *address)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, address);
 }
@@ -145,7 +145,7 @@ inline int rtp_transport_set_srcaddr(struct rtp_session *rtp_sess, nms_addr *add
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDR, address);
 }
 
-inline int rtp_trasnport_set_dstaddrstr(struct rtp_session *rtp_sess, char *address)
+inline int rtp_transport_set_dstaddrstr(struct rtp_session *rtp_sess, char *address)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, address);
 }

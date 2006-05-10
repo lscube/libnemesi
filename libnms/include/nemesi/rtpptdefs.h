@@ -45,9 +45,9 @@ typedef enum {
 } rtp_media_type;
 
 #define RTP_PT_COMMON_FIELDS	char name[RTP_DEF_MAX_NAME_LEN]; /* Encoding Name */ \
-						rtp_media_type type; /* Media Type: (A)udio, (V)ideo,  (A)udio(/)(V)ideo, (N)ot(/)(A)pplicable */ \
-						uint32 rate; /* Clock Rate - in Hertz*/ \
-						void *private_data; /* private data for rtp playload type*/
+				rtp_media_type type; /* Media Type: (A)udio, (V)ideo,  (A)udio(/)(V)ideo, (N)ot(/)(A)pplicable */ \
+				uint32 rate; /* Clock Rate - in Hertz*/ \
+				void *private_data; /* private data for rtp playload type*/
 
 #define RTP_AUDIO_FIELDS	uint8 channels; /* Channels */
 

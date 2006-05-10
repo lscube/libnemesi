@@ -261,9 +261,9 @@ int rtp_transport_get(struct rtp_session *, int, void *, uint32);
 // rtp transport wrapper functions for rtp_transport_get
 inline char *rtp_transport_get_spec(struct rtp_session *);
 inline enum deliveries rtp_transport_get_delivery(struct rtp_session *);
-inline int rtp_trasnport_get_srcaddrstr(struct rtp_session *, char *, uint32);
+inline int rtp_transport_get_srcaddrstr(struct rtp_session *, char *, uint32);
 inline nms_addr *rtp_transport_get_srcaddr(struct rtp_session *);
-inline int rtp_trasnport_get_dstaddrstr(struct rtp_session *, char *, uint32);
+inline int rtp_transport_get_dstaddrstr(struct rtp_session *, char *, uint32);
 inline nms_addr *rtp_transport_get_dstaddr(struct rtp_session *);
 inline int rtp_transport_get_layers(struct rtp_session *);
 inline enum modes rtp_transport_get_mode(struct rtp_session *);
@@ -283,9 +283,9 @@ inline uint32 rtp_transport_get_ssrc(struct rtp_session *);
 // rtp transport wrapper functions for rtp_transport_set
 // inline char *rtp_transport_set_spec(struct rtp_session *, char *); // not settable
 inline int rtp_transport_set_delivery(struct rtp_session *, enum deliveries);
-inline int rtp_trasnport_set_srcaddrstr(struct rtp_session *, char *);
+inline int rtp_transport_set_srcaddrstr(struct rtp_session *, char *);
 inline int rtp_transport_set_srcaddr(struct rtp_session *, nms_addr *);
-inline int rtp_trasnport_set_dstaddrstr(struct rtp_session *, char *);
+inline int rtp_transport_set_dstaddrstr(struct rtp_session *, char *);
 inline int rtp_transport_set_dstaddr(struct rtp_session *, nms_addr *);
 inline int rtp_transport_set_layers(struct rtp_session *, int);
 inline int rtp_transport_set_mode(struct rtp_session *, enum modes);
