@@ -44,8 +44,6 @@ int set_rtsp_sessions(struct rtsp_thread *rtsp_th, int content_length, char *con
 			memcpy(rtsp_th->rtsp_queue->body, body, content_length);
 			rtsp_th->rtsp_queue->body[content_length]='\0';
                             
-                           nms_printf(NMSML_ERR, "BODY %s\n", body);
-
 			rtsp_th->type=M_ON_DEMAND;
 
 			if (!(rtsp_th->rtsp_queue->info=sdp_session_setup(rtsp_th->rtsp_queue->body, content_length)))
