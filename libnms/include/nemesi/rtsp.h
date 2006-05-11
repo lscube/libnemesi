@@ -192,7 +192,8 @@ struct rtsp_buffer {
 						the rtsp module is busy waiting reply from server*/ \
 			pthread_t rtsp_tid; \
 			char descr_fmt; /* Description format inside RTSP body */ \
-			struct rtsp_session *rtsp_queue;/*!< List of active sessions. */
+			struct rtsp_session *rtsp_queue;/*!< List of active sessions. */ \
+			cc_perm_mask accepted_CC; /* accepted CC licenses */
 
 /*!
  * \brief Main structure for the RTSP module.

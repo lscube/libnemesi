@@ -5,10 +5,10 @@
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
+ *  Copyright (C) 2006 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,21 +26,15 @@
  *  
  * */
 
-#include <nemesi/preferences.h>
+#include <nemesi/main.h>
+#include <nemesi/ccprefs.h>
 
-int list_prefs(void)
+int nms_play(struct rtsp_ctrl *rtsp_ctl, double start, double stop)
 {
-	int i=0;
-
-	fprintf(stderr, "\n\t--- Available preferences are: ---\n\n");
-	while(strcmp((char*)&preferences[i], PREFS_TABLE_END)) {
-		fprintf(stderr, "Name: %s\n", preferences[i].name);
-		fprintf(stderr, "Current Value: %s\n", preferences[i].value);
-		fprintf(stderr, "Availables Values: %s\n", preferences[i].available);
-		fprintf(stderr, "Description: %s\n\n", preferences[i].description);
-		i++;
-	}
+	cc_perm_mask cc_mask;
 	
-	return 0;
+	pref2ccmask(&cc_mask);
+	memcpy(&rtsp_ctl->accepted_CC, &cc_mask, sizeof(cc_perm_mask));
+	
+	return rtsp_play(rtsp_ctl, start, stop);
 }
-

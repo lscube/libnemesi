@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:list_prefs.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -26,35 +26,21 @@
  *  
  * */
 
-#ifndef __UTILS_H
-#define __UTILS_H
+#include <nemesi/preferences.h>
 
-#include <config.h>
+int list_prefs(void)
+{
+	int i=0;
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/time.h>
+	fprintf(stderr, "\n\t--- Available preferences are: ---\n\n");
+	while(strcmp((char*)&preferences[i], PREFS_TABLE_END)) {
+		fprintf(stderr, "Name: %s\n", preferences[i].name);
+		fprintf(stderr, "Current Value: %s\n", preferences[i].value);
+		fprintf(stderr, "Availables Values: %s\n", preferences[i].available);
+		fprintf(stderr, "Description: %s\n\n", preferences[i].description);
+		i++;
+	}
+	
+	return 0;
+}
 
-#include <nemesi/comm.h>
-#include <nemesi/types.h>
-
-#define min(x,y) ((x) < (y) ? (x) : (y))
-#define max(x,y) ((x) > (y) ? (x) : (y))
-
-int urltokenize(char *, char **, char **, char **);
-char *strstrcase(char *, const char *);
-int strncmpcase(const char *, const char *, size_t);
-int strcmpcase(const char *, const char *);
-#if !HAVE_STRDUP
-char *strdup(const char *s);
-#endif /* !HAVE_STRDUP */
-uint32 random32(int);
-int timeval_subtract(struct timeval *, const struct timeval *, const struct timeval *);
-int timeval_add(struct timeval *, const struct timeval *, const struct timeval *);
-
-
-#endif

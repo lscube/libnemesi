@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:rem_avail_pref.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *

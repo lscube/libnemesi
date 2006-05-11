@@ -188,6 +188,7 @@ struct rtp_ssrc {
 	struct rtp_ssrc_stats ssrc_stats;
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
+	struct rtp_session *rtp_sess;
 	rtp_pt **rtpptdefs; // convenience pointer to the same struct as rtp_session. (not to be freed here)
 	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payolad changes at its best.
 	struct rtp_ssrc *next;

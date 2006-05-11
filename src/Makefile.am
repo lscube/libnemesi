@@ -7,7 +7,15 @@ nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libplugins.la
 
-libplugins_la_SOURCES = load_plugins.c \
+libplugins_la_SOURCES = add_avail_pref.c \
+			edit_avail_pref.c \
+			edit_pref.c \
+			get_pref.c \
+			list_prefs.c \
+			load_plugins.c \
+			pref2ccmask.c \
+			rem_avail_pref.c \
+			statustostr.c \
 			unload_plugins.c
 
 libplugins_la_LDFLAGS = -static
@@ -18,7 +26,8 @@ nemesi_SOURCES =	main.c \
 			output_init.c \
 			output_uninit.c \
 			nms_close.c \
-			nms_open.c
+			nms_open.c \
+			nms_play.c
 
 
 nemesi_LDADD =	$(top_srcdir)/etui/libetui.la

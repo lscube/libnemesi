@@ -1,6 +1,8 @@
 noinst_HEADERS	=	audio_driver.h \
 			audio_drivers.h
+			audio_format.h \
 			audio.h \
+			ccprefs.h \
 			decoder.h \
 			diskwriter.h \
 			egui.h \
@@ -8,8 +10,9 @@ noinst_HEADERS	=	audio_driver.h \
 			img_format.h \
 			main.h \
 			output.h \
+			preferences.h \
 			version.h \
 			video_driver.h \
 			video_drivers.h \
-			video.h \
-			video_img.h
+			video_img.h \
+			video.h

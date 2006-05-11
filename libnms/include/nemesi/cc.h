@@ -29,6 +29,8 @@
 #ifndef _LIB_CC_STREAMING
 #define _LIB_CC_STREAMING
 
+#include <string.h>
+
 #include <nemesi/types.h>
 
 /*! If CC_GLOBAL_DATA is defined, we initialize global data containing the
@@ -118,6 +120,8 @@ typedef struct _ccpermsmask {
 	// special license ID
 	CC_BITMASK_T spec_license:4;
 } cc_perm_mask;
+
+#define CC_ACCEPT_ALL(x) memset(&x, 0xFF, sizeof(cc_perm_mask))
 
 //! definition of couples containing name and description for each valid cc license
 #define CC_LICENSE { \

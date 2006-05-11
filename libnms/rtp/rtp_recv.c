@@ -86,7 +86,7 @@ int rtp_recv(struct rtp_session *rtp_sess)
 		case SSRC_KNOWN:
 			update_seq(stm_src, ntohs(pkt->seq));
 			
-			if ( !rtp_sess->rtpptdefs[pkt->pt] && !(rate=(rtp_sess->rtpptdefs[pkt->pt]->rate)) )
+			if ( !rtp_sess->rtpptdefs[pkt->pt] || !(rate=(rtp_sess->rtpptdefs[pkt->pt]->rate)) )
 				rate=RTP_DEF_CLK_RATE;
 	
 			transit = (uint32)(((double)now.tv_sec + (double)now.tv_usec/1000000.0)*(double)rate) - ntohl(pkt->time);
@@ -103,7 +103,7 @@ int rtp_recv(struct rtp_session *rtp_sess)
 			(stm_src->ssrc_stats).probation=MIN_SEQUENTIAL;
 			(stm_src->ssrc_stats).max_seq = ntohs(pkt->seq) - 1;
 			
-			if ( !rtp_sess->rtpptdefs[pkt->pt] && !(rate=(rtp_sess->rtpptdefs[pkt->pt]->rate)) )
+			if ( !rtp_sess->rtpptdefs[pkt->pt] || !(rate=(rtp_sess->rtpptdefs[pkt->pt]->rate)) )
 				rate=RTP_DEF_CLK_RATE;
 			(stm_src->ssrc_stats).transit=(uint32)(((double)now.tv_sec + (double)now.tv_usec/1000000.0)*(double)rate) - ntohl(pkt->time);
 			(stm_src->ssrc_stats).jitter=0;

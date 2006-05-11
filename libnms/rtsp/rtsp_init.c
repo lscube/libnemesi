@@ -101,6 +101,7 @@ struct rtsp_ctrl *rtsp_init(nms_rtsp_hints *hints)
 	rtsp_th->rtsp_queue = NULL;
 	rtsp_th->force_rtp_port = 0;
 #endif
+	CC_ACCEPT_ALL(rtsp_th->accepted_CC);
 
 	rtsp_th->hints = hints;
 	// check for the exactness of values hinted

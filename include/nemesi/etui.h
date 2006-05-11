@@ -101,5 +101,6 @@ int parse_cl(int, char **, nms_cl_opts *);
 int parse_prompt(struct rtsp_ctrl *, char *);
 int tui_event(struct rtsp_ctrl *, char);
 void throbber(void *);
+char *statustostr(int);
 
 #endif
