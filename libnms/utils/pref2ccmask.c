@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
  * */
-
+#if 0
 #include <string.h>
 
 #include <nemesi/ccprefs.h>
@@ -51,4 +51,4 @@ int pref2ccmask(cc_perm_mask *mask)
 		
 	return 0;
 }
-
+#endif

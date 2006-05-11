@@ -44,6 +44,7 @@ int send_play_request(struct rtsp_thread *rtsp_th, char *range)
 		return 1;
 	
 	// CC License check
+#if 0
 	rtsp_med = rtsp_sess->media_queue;
 	memset(&cc_conflict, 0, sizeof(cc_conflict));
 	while ( rtsp_med ) {
@@ -58,7 +59,7 @@ int send_play_request(struct rtsp_thread *rtsp_th, char *range)
 		return 1;
 	}
 	// end of CC part
-
+#endif
 	if ( rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)
 			sprintf(b, "%s %s/%s %s"RTSP_EL"CSeq: %d"RTSP_EL, PLAY_TKN, rtsp_sess->content_base, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));

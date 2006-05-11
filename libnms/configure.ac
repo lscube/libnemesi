@@ -222,7 +222,7 @@ AC_CONFIG_FILES([rtsp/Makefile])
 AC_CONFIG_FILES([wsocket/Makefile])
 AC_CONFIG_FILES([md5/Makefile])
 AC_CONFIG_FILES([utils/Makefile])
-dnl AC_CONFIG_FILES([docs/Makefile])
+AC_CONFIG_FILES([example/Makefile])
 AC_OUTPUT
 
 AC_MSG_NOTICE([config files successfully generated!
