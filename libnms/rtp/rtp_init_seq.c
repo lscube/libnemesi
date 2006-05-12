@@ -1,5 +1,5 @@
 /* * 
- *  $Id$
+ *  $Id:init_seq.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *	Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,14 +27,23 @@
  * */
 
 #include <nemesi/rtp.h>
-#include <nemesi/rtpptdefs.h>
 
-double rtp_get_next_ts(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src)
+void init_seq(struct rtp_ssrc *stm_src, uint16 seq)
 {
-	rtp_pkt *pkt;
+	struct rtp_ssrc_stats *stats=&(stm_src->ssrc_stats);
 
-	if ( !(pkt=rtp_get_pkt(fnc_type, stm_src, NULL)) )
-			return RTP_BUFF_EMPTY;
-			
-	return stm_src->rtp_sess->rtpptdefs[pkt->pt] ? ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->rtpptdefs[pkt->pt]->rate : RTP_PKT_UNKNOWN;
+	stats->base_seq = seq-1; // FIXME: in rfc 3550 it's set to seq.
+	stats->max_seq = seq;
+	stats->bad_seq = RTP_SEQ_MOD + 1;
+	stats->cycles = 0;
+	stats->received = 0;
+	stats->received_prior = 0;
+	stats->expected_prior = 1;
+	
+	// our initializations
+	// enqueue this SSRC in active SSRCs queue of RTP session.
+	stm_src->next_active = stm_src->rtp_sess->active_ssrc_queue;
+	stm_src->rtp_sess->active_ssrc_queue = stm_src;
+	
+	return;
 }

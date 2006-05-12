@@ -1,5 +1,5 @@
 /* * 
- *  $Id:init_seq.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,17 +28,19 @@
 
 #include <nemesi/rtp.h>
 
-void init_seq(struct rtp_ssrc *stm_src, uint16 seq)
+struct rtp_ssrc *rtp_next_active_ssrc(struct rtp_ssrc *ssrc)
 {
-	struct rtp_ssrc_stats *stats=&(stm_src->ssrc_stats);
-
-	stats->base_seq = seq-1;
-	stats->max_seq = seq;
-	stats->bad_seq = RTP_SEQ_MOD + 1;
-	stats->cycles = 0;
-	stats->received = 0;
-	stats->received_prior = 0;
-	stats->expected_prior = 1;
+	struct rtp_session *rtp_sess;
 	
-	return;
+	if (!ssrc)
+		return NULL;
+		
+	if (ssrc->next_active)
+		return ssrc->next_active;
+	
+	for (rtp_sess=ssrc->rtp_sess->next; rtp_sess; rtp_sess=rtp_sess->next)
+		if (rtp_sess->active_ssrc_queue)
+			return rtp_sess->active_ssrc_queue;
+	
+	return NULL;
 }

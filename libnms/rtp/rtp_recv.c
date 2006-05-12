@@ -84,7 +84,7 @@ int rtp_recv(struct rtp_session *rtp_sess)
 
 	switch ( rtp_ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, &server, RTP) ) {
 		case SSRC_KNOWN:
-			update_seq(stm_src, ntohs(pkt->seq));
+			rtp_update_seq(stm_src, ntohs(pkt->seq));
 			
 			if ( !rtp_sess->rtpptdefs[pkt->pt] || !(rate=(rtp_sess->rtpptdefs[pkt->pt]->rate)) )
 				rate=RTP_DEF_CLK_RATE;

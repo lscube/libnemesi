@@ -188,10 +188,11 @@ struct rtp_ssrc {
 	struct rtp_ssrc_stats ssrc_stats;
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
-	struct rtp_session *rtp_sess;
-	rtp_pt **rtpptdefs; // convenience pointer to the same struct as rtp_session. (not to be freed here)
+	struct rtp_session *rtp_sess; // RTP session SSRC belogns to.
+//	rtp_pt **rtpptdefs; // convenience pointer to the same struct as rtp_session. (not to be freed here)
 	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payolad changes at its best.
-	struct rtp_ssrc *next;
+	struct rtp_ssrc *next; // next known SSRC
+	struct rtp_ssrc *next_active; // next active SSRC
 };
 
 struct rtp_conflict {
@@ -206,7 +207,8 @@ struct rtp_session {
 	int rtcpfd;
 	struct rtp_transport transport;
 	struct rtp_session_stats sess_stats;
-	struct rtp_ssrc *ssrc_queue;
+	struct rtp_ssrc *ssrc_queue; // queue of all known SSRCs
+	struct rtp_ssrc *active_ssrc_queue; // queue of active SSRCs
 	struct rtp_conflict *conf_queue;
 	buffer_pool bp;
 	rtp_pt **rtpptdefs;
@@ -254,6 +256,7 @@ inline int rtp_rm_pkt(struct rtp_session *, struct rtp_ssrc *);
 int rtp_fill_buffer(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 double rtp_get_next_ts(rtp_fnc_type, struct rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_fnc_type, struct rtp_ssrc *);
+struct rtp_ssrc *rtp_next_active_ssrc(struct rtp_ssrc *);
 
 // rtp transport setup functions
 int rtp_transport_set(struct rtp_session *, int, void *);
@@ -308,7 +311,7 @@ int rtcp_to_connect(struct rtp_ssrc *, nms_addr *, in_port_t);
 
 // SSRC management functions
 void init_seq(struct rtp_ssrc *, uint16);
-void update_seq(struct rtp_ssrc *, uint16);
+void rtp_update_seq(struct rtp_ssrc *, uint16);
 
 void rtp_clean(void *);
 #endif

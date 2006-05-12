@@ -21,12 +21,13 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_hdr_val_chk.c \
 			rtp_ssrc_init.c \
 			rtp_ssrc_check.c \
-			init_seq.c \
-			update_seq.c \
+			rtp_init_seq.c \
+			rtp_update_seq.c \
 			rtcp_to_connect.c \
 			rtp_transport_set.c \
 			rtp_transport_get.c \
 			rtp_transport_wrappers.c \
+			rtp_next_active_ssrc.c \
 			rtpptdefs.c
 
 librtp_la_LDFLAGS = -static

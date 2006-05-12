@@ -42,7 +42,6 @@ int rtp_ssrc_init(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint3
 	(*stm_src)->ssrc=ssrc;
 	(*stm_src)->rtcptofd=-1;
 	(*stm_src)->rtp_sess = rtp_sess;
-	(*stm_src)->rtpptdefs = rtp_sess->rtpptdefs;
 	// we do not need to reset memory area 'cause we use calloc
 	// memset(&(*stm_src)->ssrc_stats, 0, sizeof(struct rtp_ssrc_stats));
 	// memset(&(*stm_src)->ssrc_sdes, 0, sizeof(struct rtp_ssrc_descr));

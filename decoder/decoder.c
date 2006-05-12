@@ -105,13 +105,22 @@ void *decoder(void *args)
 #endif // TS_SCHEDULE
 */
 #ifndef TS_SCHEDULE
-		do { 
+		do {
 #endif // TS_SCHEDULE
+#if 1
 			/*by sbiro: ciclo per ogni sessione rtp*/
 			for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 			
 			/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
 			for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next) {
+#else
+			for (rtp_sess=rtp_sess_head; rtp_sess && !rtp_sess->active_ssrc_queue; rtp_sess=rtp_sess->next);
+				if (!rtp_sess) {
+					nms_printf(NMSML_ERR, "No active streams present\n");
+					return NULL;
+				}
+			for (stm_src=rtp_sess->active_ssrc_queue; stm_src; stm_src=rtp_next_active_ssrc(stm_src)) {
+#endif
 
 				if ( (pkt=rtp_get_pkt(rtp_n_blk, stm_src, &len)) ) {
 				/**/	

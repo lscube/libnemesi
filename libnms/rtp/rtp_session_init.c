@@ -44,8 +44,6 @@ struct rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 		return NULL;
 	}
 
-	// rtp_sess->rtp_tid=-1;
-	// rtp_sess->dec_tid=-1;	
 	rtp_sess->rtpfd=-1;
 	rtp_sess->rtcpfd=-1;
 	rtp_sess->local_ssrc=random32(0);
