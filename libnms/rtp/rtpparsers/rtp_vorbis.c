@@ -34,7 +34,8 @@
 #define RTP_VORB_F(pkt)     ((RTP_PKT_DATA(pkt)[3]& 0xc0)>> 6)
 #define RTP_VORB_T(pkt)     ((RTP_PKT_DATA(pkt)[3]& 0x30)>> 4)
 #define RTP_VORB_PKTS(pkt)  (RTP_PKT_DATA(pkt)[3]& 0x0F)
-#define RTP_VORB_LEN(pkt)   (RTP_PKT_DATA(pkt)[4]<<8+RTP_PKT_DATA(pkt)[5])
+#define RTP_VORB_LEN(pkt,off)   (RTP_PKT_DATA(pkt)[off]<<8+\
+                                 RTP_PKT_DATA(pkt)[off+1])
 
 
 static rtpparser_info served = {
@@ -57,50 +58,55 @@ static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struc
     rtp_pkt *pkt;
     int len, pt = 96; //FIXME I need to know my pt!!!
 
-    rtp_vorbis_t *vorb = stm_src->prsr_privs[pt];
+    rtp_vorbis_t *vorb = stm_src->prsr_privs[pt]; 
 
     //get a new packet
     if(! (pkt = rtp_get_pkt( prsr_type, stm_src, &len )) )
-            return RTP_BUFF_EMPTY;
+        return RTP_BUFF_EMPTY;
     if(dst_size<vorb->length+len)
-            return RTP_DST_TOO_SMALL;
-    //vorbis packets in the rtp
-    vorb->pkts = RTP_VORB_PKTS(pkt);
+        return RTP_DST_TOO_SMALL;
 
-    while (0) //FIXME //loop for fragmented packets
-    {
+    while (!vorb->pkts) //FIXME 
+    {        
+        //vorbis packets in the rtp
+        vorb->pkts = RTP_VORB_PKTS(pkt);
+
         switch(RTP_VORB_F(pkt))
         {
             case 0: //no frag
-                return RTP_PARSE_ERROR; // you must have at least a 
+                vorb->offset = 4;
+                vorb->length = 0;
+                break;
             case 1: //start
                 vorb->length = 0;
                 vorb->packet = NULL;
             case 2: //cont
-                len = RTP_VORB_LEN(pkt);
-                memcpy(dst + vorb->length, RTP_PKT_DATA(pkt)+6, len);
+                vorb->bytes = RTP_VORB_LEN(pkt,4);
+                memcpy(dst + vorb->length, RTP_PKT_DATA(pkt)+6, vorb->bytes);
                 vorb->length += len;
                 rtp_rm_pkt(rtp_sess, stm_src);
                 continue;
             case 3: //end
-                len = RTP_VORB_LEN(pkt);
-                memcpy(dst + vorb->length, RTP_PKT_DATA(pkt)+6, len);
-                vorb->length+=len;
+                vorb->offset = 4;
                 vorb->pkts=1;
-                rtp_rm_pkt(rtp_sess, stm_src);
                 break;
             default: //we got a problem
                 return RTP_PARSE_ERROR; //FIXME
         }
+
         //get a new packet
         if(! (pkt = rtp_get_pkt( prsr_type, stm_src, &len )) )
             return RTP_BUFF_EMPTY;
         if(dst_size<vorb->length+len)
             return RTP_DST_TOO_SMALL;
-        //vorbis packets in the rtp
-        vorb->pkts = RTP_VORB_PKTS(pkt);
 
     }
+
+    vorb->bytes = RTP_VORB_LEN(pkt,vorb->offset);
+    vorb->offset+=2
+    memcpy(dst + vorb->length, RTP_PKT_DATA(pkt)+vorb->offset, vorb->bytes);
+    vorb->offset+= vorb->bytes;
+    vorb->bytes += vorb->length;
 
     switch(RTP_VORB_T(pkt))
     {
@@ -109,14 +115,14 @@ static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struc
             if (vorb->prev_bs)
                 vorb->timestamp += (vorb->curr_bs + vorb->prev_bs)/4;
             timestamp = vorb->timestamp;
-            if 
+
 
         case 1: //configuration
                 
         default: //ignore the rest
     }
 
-    if (pkts == 0)	rtp_rm_pkt(rtp_sess, stm_src);
+    if (pkts == 0) rtp_rm_pkt(rtp_sess, stm_src);
 
 }
 
