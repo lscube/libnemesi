@@ -58,71 +58,26 @@ static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struc
     rtp_pkt *pkt;
     int len, pt = 96; //FIXME I need to know my pt!!!
 
-    rtp_vorbis_t *vorb = stm_src->prsr_privs[pt]; 
+    rtp_vorbis_t *vorb = stm_src->prsr_privs[pt];
 
-    //get a new packet
-    if(! (pkt = rtp_get_pkt( prsr_type, stm_src, &len )) )
-        return RTP_BUFF_EMPTY;
-    if(dst_size<vorb->length+len)
-        return RTP_DST_TOO_SMALL;
-
-    while (!vorb->pkts) //FIXME 
-    {        
-        //vorbis packets in the rtp
-        vorb->pkts = RTP_VORB_PKTS(pkt);
-
-        switch(RTP_VORB_F(pkt))
-        {
-            case 0: //no frag
-                vorb->offset = 4;
-                vorb->length = 0;
-                break;
-            case 1: //start
-                vorb->length = 0;
-                vorb->packet = NULL;
-            case 2: //cont
-                vorb->bytes = RTP_VORB_LEN(pkt,4);
-                memcpy(dst + vorb->length, RTP_PKT_DATA(pkt)+6, vorb->bytes);
-                vorb->length += len;
-                rtp_rm_pkt(rtp_sess, stm_src);
-                continue;
-            case 3: //end
-                vorb->offset = 4;
-                vorb->pkts=1;
-                break;
-            default: //we got a problem
-                return RTP_PARSE_ERROR; //FIXME
-        }
-
-        //get a new packet
-        if(! (pkt = rtp_get_pkt( prsr_type, stm_src, &len )) )
-            return RTP_BUFF_EMPTY;
-        if(dst_size<vorb->length+len)
-            return RTP_DST_TOO_SMALL;
-
-    }
-
-    vorb->bytes = RTP_VORB_LEN(pkt,vorb->offset);
-    vorb->offset+=2
-    memcpy(dst + vorb->length, RTP_PKT_DATA(pkt)+vorb->offset, vorb->bytes);
-    vorb->offset+= vorb->bytes;
-    vorb->bytes += vorb->length;
-
-    switch(RTP_VORB_T(pkt))
+    //if I don't have previous work
+    if (!vorb->pkts)
     {
-        case 0: //raw data
-            vorb->curr_bs = pkt_blocksize(vorb);
-            if (vorb->prev_bs)
-                vorb->timestamp += (vorb->curr_bs + vorb->prev_bs)/4;
-            timestamp = vorb->timestamp;
-
-
-        case 1: //configuration
-                
-        default: //ignore the rest
+        //get a new packet
+        if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, &len)) )
+		return RTP_BUFF_EMPTY;
+        //get the pkts in the rtp
+        vorb->pkts = RTP_VORB_PKTS(pkt);
+    
+        //if they are more than 0 and is a frag or non raw data
+        if (vorb->pkts >0 && (RTP_VORB_F(pkt) || !RTP_VORB_T(pkt)))
+            return RTP_PARSE_ERROR;
+        //single packet, easy case
+        if (vorb->pkts = 1 && !RTP_VORB_F(pkt))
+            return single_parse(pkt, dst, dst_size, rtp_sess, stm_src);
+        if (RTP_VORB_F(pkt))
+            return frag_parse(pkt, dst, dst_size, vorb, );
     }
-
-    if (pkts == 0) rtp_rm_pkt(rtp_sess, stm_src);
-
+    return pack_parse (pkt, dst, dst_size, vorb, rtp_sess, stm_src);       
 }
 
