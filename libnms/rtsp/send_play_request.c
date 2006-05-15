@@ -46,8 +46,8 @@ int send_play_request(struct rtsp_thread *rtsp_th, char *range)
 
 	rtsp_med = rtsp_sess->media_queue;
 	memset(&cc_conflict, 0, sizeof(cc_conflict));
-	memcpy(&cc_mask, &rtsp_th->accepted_CC, sizeof(cc_perm_mask));
 	while ( rtsp_med ) {
+		memcpy(&cc_mask, &rtsp_th->accepted_CC, sizeof(cc_perm_mask));
 //		pref2ccmask(&cc_mask);
 		if ( cc_perm_chk(rtsp_med->medium_info->cc, &cc_mask) )
 			*((CC_BITMASK_T *)&cc_conflict) |= *((CC_BITMASK_T *)&cc_mask);

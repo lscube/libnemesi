@@ -36,5 +36,5 @@ double rtp_get_next_ts(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src)
 	if ( !(pkt=rtp_get_pkt(fnc_type, stm_src, NULL)) )
 			return RTP_BUFF_EMPTY;
 			
-	return stm_src->rtp_sess->rtpptdefs[pkt->pt] ? ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->rtpptdefs[pkt->pt]->rate : RTP_PKT_UNKNOWN;
+	return ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->rtpptdefs[pkt->pt]->rate;
 }

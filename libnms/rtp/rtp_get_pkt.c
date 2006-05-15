@@ -42,15 +42,20 @@
  * */ 
 rtp_pkt *rtp_get_pkt(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src, int *len)
 {
+//	rtp_pkt *pkt;
+	
 	pthread_mutex_lock(&(stm_src->po.po_mutex));
-	if(stm_src->po.potail < 0) {
-		if (fnc_type == rtp_blk)
-			pthread_cond_wait(&(stm_src->po.cond_empty), &(stm_src->po.po_mutex));
-		else {
-			pthread_mutex_unlock(&(stm_src->po.po_mutex));
-			return NULL;
+	do {
+		if (stm_src->po.potail < 0) {
+			if (fnc_type == rtp_blk)
+				pthread_cond_wait(&(stm_src->po.cond_empty), &(stm_src->po.po_mutex));
+			else {
+				pthread_mutex_unlock(&(stm_src->po.po_mutex));
+				return NULL;
+			}
 		}
-	}
+	} while ( !stm_src->rtp_sess->rtpptdefs[((rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail))->pt] \
+		&& /* always true - XXX be careful if bufferpool API changes */!rtp_rm_pkt(stm_src->rtp_sess, stm_src));
 	pthread_mutex_unlock(&(stm_src->po.po_mutex));
 	
 	if (len)
