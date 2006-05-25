@@ -275,12 +275,9 @@ inline int rtp_transport_get_append(struct rtp_session *);
 inline int rtp_transport_get_ttl(struct rtp_session *);
 inline int rtp_transport_get_mcsports(struct rtp_session *, in_port_t [2]);
 inline in_port_t rtp_transport_get_mcsrtcpport(struct rtp_session *);
-inline in_port_t rtp_transport_get_mcsrtcpport(struct rtp_session *);
 inline int rtp_transport_get_srvports(struct rtp_session *, in_port_t [2]);
 inline in_port_t rtp_transport_get_srvrtcpport(struct rtp_session *);
-inline in_port_t rtp_transport_get_srvrtcpport(struct rtp_session *);
 inline int rtp_transport_get_cliports(struct rtp_session *, in_port_t [2]);
-inline in_port_t rtp_transport_get_clirtcpport(struct rtp_session *);
 inline in_port_t rtp_transport_get_clirtcpport(struct rtp_session *);
 inline uint32 rtp_transport_get_ssrc(struct rtp_session *);
 
@@ -297,12 +294,9 @@ inline int rtp_transport_set_append(struct rtp_session *, int);
 inline int rtp_transport_set_ttl(struct rtp_session *, int);
 inline int rtp_transport_set_mcsports(struct rtp_session *, in_port_t [2]);
 inline int rtp_transport_set_mcsrtcpport(struct rtp_session *, in_port_t);
-inline int rtp_transport_set_mcsrtcpport(struct rtp_session *, in_port_t);
 inline int rtp_transport_set_srvports(struct rtp_session *, in_port_t [2]);
 inline int rtp_transport_set_srvrtcpport(struct rtp_session *, in_port_t);
-inline int rtp_transport_set_srvrtcpport(struct rtp_session *, in_port_t);
 inline int rtp_transport_set_cliports(struct rtp_session *, in_port_t [2]);
-inline int rtp_transport_set_clirtcpport(struct rtp_session *, in_port_t);
 inline int rtp_transport_set_clirtcpport(struct rtp_session *, in_port_t);
 inline int rtp_transport_set_ssrc(struct rtp_session *, uint32);
 
