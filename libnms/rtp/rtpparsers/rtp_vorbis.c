@@ -27,7 +27,7 @@
 
 #include "rtpparser.h"
 
-//vorbis header
+
 #define RTP_VORB_ID(pkt)    (   RTP_PKT_DATA(pkt)[0]<<16 +\
                                 RTP_PKT_DATA(pkt)[1]<<8 +\
                                 RTP_PKT_DATA(pkt)[2]    )
@@ -36,7 +36,15 @@
 #define RTP_VORB_PKTS(pkt)  (RTP_PKT_DATA(pkt)[3]& 0x0F)
 #define RTP_VORB_LEN(pkt,off)   (RTP_PKT_DATA(pkt)[off]<<8+\
                                  RTP_PKT_DATA(pkt)[off+1])
+#define RTP_VORB_DATA(pkt,off)  (RTP_PKT_DATA(pkt)[off+2])
 
+typedef struct vorbis_s {
+    long offset;
+    long len;
+    int pkts;
+    char *buf;
+    long timestamp;
+} vorbis_t
 
 static rtpparser_info served = {
         -1,
@@ -48,12 +56,96 @@ RTPPRSR(vorbis);
 //helpers
 
 //get the blocksize from a full data packet
-long pkt_blocksize(rtp_vorbis_t *vorb);
+static long pkt_blocksize(rtp_vorbis_t *vorb);
 
 //get standard mkv/nut/ffmpeg configuration packet from an rtp one
-int cfg_fixup(char *, size_t len);
+static int cfg_fixup(char *buff, size_t len);
 
-static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+static rtp_frame *single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt,
+                               rtp_frame fr, struct rtp_ssrc *ssrc, int offset)
+{
+
+    int len = RTP_VORB_LEN(pkt,offset);
+
+    if (len > fr->len){
+        realloc(fr->buf, len);
+        fr->len = len;
+    }
+    
+    memcpy(fr->data, RTP_VORB_DATA(pkt, offset), fr->len);
+    
+    vorb->pkts--;
+    rtp_rm_pkt(sess, ssrc);
+
+    if (RTP_VORB_T(pkt) == 1)
+        return cfg_fixup(vorb);
+    else
+    {
+        vorb->curr_bs = ptk_blocksize(vorb);
+        if(vorb->prev_bs)
+            fr->timestamp += (vorb->curr_bs + vorb->prev_bs)/4;
+        vorb->prev_bs = vorb->curr_bs;
+    }
+   
+    return 0;
+}
+
+static int pack_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
+                      struct rtp_ssrc *ssrc)
+{
+    single_parse(vorb, pkt, ssrc, fr, vorb->offset);
+    vorb->offset+=fr->len;
+    return 0;
+}
+
+static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
+                      struct rtp_ssrc *ssrc)
+{
+    int len;
+    
+    rtp_rm_pkt(sess, ssrc);
+
+    switch (RTP_VORB_T(pkt))
+    {
+    case 1:
+        vorb->len = 0;
+    case 2:
+        len = RTP_VORB_LEN(pkt,4);
+        vorb->buf = realloc(vorb->buf, vorb->len + len);
+        memcpy(vorb->buf + vorb->len, RTP_VORB_DATA(pkt, 4), len);
+        vorb->len+=len;
+        return 0; //FIXME
+    case 3:
+        len = RTP_VORB_LEN(pkt,4);
+        vorb->buf = realloc(vorb->buf, vorb->len + len);
+        memcpy(vorb->buf + vorb->len, RTP_VORB_DATA(pkt, 4), len);
+        vorb->len+=len;
+        
+        if (vorb->len > fr->len) {
+            realloc(fr->buf, vorb->len);
+            fr->len = vorb->len;
+        }
+        memcpy(fr->data, vorb->buf, fr->len);
+
+        if (RTP_VORB_T(pkt) == 1)
+            return cfg_fixup(vorb, fr);
+        else
+        {
+            vorb->curr_bs = ptk_blocksize(vorb);
+            if(vorb->prev_bs)
+                fr->timestamp += (vorb->curr_bs + vorb->prev_bs)/4;
+            vorb->prev_bs = vorb->curr_bs;
+        }
+        return 0
+    default: //      
+        return -1;
+    }
+
+}
+
+
+static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_ssrc *stm_src,
+                     rtp_frame *fr)
 {
     rtp_pkt *pkt;
     int len, pt = 96; //FIXME I need to know my pt!!!
@@ -66,18 +158,19 @@ static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struc
         //get a new packet
         if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, &len)) )
 		return RTP_BUFF_EMPTY;
-        //get the pkts in the rtp
+        //get the number of packets stuffed in the rtp
         vorb->pkts = RTP_VORB_PKTS(pkt);
     
-        //if they are more than 0 and is a frag or non raw data
+        //some error checking
         if (vorb->pkts >0 && (RTP_VORB_F(pkt) || !RTP_VORB_T(pkt)))
             return RTP_PARSE_ERROR;
         //single packet, easy case
-        if (vorb->pkts = 1 && !RTP_VORB_F(pkt))
-            return single_parse(pkt, dst, dst_size, rtp_sess, stm_src);
+        if (vorb->pkts = 1)
+            return single_parse(vorb, pkt, fr, stm_src, 4);
         if (RTP_VORB_F(pkt))
-            return frag_parse(pkt, dst, dst_size, vorb, );
+            return frag_parse(vorb, pkt, fr, stm_src);
+        vorb->offset = 4;
     }
-    return pack_parse (pkt, dst, dst_size, vorb, rtp_sess, stm_src);       
+    return pack_parse (vorb, pkt, fr, stm_src);
 }
 
