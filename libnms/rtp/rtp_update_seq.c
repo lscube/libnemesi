@@ -38,7 +38,7 @@ void rtp_update_seq(struct rtp_ssrc *stm_src, uint16 seq)
 			stats->probation--;
 			stats->max_seq = seq;
 			if (stats->probation == 0){
-				init_seq(stm_src, seq);
+				rtp_init_seq(stm_src, seq);
 				stats->received++;
 				return;
 			}
@@ -58,7 +58,7 @@ void rtp_update_seq(struct rtp_ssrc *stm_src, uint16 seq)
 	} else if ( udelta <= RTP_SEQ_MOD - MAX_MISORDER ){
 		/* the sequence number made a very large jump */
 		if ( seq == stats->bad_seq ){
-			init_seq(stm_src, seq);
+			rtp_init_seq(stm_src, seq);
 		} else {
 			stats->bad_seq = (seq + 1) & ( RTP_SEQ_MOD-1 );
 			return;

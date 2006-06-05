@@ -109,7 +109,8 @@ int rtp_recv(struct rtp_session *rtp_sess)
 			(stm_src->ssrc_stats).jitter=0;
 			(stm_src->ssrc_stats).firstts=ntohl(pkt->time);
 			(stm_src->ssrc_stats).firsttv=now;
-			init_seq(stm_src, ntohs(pkt->seq));
+			// rtp_init_seq(stm_src, ntohs(pkt->seq));
+			rtp_update_seq(stm_src, ntohs(pkt->seq));
 			break;
 		case SSRC_COLLISION:
 			bprmv(&(rtp_sess->bp), &(stm_src->po), slot);

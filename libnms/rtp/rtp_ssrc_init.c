@@ -88,7 +88,7 @@ int rtp_ssrc_init(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint3
 	} else {
 		switch (addrcmp_err) {
 			case WSOCK_ERRFAMILY:
-				nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY\n");
+				nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n", nms_addr.family, rtp_sess->transport.srcaddr.family);
 				break;
 			case WSOCK_ERRADDR:
 				nms_printf(NMSML_DBG2, "WSOCK_ERRADDR\n");

@@ -1,5 +1,5 @@
 /* * 
- *  $Id:init_seq.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id:rtp_init_seq.c 267 2006-01-12 17:19:45Z shawill $
  *  
  *  This file is part of NeMeSI
  *
@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-void init_seq(struct rtp_ssrc *stm_src, uint16 seq)
+void rtp_init_seq(struct rtp_ssrc *stm_src, uint16 seq)
 {
 	struct rtp_ssrc_stats *stats=&(stm_src->ssrc_stats);
 
