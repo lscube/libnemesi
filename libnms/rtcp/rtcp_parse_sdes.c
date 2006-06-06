@@ -53,7 +53,7 @@ int rtcp_parse_sdes(struct rtp_ssrc *stm_src, rtcp_pkt *pkt)
 	}
 	if (count >= 0)
 		nms_printf(NMSML_WARN, "Invalid RTCP SDES pkt format!\n");
-	else
-		stm_src->ssrc_stats.probation=0;
+	else if (stm_src->ssrc_stats.probation)
+		stm_src->ssrc_stats.probation=1;
 	return 0;
 }

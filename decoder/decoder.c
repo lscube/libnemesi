@@ -107,7 +107,7 @@ void *decoder(void *args)
 #ifndef TS_SCHEDULE
 		do {
 #endif // TS_SCHEDULE
-#if 1
+#if 0
 			/*by sbiro: ciclo per ogni sessione rtp*/
 			for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
 			
@@ -120,7 +120,7 @@ void *decoder(void *args)
 					return NULL;
 				}
 			for (stm_src=rtp_sess->active_ssrc_queue; stm_src; stm_src=rtp_next_active_ssrc(stm_src)) {
-				nms_printf(NMSML_ERR, "Active streams present %p\n", stm_src);
+				rtp_sess = stm_src->rtp_sess;
 #endif
 
 				if ( (pkt=rtp_get_pkt(rtp_n_blk, stm_src, &len)) ) {
