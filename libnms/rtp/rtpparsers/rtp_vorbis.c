@@ -26,41 +26,83 @@
  * */
 
 #include "rtpparser.h"
+#include "rtp_xiph.h"
 
-
-#define RTP_VORB_ID(pkt)    (   RTP_PKT_DATA(pkt)[0]<<16 +\
-                                RTP_PKT_DATA(pkt)[1]<<8 +\
-                                RTP_PKT_DATA(pkt)[2]    )
-#define RTP_VORB_F(pkt)     ((RTP_PKT_DATA(pkt)[3]& 0xc0)>> 6)
-#define RTP_VORB_T(pkt)     ((RTP_PKT_DATA(pkt)[3]& 0x30)>> 4)
-#define RTP_VORB_PKTS(pkt)  (RTP_PKT_DATA(pkt)[3]& 0x0F)
-#define RTP_VORB_LEN(pkt,off)   (RTP_PKT_DATA(pkt)[off]<<8+\
-                                 RTP_PKT_DATA(pkt)[off+1])
-#define RTP_VORB_DATA(pkt,off)  (RTP_PKT_DATA(pkt)[off+2])
-
-typedef struct vorbis_s {
+typedef struct theora_s {
     long offset;
     long len;
     int pkts;
     char *buf;
     long timestamp;
     int id;
-    //timestamp related
-    long int prev_bs;
-    long int curr_bs;
-
-    int modes;
-    long blocksizes[2];
-    int param_blockflag[64];
-
-} rtp_vorbis_t
+} rtp_theora_t
 
 static rtpparser_info served = {
         -1,
-        {"VORBIS", NULL}
+        {"XIPHIS", NULL}
 };
 
 RTPPRSR(vorbis);
+
+//bitreader from libogg, move somewhere later or replace with gpl code
+//Copyright for the bitreader code Xiph.org, the code is under a BSD-STYLE
+//license please check libogg sources for the full text.
+
+static const unsigned long mask[]=
+{0x00000000,0x00000001,0x00000003,0x00000007,0x0000000f,
+ 0x0000001f,0x0000003f,0x0000007f,0x000000ff,0x000001ff,
+ 0x000003ff,0x000007ff,0x00000fff,0x00001fff,0x00003fff,
+ 0x00007fff,0x0000ffff,0x0001ffff,0x0003ffff,0x0007ffff,
+ 0x000fffff,0x001fffff,0x003fffff,0x007fffff,0x00ffffff,
+ 0x01ffffff,0x03ffffff,0x07ffffff,0x0fffffff,0x1fffffff,
+ 0x3fffffff,0x7fffffff,0xffffffff };
+
+typedef bit_context {
+    int pos;
+    int left;
+    unsigned char *buf;
+}
+
+static long bit_read(bit_context *b,int bits){
+  long ret;
+  unsigned long m=mask[bits];
+
+  bits+=b->endbit;
+
+  if(b->endbyte+4>=b->storage){
+    /* not the main path */
+    ret=-1L;
+    if(b->endbyte*8+bits>b->storage*8)goto overflow;
+  }
+
+  ret=b->ptr[0]>>b->endbit;
+  if(bits>8){
+    ret|=b->ptr[1]<<(8-b->endbit);
+    if(bits>16){
+      ret|=b->ptr[2]<<(16-b->endbit);
+      if(bits>24){
+        ret|=b->ptr[3]<<(24-b->endbit);
+        if(bits>32 && b->endbit){
+          ret|=b->ptr[4]<<(32-b->endbit);
+        }
+      }
+    }
+  }
+  ret&=m;
+
+ overflow:
+
+  b->ptr+=bits/8;
+  b->endbyte+=bits/8;
+  b->endbit=bits&7;
+  return(ret);
+}
+
+static void bit_readinit(bit_context *b, unsigned char *buf, int bytes){
+  memset(b,0,sizeof(*b));
+  b->buffer=b->ptr=buf;
+  b->left=bytes;
+}
 
 //helpers
 static int rtp_ilog(unsigned int v){
@@ -111,10 +153,9 @@ maptype_quantvals(int entries, int dim)
   }
 }
 
-
-int cfg_parse(rtp_vorbis *vorb, rtp_frame *fr)
+int cfg_parse(rtp_vorbis *vorb, rtp_frame *fr) //FIXME checks!
 {
-    bit_context opb;
+    bit_context_t opb;
     int num, i, j, k=-1, channels;
     
     //id packet
@@ -285,8 +326,6 @@ int cfg_parse(rtp_vorbis *vorb, rtp_frame *fr)
     return 0; //FIXME add some checks and return -1 on failure
 }
 
-
-
 //get the blocksize from a full data packet
 static long pkt_blocksize(rtp_vorbis_t *vorb, rtp_packet *fr)
 {
@@ -319,7 +358,7 @@ static int cfg_fixup(rtp_vorbis_t *vorb, rtp_frame *fr, rtp_pkt *pkt)
     memcpy(fr->len, fr->data, 30); // id packet
     memcpy(fr->len+30, comment, sizeof(comment)); // comment packet
     memcpy(fr->len+30+sizeof(comment), fr->data+30, fr->len-30);
-    vorb->id = RTP_VORB_ID(pkt);
+    vorb->id = RTP_XIPH_ID(pkt);
     //cfg_cache_append() //XXX
     return 0;
 }
@@ -328,24 +367,24 @@ static int single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
                         struct rtp_ssrc *ssrc, int offset)
 {
 
-    int len = RTP_VORB_LEN(pkt,offset);
+    int len = RTP_XIPH_LEN(pkt,offset);
 
     if (len > fr->len){
         realloc(fr->buf, len);
         fr->len = len;
     }
     
-    memcpy(fr->data, RTP_VORB_DATA(pkt, offset), fr->len);
+    memcpy(fr->data, RTP_XIPH_DATA(pkt, offset), fr->len);
     
-    if( vorb->cfg_id != RTP_VORB_ID(pkt) || //not the current id
-//        !cfg_cache_find(vorb,RTP_VORB_ID(pkt)); //XXX
-        RTP_VORB_T(pkt) != 1                //not a config packet
+    if( vorb->cfg_id != RTP_XIPH_ID(pkt) || //not the current id
+//        !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)); //XXX
+        RTP_XIPH_T(pkt) != 1                //not a config packet
     ) return RTP_PARSER_ERROR;
     
     vorb->pkts--;
     rtp_rm_pkt(sess, ssrc);
 
-    if (RTP_VORB_T(pkt) == 1)
+    if (RTP_XIPH_T(pkt) == 1)
         return cfg_fixup(vorb, fr);
     else
     {
@@ -373,20 +412,20 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
     
     rtp_rm_pkt(sess, ssrc);
 
-    switch (RTP_VORB_T(pkt))
+    switch (RTP_XIPH_T(pkt))
     {
     case 1:
         vorb->len = 0;
     case 2:
-        len = RTP_VORB_LEN(pkt,4);
+        len = RTP_XIPH_LEN(pkt,4);
         vorb->buf = realloc(vorb->buf, vorb->len + len);
-        memcpy(vorb->buf + vorb->len, RTP_VORB_DATA(pkt, 4), len);
+        memcpy(vorb->buf + vorb->len, RTP_XIPH_DATA(pkt, 4), len);
         vorb->len+=len;
         return 0; //FIXME
     case 3:
-        len = RTP_VORB_LEN(pkt,4);
+        len = RTP_XIPH_LEN(pkt,4);
         vorb->buf = realloc(vorb->buf, vorb->len + len);
-        memcpy(vorb->buf + vorb->len, RTP_VORB_DATA(pkt, 4), len);
+        memcpy(vorb->buf + vorb->len, RTP_XIPH_DATA(pkt, 4), len);
         vorb->len+=len;
         
         if (vorb->len > fr->len) {
@@ -395,7 +434,7 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
         }
         memcpy(fr->data, vorb->buf, fr->len);
 
-        if (RTP_VORB_T(pkt) == 1)
+        if (RTP_XIPH_T(pkt) == 1)
             return cfg_fixup(vorb, fr);
         else
         {
@@ -427,15 +466,15 @@ static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_ssrc *stm_src,
         if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, &len)) )
 		return RTP_BUFF_EMPTY;
         //get the number of packets stuffed in the rtp
-        vorb->pkts = RTP_VORB_PKTS(pkt);
+        vorb->pkts = RTP_XIPH_PKTS(pkt);
     
         //some error checking
-        if (vorb->pkts >0 && (RTP_VORB_F(pkt) || !RTP_VORB_T(pkt)))
+        if (vorb->pkts >0 && (RTP_XIPH_F(pkt) || !RTP_VORB_T(pkt)))
             return RTP_PARSE_ERROR;
         //single packet, easy case
         if (vorb->pkts = 1)
             return single_parse(vorb, pkt, fr, stm_src, 4);
-        if (RTP_VORB_F(pkt))
+        if (RTP_XIPH_F(pkt))
             return frag_parse(vorb, pkt, fr, stm_src);
         vorb->offset = 4;
     }
