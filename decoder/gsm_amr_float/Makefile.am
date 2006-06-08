@@ -15,6 +15,7 @@ EXTRA_DIST = 		interf_dec.h \
 			typedef.h
 
 libdec_la_LDFLAGS = -static
+AM_CFLAGS = -fPIC
 
 lib_LTLIBRARIES = gsm_amr_float.la
 
