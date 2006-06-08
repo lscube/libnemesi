@@ -251,6 +251,7 @@ int rtsp_uninit(struct rtsp_ctrl *);
 // enum states rtsp_status(struct rtsp_ctrl *);
 #define rtsp_status(ctrl) ctrl->status
 void rtsp_info_print(struct rtsp_ctrl *);
+inline struct rtp_session *rtsp_get_rtp_queue(struct rtsp_ctrl *rtsp_ctl);
 //
 //***** ENDOF interface functions ******************
 

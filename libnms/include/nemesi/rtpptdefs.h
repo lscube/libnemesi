@@ -49,6 +49,7 @@ typedef enum {
 				uint32 rate; /* Clock Rate - in Hertz*/ \
 				void *private_data; /* private data for rtp playload type*/
 
+/// XXX audio and video fields must have different names, bacause they are used together in rtp_audio_video
 #define RTP_AUDIO_FIELDS	uint8 channels; /* Channels */
 
 #define RTP_VIDEO_FIELDS

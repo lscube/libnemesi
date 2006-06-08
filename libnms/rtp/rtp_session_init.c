@@ -90,6 +90,7 @@ struct rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 	
 	// RP Payload types definitions:
 	rtp_sess->rtpptdefs = rtpptdefs_new();
+	rtp_sess->rtp_parsers = rtp_parsers_new();
 
 	return rtp_sess;
 }

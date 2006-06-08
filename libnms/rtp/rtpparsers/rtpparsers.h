@@ -29,7 +29,8 @@
 #ifndef LOCAL_RTPFRAMERS_H_
 #define LOCAL_RTPFRAMERS_H_
 
-#include <nemesi/rtpparsers.h>
+//#include <nemesi/rtpparsers.h>
+#include <nemesi/rtp.h>
 
 typedef struct {
 	int16 static_pt; // -1 terminated list of served static payload numbers (MUST be <96)
@@ -38,7 +39,8 @@ typedef struct {
 
 typedef struct {
 	rtpparser_info *served;
-	int (*rtp_parse)(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+	rtp_parser rtp_parse;
+//	int (*rtp_parse)(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 } rtpparser;
 
 #endif /*LOCAL_RTPFRAMERS_H_*/

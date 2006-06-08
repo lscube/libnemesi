@@ -114,12 +114,7 @@ void *decoder(void *args)
 			/*by sbiro: ciclo per ogni elemento della coda ssrc associata a una sessione rtp*/	
 			for (stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next) {
 #else
-			for (rtp_sess=rtp_sess_head; rtp_sess && !rtp_sess->active_ssrc_queue; rtp_sess=rtp_sess->next);
-				if (!rtp_sess) {
-					nms_printf(NMSML_ERR, "No active streams present\n");
-					return NULL;
-				}
-			for (stm_src=rtp_sess->active_ssrc_queue; stm_src; stm_src=rtp_next_active_ssrc(stm_src)) {
+			for (stm_src=rtp_active_ssrc_queue(rtp_sess_head); stm_src; stm_src=rtp_next_active_ssrc(stm_src)) {
 				rtp_sess = stm_src->rtp_sess;
 #endif
 

@@ -27,7 +27,6 @@
  * */
 
 #include <nemesi/rtp.h>
-#include <nemesi/rtpparsers.h>
 #include <nemesi/comm.h>
 
 struct rtp_thread *rtp_init(void)

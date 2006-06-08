@@ -61,6 +61,9 @@
 
 #define BANDWIDTH 16000 /* bytes-per-second */
 
+// general error codes. other, specific, error codes below
+#define RTP_ERRALLOC -1
+
 typedef struct {
 #ifdef WORDS_BIGENDIAN
 	uint32 ver:2;
@@ -85,6 +88,12 @@ typedef struct {
 	uint32 ssrc;	/* synchronization source identifier */
 	uint8 data[1];	/* beginning of RTP data */
 } rtp_pkt;
+
+typedef struct {
+	uint32 len;
+	uint32 timestamp;
+	char *data;
+} rtp_frame;
 
 #define RTP_PKT_PT(x) x->pt
 #define RTP_PKT_MARK(x) x->mark
@@ -201,6 +210,8 @@ struct rtp_conflict {
 	struct rtp_conflict *next;
 };
 
+typedef int (*rtp_parser)(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr);
+
 struct rtp_session {
 	uint32 local_ssrc;
 	int rtpfd;
@@ -212,6 +223,7 @@ struct rtp_session {
 	struct rtp_conflict *conf_queue;
 	buffer_pool bp;
 	rtp_pt **rtpptdefs;
+	rtp_parser *rtp_parsers;
 	struct rtp_session *next;
 	pthread_mutex_t syn;
 };
@@ -241,13 +253,17 @@ int rtp_ssrc_check(struct rtp_session *, uint32, struct rtp_ssrc **, nms_sockadd
 int rtp_ssrc_init(struct rtp_session *, struct rtp_ssrc **, uint32, nms_sockaddr *,  enum rtp_protos);
 
 #define RTP_FILL_OK 0
-#define RTP_BUFF_EMPTY -1
-#define RTP_PARSE_ERROR -2
-#define RTP_PKT_UNKNOWN -3
+#define RTP_BUFF_EMPTY 1
+#define RTP_PARSE_ERROR 2
+#define RTP_PKT_UNKNOWN 3
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
 typedef enum {rtp_blk, rtp_n_blk} rtp_fnc_type; // function blocking or non blocking
+
+// active ssrc list management
+struct rtp_ssrc *rtp_active_ssrc_queue(struct rtp_session *rtp_sess_head);
+struct rtp_ssrc *rtp_next_active_ssrc(struct rtp_ssrc *ssrc);
 
 // wrappers for rtp_pkt
 rtp_pkt *rtp_get_pkt(rtp_fnc_type, struct rtp_ssrc *, int *);
@@ -256,7 +272,6 @@ inline int rtp_rm_pkt(struct rtp_session *, struct rtp_ssrc *);
 int rtp_fill_buffer(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
 double rtp_get_next_ts(rtp_fnc_type, struct rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_fnc_type, struct rtp_ssrc *);
-struct rtp_ssrc *rtp_next_active_ssrc(struct rtp_ssrc *);
 
 // rtp transport setup functions
 int rtp_transport_set(struct rtp_session *, int, void *);
@@ -299,6 +314,16 @@ inline int rtp_transport_set_srvrtcpport(struct rtp_session *, in_port_t);
 inline int rtp_transport_set_cliports(struct rtp_session *, in_port_t [2]);
 inline int rtp_transport_set_clirtcpport(struct rtp_session *, in_port_t);
 inline int rtp_transport_set_ssrc(struct rtp_session *, uint32);
+
+// internal functions
+
+#define RTP_PRSR_ERROR		-1
+#define RTP_DST_TOO_SMALL	-2
+#define RTP_REG_STATIC		-3
+
+void rtp_parsers_init(void);
+int rtp_parser_reg(int16, char *);
+rtp_parser *rtp_parsers_new(void);
 
 // rtcp connection functions
 int rtcp_to_connect(struct rtp_ssrc *, nms_addr *, in_port_t);

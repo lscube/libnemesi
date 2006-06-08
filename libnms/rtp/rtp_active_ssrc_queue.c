@@ -1,5 +1,5 @@
 /* * 
- *  $Id:rtp_def_parser.c 284 2006-01-31 11:37:48Z shawill $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
@@ -7,7 +7,7 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
  *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
@@ -26,25 +26,13 @@
  *  
  * */
 
-#include <nemesi/rtpparsers.h>
+#include <nemesi/rtp.h>
 
-int rtp_def_parser(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+struct rtp_ssrc *rtp_active_ssrc_queue(struct rtp_session *rtp_sess_head)
 {
-	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
+	struct rtp_session *rtp_sess;
 	
-	if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
-		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
+	for (rtp_sess=rtp_sess_head; rtp_sess && !rtp_sess->active_ssrc_queue; rtp_sess=rtp_sess->next);
 	
-	*timestamp = RTP_PKT_TS(pkt);
-	
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
-	
-	return dst_used;
+	return rtp_sess ? rtp_sess->active_ssrc_queue : NULL;
 }

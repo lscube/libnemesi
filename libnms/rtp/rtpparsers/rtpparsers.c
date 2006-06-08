@@ -40,9 +40,10 @@ rtpparser *rtpparsers[] = {
 	NULL
 };
 
-int rtp_def_parser(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+static int rtp_def_parser(struct rtp_ssrc *, unsigned, rtp_frame *fr);
 
-int (*rtp_parsers[128])(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *) = {
+//int (*rtp_parsers[128])(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *) = {
+static rtp_parser rtp_parsers[128] = {
 	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
 	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
 	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
@@ -109,4 +110,45 @@ int rtp_parser_reg(int16 pt, char *mime)
 	}
 	
 	return 0;
+}
+
+rtp_parser *rtp_parsers_new(void)
+{
+	rtp_parser *new_defs;
+	
+	if ( !(new_defs=malloc(sizeof(rtp_parsers))) )
+		return NULL;
+		
+	memcpy(new_defs, rtp_parsers, sizeof(rtp_parsers));
+	
+	return new_defs;
+}
+
+//int rtp_def_parser(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+static int rtp_def_parser(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
+{
+	// XXX tmp vars to be removed
+	rtp_fnc_type prsr_type = rtp_n_blk;
+	struct rtp_session *rtp_sess=stm_src->rtp_sess;
+	char dst[65535];
+	size_t dst_size = sizeof(dst);
+	uint32 *timestamp;
+	// end of tmp vars
+	rtp_pkt *pkt;
+	size_t pkt_len, dst_used=0;
+	size_t to_cpy;
+	
+	if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
+		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
+	
+	*timestamp = RTP_PKT_TS(pkt);
+	
+	do {
+		to_cpy = min(pkt_len, dst_size);
+		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
+		dst_used += to_cpy;
+		rtp_rm_pkt(rtp_sess, stm_src);
+	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
+	
+	return dst_used;
 }

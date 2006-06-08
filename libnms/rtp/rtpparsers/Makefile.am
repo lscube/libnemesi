@@ -9,7 +9,7 @@ noinst_HEADERS	=	\
 
 noinst_LTLIBRARIES = librtpparsers.la
 
-librtpparsers_la_SOURCES =	rtp_def_parser.c \
+librtpparsers_la_SOURCES =	\
 				rtpparsers.c \
 				rtp_mpa.c \
 				rtp_mpv.c

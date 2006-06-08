@@ -5,9 +5,9 @@
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2006 by
+ *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
  *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
@@ -26,18 +26,9 @@
  *  
  * */
 
-#ifndef RTPFRAMERS_H_
-#define RTPFRAMERS_H_
+#include <nemesi/rtsp.h>
 
-#include <nemesi/rtp.h>
-
-#define RTP_PRSR_ERROR		-1
-#define RTP_DST_TOO_SMALL	-2
-#define RTP_REG_STATIC		-3
-
-extern int (*rtp_parsers[128])(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
-
-void rtp_parsers_init(void);
-int rtp_parser_reg(int16, char *);
-
-#endif /*RTPFRAMERS_H_*/
+inline struct rtp_session *rtsp_get_rtp_queue(struct rtsp_ctrl *rtsp_ctl)
+{
+	return ((struct rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
+}
