@@ -143,11 +143,11 @@ static int frag_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 
-static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_ssrc *stm_src,
+static int rtp_parse(struct rtp_ssrc *stm_src, unsigned int pt
                      rtp_frame *fr)
 {
     rtp_pkt *pkt;
-    int len, pt = 96; //FIXME I need to know my pt!!!
+    int len;
 
     rtp_theora_t *theo = stm_src->prsr_privs[pt];
 

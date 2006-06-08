@@ -370,7 +370,7 @@ static int single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
     int len = RTP_XIPH_LEN(pkt,offset);
 
     if (len > fr->len){
-        realloc(fr->buf, len);
+        realloc(fr->data, len);
         fr->len = len;
     }
     
@@ -429,7 +429,7 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
         vorb->len+=len;
         
         if (vorb->len > fr->len) {
-            realloc(fr->buf, vorb->len);
+            realloc(fr->data, vorb->len);
             fr->len = vorb->len;
         }
         memcpy(fr->data, vorb->buf, fr->len);
@@ -444,18 +444,18 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
             vorb->prev_bs = vorb->curr_bs;
         }
         return 0
-    default: //      
+    default: //
         return -1;
     }
 
 }
 
 
-static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_ssrc *stm_src,
+static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt
                      rtp_frame *fr)
 {
     rtp_pkt *pkt;
-    int len, pt = 96; //FIXME I need to know my pt!!!
+    int len;
 
     rtp_vorbis_t *vorb = stm_src->prsr_privs[pt];
 
@@ -463,7 +463,7 @@ static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_ssrc *stm_src,
     if (!vorb->pkts)
     {
         //get a new packet
-        if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, &len)) )
+        if ( !(pkt=rtp_get_pkt(stm_src, &len)) )
 		return RTP_BUFF_EMPTY;
         //get the number of packets stuffed in the rtp
         vorb->pkts = RTP_XIPH_PKTS(pkt);
