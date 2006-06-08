@@ -1,4 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
+
 AC_INIT(nemesi, 0.5.3)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
@@ -275,6 +276,8 @@ AC_SUBST(nemesi_pixmapdir)
 
 if test -f svnrev.h; then
 	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
+	REVISION=`sed -n -e 's/\(.*Rev: \)\([[0-9]]\+\)\(.*\)/\2/p' svnrev.h`
+	AC_SUBST(REVISION)
 fi
 
 AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
@@ -323,8 +326,15 @@ AC_CONFIG_FILES([plugins/Makefile])
 AC_CONFIG_FILES([docs/Makefile])
 AC_OUTPUT
 
+AC_MSG_NOTICE([Release is .......... : $VERSION])
+
+if test -f svnrev.h; then
+AC_MSG_NOTICE([Revision is ......... : $REVISION
+])
+fi
+
 AC_MSG_NOTICE([config files successfully generated!
- 
+
 NeMeSI Install prefix .......... : $prefix
 NeMeSI Binary path ............. : $exec_prefix/bin/$nemesi_bin
 NeMeSI Plugins dir ............. : $nemesi_plugindir

@@ -200,6 +200,7 @@ dnl AC_SUBST(nemesi_pixmapdir)
 
 if test -f svnrev.h; then
 	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
+	REVISION=`sed -n -e 's/\(.*Rev: \)\([[0-9]]\+\)\(.*\)/\2/p' svnrev.h`
 fi
 
 dnl AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
@@ -225,10 +226,19 @@ AC_CONFIG_FILES([utils/Makefile])
 AC_CONFIG_FILES([example/Makefile])
 AC_OUTPUT
 
+AC_MSG_NOTICE([Release is .......... : $VERSION])
+
+if test -f svnrev.h; then
+AC_MSG_NOTICE([Revision is ......... : $REVISION
+])
+fi
+
 AC_MSG_NOTICE([config files successfully generated!
  
+libnms version is .............. : $VERSION
+
 libnms Install prefix .......... : $prefix
-libnms Lib path ............. : $libnms_libdir
+libnms Lib path ................ : $libnms_libdir
 
 Byte order ..................... : this is a $BIGENDIAN machine
 
