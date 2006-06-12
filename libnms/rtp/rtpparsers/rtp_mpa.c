@@ -25,6 +25,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
  * */
+ 
+ #ifdef HAVE_CONFIG_H
+ #include <config.h>
+ #endif
 
 #include "rtpparser.h"
 
@@ -68,6 +72,26 @@ RTPPRSR(mpa);
 }
 
 typedef struct {
+	enum {MPA_MPEG_2_5=0, MPA_MPEG_RES, MPA_MPEG_2, MPA_MPEG_1} id;
+	enum {MPA_LAYER_RES=0, MPA_LAYER_III, MPA_LAYER_II, MPA_LAYER_I} layer;
+	uint32 bit_rate;
+	float sample_rate;/*SamplingFrequency*/
+	uint32 frame_size;
+	uint32 frm_len;
+	// *** probably not needed ***
+#if 0
+	uint32 probed;
+	double time;
+	// fragmentation suuport:
+	uint8 fragmented;
+	uint8 *frag_src;
+	uint32 frag_src_nbytes;
+	uint32 frag_offset;
+#endif
+} mpa_data;
+
+typedef struct {
+//	mpa_data mpa_info;
 	char *data;
 	uint32 data_size;
 } rtp_mpa;
@@ -75,138 +99,126 @@ typedef struct {
 typedef struct {
 	uint32 mbz:16;
 	uint32 frag_offset:16;
-} rtp_mpa_hdr;
+	uint8 data[1];
+} rtp_mpa_pkt;
 
-#define RTP_MPA_HDR(x) ((rtp_mpa_hdr *)x)
+#define RTP_MPA_PKT(x) ((rtp_mpa_pkt *)(RTP_PKT_DATA(x)))
+#define RTP_MPA_DATA_LEN(rtp_pkt_size) (RTP_PAYLOAD_SIZE(rtp_pkt_size)-4)
+
+// private functions
+static int mpa_sync(uint8 **, uint32 */*, mpa_data **/);
+static int mpa_decode_header(uint8 *, mpa_data *);
+#ifdef ENABLE_DEBUG
+// debug function to diplay MPA header information
+static void mpa_info(mpa_data *);
+#endif // DEBUG
 
 //static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 //static rtp_parser rtp_parse
 static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 {
-	// XXX tmp vars to be removed
-	rtp_fnc_type prsr_type = rtp_n_blk;
-	struct rtp_session *rtp_sess=stm_src->rtp_sess;
-	char dst[65535];
-	size_t dst_size = sizeof(dst);
-	uint32 *timestamp;
-	// end of tmp vars
 	rtp_mpa *mpa_priv = stm_src->prsr_privs[pt];
 	rtp_pkt *pkt;
-	size_t pkt_len; //, dst_used=0;
-	size_t to_cpy;
-	rtp_mpa_hdr *rtp_subhdr;
+	size_t pkt_len; // size of RTP packet, rtp header included.
+	mpa_data mpa;
+	uint8 *mpa_data;
+	
+	if (!fr)
+		return RTP_IN_PRM_ERR;
 	
 	// XXX should we check if payload/mime-type are compatible with parser?
 	  
-	if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
+	if ( !(pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) )
 		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
 	
-	*timestamp = RTP_PKT_TS(pkt);
-	
-	// init private struct if this is the first time we're called
-	if (!mpa_priv) {
-		if ( !(mpa_priv=malloc(sizeof(rtp_mpa))) )
-			return RTP_ERRALLOC;
-		if ( !(mpa_priv->data=malloc(DEFAULT_MPA_DATA_FRAME)) )
-			return RTP_ERRALLOC;
-		mpa_priv->data_size = DEFAULT_MPA_DATA_FRAME;
-		
-		// save new private struct
-		stm_src->prsr_privs[pt] = mpa_priv;
-	}
+	fr->timestamp = RTP_PKT_TS(pkt);
 	
 	// discard pkt if it's fragmented and the first fragment was lost
-	while (RTP_MPA_HDR(RTP_PKT_DATA(pkt))->frag_offset) {
-		rtp_rm_pkt(rtp_sess, stm_src);
-		if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
+	while (RTP_MPA_PKT(pkt)->frag_offset) {
+		rtp_rm_pkt(stm_src->rtp_sess, stm_src);
+		if ( !(pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) )
 			return RTP_BUFF_EMPTY; 
 	}
-	// TODO: support for fragmented mpa frames
-	to_cpy = min(pkt_len, dst_size);
-	memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
-	rtp_rm_pkt(rtp_sess, stm_src);
-	if ( to_cpy < pkt_len)
-		return RTP_DST_TOO_SMALL;
-	else
-		return pkt_len;
-#if 0
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
 	
-	return dst_used;
-#endif
+	mpa_data = RTP_MPA_PKT(pkt)->data;
+	
+	pkt_len = RTP_MPA_DATA_LEN(pkt_len); // now pkt_len is only the payload len (excluded mpa subheader)
+	
+	if (mpa_sync(&mpa_data, &pkt_len))
+		return RTP_PARSE_ERROR;
+		
+	if (mpa_decode_header(mpa_data, &mpa))
+		return RTP_PARSE_ERROR;
+	
+	/* XXX if the frame is not fragmented we could use directly the data contained in bufferpool 
+	 * instead of memcpy the frame in a newly allocated space */ 
+	// init private struct if this is the first time we're called
+	if (!mpa_priv) {
+		if ( !(stm_src->prsr_privs[pt]=mpa_priv=malloc(sizeof(rtp_mpa))) )
+			return RTP_ERRALLOC;
+		mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
+		if ( !(fr->data=mpa_priv->data=malloc(mpa_priv->data_size)) )
+			return RTP_ERRALLOC;
+	} else if ( (mpa_priv->data_size < pkt_len) && (fr->data=mpa_priv->data=realloc(mpa_priv->data, mpa.frm_len)) )
+			return RTP_ERRALLOC;
+	
+	for (fr->len=0; pkt && (fr->len<mpa.frm_len) && (fr->timestamp == RTP_PKT_TS(pkt)); \
+			rtp_rm_pkt(stm_src->rtp_sess, stm_src), (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len))) {
+		// pkt consistency checks
+		if (RTP_MPA_PKT(pkt)->frag_offset+pkt_len <= mpa_priv->data_size)
+			memcpy(fr->data+RTP_MPA_PKT(pkt)->frag_offset, mpa_data, pkt_len);
+	}
+	
+	return RTP_FILL_OK;
 }
 
 // private functions
-#if 0
-// static int mpa_sync(uint32 *header, InputStream *i_stream, mpa_data *mpa)
-static int mpa_sync(uint32 *header, mpa_input *in, mpa_data *mpa)
+static int mpa_sync(uint8 **data, uint32 *data_len/*, mpa_data *mpa*/)
 {
-	uint8 *sync_w = (uint8 *)header;
+#if 0 // ID3 tag check not useful
 	int ret;
-
-	// if ( (ret=istream_read(4, sync_w, i_stream)) != 4 )
-	if ( (ret=mpa_read(4, sync_w, in)) != 4 )
-		return (ret<0) ? ERR_PARSE : ERR_EOF;
 
 	if (!mpa->probed) {
 		/*look if ID3 tag is present*/
-		if (!memcmp(sync_w, "ID3", 3)) { // ID3 tag present
+		if (!memcmp(*data, "ID3", 3)) { // ID3 tag present
 			id3v2_hdr id3hdr;
 
 			// fnc_log(FNC_LOG_DEBUG, "ID3v2 tag present in %s\n", i_stream->name);
 
-			memcpy(&id3hdr, sync_w, 4);
+			memcpy(&id3hdr, *data, 4);
 			// if ( (ret = istream_read(ID3v2_HDRLEN - 4, &id3hdr.rev, i_stream)) != ID3v2_HDRLEN - 4 )
 			if ( (ret = mpa_read(ID3v2_HDRLEN - 4, &id3hdr.rev, in)) != ID3v2_HDRLEN - 4 )
 				return (ret<0) ? ERR_PARSE : ERR_EOF;
 			// if ( (ret=mpa_read_id3v2(&id3hdr, i_stream, mpa)) )
 			if ( (ret=mpa_read_id3v2(&id3hdr, in, mpa)) )
 				return ret;
-			// if ( (ret=istream_read(4, sync_w, i_stream)) != 4 )
-			if ( (ret=mpa_read(4, sync_w, in)) != 4 )
+			// if ( (ret=istream_read(4, *data, i_stream)) != 4 )
+			if ( (ret=mpa_read(4, *data, in)) != 4 )
 				return (ret<0) ? ERR_PARSE : ERR_EOF;
 		}
 	}
-	while ( !MPA_IS_SYNC(sync_w) ) {
-		*header >>= 8;
-		// sync_w[0]=sync_w[1];
-		// sync_w[1]=sync_w[2];
-		// sync_w[2]=sync_w[3];
+#endif
 
-		// if ( (ret=istream_read(1, &sync_w[3], i_stream)) != 1 )
-		if ( (ret=mpa_read(1, &sync_w[3], in)) != 1 )
-			return (ret<0) ? ERR_PARSE : ERR_EOF;
-		//fnc_log(FNC_LOG_DEBUG, "[MPA] sync: %X%X%X%X\n", sync_w[0], sync_w[1], sync_w[2], sync_w[3]);
-	}
+	for (;!MPA_IS_SYNC(*data) && (*data_len >= 4); (*data)++, (*data_len)--)
+		nms_printf(NMSML_DBG3, "[MPA] sync: %X%X%X%X\n", data[0], data[1], data[2], data[3]);
 
-	return 0;
+	return (*data_len>=4) ? 0/*sync found*/: 1/*sync not found*/;
 }
 
-static int mpa_decode_header(uint32 header, MediaProperties *properties, mpa_data *mpa)
+static int mpa_decode_header(uint8 *buff_data, mpa_data *mpa)
 {
 	int RowIndex,ColIndex;
-	uint8 *buff_data = (uint8 * )&header;
+//	uint8 *buff_data = (uint8 * )&header;
 	int padding;
 	int BitrateMatrix[16][5] = BITRATEMATRIX;
 	float SRateMatrix[4][3] = SRATEMATRIX;
-	enum {MPA_MPEG_2_5=0, MPA_MPEG_RES, MPA_MPEG_2, MPA_MPEG_1} id;
-	enum {MPA_LAYER_RES=0, MPA_LAYER_III, MPA_LAYER_II, MPA_LAYER_I} layer;
-	// uint32 frame_size;
-	uint32 bit_rate;
-	float sample_rate;/*SamplingFrequency*/
-	int pkt_len;
 
-	if ( !MPA_IS_SYNC(buff_data) ) return -1; /*syncword not found*/
+	if ( !MPA_IS_SYNC(buff_data) ) return RTP_PARSE_ERROR; /*syncword not found*/
 
-	id = (buff_data[1] & 0x18) >> 3;
-	layer = (buff_data[1] & 0x06) >> 1;
+	mpa->id = (buff_data[1] & 0x18) >> 3;
+	mpa->layer = (buff_data[1] & 0x06) >> 1;
 
-	switch (id<< 2 | layer) {
+	switch (mpa->id<< 2 | mpa->layer) {
 		case MPA_MPEG_1<<2|MPA_LAYER_I:		// MPEG 1 layer I
 			ColIndex = 0;
 			break;
@@ -226,46 +238,83 @@ static int mpa_decode_header(uint32 header, MediaProperties *properties, mpa_dat
 		case MPA_MPEG_2_5<<2|MPA_LAYER_III:	// MPEG 2.5 layer III
 			ColIndex = 4;
 			break;
-		default: return -1; break;
+		default: return RTP_PARSE_ERROR; break;
 	}
 	
 	RowIndex = (buff_data[2] & 0xf0) >> 4;
 	if (RowIndex == 0xF) // bad bitrate
-		return -1;
+		return RTP_PARSE_ERROR;
 	if (RowIndex == 0) // free bitrate: not supported
-		return -1;
-	bit_rate = BitrateMatrix[RowIndex][ColIndex];
+		return RTP_PARSE_ERROR;
+	mpa->bit_rate = BitrateMatrix[RowIndex][ColIndex];
 
-	switch (id) {
+	switch (mpa->id) {
 		case MPA_MPEG_1: ColIndex = 0; break;
 		case MPA_MPEG_2: ColIndex = 1; break;
 		case MPA_MPEG_2_5: ColIndex = 2; break;
 		default:
-			return -1;
+			return RTP_PARSE_ERROR;
 			break;
 	}
 
 	RowIndex = (buff_data[2] & 0x0c) >> 2;
 	if (RowIndex == 3) // reserved
-		return -1;
-	sample_rate = SRateMatrix[RowIndex][ColIndex];
+		return RTP_PARSE_ERROR;
+	mpa->sample_rate = SRateMatrix[RowIndex][ColIndex];
 
 	// padding
 	padding = (buff_data[2] & 0x02) >> 1;
 
 	// packet len
-	if (layer == MPA_LAYER_I) { // layer 1
-		// frame_size = 384;
-		pkt_len=((12 * bit_rate)/sample_rate + padding)* 4;
+	if (mpa->layer == MPA_LAYER_I) { // layer 1
+		mpa->frame_size = 384;
+		mpa->frm_len=((12 * mpa->bit_rate)/mpa->sample_rate + padding)* 4;
 	} else { // layer 2 or 3
-		// frame_size = 1152;
-		pkt_len= 144 * bit_rate /sample_rate + padding;
+		mpa->frame_size = 1152;
+		mpa->frm_len= 144 * mpa->bit_rate /mpa->sample_rate + padding;
 	}
 	
-#if DEBUG
-	mpa_info(mpa, properties);
+#ifdef ENABLE_DEBUG
+	mpa_info(mpa);
 #endif // DEBUG
 	
 	return 0;// count; /*return 4*/
 }
-#endif
+
+#ifdef ENABLE_DEBUG
+// debug function to diplay MPA header information
+static void mpa_info(mpa_data *mpa)
+{
+	switch (mpa->id) {
+		case MPA_MPEG_1:
+			nms_printf(NMSML_DBG3, "[MPA] MPEG1\n");
+			break;
+		case MPA_MPEG_2:
+			nms_printf(NMSML_DBG3, "[MPA] MPEG2\n");
+			break;
+		case MPA_MPEG_2_5:
+			nms_printf(NMSML_DBG3, "[MPA] MPEG2.5\n");
+			break;
+		default:
+			nms_printf(NMSML_DBG3, "[MPA] MPEG reserved (bad)\n");
+			return;
+			break;
+	}
+	switch (mpa->layer) {
+		case MPA_LAYER_I:
+			nms_printf(NMSML_DBG3, "[MPA] Layer I\n");
+			break;
+		case MPA_LAYER_II:
+			nms_printf(NMSML_DBG3, "[MPA] Layer II\n");
+			break;
+		case MPA_LAYER_III:
+			nms_printf(NMSML_DBG3, "[MPA] Layer III\n");
+			break;
+		default:
+			nms_printf(NMSML_DBG3, "[MPA] Layer reserved (bad)\n");
+			return;
+			break;
+	}
+	nms_printf(NMSML_DBG3, "[MPA] bitrate: %d; sample rate: %3.0f; pkt_len: %d\n", mpa->bit_rate, mpa->sample_rate, mpa->frm_len);
+}
+#endif // DEBUG

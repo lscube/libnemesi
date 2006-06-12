@@ -44,7 +44,6 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 	struct rtp_session *rtp_sess=stm_src->rtp_sess;
 	char dst[65535];
 	size_t dst_size = sizeof(dst);
-	uint32 *timestamp;
 	// end of tmp vars
 	uint16 pkt_pt;
 	rtp_pkt *pkt;
@@ -56,7 +55,7 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
 	
 	pkt_pt = RTP_PKT_PT(pkt);
-	*timestamp = RTP_PKT_TS(pkt);
+	fr->timestamp = RTP_PKT_TS(pkt);
 	
 	do {
 		tot_pkts += pkt_len;
@@ -65,7 +64,7 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 		dst_used += to_cpy;
 		rtp_rm_pkt(rtp_sess, stm_src);
 	} while ( ((size_t)dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) \
-				&& (RTP_PKT_TS(pkt)==*timestamp) && !RTP_PKT_MARK(pkt) && (RTP_PKT_PT(pkt)==pkt_pt) );
+				&& (RTP_PKT_TS(pkt)==fr->timestamp) && !RTP_PKT_MARK(pkt) && (RTP_PKT_PT(pkt)==pkt_pt) );
 	
 	if (tot_pkts > dst_used)
 		return RTP_DST_TOO_SMALL;
@@ -77,7 +76,7 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 		memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
 		dst_used += to_cpy;
 		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
+	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
 	
 	return dst_used;
 #endif

@@ -13,6 +13,7 @@ nemesiincludedir = $(top_srcdir)/include
 noinst_LTLIBRARIES = libdecoder.la
 
 libdecoder_la_SOURCES =	decoder.c \
+			decoder2.c \
 			dec_create.c \
 			dec_clean.c \
 			dec_destroy.c \

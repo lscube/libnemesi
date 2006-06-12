@@ -132,7 +132,6 @@ static int rtp_def_parser(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 	struct rtp_session *rtp_sess=stm_src->rtp_sess;
 	char dst[65535];
 	size_t dst_size = sizeof(dst);
-	uint32 *timestamp;
 	// end of tmp vars
 	rtp_pkt *pkt;
 	size_t pkt_len, dst_used=0;
@@ -141,14 +140,14 @@ static int rtp_def_parser(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 	if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
 		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
 	
-	*timestamp = RTP_PKT_TS(pkt);
+	fr->timestamp = RTP_PKT_TS(pkt);
 	
 	do {
 		to_cpy = min(pkt_len, dst_size);
 		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
 		dst_used += to_cpy;
 		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
+	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
 	
 	return dst_used;
 }

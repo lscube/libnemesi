@@ -13,6 +13,7 @@
 #include "gui_cc.h"
 #include "gui_url.h"
 #include "gnmsprint.h"
+#include <nemesi/etui.h>
 #include <nemesi/egui.h>
 #include <nemesi/methods.h>
 

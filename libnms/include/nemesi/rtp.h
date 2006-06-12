@@ -95,22 +95,23 @@ typedef struct {
 	char *data;
 } rtp_frame;
 
-#define RTP_PKT_PT(x) x->pt
-#define RTP_PKT_MARK(x) x->mark
-#define RTP_PKT_TS(x) x->time
-#define RTP_PKT_SEQ(x) x->seq
-#define RTP_PKT_DATA(x) x->data
+#define RTP_PKT_PT(x) (x->pt)
+#define RTP_PKT_MARK(x) (x->mark)
+#define RTP_PKT_TS(x) (x->time)
+#define RTP_PKT_SEQ(x) (x->seq)
+#define RTP_PKT_DATA(x) (x->data)
+#define RTP_PAYLOAD_SIZE(pkt_len) (pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1
 
-#define RTP_TRANSPORT_SPEC		10
+#define RTP_TRANSPORT_SPEC			10
 #define RTP_TRANSPORT_DELIVERY		20
 #define RTP_TRANSPORT_SRCADDR		30
 #define RTP_TRANSPORT_SRCADDRSTR	31
 #define RTP_TRANSPORT_DSTADDR		40
 #define RTP_TRANSPORT_DSTADDRSTR	41
 #define RTP_TRANSPORT_LAYERS		50
-#define RTP_TRANSPORT_MODE		60
+#define RTP_TRANSPORT_MODE			60
 #define RTP_TRANSPORT_APPEND		70
-#define RTP_TRANSPORT_TTL		80
+#define RTP_TRANSPORT_TTL			80
 #define RTP_TRANSPORT_MCSRTP		90
 #define RTP_TRANSPORT_MCSRTCP		91
 #define RTP_TRANSPORT_MCSPORTS		92
@@ -120,10 +121,10 @@ typedef struct {
 #define RTP_TRANSPORT_SRVRTP		110
 #define RTP_TRANSPORT_SRVRTCP		111
 #define RTP_TRANSPORT_SRVPORTS		112
-#define RTP_TRANSPORT_SSRC		120
+#define RTP_TRANSPORT_SSRC			120
 
 #define RTP_TRANSPORT_NOTSET		-1
-#define RTP_TRANSPORT_SET		0
+#define RTP_TRANSPORT_SET			0
 
 struct rtp_transport {
 	char *spec;
@@ -252,10 +253,12 @@ int rtp_hdr_val_chk(rtp_pkt *, int);
 int rtp_ssrc_check(struct rtp_session *, uint32, struct rtp_ssrc **, nms_sockaddr *, enum rtp_protos);
 int rtp_ssrc_init(struct rtp_session *, struct rtp_ssrc **, uint32, nms_sockaddr *,  enum rtp_protos);
 
-#define RTP_FILL_OK 0
-#define RTP_BUFF_EMPTY 1
-#define RTP_PARSE_ERROR 2
+#define RTP_FILL_OK		0
+#define RTP_BUFF_EMPTY	1
+#define RTP_PARSE_ERROR	2
 #define RTP_PKT_UNKNOWN 3
+#define RTP_IN_PRM_ERR	4
+#define RTP_BUFFERING	9
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
@@ -329,7 +332,7 @@ rtp_parser *rtp_parsers_new(void);
 int rtcp_to_connect(struct rtp_ssrc *, nms_addr *, in_port_t);
 
 // SSRC management functions
-void init_seq(struct rtp_ssrc *, uint16);
+void rtp_init_seq(struct rtp_ssrc *, uint16);
 void rtp_update_seq(struct rtp_ssrc *, uint16);
 
 void rtp_clean(void *);

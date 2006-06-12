@@ -32,6 +32,8 @@
 #define TS_SCHEDULE
 
 #include <nemesi/decoder.h>
+#ifndef ENABLE_DECODER_2
+
 #include <nemesi/rtpptdefs.h>
 #include <nemesi/preferences.h>
 #include <nemesi/audio_format.h>
@@ -80,7 +82,7 @@ void *decoder(void *args)
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	/* pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
 
-	/* by sbiro: fa sí che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente" */
+	/* by sbiro: fa sï¿½ che la funzione "dec_clean" sia chiamata a gestire l'evento "cancellazione del thread corrente" */
 	pthread_cleanup_push(dec_clean, (void *)nms_outc /*audio_buffer */);
 	
 	// tvdiff.tv_sec=tvsleep.tv_sec=rtp_th->startime.tv_sec;
@@ -294,3 +296,4 @@ void *decoder(void *args)
 	
 	return NULL;
 }
+#endif // ENABLE_DECODER_2
