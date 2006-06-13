@@ -41,7 +41,7 @@
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */ 
-rtp_pkt *rtp_get_n_pkt(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src, int *len, uint32 n)
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc *stm_src, int *len, uint32 n)
 { // TODO complete;
 	int i;
 	
@@ -51,12 +51,8 @@ rtp_pkt *rtp_get_n_pkt(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src, int *len
 		i = stm_src->po.pobuff[i].next;
 	}
 	if(i < 0) {
-		if (fnc_type == rtp_blk)
-			pthread_cond_wait(&(stm_src->po.cond_empty), &(stm_src->po.po_mutex));
-		else {
-			pthread_mutex_unlock(&(stm_src->po.po_mutex));
-			return NULL;
-		}
+		pthread_mutex_unlock(&(stm_src->po.po_mutex));
+		return NULL;
 	}
 	pthread_mutex_unlock(&(stm_src->po.po_mutex));
 	

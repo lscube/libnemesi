@@ -32,7 +32,7 @@
 
 static int convert_addr_str(const char *, nms_addr *);
 
-int rtp_transport_set(struct rtp_session *rtp_sess, int par, void *value)
+int rtp_transport_set(rtp_session *rtp_sess, int par, void *value)
 {
 	int ret = RTP_TRANSPORT_NOTSET;
 	// switch here for parameters that do NOT need value

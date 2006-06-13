@@ -31,7 +31,7 @@
 #include <nemesi/rtp.h>
 #include <nemesi/utils.h>
 
-int rtp_transport_get(struct rtp_session *rtp_sess, int par, void *value, uint32 len)
+int rtp_transport_get(rtp_session *rtp_sess, int par, void *value, uint32 len)
 {
 	int ret = RTP_TRANSPORT_NOTSET;
 	// switch here for parameters that do NOT need value

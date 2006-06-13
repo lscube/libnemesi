@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int get_transport_str(struct rtp_session *rtp_sess, char *buff)
+int get_transport_str(rtp_session *rtp_sess, char *buff)
 {
 	char *tkna, *tknb;
 	char str[256];

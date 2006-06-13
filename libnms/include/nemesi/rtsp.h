@@ -110,7 +110,7 @@ struct command {
  * */
 struct rtsp_medium {
 	sdp_medium_info *medium_info;	/*!< Medium informations. */
-	struct rtp_session *rtp_sess;	/*!< RTP session whom
+	rtp_session *rtp_sess;	/*!< RTP session whom
 					  the medium belongs */
 	struct rtsp_medium *next;	/*!< Next medium. */
 	char *filename;			/*!< Medium identifier. Used for the
@@ -251,7 +251,7 @@ int rtsp_uninit(struct rtsp_ctrl *);
 // enum states rtsp_status(struct rtsp_ctrl *);
 #define rtsp_status(ctrl) ctrl->status
 void rtsp_info_print(struct rtsp_ctrl *);
-inline struct rtp_session *rtsp_get_rtp_queue(struct rtsp_ctrl *rtsp_ctl);
+inline rtp_session *rtsp_get_rtp_queue(struct rtsp_ctrl *rtsp_ctl);
 //
 //***** ENDOF interface functions ******************
 
@@ -296,8 +296,8 @@ int rtsp_recv(struct rtsp_thread *);
 int body_exists(char *);
 int check_response(struct rtsp_thread *);
 int check_status(char *, struct rtsp_thread *);
-int set_transport_str(struct rtp_session *, char **);
-int get_transport_str(struct rtp_session *, char *);
+int set_transport_str(rtp_session *, char **);
+int get_transport_str(rtp_session *, char *);
 
 #define GCS_INIT 0
 #define GCS_NXT_SESS 1

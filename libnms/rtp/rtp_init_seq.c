@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-void rtp_init_seq(struct rtp_ssrc *stm_src, uint16 seq)
+void rtp_init_seq(rtp_ssrc *stm_src, uint16 seq)
 {
 	struct rtp_ssrc_stats *stats=&(stm_src->ssrc_stats);
 

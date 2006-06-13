@@ -30,8 +30,8 @@
 
 pthread_t dec_create(struct rtsp_ctrl *rtsp_ctl)
 {
-	struct rtp_session *rtp_sess_head=((struct rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
-	struct rtp_session *rtp_sess;
+	rtp_session *rtp_sess_head=((struct rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
+	rtp_session *rtp_sess;
 	int n;
 	pthread_attr_t dec_attr;
 	pthread_t dec_tid;

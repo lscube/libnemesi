@@ -36,12 +36,9 @@ static rtpparser_info served = {
 
 RTPPRSR(mpv);
 
-//static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
-static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
+static int rtp_parse(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 {
 	// XXX tmp vars to be removed
-	rtp_fnc_type prsr_type = rtp_n_blk;
-	struct rtp_session *rtp_sess=stm_src->rtp_sess;
 	char dst[65535];
 	size_t dst_size = sizeof(dst);
 	// end of tmp vars
@@ -51,7 +48,7 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 	size_t to_cpy;
 	int dst_used=0, tot_pkts=0;
 	
-	if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, (int *)&pkt_len)) )
+	if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
 		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
 	
 	pkt_pt = RTP_PKT_PT(pkt);
@@ -62,8 +59,8 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 		to_cpy = min(pkt_len, dst_size);
 		memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
 		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( ((size_t)dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) \
+		rtp_rm_pkt(stm_src);
+	} while ( ((size_t)dst_used<dst_size) && (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) \
 				&& (RTP_PKT_TS(pkt)==fr->timestamp) && !RTP_PKT_MARK(pkt) && (RTP_PKT_PT(pkt)==pkt_pt) );
 	
 	if (tot_pkts > dst_used)
@@ -75,8 +72,8 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 		to_cpy = min(pkt_len, dst_size);
 		memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
 		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
+		rtp_rm_pkt(stm_src);
+	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
 	
 	return dst_used;
 #endif

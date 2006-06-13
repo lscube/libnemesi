@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-struct rtcp_event *rtcp_schedule(struct rtcp_event *head, struct rtp_session *rtp_sess, struct timeval tv, rtcp_type_t type)
+struct rtcp_event *rtcp_schedule(struct rtcp_event *head, rtp_session *rtp_sess, struct timeval tv, rtcp_type_t type)
 {
 	struct rtcp_event *new_event;
 	struct rtcp_event *pevent=head;

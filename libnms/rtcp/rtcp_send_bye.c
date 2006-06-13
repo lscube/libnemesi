@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_send_bye(struct rtp_session *rtp_sess)
+int rtcp_send_bye(rtp_session *rtp_sess)
 {
 	// TODO: really send bye packet
 	nms_printf(NMSML_DBG1, "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!", rtp_sess->local_ssrc);

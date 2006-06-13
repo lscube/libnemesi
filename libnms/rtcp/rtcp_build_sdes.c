@@ -30,7 +30,7 @@
 #include <nemesi/version.h>
 #include <pwd.h>
 
-int rtcp_build_sdes(struct rtp_session *rtp_sess, rtcp_pkt *pkt, int left)
+int rtcp_build_sdes(rtp_session *rtp_sess, rtcp_pkt *pkt, int left)
 {
 	struct passwd *pwitem=getpwuid(getuid());
 	rtcp_sdes_item_t *item;

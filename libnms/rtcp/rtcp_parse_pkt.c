@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_parse_pkt(struct rtp_ssrc *stm_src, rtcp_pkt *pkt, int len)
+int rtcp_parse_pkt(rtp_ssrc *stm_src, rtcp_pkt *pkt, int len)
 {
 	rtcp_pkt *end;
 	end = (rtcp_pkt *)((uint32 *)pkt + len/4);

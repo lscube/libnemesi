@@ -113,9 +113,9 @@ static int mpa_decode_header(uint8 *, mpa_data *);
 static void mpa_info(mpa_data *);
 #endif // DEBUG
 
-//static int rtp_parse(rtp_fnc_type prsr_type, struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+//static int rtp_parse(rtp_fnc_type prsr_type, rtp_session *rtp_sess, rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 //static rtp_parser rtp_parse
-static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
+static int rtp_parse(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 {
 	rtp_mpa *mpa_priv = stm_src->prsr_privs[pt];
 	rtp_pkt *pkt;
@@ -128,15 +128,15 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 	
 	// XXX should we check if payload/mime-type are compatible with parser?
 	  
-	if ( !(pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) )
+	if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
 		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
 	
 	fr->timestamp = RTP_PKT_TS(pkt);
 	
 	// discard pkt if it's fragmented and the first fragment was lost
 	while (RTP_MPA_PKT(pkt)->frag_offset) {
-		rtp_rm_pkt(stm_src->rtp_sess, stm_src);
-		if ( !(pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len)) )
+		rtp_rm_pkt(stm_src);
+		if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
 			return RTP_BUFF_EMPTY; 
 	}
 	
@@ -163,7 +163,7 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 			return RTP_ERRALLOC;
 	
 	for (fr->len=0; pkt && (fr->len<mpa.frm_len) && (fr->timestamp == RTP_PKT_TS(pkt)); \
-			rtp_rm_pkt(stm_src->rtp_sess, stm_src), (pkt=rtp_get_pkt(rtp_n_blk, stm_src, (int *)&pkt_len))) {
+			rtp_rm_pkt(stm_src), (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len))) {
 		// pkt consistency checks
 		if (RTP_MPA_PKT(pkt)->frag_offset+pkt_len <= mpa_priv->data_size)
 			memcpy(fr->data+RTP_MPA_PKT(pkt)->frag_offset, mpa_data, pkt_len);

@@ -49,8 +49,8 @@ int (*decoders[128])(char *, int, nms_output *);
 void *decoder(void *args)
 {
 	struct rtp_thread *rtp_th=(struct rtp_thread *)args;
-	struct rtp_session *rtp_sess_head; // =rtp_th->rtp_sess_head;
-	struct rtp_session *rtp_sess;
+	rtp_session *rtp_sess_head; // =rtp_th->rtp_sess_head;
+	rtp_session *rtp_sess;
 	struct timeval startime;
 	struct timeval tvsleep;
 	struct timeval tvstart, tvstop;
@@ -70,7 +70,7 @@ void *decoder(void *args)
 	char buffering_audio=1;
 	float audio_sysbuff=0;
 	float video_sysbuff=0;
-	struct rtp_ssrc *stm_src;
+	rtp_ssrc *stm_src;
 	rtp_pkt *pkt;
 	int len=0;
 	char output_pref[PREF_MAX_VALUE_LEN];
@@ -120,7 +120,7 @@ void *decoder(void *args)
 				rtp_sess = stm_src->rtp_sess;
 #endif
 
-				if ( (pkt=rtp_get_pkt(rtp_n_blk, stm_src, &len)) ) {
+				if ( (pkt=rtp_get_pkt(stm_src, &len)) ) {
 				/**/	
 					nms_printf(NMSML_DBG3, "Version Number:%d\n", pkt->ver);
 					nms_printf(NMSML_DBG3, "Payload Type:%d\n", pkt->pt);
@@ -195,7 +195,7 @@ void *decoder(void *args)
 								(((float)((rtp_sess->bp).flcount)/(float)BP_SLOT_NUM)*100.0), audio_sysbuff*100.0, video_sysbuff*100.0);
 						nms_printf(NMSML_DBG2, " - pkt len: %d\n", len);
 /**/	
-						rtp_rm_pkt(rtp_sess, stm_src);
+						rtp_rm_pkt(stm_src);
 
 					} else
 						nms_printf(NMSML_DBG3, "*** not taken:%d\n", ntohs(pkt->seq));
@@ -203,7 +203,7 @@ void *decoder(void *args)
 #ifdef TS_SCHEDULE
 				/* FV: controls on timestamp */
 //				pkt=rtp_get_pkt(stm_src, NULL); // next packet
-				if ( (ts_next=rtp_get_next_ts(rtp_n_blk, stm_src)) >= 0 ) {
+				if ( (ts_next=rtp_get_next_ts(stm_src)) >= 0 ) {
 					if ( !ts_min_next ) {
 //						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_sess->rtpptdefs[pkt->pt]->rate;
 						ts_min_next = ts_next;

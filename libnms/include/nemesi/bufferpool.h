@@ -36,7 +36,7 @@
  *
  * La liberia \b bufferpool mette a disposizione un buffer di memoria, allocato
  * staticamente e formato da slot di dimensione fissa, e le funzioni per la sua
- * gestione, tramite le quali il programma può richiedere e rilasciare degli
+ * gestione, tramite le quali il programma puï¿½ richiedere e rilasciare degli
  * slot.  
  *
  * All'interno sono contenute, inoltre, le funzioni per la gestione del buffer
@@ -45,14 +45,14 @@
  * una lista di pacchetti RTP, ordinati secondo il numero di sequenza, che
  * permettono di gestirne il riordino e la perdita.
  *
- * Una tale architettura è utilizzata in maniera efficiente da NeMeSI che può
+ * Una tale architettura ï¿½ utilizzata in maniera efficiente da NeMeSI che puï¿½
  * ricevere un pacchetto RTP in uno slot del bufferpool, di cui si era fatta
- * richiesta in precedenza, dal quale non sarà più spostato fino alla sua
+ * richiesta in precedenza, dal quale non sarï¿½ piï¿½ spostato fino alla sua
  * rimozione dopo il suo processamento da parte del decoder.  In seguito alla
- * ricezione dalla rete, il pacchetto sarà ordinato tramite le sovrastrutture
+ * ricezione dalla rete, il pacchetto sarï¿½ ordinato tramite le sovrastrutture
  * di indicizzazione che implementano il buffer di playout di rete.
  *
- * In altre parole: dalla ricezione alla decodifica c'è una sola copia in
+ * In altre parole: dalla ricezione alla decodifica c'ï¿½ una sola copia in
  * memoria.
  *
  * @{ */
@@ -93,14 +93,14 @@
  *
  * Questa struttura rappresenta la definizione di uno slot della zona di
  * memoria allocata per contenere i dati del Buffer di Playout di Rete.  Ognuno
- * di essi conterrà i pacchetti RTP arrivati dalla rete.
+ * di essi conterrï¿½ i pacchetti RTP arrivati dalla rete.
  *
- * Tale struttura non sarà mai usata direttamente se non nella fase di
+ * Tale struttura non sarï¿½ mai usata direttamente se non nella fase di
  * allocazione della memoria destinata al buffer.
  * */
 /* Da non usare. MAI. */
 typedef struct {
-	char x[BP_SLOT_SIZE]; /*!< Zona di memoria che immagazzinerà i
+	char x[BP_SLOT_SIZE]; /*!< Zona di memoria che immagazzinerï¿½ i
 				pacchetti RTP provenienti dalla rete. MAI
 				UTILIZZATA DIRETTAMENTE!. */
 } bp_slot;
@@ -109,14 +109,14 @@ typedef struct {
 * \brief La struttura che rappresenta un elemento della lista double-linked del
 * Buffer di Playout di Rete.
 *
-* Si tratta di un elemento del vettore che farà parte del Buffer di Playout di
+* Si tratta di un elemento del vettore che farï¿½ parte del Buffer di Playout di
 * Rete. All'interno di esso ogni elememto si riferisce all'elemento del vettore
 * del Bufferpool con lo stesso indice.
 *
-* La lista è doppio linkata attraverso gli indici degli elementi precedente e
+* La lista ï¿½ doppio linkata attraverso gli indici degli elementi precedente e
 * successivo all'interno dello stesso vettore.
 *
-* \note Il valore corripondente al \c NULL, cioè al delimitatore di lista, è \c
+* \note Il valore corripondente al \c NULL, cioï¿½ al delimitatore di lista, ï¿½ \c
 * -1
 * */
 typedef struct {
@@ -139,7 +139,7 @@ typedef struct {
 									slots containing arrived packets. */
 	pthread_mutex_t po_mutex; /*!< Mutex variable used for access control to
 									shared structures of playout buffer. */
-	pthread_cond_t cond_empty; /*!< Conditional variable used for signaling
+	/* pthread_cond_t cond_empty;*/ /*!< Conditional variable used for signaling
 									in case of playout buffer empty */
 	int pocount;/*!< List members count. */
 	int pohead; /*!< List head. */

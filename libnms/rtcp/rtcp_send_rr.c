@@ -28,12 +28,12 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_send_rr(struct rtp_session *rtp_sess)
+int rtcp_send_rr(rtp_session *rtp_sess)
 {
 	rtcp_pkt *pkt;
 	int len;
 	uint32 rr_buff[MAX_PKT_SIZE];
-	struct rtp_ssrc *stm_src;
+	rtp_ssrc *stm_src;
 
 	memset(rr_buff, 0, MAX_PKT_SIZE*sizeof(uint32));
 	pkt=(rtcp_pkt *)rr_buff;

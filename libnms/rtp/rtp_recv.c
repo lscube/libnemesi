@@ -29,14 +29,14 @@
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 
-int rtp_recv(struct rtp_session *rtp_sess)
+int rtp_recv(rtp_session *rtp_sess)
 {
 
 	int n;
 	uint32 rate;
 	int slot;
 	rtp_pkt *pkt;
-	struct rtp_ssrc *stm_src;
+	rtp_ssrc *stm_src;
 	struct timeval now;
 	uint32 transit;
 	int32 delta;

@@ -150,7 +150,7 @@ typedef struct {
 } rtcp_pkt;
 
 struct rtcp_event {
-	struct rtp_session *rtp_sess;
+	rtp_session *rtp_sess;
 	struct timeval tv;
 	rtcp_type_t type;
 	struct rtcp_event *next;
@@ -163,27 +163,27 @@ int rtcp_thread_create(struct rtp_thread *);
 void rtcp_clean(void *);
 void rtcp_clean_events(void *);
 
-int rtcp_recv(struct rtp_session *);
+int rtcp_recv(rtp_session *);
 int rtcp_hdr_val_chk(rtcp_pkt *, int);
 
-int rtcp_parse_pkt(struct rtp_ssrc *, rtcp_pkt *, int);
-int rtcp_parse_sr(struct rtp_ssrc *, rtcp_pkt *);
-int rtcp_parse_sdes(struct rtp_ssrc *, rtcp_pkt *);
+int rtcp_parse_pkt(rtp_ssrc *, rtcp_pkt *, int);
+int rtcp_parse_sr(rtp_ssrc *, rtcp_pkt *);
+int rtcp_parse_sdes(rtp_ssrc *, rtcp_pkt *);
 int rtcp_parse_rr(rtcp_pkt *);
 int rtcp_parse_bye(rtcp_pkt *);
 int rtcp_parse_app(rtcp_pkt *);
 
-int rtcp_set_ssrc_sdes(struct rtp_ssrc *, rtcp_sdes_item_t *);
+int rtcp_set_ssrc_sdes(rtp_ssrc *, rtcp_sdes_item_t *);
 
 double rtcp_interval(int, int, double, int, double, int);
 
-struct rtcp_event *rtcp_schedule(struct rtcp_event *, struct rtp_session *, struct timeval, rtcp_type_t);
+struct rtcp_event *rtcp_schedule(struct rtcp_event *, rtp_session *, struct timeval, rtcp_type_t);
 struct rtcp_event *rtcp_deschedule(struct rtcp_event *);
 
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *);
-int rtcp_send_rr(struct rtp_session *);
-int rtcp_build_rr(struct rtp_session *, rtcp_pkt *);
-int rtcp_build_sdes(struct rtp_session *, rtcp_pkt *, int);
-int rtcp_send_bye(struct rtp_session *);
+int rtcp_send_rr(rtp_session *);
+int rtcp_build_rr(rtp_session *, rtcp_pkt *);
+int rtcp_build_sdes(rtp_session *, rtcp_pkt *, int);
+int rtcp_send_bye(rtp_session *);
 
 #endif

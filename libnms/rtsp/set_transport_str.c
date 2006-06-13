@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/utils.h>
 
-int set_transport_str(struct rtp_session *rtp_sess, char **str)
+int set_transport_str(rtp_session *rtp_sess, char **str)
 {
 	char buff[256];
 	char addr[128];		/* Unix domain is largest */

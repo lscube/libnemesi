@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_parse_sdes(struct rtp_ssrc *stm_src, rtcp_pkt *pkt)
+int rtcp_parse_sdes(rtp_ssrc *stm_src, rtcp_pkt *pkt)
 {
 	int8 count=pkt->common.count;
 	rtcp_sdes_t *sdes= &(pkt->r.sdes);

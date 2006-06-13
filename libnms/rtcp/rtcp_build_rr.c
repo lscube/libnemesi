@@ -28,11 +28,11 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_build_rr(struct rtp_session *rtp_sess, rtcp_pkt *pkt)
+int rtcp_build_rr(rtp_session *rtp_sess, rtcp_pkt *pkt)
 {
 	struct timeval now, offset;
 	uint32 linear;
-	struct rtp_ssrc *stm_src;
+	rtp_ssrc *stm_src;
 	rtcp_rr_t *rr;
 	uint32 expected, expected_interval, received_interval, lost_interval;
 	int32 lost;

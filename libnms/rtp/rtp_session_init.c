@@ -34,12 +34,12 @@
 					return NULL; \
 				}
 
-struct rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
+rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 {
-	struct rtp_session *rtp_sess;
+	rtp_session *rtp_sess;
 	nms_addr nms_addr;
 
-	if((rtp_sess=(struct rtp_session *)calloc(1, sizeof(struct rtp_session))) == NULL) {
+	if((rtp_sess=(rtp_session *)calloc(1, sizeof(rtp_session))) == NULL) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 		return NULL;
 	}

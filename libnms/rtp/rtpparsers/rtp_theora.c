@@ -56,7 +56,7 @@ static int cfg_fixup(rtp_theora_t *theo, rtp_frame *fr, rtp_pkt *pkt)
 }
 
 static int single_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
-                        struct rtp_ssrc *ssrc, int offset)
+                        rtp_ssrc *ssrc, int offset)
 {
 
     int len = RTP_VORB_LEN(pkt,offset);
@@ -74,7 +74,7 @@ static int single_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
     ) return RTP_PARSER_ERROR;
     
     theo->pkts--;
-    rtp_rm_pkt(sess, ssrc);
+    rtp_rm_pkt(ssrc);
 
     if (RTP_VORB_T(pkt) == 1)
         return cfg_fixup(theo, fr);
@@ -90,7 +90,7 @@ static int single_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 static int pack_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
-                      struct rtp_ssrc *ssrc)
+                      rtp_ssrc *ssrc)
 {
     single_parse(theo, pkt, ssrc, fr, theo->offset);
     theo->offset+=fr->len;
@@ -98,11 +98,11 @@ static int pack_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 static int frag_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
-                      struct rtp_ssrc *ssrc)
+                      rtp_ssrc *ssrc)
 {
     int len;
     
-    rtp_rm_pkt(sess, ssrc);
+    rtp_rm_pkt(ssrc);
 
     switch (RTP_VORB_T(pkt))
     {
@@ -143,7 +143,7 @@ static int frag_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 
-static int rtp_parse(struct rtp_ssrc *stm_src, unsigned int pt
+static int rtp_parse(rtp_ssrc *stm_src, unsigned int pt
                      rtp_frame *fr)
 {
     rtp_pkt *pkt;
@@ -155,7 +155,7 @@ static int rtp_parse(struct rtp_ssrc *stm_src, unsigned int pt
     if (!theo->pkts)
     {
         //get a new packet
-        if ( !(pkt=rtp_get_pkt(prsr_type, stm_src, &len)) )
+        if ( !(pkt=rtp_get_pkt(stm_src, &len)) )
 		return RTP_BUFF_EMPTY;
         //get the number of packets stuffed in the rtp
         theo->pkts = RTP_VORB_PKTS(pkt);

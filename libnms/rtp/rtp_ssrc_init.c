@@ -28,12 +28,12 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_ssrc_init(struct rtp_session *rtp_sess, struct rtp_ssrc **stm_src, uint32 ssrc, nms_sockaddr *recfrom, enum rtp_protos proto_type)
+int rtp_ssrc_init(rtp_session *rtp_sess, rtp_ssrc **stm_src, uint32 ssrc, nms_sockaddr *recfrom, enum rtp_protos proto_type)
 {
 	int addrcmp_err;
 	nms_addr nms_addr;
 	
-	if(((*stm_src)=(struct rtp_ssrc *)calloc(1, sizeof(struct rtp_ssrc))) == NULL)
+	if(((*stm_src)=(rtp_ssrc *)calloc(1, sizeof(rtp_ssrc))) == NULL)
 		return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 
 	(*stm_src)->next=rtp_sess->ssrc_queue;

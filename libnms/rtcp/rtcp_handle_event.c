@@ -33,7 +33,7 @@ struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 
 	double t;
 	struct timeval tv, now;
-	struct rtp_session *rtp_save;
+	rtp_session *rtp_save;
 	int n;
 	
 	gettimeofday(&now, NULL);

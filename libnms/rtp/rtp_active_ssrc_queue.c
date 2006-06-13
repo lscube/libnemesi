@@ -28,9 +28,9 @@
 
 #include <nemesi/rtp.h>
 
-struct rtp_ssrc *rtp_active_ssrc_queue(struct rtp_session *rtp_sess_head)
+rtp_ssrc *rtp_active_ssrc_queue(rtp_session *rtp_sess_head)
 {
-	struct rtp_session *rtp_sess;
+	rtp_session *rtp_sess;
 	
 	for (rtp_sess=rtp_sess_head; rtp_sess && !rtp_sess->active_ssrc_queue; rtp_sess=rtp_sess->next);
 	

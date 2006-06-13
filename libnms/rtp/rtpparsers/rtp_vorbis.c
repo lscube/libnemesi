@@ -303,7 +303,7 @@ static int cfg_fixup(rtp_vorbis_t *vorb, rtp_frame *fr, rtp_pkt *pkt)
 }
 
 static int single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
-                        struct rtp_ssrc *ssrc, int offset)
+                        rtp_ssrc *ssrc, int offset)
 {
 
     int len = RTP_XIPH_LEN(pkt,offset);
@@ -321,7 +321,7 @@ static int single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
     ) return RTP_PARSER_ERROR;
     
     vorb->pkts--;
-    rtp_rm_pkt(sess, ssrc);
+    rtp_rm_pkt(ssrc);
 
     if (RTP_XIPH_T(pkt) == 1)
         return cfg_fixup(vorb, fr);
@@ -337,7 +337,7 @@ static int single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 static int pack_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
-                      struct rtp_ssrc *ssrc)
+                      rtp_ssrc *ssrc)
 {
     single_parse(vorb, pkt, ssrc, fr, vorb->offset);
     vorb->offset+=fr->len;
@@ -345,11 +345,11 @@ static int pack_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
-                      struct rtp_ssrc *ssrc)
+                      rtp_ssrc *ssrc)
 {
     int len;
     
-    rtp_rm_pkt(sess, ssrc);
+    rtp_rm_pkt(ssrc);
 
     switch (RTP_XIPH_T(pkt))
     {
@@ -390,7 +390,7 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 
-static int rtp_parse(struct rtp_ssrc *stm_src, unsigned pt
+static int rtp_parse(rtp_ssrc *stm_src, unsigned pt
                      rtp_frame *fr)
 {
     rtp_pkt *pkt;

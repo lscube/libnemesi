@@ -31,9 +31,9 @@
 void rtp_clean(void *args)
 {
 	struct rtp_thread *rtp_th = (struct rtp_thread *)args;
-	struct rtp_session *rtp_sess=rtp_th->rtp_sess_head;
-	struct rtp_session *prev_rtp_sess;
-	struct rtp_ssrc *csrc, *psrc;
+	rtp_session *rtp_sess=rtp_th->rtp_sess_head;
+	rtp_session *prev_rtp_sess;
+	rtp_ssrc *csrc, *psrc;
 	struct rtp_conflict *conf, *pconf;
 	int i;
 	

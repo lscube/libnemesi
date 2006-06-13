@@ -33,9 +33,9 @@
 
 void *rtp(void *args)
 {
-	struct rtp_session *rtp_sess_head=((struct rtp_thread *)args)->rtp_sess_head;
+	rtp_session *rtp_sess_head=((struct rtp_thread *)args)->rtp_sess_head;
 	pthread_mutex_t *syn = &((struct rtp_thread *)args)->syn;
-	struct rtp_session *rtp_sess;
+	rtp_session *rtp_sess;
 	struct timeval tv;
 	int maxfd=0;
 	

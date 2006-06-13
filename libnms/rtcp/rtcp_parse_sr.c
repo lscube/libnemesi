@@ -28,7 +28,7 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_parse_sr(struct rtp_ssrc *stm_src, rtcp_pkt *pkt)
+int rtcp_parse_sr(rtp_ssrc *stm_src, rtcp_pkt *pkt)
 {
 	nms_printf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
 	gettimeofday(&(stm_src->ssrc_stats.lastsr), NULL);

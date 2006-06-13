@@ -28,11 +28,11 @@
 
 #include <nemesi/rtp.h>
 
-int16 rtp_get_next_pt(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src)
+int16 rtp_get_next_pt(rtp_ssrc *stm_src)
 {
 	rtp_pkt *pkt;
 
-	if ( !(pkt=rtp_get_pkt(fnc_type, stm_src, NULL)) )
+	if ( !(pkt=rtp_get_pkt(stm_src, NULL)) )
 			return RTP_BUFF_EMPTY;
 	
 	return pkt->pt;

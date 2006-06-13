@@ -28,9 +28,9 @@
 
 #include <nemesi/rtp.h>
 
-struct rtp_ssrc *rtp_next_active_ssrc(struct rtp_ssrc *ssrc)
+rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc)
 {
-	struct rtp_session *rtp_sess;
+	rtp_session *rtp_sess;
 	
 	if (!ssrc)
 		return NULL;

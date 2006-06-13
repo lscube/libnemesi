@@ -32,7 +32,7 @@
  * check for ssrc of incoming packet.
  * \return SSRC_KNOWN, SSRC_NEW, SSRC_COLLISION, -1 on internal fatal error.
  * */
-int rtp_ssrc_check(struct rtp_session *rtp_sess, uint32 ssrc, struct rtp_ssrc **stm_src, nms_sockaddr *recfrom, enum rtp_protos proto_type)
+int rtp_ssrc_check(rtp_session *rtp_sess, uint32 ssrc, rtp_ssrc **stm_src, nms_sockaddr *recfrom, enum rtp_protos proto_type)
 {
 	struct rtp_conflict *stm_conf=rtp_sess->conf_queue;
 	struct sockaddr_storage sockaddr;

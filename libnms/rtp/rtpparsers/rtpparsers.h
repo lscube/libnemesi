@@ -40,7 +40,7 @@ typedef struct {
 typedef struct {
 	rtpparser_info *served;
 	rtp_parser rtp_parse;
-//	int (*rtp_parse)(rtp_fnc_type, struct rtp_session *, struct rtp_ssrc *, char *, size_t, uint32 *);
+//	int (*rtp_parse)(rtp_fnc_type, rtp_session *, rtp_ssrc *, char *, size_t, uint32 *);
 } rtpparser;
 
 #endif /*LOCAL_RTPFRAMERS_H_*/

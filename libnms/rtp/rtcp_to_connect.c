@@ -36,8 +36,8 @@
  * \param port remote rtcp port.
  * \return 0 on OK, 1 if connection went wrong, -1 on internal fatal error.
  * */
-// int rtcp_to_connect(struct rtp_ssrc *stm_src, nms_sockaddr *remoteaddr, uint16 port)
-int rtcp_to_connect(struct rtp_ssrc *stm_src, nms_addr *remoteaddr, in_port_t port)
+// int rtcp_to_connect(rtp_ssrc *stm_src, nms_sockaddr *remoteaddr, uint16 port)
+int rtcp_to_connect(rtp_ssrc *stm_src, nms_addr *remoteaddr, in_port_t port)
 {
 	char addr[128];		/* Unix domain is largest */
 	char port_str[256];

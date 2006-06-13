@@ -90,7 +90,7 @@ int poadd(playout_buff *po, int index, uint32 cycles)
 		return PKT_MISORDERED;
 	}
 	
-	pthread_cond_signal(&(po->cond_empty));
+//	pthread_cond_signal(&(po->cond_empty));
 
 	pthread_mutex_unlock(&(po->po_mutex));
 

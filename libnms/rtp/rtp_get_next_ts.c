@@ -29,11 +29,11 @@
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 
-double rtp_get_next_ts(rtp_fnc_type fnc_type, struct rtp_ssrc *stm_src)
+double rtp_get_next_ts(rtp_ssrc *stm_src)
 {
 	rtp_pkt *pkt;
 
-	if ( !(pkt=rtp_get_pkt(fnc_type, stm_src, NULL)) )
+	if ( !(pkt=rtp_get_pkt(stm_src, NULL)) )
 			return RTP_BUFF_EMPTY;
 			
 	return ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->rtpptdefs[pkt->pt]->rate;

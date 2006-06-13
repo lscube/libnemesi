@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-void rtp_update_seq(struct rtp_ssrc *stm_src, uint16 seq)
+void rtp_update_seq(rtp_ssrc *stm_src, uint16 seq)
 {
 	struct rtp_ssrc_stats *stats=&(stm_src->ssrc_stats);
 	uint16 udelta = seq - stats->max_seq;

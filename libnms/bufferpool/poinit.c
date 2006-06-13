@@ -63,8 +63,8 @@ int poinit(playout_buff *po, buffer_pool *bp)
 	// cond initialization
 	if ( (i = pthread_condattr_init(&cond_attr) ) > 0)
 		return i;
-	if ( (i = pthread_cond_init(&(po->cond_empty), &cond_attr) ) > 0)
-		return i;
+//	if ( (i = pthread_cond_init(&(po->cond_empty), &cond_attr) ) > 0)
+//		return i;
 
 	return 0;
 }
