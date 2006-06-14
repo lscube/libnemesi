@@ -29,7 +29,7 @@
 #ifndef __DECODER_H
 #define __DECODER_H
 
-#define ENABLE_DECODER_2
+// #define ENABLE_DECODER_2
 
 #include <config.h>
 

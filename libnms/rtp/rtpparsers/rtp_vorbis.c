@@ -390,8 +390,7 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 
-static int rtp_parse(rtp_ssrc *stm_src, unsigned pt
-                     rtp_frame *fr)
+static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 {
     rtp_pkt *pkt;
     int len;

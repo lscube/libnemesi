@@ -41,7 +41,7 @@ RTPPRSR(mpa);
 
 #define DEFAULT_MPA_DATA_FRAME 1024
 
-#define MPA_IS_SYNC(buff_data) ((buff_data[0]==0xff) && ((buff_data[1] & 0xe0)==0xe0))
+#define MPA_IS_SYNC(buff_data) (((buff_data)[0]==0xff) && (((buff_data)[1] & 0xe0)==0xe0))
 
 // #define MPA_RTPSUBHDR 4
 
@@ -88,7 +88,7 @@ typedef struct {
 	uint32 frag_src_nbytes;
 	uint32 frag_offset;
 #endif
-} mpa_data;
+} mpa_frm;
 
 typedef struct {
 //	mpa_data mpa_info;
@@ -102,25 +102,26 @@ typedef struct {
 	uint8 data[1];
 } rtp_mpa_pkt;
 
-#define RTP_MPA_PKT(x) ((rtp_mpa_pkt *)(RTP_PKT_DATA(x)))
-#define RTP_MPA_DATA_LEN(rtp_pkt_size) (RTP_PAYLOAD_SIZE(rtp_pkt_size)-4)
+#define RTP_MPA_PKT(pkt)				((rtp_mpa_pkt *)(RTP_PKT_DATA(pkt)))
+#define RTP_MPA_DATA_LEN(pkt, pkt_size)	(RTP_PAYLOAD_SIZE(pkt, pkt_size)-4)
+#define RTP_MPA_FRAG_OFFSET(pkt)		ntohs(RTP_MPA_PKT(pkt)->frag_offset)
 
 // private functions
-static int mpa_sync(uint8 **, uint32 */*, mpa_data **/);
-static int mpa_decode_header(uint8 *, mpa_data *);
+static int mpa_sync(uint8 **, uint32 */*, mpa_frm **/);
+static int mpa_decode_header(uint8 *, mpa_frm *);
 #ifdef ENABLE_DEBUG
 // debug function to diplay MPA header information
-static void mpa_info(mpa_data *);
+static void mpa_info(mpa_frm *);
 #endif // DEBUG
 
 //static int rtp_parse(rtp_fnc_type prsr_type, rtp_session *rtp_sess, rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 //static rtp_parser rtp_parse
-static int rtp_parse(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
+static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 {
-	rtp_mpa *mpa_priv = stm_src->prsr_privs[pt];
+	rtp_mpa *mpa_priv = stm_src->prsr_privs[fr->pt];
 	rtp_pkt *pkt;
 	size_t pkt_len; // size of RTP packet, rtp header included.
-	mpa_data mpa;
+	mpa_frm mpa;
 	uint8 *mpa_data;
 	
 	if (!fr)
@@ -131,19 +132,22 @@ static int rtp_parse(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 	if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
 		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
 	
-	fr->timestamp = RTP_PKT_TS(pkt);
+	// fr->timestamp = RTP_PKT_TS(pkt);
 	
 	// discard pkt if it's fragmented and the first fragment was lost
 	while (RTP_MPA_PKT(pkt)->frag_offset) {
 		rtp_rm_pkt(stm_src);
 		if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
-			return RTP_BUFF_EMPTY; 
+			return RTP_BUFF_EMPTY;
+		else if (RTP_PKT_PT(pkt) != fr->pt)
+			return RTP_PARSE_ERROR; 
 	}
 	
 	mpa_data = RTP_MPA_PKT(pkt)->data;
 	
-	pkt_len = RTP_MPA_DATA_LEN(pkt_len); // now pkt_len is only the payload len (excluded mpa subheader)
-	
+	nms_printf(NMSML_DBG3, "--- fr->len: %d-%d\n", pkt_len, RTP_PAYLOAD_SIZE(pkt, pkt_len));
+	pkt_len = RTP_MPA_DATA_LEN(pkt, pkt_len); // now pkt_len is only the payload len (excluded mpa subheader)
+	nms_printf(NMSML_DBG3, "--- fr->len: %d\n", pkt_len);
 	if (mpa_sync(&mpa_data, &pkt_len))
 		return RTP_PARSE_ERROR;
 		
@@ -154,26 +158,36 @@ static int rtp_parse(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
 	 * instead of memcpy the frame in a newly allocated space */ 
 	// init private struct if this is the first time we're called
 	if (!mpa_priv) {
-		if ( !(stm_src->prsr_privs[pt]=mpa_priv=malloc(sizeof(rtp_mpa))) )
+		nms_printf(NMSML_DBG3, "[rtp_mpa] allocating new private struct...");
+		if ( !(stm_src->prsr_privs[fr->pt]=mpa_priv=malloc(sizeof(rtp_mpa))) )
 			return RTP_ERRALLOC;
 		mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
 		if ( !(fr->data=mpa_priv->data=malloc(mpa_priv->data_size)) )
 			return RTP_ERRALLOC;
-	} else if ( (mpa_priv->data_size < pkt_len) && (fr->data=mpa_priv->data=realloc(mpa_priv->data, mpa.frm_len)) )
+		nms_printf(NMSML_DBG3, "done\n");
+	} else if ( mpa_priv->data_size < pkt_len) {
+		nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");
+		 if ( (fr->data=mpa_priv->data=realloc(mpa_priv->data, mpa.frm_len)) )
 			return RTP_ERRALLOC;
+		nms_printf(NMSML_DBG3, "done\n");
+	}
 	
 	for (fr->len=0; pkt && (fr->len<mpa.frm_len) && (fr->timestamp == RTP_PKT_TS(pkt)); \
 			rtp_rm_pkt(stm_src), (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len))) {
 		// pkt consistency checks
-		if (RTP_MPA_PKT(pkt)->frag_offset+pkt_len <= mpa_priv->data_size)
-			memcpy(fr->data+RTP_MPA_PKT(pkt)->frag_offset, mpa_data, pkt_len);
+		if (RTP_MPA_FRAG_OFFSET(pkt)+pkt_len <= mpa_priv->data_size) {
+			nms_printf(NMSML_DBG3, "copying %d byte of data to offset: %d\n", pkt_len, RTP_MPA_FRAG_OFFSET(pkt));
+			memcpy(fr->data+RTP_MPA_FRAG_OFFSET(pkt), mpa_data, pkt_len);
+		}
 	}
+	fr->len = mpa.frm_len;
+	nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
 	
 	return RTP_FILL_OK;
 }
 
 // private functions
-static int mpa_sync(uint8 **data, uint32 *data_len/*, mpa_data *mpa*/)
+static int mpa_sync(uint8 **data, uint32 *data_len/*, mpa_frm *mpa*/)
 {
 #if 0 // ID3 tag check not useful
 	int ret;
@@ -205,7 +219,7 @@ static int mpa_sync(uint8 **data, uint32 *data_len/*, mpa_data *mpa*/)
 	return (*data_len>=4) ? 0/*sync found*/: 1/*sync not found*/;
 }
 
-static int mpa_decode_header(uint8 *buff_data, mpa_data *mpa)
+static int mpa_decode_header(uint8 *buff_data, mpa_frm *mpa)
 {
 	int RowIndex,ColIndex;
 //	uint8 *buff_data = (uint8 * )&header;
@@ -283,7 +297,7 @@ static int mpa_decode_header(uint8 *buff_data, mpa_data *mpa)
 
 #ifdef ENABLE_DEBUG
 // debug function to diplay MPA header information
-static void mpa_info(mpa_data *mpa)
+static void mpa_info(mpa_frm *mpa)
 {
 	switch (mpa->id) {
 		case MPA_MPEG_1:

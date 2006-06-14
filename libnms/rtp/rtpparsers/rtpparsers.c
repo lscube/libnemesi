@@ -40,9 +40,8 @@ rtpparser *rtpparsers[] = {
 	NULL
 };
 
-static int rtp_def_parser(rtp_ssrc *, unsigned, rtp_frame *fr);
+static int rtp_def_parser(rtp_ssrc *, rtp_frame *fr);
 
-//int (*rtp_parsers[128])(rtp_fnc_type, rtp_session *, rtp_ssrc *, char *, size_t, uint32 *) = {
 static rtp_parser rtp_parsers[128] = {
 	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
 	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
@@ -124,7 +123,7 @@ rtp_parser *rtp_parsers_new(void)
 	return new_defs;
 }
 
-static int rtp_def_parser(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
+static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr)
 {
 	// XXX tmp vars to be removed
 	char dst[65535];

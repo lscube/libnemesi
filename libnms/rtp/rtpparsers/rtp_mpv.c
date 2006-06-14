@@ -36,7 +36,7 @@ static rtpparser_info served = {
 
 RTPPRSR(mpv);
 
-static int rtp_parse(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr)
+static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 {
 	// XXX tmp vars to be removed
 	char dst[65535];

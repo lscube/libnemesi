@@ -82,9 +82,9 @@ int rtp_recv(rtp_session *rtp_sess)
 		return 0;
 	}
 
-	switch ( rtp_ssrc_check(rtp_sess, ntohl(pkt->ssrc), &stm_src, &server, RTP) ) {
+	switch ( rtp_ssrc_check(rtp_sess, RTP_PKT_SSRC(pkt), &stm_src, &server, RTP) ) {
 		case SSRC_KNOWN:
-			rtp_update_seq(stm_src, ntohs(pkt->seq));
+			rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
 			
 			if ( !rtp_sess->rtpptdefs[pkt->pt] || !(rate=(rtp_sess->rtpptdefs[pkt->pt]->rate)) )
 				rate=RTP_DEF_CLK_RATE;
@@ -101,7 +101,7 @@ int rtp_recv(rtp_session *rtp_sess)
 			rtp_sess->sess_stats.members++;
 		case SSRC_RTPNEW:
 			(stm_src->ssrc_stats).probation=MIN_SEQUENTIAL;
-			(stm_src->ssrc_stats).max_seq = ntohs(pkt->seq) - 1;
+			(stm_src->ssrc_stats).max_seq = RTP_PKT_SEQ(pkt) - 1;
 			
 			if ( !rtp_sess->rtpptdefs[pkt->pt] || !(rate=(rtp_sess->rtpptdefs[pkt->pt]->rate)) )
 				rate=RTP_DEF_CLK_RATE;
@@ -109,8 +109,8 @@ int rtp_recv(rtp_session *rtp_sess)
 			(stm_src->ssrc_stats).jitter=0;
 			(stm_src->ssrc_stats).firstts=ntohl(pkt->time);
 			(stm_src->ssrc_stats).firsttv=now;
-			// rtp_init_seq(stm_src, ntohs(pkt->seq));
-			rtp_update_seq(stm_src, ntohs(pkt->seq));
+			// rtp_init_seq(stm_src, RTP_PKT_SEQ(pkt));
+			rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
 			break;
 		case SSRC_COLLISION:
 			bprmv(&(rtp_sess->bp), &(stm_src->po), slot);

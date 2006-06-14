@@ -156,7 +156,7 @@ void *decoder(void *args)
 						if ( (len != 0) && (!strcmp(output_pref, "disk")) ) {
 							if (nms_outc->diskwriter)
 								diskwriter( nms_outc->diskwriter, pkt->pt, ((char *)pkt->data + pkt->cc + SKIP), len - SKIP );
-						} else if ((len != 0) && (decoders[pkt->pt] != NULL)) {
+						} else if ((len != 0) && decoders[pkt->pt]) {
 							/* controllo che vada fatta la decodifica*/
 							if ( !strcmp(output_pref, "card") ) {
 								nms_outc->elapsed = ts_elapsed * 1000;
@@ -202,16 +202,11 @@ void *decoder(void *args)
 				}
 #ifdef TS_SCHEDULE
 				/* FV: controls on timestamp */
-//				pkt=rtp_get_pkt(stm_src, NULL); // next packet
 				if ( (ts_next=rtp_get_next_ts(stm_src)) >= 0 ) {
-					if ( !ts_min_next ) {
-//						ts_min_next = ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_sess->rtpptdefs[pkt->pt]->rate;
-						ts_min_next = ts_next;
-						nms_printf(NMSML_DBG3, "pkt time %u firstts %u pkt rate %u", ntohl(pkt->time), stm_src->ssrc_stats.firstts, rtp_sess->rtpptdefs[pkt->pt]->rate);
-						nms_printf(NMSML_DBG3, "\nNew min: %3.2f\n", ts_min_next);
-					} else	/* minimo tra il ts salvato e quello del prossimo pacchetto */
-//						ts_min_next = min(ts_min_next, ((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_sess->rtpptdefs[pkt->pt]->rate);
+					if ( ts_min_next ) /* min between stored ts and next pkt's */
 						ts_min_next = min(ts_min_next, ts_next);
+					else
+						ts_min_next = ts_next;
 				}
 #endif // TS_SCHEDULE
 			}

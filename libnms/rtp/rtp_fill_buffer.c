@@ -30,10 +30,14 @@
 
 int rtp_fill_buffer(rtp_ssrc *stm_src, rtp_frame *fr)
 {
-	long pt;
+	rtp_pkt *pkt;
 	
-	if ( (pt=rtp_get_next_pt(stm_src)) < 0 )
-		return pt;
+	if ( !(pkt=rtp_get_pkt(stm_src, NULL)) )
+		return RTP_BUFF_EMPTY;
+		
+	fr->pt = RTP_PKT_PT(pkt);
+	fr->timestamp = RTP_PKT_TS(pkt);
+	fr->time_sec = ((double)(fr->timestamp - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->rtpptdefs[pkt->pt]->rate;
 	
-	return stm_src->rtp_sess->rtp_parsers[pt](stm_src, pt, fr);
+	return stm_src->rtp_sess->rtp_parsers[fr->pt](stm_src, fr);
 }

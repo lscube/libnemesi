@@ -7,7 +7,7 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
  *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
@@ -26,15 +26,10 @@
  *  
  * */
 
-#include <nemesi/rtp.h>
-#include <nemesi/rtpptdefs.h>
+#include <nemesi/utils.h>
 
-double rtp_get_next_ts(rtp_ssrc *stm_src)
-{ // TODO: calculate time using RTCP infos
-	rtp_pkt *pkt;
-
-	if ( !(pkt=rtp_get_pkt(stm_src, NULL)) )
-			return RTP_BUFF_EMPTY;
-			
-	return ((double)(RTP_PKT_TS(pkt) - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->rtpptdefs[pkt->pt]->rate;
+void f2time(double ftime, struct timeval *time)
+{
+	time->tv_sec=(long)ftime;
+	time->tv_usec=(long)((ftime-time->tv_sec)*1000000);
 }

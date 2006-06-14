@@ -61,8 +61,10 @@
 
 #define BANDWIDTH 16000 /* bytes-per-second */
 
+#define RTP_OK			0
 // general error codes. other, specific, error codes below
-#define RTP_ERRALLOC -1
+#define RTP_ERROR		1
+#define RTP_ERRALLOC	-1
 
 typedef struct {
 #ifdef WORDS_BIGENDIAN
@@ -92,15 +94,20 @@ typedef struct {
 typedef struct {
 	uint32 len;
 	uint32 timestamp;
+	double time_sec;
+	uint8 pt;
 	char *data;
 } rtp_frame;
 
-#define RTP_PKT_PT(x) (x->pt)
-#define RTP_PKT_MARK(x) (x->mark)
-#define RTP_PKT_TS(x) (x->time)
-#define RTP_PKT_SEQ(x) (x->seq)
-#define RTP_PKT_DATA(x) (x->data)
-#define RTP_PAYLOAD_SIZE(pkt_len) (pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1
+#define RTP_PKT_CC(pkt)		(pkt->cc)
+#define RTP_PKT_MARK(pkt)	(pkt->mark)
+#define RTP_PKT_PT(pkt)		(pkt->pt)
+#define RTP_PKT_SEQ(pkt)	ntohs(pkt->seq)
+#define RTP_PKT_TS(pkt)		ntohl(pkt->time)
+#define RTP_PKT_SSRC(pkt)	ntohl(pkt->ssrc)
+#define RTP_PKT_DATA(pkt)	(pkt->data  + pkt->cc)
+#define RTP_PAYLOAD_SIZE(pkt, pkt_len)	pkt_len - ((pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+pkt_len-1)) * pkt->pad)
+/*(pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1*/
 
 #define RTP_TRANSPORT_SPEC			10
 #define RTP_TRANSPORT_DELIVERY		20
@@ -211,7 +218,7 @@ struct rtp_conflict {
 	struct rtp_conflict *next;
 };
 
-typedef int (*rtp_parser)(rtp_ssrc *stm_src, unsigned pt, rtp_frame *fr);
+typedef int (*rtp_parser)(rtp_ssrc *stm_src, rtp_frame *fr);
 
 typedef struct _rtp_session {
 	uint32 local_ssrc;
@@ -254,12 +261,13 @@ int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *, enum rtp_
 int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,  enum rtp_protos);
 
 #define RTP_FILL_OK			0
-#define RTP_BUFF_EMPTY		1
-#define RTP_PARSE_ERROR		2
-#define RTP_PKT_UNKNOWN 	3
-#define RTP_IN_PRM_ERR		4
-#define RTP_SSRC_NOTVALID	7
-#define RTP_BUFFERING		9
+// rtp_fill error codes
+#define RTP_BUFF_EMPTY		91
+#define RTP_PARSE_ERROR		92
+#define RTP_PKT_UNKNOWN 	93
+#define RTP_IN_PRM_ERR		94
+#define RTP_SSRC_NOTVALID	97
+#define RTP_BUFFERING		99
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
@@ -274,6 +282,9 @@ inline int rtp_rm_pkt(rtp_ssrc *);
 int rtp_fill_buffer(rtp_ssrc *, rtp_frame *);
 double rtp_get_next_ts(rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_ssrc *);
+
+// time wrappers
+int rtp_get_time(rtp_ssrc *ssrc, uint32 timestamp, struct timeval *time);
 
 // rtp transport setup functions
 int rtp_transport_set(rtp_session *, int, void *);

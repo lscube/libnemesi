@@ -143,7 +143,7 @@ static int frag_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 
-static int rtp_parse(rtp_ssrc *stm_src, unsigned int pt
+static int rtp_parse(rtp_ssrc *stm_src,
                      rtp_frame *fr)
 {
     rtp_pkt *pkt;

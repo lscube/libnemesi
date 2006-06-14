@@ -32,7 +32,7 @@
 #include "rtpparsers.h"
 
 //static int rtp_parse(rtp_fnc_type, rtp_session *, rtp_ssrc *, char *, size_t, uint32 *);
-static int rtp_parse(rtp_ssrc *, unsigned, rtp_frame *);
+static int rtp_parse(rtp_ssrc *, rtp_frame *);
 //static rtp_parser rtp_parse;
 
 #define RTPPRSR(x) rtpparser rtp_parser_##x =\
