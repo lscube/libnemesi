@@ -105,8 +105,8 @@ int decode(char *data, int len, nms_output *outc)
 	rate = outc->audio->rate;
 #endif // RESAMPLED
 
-	while ( len_tmp < (len - 4) ) {
-		len_tmp += avcodec_decode_audio(c, out, &out_size, (uint8_t *)(data + 4 + len_tmp), len  - 4 - len_tmp);
+	while ( len_tmp < (len) ) {
+		len_tmp += avcodec_decode_audio(c, out, &out_size, (uint8_t *)(data + len_tmp), len - len_tmp);
 		if (out_size > 0){
 #ifdef RESAMPLED
 			// fprintf(stderr, "%d,%d\n", c->sample_rate, c->channels);
