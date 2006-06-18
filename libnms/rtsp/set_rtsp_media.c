@@ -66,6 +66,32 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 					curr_rtsp_m=curr_rtsp_s->media_queue;
 				}
 				curr_rtsp_m->medium_info = sdp_m;
+				
+				// setup rtp format list for current media
+				for (tkn=sdp_m->fmts; *tkn && (!(pt = strtoul(tkn, &ch, 10)) && ch==tkn); tkn=ch) {
+					if (pt>127) {
+						nms_printf(NMSML_ERR, "sdp 'm=' field specified an rtp payload type not valid (%u)\n", pt);
+						return 1;
+					} else if (pt >= 96) {
+						switch (sdp_m->media_type) {
+							case 'A':
+								if ( !(rtppt = rtp_pt_new(AU)) )
+									return 1;
+								break;
+							case 'V':
+								if ( !(rtppt = rtp_pt_new(VI)) )
+									return 1;
+								break;
+							default:
+								// not recognized
+								if ( !(rtppt = rtp_pt_new(NA)) )
+									return 1;
+								break;
+						}
+						rtp_dynpt_set(curr_rtsp_m->rtp_sess->rtpptdefs, rtppt, pt);
+					}
+				}
+				
 				for(sdp_attr=sdp_m->attr_list; sdp_attr; sdp_attr=sdp_attr->next) {
 					if ( !strncmpcase(sdp_attr->a, "control", 7) ) {
 						tkn = sdp_attr->a + 7; // 7 == strlen("control")
@@ -80,7 +106,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 						// skip spaces and colon (we should not do this!)
 						while ( (*tkn==' ') || (*tkn==':') )
 							tkn++;
-						if ( ((pt=(uint8)strtoul(tkn, &tkn, 10)) >= 96) && ( pt <= 127 ) ){
+						if ( ((pt=(uint8)strtoul(tkn, &tkn, 10)) >= 96) && ( pt <= 127 ) ) {
 							while ( *tkn == ' ' )
 								tkn++;
 							if ( !(ch=strchr(tkn, '/')) ){
@@ -89,28 +115,39 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 							}
 							*ch = '\0';
 							switch (sdp_m->media_type) {
+								if ( rtp_dynpt_encname(curr_rtsp_m->rtp_sess->rtpptdefs, pt, tkn) )
+									return 1;
 								case 'A':
-									if ( !(rtppt = rtp_pt_new(AU, tkn)) )
-										return 1;
-									sscanf(ch+1, "%u/%c", &rtppt->rate, &RTP_AUDIO(rtppt)->channels);
+									sscanf(ch+1, "%u/%c", &curr_rtsp_m->rtp_sess->rtpptdefs[pt]->rate, &RTP_AUDIO(curr_rtsp_m->rtp_sess->rtpptdefs[pt])->channels);
 									break;
 								case 'V':
-									if ( !(rtppt = rtp_pt_new(VI, tkn)) )
-										return 1;
-									sscanf(ch+1, "%u", &rtppt->rate);
+									sscanf(ch+1, "%u", &curr_rtsp_m->rtp_sess->rtpptdefs[pt]->rate);
 									break;
 								default:
 									// not recognized
-									if ( !(rtppt = rtp_pt_new(NA, tkn)) )
-										return 1;
 									break;
 							}
-							rtp_dynpt_set(curr_rtsp_m->rtp_sess->rtpptdefs, rtppt, pt);
 							*ch='/';
 							tkn=++ch;
 						} else {
 							// shawill: should be an error or a warning?
 							nms_printf(NMSML_WARN, "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
+						}
+					}
+					if ( !strncmpcase(sdp_attr->a, "fmtp", 4) ) {
+						/* We assume the string in the format:
+					 	* fmtp:PaloadType <format specific parameters> */
+						tkn = sdp_attr->a + 4; // 4 == strlen("fmtp")
+						// skip spaces and colon (we should not do this!)
+						while ( (*tkn==' ') || (*tkn==':') )
+							tkn++;
+						if ( (pt=(uint8)strtoul(tkn, &tkn, 10)) <= 127 ) {
+							while ( *tkn == ' ' )
+								tkn++;
+							rtp_pt_attr_add(curr_rtsp_m->rtp_sess->rtpptdefs, pt, tkn);
+						} else {
+							// shawill: should be an error or a warning?
+							nms_printf(NMSML_WARN, "Warning: fmtp attribute is trying to set an out of bounds payload type: not permitted\n");
 						}
 					}
 				}

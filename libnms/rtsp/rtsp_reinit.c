@@ -32,6 +32,7 @@ int rtsp_reinit(struct rtsp_thread *rtsp_th)
 {
 	struct rtsp_medium *med, *pmed;
 	struct rtsp_session *sess, *psess;
+	rtp_fmts_list *fmtlist, *pfmtlist;
 	void *ret;
 	
 	sess=psess=rtsp_th->rtsp_queue;
@@ -69,7 +70,8 @@ int rtsp_reinit(struct rtsp_thread *rtsp_th)
 		// sdp_session_destroy(sess->info); //!< free sdp description info
 		free(sess->body);
 		free(sess->content_base);
-		for(med=sess->media_queue; med; pmed=med, med=med->next, free(pmed));
+		for(med=sess->media_queue; med; pmed=med, med=med->next, free(pmed))
+			for(fmtlist=med->fmts; fmtlist; pfmtlist=fmtlist, fmtlist=fmtlist->next, free(pfmtlist));
 		/* like these
 		med=pmed=sess->media_queue;
 		while(med != NULL){

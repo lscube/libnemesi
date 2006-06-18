@@ -69,6 +69,10 @@ void rtp_clean(void *args)
 			free(pconf->transaddr.addr);
 			free(pconf);
 		}
+		// rtp payload types definitions attributes
+		for (i=0; i<128; free(rtp_sess->rtpptdefs[i++]->attrs.data));
+		// rtp payload types dynamic definitions
+		for (i=96; i<128; free(rtp_sess->rtpptdefs[i++]));
 
 		prev_rtp_sess=rtp_sess;
 		rtp_sess=rtp_sess->next;

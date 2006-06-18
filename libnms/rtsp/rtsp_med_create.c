@@ -38,17 +38,13 @@ struct rtsp_medium *rtsp_med_create(int fd)
 	getsockname(fd, (struct sockaddr *)local.addr, &local.addr_len);
 	getpeername(fd, (struct sockaddr *)peer.addr, &peer.addr_len);
 	
-	if ( (rtsp_m=(struct rtsp_medium *)malloc(sizeof(struct rtsp_medium))) == NULL ) {
+	if ( (rtsp_m=(struct rtsp_medium *)calloc(1, sizeof(struct rtsp_medium))) == NULL ) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}
 
 	if((rtsp_m->rtp_sess=rtp_session_init(&local, &peer)) == NULL)
 		return NULL;
-	rtsp_m->next=NULL;
-	rtsp_m->filename=NULL;
-
-	rtsp_m->medium_info=NULL;
 
 	return rtsp_m;
 }
