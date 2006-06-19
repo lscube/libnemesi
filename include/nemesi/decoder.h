@@ -29,7 +29,7 @@
 #ifndef __DECODER_H
 #define __DECODER_H
 
-#define ENABLE_DECODER_2
+//#define ENABLE_DECODER_2
 
 #include <config.h>
 
@@ -43,6 +43,7 @@
 #include <nemesi/output.h>
 #include <nemesi/types.h>
 
+extern pthread_t decoder_tid; // decoder thread ID
 extern int (*decoders[128])(char *, int, nms_output *); // defined in decoder.c
 
 void *decoder(void *);

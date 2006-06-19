@@ -29,6 +29,7 @@
 #include <nemesi/decoder.h>
 #ifdef ENABLE_DECODER_2
 
+pthread_t decoder_tid; // decoder thread ID
 int (*decoders[128])(char *, int, nms_output *);
 
 void *decoder(void *args)

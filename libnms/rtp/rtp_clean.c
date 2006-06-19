@@ -38,7 +38,7 @@ void rtp_clean(void *args)
 	int i;
 	
 	nms_printf(NMSML_DBG1, "RTP Thread is dying suicide!\n");
-	pthread_mutex_lock(&rtp_th->syn);
+//	pthread_mutex_lock(&rtp_th->syn);
 //	pthread_mutex_trylock(&rtp_th->syn);
 	
 	while(rtp_sess != NULL) {
@@ -70,7 +70,7 @@ void rtp_clean(void *args)
 			free(pconf);
 		}
 		// rtp payload types definitions attributes
-		for (i=0; i<128; free(rtp_sess->rtpptdefs[i++]->attrs.data));
+		for (i=0; i<128 && rtp_sess->rtpptdefs[i]; free(rtp_sess->rtpptdefs[i++]->attrs.data));
 		// rtp payload types dynamic definitions
 		for (i=96; i<128; free(rtp_sess->rtpptdefs[i++]));
 
@@ -79,6 +79,8 @@ void rtp_clean(void *args)
 		free(prev_rtp_sess);
 	}
 	rtp_th->rtp_sess_head = NULL;
+	
+//	pthread_mutex_unlock(&rtp_th->syn);
 
 	nms_printf(NMSML_DBG1, "RTP Thread R.I.P.\n");
 }

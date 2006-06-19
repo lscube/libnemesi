@@ -44,6 +44,7 @@
 
 #define SKIP 4
 
+pthread_t decoder_tid; // decoder thread ID
 int (*decoders[128])(char *, int, nms_output *);
 
 void *decoder(void *args)

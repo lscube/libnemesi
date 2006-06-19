@@ -38,7 +38,7 @@ int nms_open(struct rtsp_ctrl *rtsp_ctl, char *urlname, void (*throbber_func)(vo
 	else
 		rtsp_wait(rtsp_ctl);
 		
-	if( !dec_create(rtsp_ctl) )
+	if( !(decoder_tid=dec_create(rtsp_ctl)) )
 		exit( nms_printf(NMSML_FATAL, "Cannot initialize decoder\n") );
 		
 	return 0;

@@ -35,10 +35,11 @@ int rtsp_reinit(struct rtsp_thread *rtsp_th)
 	rtp_fmts_list *fmtlist, *pfmtlist;
 	void *ret;
 	
-	sess=psess=rtsp_th->rtsp_queue;
+	if ( !(sess=psess=rtsp_th->rtsp_queue) )
+		return 0;
 #if 1 // TODO: fix last teardown response wait
 	// check for active rtp/rtcp session
-	if(sess && sess->media_queue && sess->media_queue->rtp_sess) {
+	if(sess->media_queue && sess->media_queue->rtp_sess) {
 		if(rtsp_th->rtp_th->rtcp_tid > 0){
 			nms_printf(NMSML_DBG1, "Sending cancel signal to RTCP Thread (ID: %lu)\n", rtsp_th->rtp_th->rtcp_tid);
 			if (pthread_cancel(rtsp_th->rtp_th->rtcp_tid) != 0)
@@ -65,7 +66,7 @@ int rtsp_reinit(struct rtsp_thread *rtsp_th)
 	// in all other sessions the pointer is the same and the allocated
 	// struct is one
 	sdp_session_destroy(sess->info); //!< free sdp description info
-	while(sess != NULL){
+	while(sess){
 		// MUST be done only once
 		// sdp_session_destroy(sess->info); //!< free sdp description info
 		free(sess->body);
