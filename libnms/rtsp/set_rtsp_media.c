@@ -41,6 +41,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 	char *tkn, *ch;
 	uint8 pt;
 	rtp_pt *rtppt;
+	rtp_fmts_list *fmt, **prev_fmt;
 
 	switch (rtsp_th->descr_fmt) {
 		case DESCRIPTION_SDP_FORMAT :
@@ -68,7 +69,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 				curr_rtsp_m->medium_info = sdp_m;
 				
 				// setup rtp format list for current media
-				for (tkn=sdp_m->fmts; *tkn && (!(pt = strtoul(tkn, &ch, 10)) && ch==tkn); tkn=ch) {
+				for (tkn=sdp_m->fmts, prev_fmt=&curr_rtsp_m->fmts; *tkn && (!(pt = strtoul(tkn, &ch, 10)) && ch==tkn); tkn=ch) {
 					if (pt>127) {
 						nms_printf(NMSML_ERR, "sdp 'm=' field specified an rtp payload type not valid (%u)\n", pt);
 						return 1;
@@ -90,6 +91,13 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 						}
 						rtp_dynpt_set(curr_rtsp_m->rtp_sess->rtpptdefs, rtppt, pt);
 					}
+					if ( !(fmt=malloc(sizeof(rtp_fmts_list))) ) {
+						nms_printf(NMSML_FATAL, "Could not alloc memory for rtp_fmts_list\n");
+						return 1;
+					}
+					fmt->next = NULL;
+					*prev_fmt = fmt;
+					prev_fmt = &fmt->next;
 				}
 				
 				for(sdp_attr=sdp_m->attr_list; sdp_attr; sdp_attr=sdp_attr->next) {
