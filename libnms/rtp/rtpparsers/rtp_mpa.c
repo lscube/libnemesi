@@ -130,7 +130,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	// XXX should we check if payload/mime-type are compatible with parser?
 	  
 	if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
-		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
+		return RTP_BUFF_EMPTY;
 	
 	// fr->timestamp = RTP_PKT_TS(pkt);
 	
