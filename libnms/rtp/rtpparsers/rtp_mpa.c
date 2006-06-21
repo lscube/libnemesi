@@ -162,25 +162,25 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 		if ( !(stm_src->prsr_privs[fr->pt]=mpa_priv=malloc(sizeof(rtp_mpa))) )
 			return RTP_ERRALLOC;
 		mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
-		if ( !(fr->data=mpa_priv->data=malloc(mpa_priv->data_size)) )
+		if ( !(mpa_priv->data=malloc(mpa_priv->data_size)) )
 			return RTP_ERRALLOC;
 		nms_printf(NMSML_DBG3, "done\n");
 	} else if ( mpa_priv->data_size < pkt_len) {
 		nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");
-		 if ( (fr->data=mpa_priv->data=realloc(mpa_priv->data, mpa.frm_len)) )
+		 if ( (mpa_priv->data=realloc(mpa_priv->data, mpa.frm_len)) )
 			return RTP_ERRALLOC;
 		nms_printf(NMSML_DBG3, "done\n");
 	}
+	fr->data = mpa_priv->data;
 	
-	for (fr->len=0; pkt && (fr->len<mpa.frm_len) && (fr->timestamp == RTP_PKT_TS(pkt)); \
-			rtp_rm_pkt(stm_src), (pkt=rtp_get_pkt(stm_src, &pkt_len))) {
+	for (fr->len=0; pkt && (fr->len<mpa.frm_len) && (fr->timestamp == RTP_PKT_TS(pkt)); fr->len+=pkt_len, \
+			rtp_rm_pkt(stm_src), (pkt=rtp_get_pkt(stm_src, &pkt_len)), pkt_len = RTP_MPA_DATA_LEN(pkt, pkt_len)) {
 		// pkt consistency checks
 		if (RTP_MPA_FRAG_OFFSET(pkt)+pkt_len <= mpa_priv->data_size) {
 			nms_printf(NMSML_DBG3, "copying %d byte of data to offset: %d\n", pkt_len, RTP_MPA_FRAG_OFFSET(pkt));
 			memcpy(fr->data+RTP_MPA_FRAG_OFFSET(pkt), mpa_data, pkt_len);
 		}
 	}
-	fr->len = mpa.frm_len;
 	nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
 	
 	return RTP_FILL_OK;

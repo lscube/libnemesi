@@ -63,9 +63,10 @@ typedef struct {
 	uint32 ffv:1;
 	uint32 ffc:3;
 #else
-	uint32 tr:10;
+	uint32 tr_h:2;
 	uint32 t:1;
 	uint32 mbz:5;
+	uint32 tr_l:8;
 	uint32 p:3;
 	uint32 e:1;
 	uint32 b:1;
@@ -77,11 +78,24 @@ typedef struct {
 	uint32 bfc:3;
 	uint32 fbv:1;
 #endif
-	uint8 data[1];
+	union {
+		uint8 data[1];
+		struct {
+			uint32 ext_hdr;
+			uint8 data[1];
+		} mpeg2;
+	} pt;
 } rtp_mpv_pkt;
 
 #define RTP_MPV_PKT(pkt)				((rtp_mpv_pkt *)(RTP_PKT_DATA(pkt)))
-#define RTP_MPV_DATA_LEN(pkt, pkt_size)	((RTP_MPV_PKT(pkt)->t) ? (RTP_PAYLOAD_SIZE(pkt, pkt_size)-8) : (RTP_PAYLOAD_SIZE(pkt, pkt_size)-4))
+#define RTP_MPV_DATA(pkt)				(RTP_MPV_PKT(pkt)->t ? RTP_MPV_PKT(pkt)->pt.mpeg2.data : RTP_MPV_PKT(pkt)->pt.data)
+#define RTP_MPV_DATA_LEN(pkt, pkt_size)	(RTP_MPV_PKT(pkt)->t ? RTP_PAYLOAD_SIZE(pkt, pkt_size)-8 : RTP_PAYLOAD_SIZE(pkt, pkt_size)-4)
+
+#ifdef WORDS_BIGENDIAN
+#define RTP_MPV_TR(pkt)					(RTP_MPV_PKT(pkt)->tr)
+#else
+#define RTP_MPV_TR(pkt)					(RTP_MPV_PKT(pkt)->tr_h << 8 | RTP_MPV_PKT(pkt)->tr_l) 
+#endif
 
 static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 {
@@ -99,7 +113,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	
 	// discard pkt if it's fragmented and the first fragment was lost
 	nms_printf(NMSML_DBG3, "\n[MPV]: header: mbz:%u t:%u tr:%u an:%u n:%u s:%u b:%u e:%u p:%u fbv:%u bfc:%u ffv:%u ffc:%u\n", \
-		RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t, ntohs(RTP_MPV_PKT(pkt)->tr), RTP_MPV_PKT(pkt)->an, RTP_MPV_PKT(pkt)->n, RTP_MPV_PKT(pkt)->s, \
+		RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t, /*ntohs(*/RTP_MPV_TR(pkt)/*)*/, RTP_MPV_PKT(pkt)->an, RTP_MPV_PKT(pkt)->n, RTP_MPV_PKT(pkt)->s, \
 		RTP_MPV_PKT(pkt)->b, RTP_MPV_PKT(pkt)->e, RTP_MPV_PKT(pkt)->p, RTP_MPV_PKT(pkt)->fbv, RTP_MPV_PKT(pkt)->bfc, RTP_MPV_PKT(pkt)->ffv, \
 		RTP_MPV_PKT(pkt)->ffc);
 #if 0
@@ -122,18 +136,19 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 		if ( !(fr->data=mpv_priv->data=malloc(mpv_priv->data_size)) )
 			return RTP_ERRALLOC;
 		nms_printf(NMSML_DBG3, "done\n");
-	}
+	} else
+		fr->data=mpv_priv->data;
 	
 	do {
 		pkt_len = RTP_MPV_DATA_LEN(pkt, pkt_len);
-		tot_pkts += pkt_len;
-		if ( mpv_priv->data_size < tot_pkts) {
-			nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");
-			if ( (fr->data=mpv_priv->data=realloc(mpv_priv->data, tot_pkts)) )
+		if ( mpv_priv->data_size < tot_pkts + pkt_len) {
+			nms_printf(NMSML_DBG3, "[rtp_mpv] reallocating data...");
+			if ( (fr->data=mpv_priv->data=realloc(mpv_priv->data, tot_pkts + pkt_len)) )
 				return RTP_ERRALLOC;
 			nms_printf(NMSML_DBG3, "done\n");
 		}
-		memcpy(fr->data+tot_pkts-pkt_len, RTP_PKT_DATA(pkt)+4, pkt_len);
+		memcpy(fr->data+tot_pkts, RTP_MPV_DATA(pkt), pkt_len);
+		tot_pkts += pkt_len;
 		rtp_rm_pkt(stm_src);
 	} while ( !RTP_PKT_MARK(pkt) && (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) && (RTP_PKT_PT(pkt)==fr->pt) );
 	
