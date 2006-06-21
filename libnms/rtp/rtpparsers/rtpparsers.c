@@ -133,7 +133,7 @@ static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr)
 	size_t pkt_len, dst_used=0;
 	size_t to_cpy;
 	
-	if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
+	if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
 		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
 	
 	fr->timestamp = RTP_PKT_TS(pkt);
@@ -143,7 +143,7 @@ static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr)
 		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
 		dst_used += to_cpy;
 		rtp_rm_pkt(stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
+	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
 	
 	return dst_used;
 }

@@ -129,7 +129,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	
 	// XXX should we check if payload/mime-type are compatible with parser?
 	  
-	if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
+	if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
 		return RTP_BUFF_EMPTY;
 	
 	// fr->timestamp = RTP_PKT_TS(pkt);
@@ -137,7 +137,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	// discard pkt if it's fragmented and the first fragment was lost
 	while (RTP_MPA_PKT(pkt)->frag_offset) {
 		rtp_rm_pkt(stm_src);
-		if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
+		if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
 			return RTP_BUFF_EMPTY;
 		else if (RTP_PKT_PT(pkt) != fr->pt)
 			return RTP_PARSE_ERROR; 
@@ -173,7 +173,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	}
 	
 	for (fr->len=0; pkt && (fr->len<mpa.frm_len) && (fr->timestamp == RTP_PKT_TS(pkt)); \
-			rtp_rm_pkt(stm_src), (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len))) {
+			rtp_rm_pkt(stm_src), (pkt=rtp_get_pkt(stm_src, &pkt_len))) {
 		// pkt consistency checks
 		if (RTP_MPA_FRAG_OFFSET(pkt)+pkt_len <= mpa_priv->data_size) {
 			nms_printf(NMSML_DBG3, "copying %d byte of data to offset: %d\n", pkt_len, RTP_MPA_FRAG_OFFSET(pkt));

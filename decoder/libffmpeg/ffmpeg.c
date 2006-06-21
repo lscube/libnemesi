@@ -77,7 +77,7 @@ int decode(char *data, int len, nms_output *outc)
 		 	* latency of one frame. You must do the following to have a
 		 	* chance to get the last frame of the video */
 			
-			//é l'ultima chiamata
+			//ï¿½ l'ultima chiamata
 			
 			len_tmp += avcodec_decode_video(c, picture, &got_picture, NULL, 0);
     		
@@ -93,9 +93,9 @@ int decode(char *data, int len, nms_output *outc)
 			return 0;
 		}
 #endif // if 0
-	while ( decd_len < (len - 4) ) {
+	while ( decd_len < len ) {
 		
-		size= avcodec_decode_video(ff->context, ff->frame, &(ff->got_frame), (uint8_t *)(data + 4 /*+ len_tmp*/), (int)(len - 4/* - len_tmp*/));
+		size= avcodec_decode_video(ff->context, ff->frame, &(ff->got_frame), (uint8_t *)data, len);
 		
 		if (size < 0) {
                 	fprintf(stderr, "Error while decoding with libavcodec\n");

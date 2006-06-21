@@ -63,46 +63,46 @@ typedef struct {
 	uint32 ffv:1;
 	uint32 ffc:3;
 #else
-	uint32 ffc:3;
-	uint32 ffv:1;
-	uint32 bfc:3;
-	uint32 fbv:1;
+	uint32 tr:10;
+	uint32 t:1;
+	uint32 mbz:5;
 	uint32 p:3;
 	uint32 e:1;
 	uint32 b:1;
 	uint32 s:1;
 	uint32 n:1;
 	uint32 an:1;
-	uint32 tr:10;
-	uint32 t:1;
-	uint32 mbz:5;
+	uint32 ffc:3;
+	uint32 ffv:1;
+	uint32 bfc:3;
+	uint32 fbv:1;
 #endif
 	uint8 data[1];
 } rtp_mpv_pkt;
 
 #define RTP_MPV_PKT(pkt)				((rtp_mpv_pkt *)(RTP_PKT_DATA(pkt)))
-#define RTP_MPV_DATA_LEN(pkt, pkt_size)	((RTP_MPV_PKT(pkt)->t) ? (RTP_PAYLOAD_SIZE(pkt, pkt_size)-4) : (RTP_PAYLOAD_SIZE(pkt, pkt_size)-8))
+#define RTP_MPV_DATA_LEN(pkt, pkt_size)	((RTP_MPV_PKT(pkt)->t) ? (RTP_PAYLOAD_SIZE(pkt, pkt_size)-8) : (RTP_PAYLOAD_SIZE(pkt, pkt_size)-4))
 
 static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 {
-	// XXX tmp vars to be removed
-	char dst[65535];
-	size_t dst_size = sizeof(dst);
-	// end of tmp vars
 	rtp_mpv *mpv_priv = stm_src->prsr_privs[fr->pt];
 	rtp_pkt *pkt;
-	size_t pkt_len; //, dst_used=0;
-	size_t to_cpy;
-	int dst_used=0, tot_pkts=0;
+	size_t pkt_len;
+	uint32 tot_pkts=0;
 	
-	if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
+	if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
 		return RTP_BUFF_EMPTY;
 	
 	// pkt_pt = RTP_PKT_PT(pkt);
 	// fr->timestamp = RTP_PKT_TS(pkt);
-	pkt_len = RTP_MPV_DATA_LEN(pkt, pkt_len);
+	
 	
 	// discard pkt if it's fragmented and the first fragment was lost
+	nms_printf(NMSML_DBG3, "\n[MPV]: header: mbz:%u t:%u tr:%u an:%u n:%u s:%u b:%u e:%u p:%u fbv:%u bfc:%u ffv:%u ffc:%u\n", \
+		RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t, ntohs(RTP_MPV_PKT(pkt)->tr), RTP_MPV_PKT(pkt)->an, RTP_MPV_PKT(pkt)->n, RTP_MPV_PKT(pkt)->s, \
+		RTP_MPV_PKT(pkt)->b, RTP_MPV_PKT(pkt)->e, RTP_MPV_PKT(pkt)->p, RTP_MPV_PKT(pkt)->fbv, RTP_MPV_PKT(pkt)->bfc, RTP_MPV_PKT(pkt)->ffv, \
+		RTP_MPV_PKT(pkt)->ffc);
+#if 0
 	while (!RTP_MPV_PKT(pkt)->b) {
 		rtp_rm_pkt(stm_src);
 		if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
@@ -110,6 +110,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 		else if (RTP_PKT_PT(pkt) != fr->pt)
 			return RTP_PARSE_ERROR; 
 	}
+#endif
 	/* XXX if the frame is not fragmented we could use directly the data contained in bufferpool 
 	 * instead of memcpy the frame in a newly allocated space */ 
 	// init private struct if this is the first time we're called
@@ -124,6 +125,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	}
 	
 	do {
+		pkt_len = RTP_MPV_DATA_LEN(pkt, pkt_len);
 		tot_pkts += pkt_len;
 		if ( mpv_priv->data_size < tot_pkts) {
 			nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");
@@ -133,8 +135,11 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 		}
 		memcpy(fr->data+tot_pkts-pkt_len, RTP_PKT_DATA(pkt)+4, pkt_len);
 		rtp_rm_pkt(stm_src);
-	} while ( (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) \
-				&& (RTP_PKT_TS(pkt)==fr->timestamp) && !RTP_PKT_MARK(pkt) && (RTP_PKT_PT(pkt)==fr->pt) );
+	} while ( !RTP_PKT_MARK(pkt) && (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) && (RTP_PKT_PT(pkt)==fr->pt) );
+	
+	
+	fr->len = tot_pkts;
+	nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
 	
 	return RTP_FILL_OK;
 #if 0

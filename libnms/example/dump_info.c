@@ -35,7 +35,7 @@
 int main (int argc, char **argv) {
 
     int opt, dump;
-    char *url, *out;
+    char *url, *out="nemesi.bump";
     FILE *outfile=NULL;
     struct rtsp_ctrl *ctl;
     struct rtsp_thread *rtsp_th;
@@ -129,7 +129,7 @@ int main (int argc, char **argv) {
 	    }
 
             for(attr=med->medium_info->attr_list; attr; attr=attr->next)
-                    printf(outfile, "\t* %s\n", attr->a);
+                    fprintf(outfile, "\t* %s\n", attr->a);
             
 	    med=med->next;
         }

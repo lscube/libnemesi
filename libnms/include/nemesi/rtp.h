@@ -276,7 +276,7 @@ rtp_ssrc *rtp_active_ssrc_queue(rtp_session *rtp_sess_head);
 rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc);
 
 // wrappers for rtp_pkt
-rtp_pkt *rtp_get_pkt(rtp_ssrc *, int *);
+rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
 rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32);
 inline int rtp_rm_pkt(rtp_ssrc *);
 int rtp_fill_buffer(rtp_ssrc *, rtp_frame *);

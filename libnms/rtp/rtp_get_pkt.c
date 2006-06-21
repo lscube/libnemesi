@@ -40,7 +40,7 @@
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */ 
-rtp_pkt *rtp_get_pkt(rtp_ssrc *stm_src, int *len)
+rtp_pkt *rtp_get_pkt(rtp_ssrc *stm_src, size_t *len)
 {
 	pthread_mutex_lock(&(stm_src->po.po_mutex));
 	do {
