@@ -83,6 +83,13 @@ typedef struct rtp_pt_def {
 	RTP_PT_COMMON_FIELDS
 } rtp_pt;
 
+#define RTP_FMTS_ARRAY_DEF_SIZE 3
+typedef struct _rtp_fmts_list {
+	rtp_pt *rtppt;
+	struct _rtp_fmts_list *next;
+} rtp_fmts_list;
+#define RTP_FMTS_INITIALIZER {NULL, 0, 0}
+
 #define RTP_PT(x) ((rtp_pt *)x)
 #define RTP_AUDIO(x) ((rtp_audio *)x)
 #define RTP_VIDEO(x) ((rtp_video *)x)
@@ -90,8 +97,8 @@ typedef struct rtp_pt_def {
 
 rtp_pt **rtpptdefs_new(void);
 rtp_pt *rtp_pt_new(rtp_media_type mtype);
-int rtp_dynpt_set (rtp_pt *defs[], rtp_pt *pt, uint8 value);
-int rtp_dynpt_encname (rtp_pt *defs[], uint8 value, char *enc_name);
+int rtp_dynpt_set(rtp_pt *defs[], rtp_pt *pt, uint8 value);
+int rtp_dynpt_encname(rtp_pt *defs[], uint8 value, char *enc_name);
 
 // rtp_pt_attrs specific functions
 //void rtp_pt_attrs_init(rtp_pt_attrs *);

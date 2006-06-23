@@ -90,7 +90,7 @@ void rtp_parsers_init(void)
 	}
 }
 
-int rtp_parser_reg(int16 pt, char *mime)
+int rtp_parser_reg(rtp_parser parsers_defs[], int16 pt, char *mime)
 {
 	int i, j;
 	
@@ -102,7 +102,7 @@ int rtp_parser_reg(int16 pt, char *mime)
 	for (i=0; rtpparsers[i]; i++) {
 		for (j=0; rtpparsers[i]->served->mime[j]; j++) {
 			if ( !strcmpcase(rtpparsers[i]->served->mime[j], mime) ) {
-				rtp_parsers[pt] = rtpparsers[i]->rtp_parse;
+				parsers_defs[pt] = rtpparsers[i]->rtp_parse;
 				return 0;
 			}
 		}

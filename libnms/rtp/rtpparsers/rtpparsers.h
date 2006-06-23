@@ -26,8 +26,8 @@
  *  
  * */
 
-#ifndef LOCAL_RTPFRAMERS_H_
-#define LOCAL_RTPFRAMERS_H_
+#ifndef RTPFRAMERS_H_
+#define RTPFRAMERS_H_
 
 //#include <nemesi/rtpparsers.h>
 #include <nemesi/rtp.h>
@@ -42,4 +42,4 @@ typedef struct {
 	rtp_parser rtp_parse;
 } rtpparser;
 
-#endif /*LOCAL_RTPFRAMERS_H_*/
+#endif /* RTPFRAMERS_H_ */

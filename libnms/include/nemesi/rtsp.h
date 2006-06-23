@@ -94,13 +94,6 @@ struct command {
 	char arg[256];		/*!< Possible command arguments. */
 };
 
-#define RTP_FMTS_ARRAY_DEF_SIZE 3
-typedef struct _rtp_fmts_list {
-	rtp_pt *rtppt;
-	struct _rtp_fmts_list *next;
-} rtp_fmts_list;
-#define RTP_FMTS_INITIALIZER {NULL, 0, 0}
-
 /*!
  * \brief RTSP medium description.
  *
@@ -119,11 +112,11 @@ struct rtsp_medium {
 	sdp_medium_info *medium_info;	/*!< Medium informations. */
 	rtp_session *rtp_sess;	/*!< RTP session whom
 					  the medium belongs */
+	rtp_fmts_list *fmts; // list of rtp pt announced in sdp description for this medium
 	struct rtsp_medium *next;	/*!< Next medium. */
 	char *filename;			/*!< Medium identifier. Used for the
 					  ``per medium'' methods
 					  (SETUP, TEARDOWN). */
-	rtp_fmts_list *fmts;
 };
 
 /*!

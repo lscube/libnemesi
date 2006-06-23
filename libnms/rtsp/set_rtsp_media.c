@@ -95,6 +95,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 						nms_printf(NMSML_FATAL, "Could not alloc memory for rtp_fmts_list\n");
 						return 1;
 					}
+					fmt->rtppt = curr_rtsp_m->rtp_sess->rtpptdefs[pt];
 					fmt->next = NULL;
 					*prev_fmt = fmt;
 					prev_fmt = &fmt->next;

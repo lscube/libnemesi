@@ -218,7 +218,9 @@ struct rtp_conflict {
 	struct rtp_conflict *next;
 };
 
+typedef int (*rtp_parser_init)(struct _rtp_session *rtp_sess, unsigned pt);
 typedef int (*rtp_parser)(rtp_ssrc *stm_src, rtp_frame *fr);
+typedef int (*rtp_parser_uninit)(rtp_ssrc *stm_src, unsigned pt);
 
 typedef struct _rtp_session {
 	uint32 local_ssrc;
@@ -335,7 +337,7 @@ inline int rtp_transport_set_ssrc(rtp_session *, uint32);
 #define RTP_REG_STATIC		-3
 
 void rtp_parsers_init(void);
-int rtp_parser_reg(int16, char *);
+int rtp_parser_reg(rtp_parser parsers_defs[], int16, char *);
 rtp_parser *rtp_parsers_new(void);
 
 // rtcp connection functions
