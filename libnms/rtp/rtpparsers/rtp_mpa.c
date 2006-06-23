@@ -114,8 +114,19 @@ static int mpa_decode_header(uint8 *, mpa_frm *);
 static void mpa_info(mpa_frm *);
 #endif // DEBUG
 
-//static int rtp_parse(rtp_fnc_type prsr_type, rtp_session *rtp_sess, rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
-//static rtp_parser rtp_parse
+static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt)
+{
+	rtp_mpa *mpa_priv = stm_src->prsr_privs[pt];
+	
+	if (mpa_priv) {
+		nms_printf(NMSML_DBG2, "[rtp_mpa] freeing private resources...\n");
+		free(mpa_priv->data);
+		free(mpa_priv);
+	}
+	
+	return 0;
+}
+
 static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 {
 	rtp_mpa *mpa_priv = stm_src->prsr_privs[fr->pt];
@@ -164,6 +175,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 		mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
 		if ( !(mpa_priv->data=malloc(mpa_priv->data_size)) )
 			return RTP_ERRALLOC;
+		rtp_parser_set_uninit(stm_src->rtp_sess, fr->pt, rtp_uninit_parser);
 		nms_printf(NMSML_DBG3, "done\n");
 	} else if ( mpa_priv->data_size < pkt_len) {
 		nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");

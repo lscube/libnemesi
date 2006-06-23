@@ -135,16 +135,9 @@ static rtp_pt *rtp_pt_defs[128] = {
 /* 124 */ NULL /* dyn */,		/* 125 */ NULL /* dyn */,		/* 126 */ NULL /* dyn */,		/* 127 */ NULL /* dyn */,
 };
 
-rtp_pt **rtpptdefs_new(void)
+void rtpptdefs_new(rtp_pt *new_defs[])
 {
-	rtp_pt **new_defs;
-	
-	if ( !(new_defs=malloc(sizeof(rtp_pt_defs))) )
-		return NULL;
-		
 	memcpy(new_defs, rtp_pt_defs, sizeof(rtp_pt_defs));
-	
-	return new_defs;
 }
 
 rtp_pt *rtp_pt_new(rtp_media_type mtype)

@@ -85,6 +85,7 @@ typedef struct rtp_pt_def {
 
 #define RTP_FMTS_ARRAY_DEF_SIZE 3
 typedef struct _rtp_fmts_list {
+	unsigned pt;
 	rtp_pt *rtppt;
 	struct _rtp_fmts_list *next;
 } rtp_fmts_list;
@@ -95,7 +96,8 @@ typedef struct _rtp_fmts_list {
 #define RTP_VIDEO(x) ((rtp_video *)x)
 #define RTP_AUDIO_VIDEO(x) ((rtp_audio_video *)x)
 
-rtp_pt **rtpptdefs_new(void);
+//rtp_pt **rtpptdefs_new(void);
+void rtpptdefs_new(rtp_pt *[]);
 rtp_pt *rtp_pt_new(rtp_media_type mtype);
 int rtp_dynpt_set(rtp_pt *defs[], rtp_pt *pt, uint8 value);
 int rtp_dynpt_encname(rtp_pt *defs[], uint8 value, char *enc_name);

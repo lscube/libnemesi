@@ -77,13 +77,18 @@ static rtp_parser rtp_parsers[128] = {
 	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser
 };
 
+static rtp_parser_init rtp_parsers_inits[128];
+
 void rtp_parsers_init(void)
 {
 	int i;
-	
+
+	memset(rtp_parsers_inits, 0, sizeof(rtp_parsers_inits));
+		
 	for (i=0; rtpparsers[i]; i++) {
 		if (rtpparsers[i]->served->static_pt < 96) {
 			rtp_parsers[rtpparsers[i]->served->static_pt] = rtpparsers[i]->rtp_parse;
+			rtp_parsers_inits[rtpparsers[i]->served->static_pt] = rtpparsers[i]->rtp_init_parser;
 			nms_printf(NMSML_DBG1, "Added rtp parser for pt %d\n", rtpparsers[i]->served->static_pt);
 		} else
 			nms_printf(NMSML_ERR, "rtp framer could not serve %d (>=96) payload as static... rejected\n");
@@ -92,6 +97,7 @@ void rtp_parsers_init(void)
 
 int rtp_parser_reg(rtp_parser parsers_defs[], int16 pt, char *mime)
 {
+	// XXX TODO: recode
 	int i, j;
 	
 	if (pt < 96) {
@@ -111,16 +117,15 @@ int rtp_parser_reg(rtp_parser parsers_defs[], int16 pt, char *mime)
 	return 0;
 }
 
-rtp_parser *rtp_parsers_new(void)
+void rtp_parsers_new(rtp_parser *new_parsers, rtp_parser_init *new_parsers_inits)
 {
-	rtp_parser *new_defs;
-	
-	if ( !(new_defs=malloc(sizeof(rtp_parsers))) )
-		return NULL;
-		
-	memcpy(new_defs, rtp_parsers, sizeof(rtp_parsers));
-	
-	return new_defs;
+	memcpy(new_parsers, rtp_parsers, sizeof(rtp_parsers));
+	memcpy(new_parsers_inits, rtp_parsers_inits, sizeof(rtp_parsers_inits));
+}
+
+inline void rtp_parser_set_uninit(rtp_session *rtp_sess, unsigned pt, rtp_parser_uninit parser_uninit)
+{
+	rtp_sess->parsers_uninits[pt]=parser_uninit;
 }
 
 static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr)

@@ -5,9 +5,9 @@
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2006 by
+ *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
  *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
@@ -26,21 +26,31 @@
  *  
  * */
 
-#ifndef RTPFRAMERS_H_
-#define RTPFRAMERS_H_
-
-//#include <nemesi/rtpparsers.h>
 #include <nemesi/rtp.h>
 
-typedef struct {
-	int16 static_pt; // -1 terminated list of served static payload numbers (MUST be <96)
-	char *mime[]; // NULL terminated list of served mime tipes in the form "type/subtype"
-} rtpparser_info;
-
-typedef struct {
-	rtpparser_info *served;
-	rtp_parser_init rtp_init_parser;
-	rtp_parser rtp_parse;
-} rtpparser;
-
-#endif /* RTPFRAMERS_H_ */
+int rtp_announce_pt(rtp_session *rtp_sess, unsigned pt, rtp_media_type media_type)
+{
+	rtp_pt *rtppt;
+	rtp_fmts_list *fmt, **prev_fmt;
+	
+	if (pt>127) {
+		nms_printf(NMSML_ERR, "rtp payload type not valid (%u)\n", pt);
+		return RTP_ERROR;
+	} else if (pt >= 96) {
+		if ( !(rtppt = rtp_pt_new(media_type)) )
+			return RTP_ERROR;
+		rtp_dynpt_set(rtp_sess->rtpptdefs, rtppt, pt);
+	}
+	if ( !(fmt=malloc(sizeof(rtp_fmts_list))) ) {
+		nms_printf(NMSML_FATAL, "Could not alloc memory for rtp_fmts_list\n");
+		return RTP_ERRALLOC;
+	}
+	fmt->pt = pt;
+	fmt->rtppt = rtp_sess->rtpptdefs[pt];
+	fmt->next = NULL;
+	for (prev_fmt=&rtp_sess->announced_fmts; *prev_fmt; prev_fmt = &(*prev_fmt)->next);
+	*prev_fmt = fmt;
+	prev_fmt = &fmt->next;
+					
+	return RTP_OK;
+}

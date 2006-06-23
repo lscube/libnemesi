@@ -112,7 +112,6 @@ struct rtsp_medium {
 	sdp_medium_info *medium_info;	/*!< Medium informations. */
 	rtp_session *rtp_sess;	/*!< RTP session whom
 					  the medium belongs */
-	rtp_fmts_list *fmts; // list of rtp pt announced in sdp description for this medium
 	struct rtsp_medium *next;	/*!< Next medium. */
 	char *filename;			/*!< Medium identifier. Used for the
 					  ``per medium'' methods

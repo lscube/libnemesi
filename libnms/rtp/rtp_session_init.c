@@ -89,8 +89,8 @@ rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 	rtp_sess->sess_stats.rtcp_bw=BANDWIDTH;
 	
 	// RP Payload types definitions:
-	rtp_sess->rtpptdefs = rtpptdefs_new();
-	rtp_sess->rtp_parsers = rtp_parsers_new();
+	rtpptdefs_new(rtp_sess->rtpptdefs);
+	rtp_parsers_new(rtp_sess->parsers, rtp_sess->parsers_inits);
 
 	return rtp_sess;
 }
