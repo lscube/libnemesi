@@ -132,6 +132,7 @@ typedef struct {
 
 #define RTP_TRANSPORT_NOTSET		-1
 #define RTP_TRANSPORT_SET			0
+#define RTP_TRANSPORT_ERR			1
 
 struct rtp_transport {
 	char *spec;
@@ -266,6 +267,7 @@ rtp_session *rtp_session_init(nms_sockaddr *, nms_sockaddr *);
 int rtp_thread_create(struct rtp_thread *); // something like rtp_run could be better?
 
 int rtp_announce_pt(rtp_session *rtp_sess, unsigned pt, rtp_media_type media_type);
+int rtp_dynpt_reg(rtp_session *rtp_sess, unsigned pt, char *mime);
 
 // active ssrc list management
 rtp_ssrc *rtp_active_ssrc_queue(rtp_session *rtp_sess_head);
@@ -298,42 +300,42 @@ int rtp_transport_set(rtp_session *, int, void *);
 int rtp_transport_get(rtp_session *, int, void *, uint32);
 
 // rtp transport wrapper functions for rtp_transport_get
-inline char *rtp_transport_get_spec(rtp_session *);
-inline enum deliveries rtp_transport_get_delivery(rtp_session *);
-inline int rtp_transport_get_srcaddrstr(rtp_session *, char *, uint32);
-inline nms_addr *rtp_transport_get_srcaddr(rtp_session *);
-inline int rtp_transport_get_dstaddrstr(rtp_session *, char *, uint32);
-inline nms_addr *rtp_transport_get_dstaddr(rtp_session *);
-inline int rtp_transport_get_layers(rtp_session *);
-inline enum modes rtp_transport_get_mode(rtp_session *);
-inline int rtp_transport_get_append(rtp_session *);
-inline int rtp_transport_get_ttl(rtp_session *);
-inline int rtp_transport_get_mcsports(rtp_session *, in_port_t [2]);
-inline in_port_t rtp_transport_get_mcsrtcpport(rtp_session *);
-inline int rtp_transport_get_srvports(rtp_session *, in_port_t [2]);
-inline in_port_t rtp_transport_get_srvrtcpport(rtp_session *);
-inline int rtp_transport_get_cliports(rtp_session *, in_port_t [2]);
-inline in_port_t rtp_transport_get_clirtcpport(rtp_session *);
-inline uint32 rtp_transport_get_ssrc(rtp_session *);
+inline char *rtp_get_spec(rtp_session *);
+inline enum deliveries rtp_get_delivery(rtp_session *);
+inline int rtp_get_srcaddrstr(rtp_session *, char *, uint32);
+inline nms_addr *rtp_get_srcaddr(rtp_session *);
+inline int rtp_get_dstaddrstr(rtp_session *, char *, uint32);
+inline nms_addr *rtp_get_dstaddr(rtp_session *);
+inline int rtp_get_layers(rtp_session *);
+inline enum modes rtp_get_mode(rtp_session *);
+inline int rtp_get_append(rtp_session *);
+inline int rtp_get_ttl(rtp_session *);
+inline int rtp_get_mcsports(rtp_session *, in_port_t [2]);
+inline in_port_t rtp_get_mcsrtcpport(rtp_session *);
+inline int rtp_get_srvports(rtp_session *, in_port_t [2]);
+inline in_port_t rtp_get_srvrtcpport(rtp_session *);
+inline int rtp_get_cliports(rtp_session *, in_port_t [2]);
+inline in_port_t rtp_get_clirtcpport(rtp_session *);
+inline uint32 rtp_get_ssrc(rtp_session *);
 
 // rtp transport wrapper functions for rtp_transport_set
-// inline char *rtp_transport_set_spec(rtp_session *, char *); // not settable
-inline int rtp_transport_set_delivery(rtp_session *, enum deliveries);
-inline int rtp_transport_set_srcaddrstr(rtp_session *, char *);
-inline int rtp_transport_set_srcaddr(rtp_session *, nms_addr *);
-inline int rtp_transport_set_dstaddrstr(rtp_session *, char *);
-inline int rtp_transport_set_dstaddr(rtp_session *, nms_addr *);
-inline int rtp_transport_set_layers(rtp_session *, int);
-inline int rtp_transport_set_mode(rtp_session *, enum modes);
-inline int rtp_transport_set_append(rtp_session *, int);
-inline int rtp_transport_set_ttl(rtp_session *, int);
-inline int rtp_transport_set_mcsports(rtp_session *, in_port_t [2]);
-inline int rtp_transport_set_mcsrtcpport(rtp_session *, in_port_t);
-inline int rtp_transport_set_srvports(rtp_session *, in_port_t [2]);
-inline int rtp_transport_set_srvrtcpport(rtp_session *, in_port_t);
-inline int rtp_transport_set_cliports(rtp_session *, in_port_t [2]);
-inline int rtp_transport_set_clirtcpport(rtp_session *, in_port_t);
-inline int rtp_transport_set_ssrc(rtp_session *, uint32);
+// inline char *rtp_set_spec(rtp_session *, char *); // not settable
+inline int rtp_set_delivery(rtp_session *, enum deliveries);
+inline int rtp_set_srcaddrstr(rtp_session *, char *);
+inline int rtp_set_srcaddr(rtp_session *, nms_addr *);
+inline int rtp_set_dstaddrstr(rtp_session *, char *);
+inline int rtp_set_dstaddr(rtp_session *, nms_addr *);
+inline int rtp_set_layers(rtp_session *, int);
+inline int rtp_set_mode(rtp_session *, enum modes);
+inline int rtp_set_append(rtp_session *, int);
+inline int rtp_set_ttl(rtp_session *, int);
+inline int rtp_set_mcsports(rtp_session *, in_port_t [2]);
+inline int rtp_set_mcsrtcpport(rtp_session *, in_port_t);
+inline int rtp_set_srvports(rtp_session *, in_port_t [2]);
+inline int rtp_set_srvrtcpport(rtp_session *, in_port_t);
+inline int rtp_set_cliports(rtp_session *, in_port_t [2]);
+inline int rtp_set_clirtcpport(rtp_session *, in_port_t);
+inline int rtp_set_ssrc(rtp_session *, uint32);
 
 // internal functions
 
@@ -343,7 +345,7 @@ inline int rtp_transport_set_ssrc(rtp_session *, uint32);
 #define RTP_REG_STATIC		-3
 
 void rtp_parsers_init(void);
-int rtp_parser_reg(rtp_parser parsers_defs[], int16, char *);
+int rtp_parser_reg(rtp_session *, int16, char *);
 void rtp_parsers_new(rtp_parser *new_parsers, rtp_parser_init *new_parsers_inits);
 inline void rtp_parser_set_uninit(rtp_session *rtp_sess, unsigned pt, rtp_parser_uninit parser_uninit);
 

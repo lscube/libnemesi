@@ -39,7 +39,7 @@ int set_transport_str(rtp_session *rtp_sess, char **str)
 	
 	rtp_transport_get(rtp_sess, RTP_TRANSPORT_SPEC, buff, sizeof(buff));
 	*(buff+strlen(buff))=';';
-	if (rtp_transport_get_delivery(rtp_sess) == multicast)
+	if (rtp_get_delivery(rtp_sess) == multicast)
 		sprintf(buff+strlen(buff), "multicast;");
 	else
 		sprintf(buff+strlen(buff), "unicast;");
@@ -47,22 +47,22 @@ int set_transport_str(rtp_session *rtp_sess, char **str)
 		sprintf(buff+strlen(buff), "destination=%s;", addr);
 	if ( rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addr, sizeof(addr)) == RTP_TRANSPORT_SET )
 		sprintf(buff+strlen(buff), "source=%s;", addr);
-	if ( rtp_transport_get_layers(rtp_sess) )
-		sprintf(buff+strlen(buff), "layers=%d;", rtp_transport_get_layers(rtp_sess));
-	if (rtp_transport_get_mode(rtp_sess) == record)
+	if ( rtp_get_layers(rtp_sess) )
+		sprintf(buff+strlen(buff), "layers=%d;", rtp_get_layers(rtp_sess));
+	if (rtp_get_mode(rtp_sess) == record)
 		sprintf(buff+strlen(buff), "mode=record;");
 	else
 		sprintf(buff+strlen(buff), "mode=play;");
-	if (rtp_transport_get_append(rtp_sess))
+	if (rtp_get_append(rtp_sess))
 		sprintf(buff+strlen(buff), "append;");
-	if (rtp_transport_get_ttl(rtp_sess))
-		sprintf(buff+strlen(buff), "ttl=%d;", rtp_transport_get_ttl(rtp_sess));
-	if ( rtp_transport_get_mcsports(rtp_sess, ports) == RTP_TRANSPORT_SET )
+	if (rtp_get_ttl(rtp_sess))
+		sprintf(buff+strlen(buff), "ttl=%d;", rtp_get_ttl(rtp_sess));
+	if ( rtp_get_mcsports(rtp_sess, ports) == RTP_TRANSPORT_SET )
 		sprintf(buff+strlen(buff), "port=%d-%d;", (int)ports[0], (int)ports[1]);
-	if ( rtp_transport_get_cliports(rtp_sess, ports) == RTP_TRANSPORT_SET )
+	if ( rtp_get_cliports(rtp_sess, ports) == RTP_TRANSPORT_SET )
 		sprintf(buff+strlen(buff), "client_port=%d-%d;", (int)ports[0], (int)ports[1]);
-	if(rtp_transport_get_ssrc(rtp_sess))
-		sprintf(buff+strlen(buff), "ssrc=%u;", rtp_transport_get_ssrc(rtp_sess));
+	if(rtp_get_ssrc(rtp_sess))
+		sprintf(buff+strlen(buff), "ssrc=%u;", rtp_get_ssrc(rtp_sess));
 	
 	/* eliminiamo l'ultimo ; */
 	/* drop last ';' */

@@ -10,6 +10,7 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_active_ssrc_queue.c \
 			rtp_announce_pt.c \
 			rtp_clean.c \
+			rtp_dynpt_reg.c \
 			rtp_fill_buffer.c \
 			rtp_get_next_pt.c \
 			rtp_get_next_ts.c \

@@ -36,7 +36,7 @@ int rtp_transport_get(rtp_session *rtp_sess, int par, void *value, uint32 len)
 	int ret = RTP_TRANSPORT_NOTSET;
 	// switch here for parameters that do NOT need value
 	if (!value)
-		return 1;
+		return RTP_TRANSPORT_ERR;
 	// switch here for parameters that need value
 	switch (par) {
 		case RTP_TRANSPORT_SPEC:

@@ -95,9 +95,8 @@ void rtp_parsers_init(void)
 	}
 }
 
-int rtp_parser_reg(rtp_parser parsers_defs[], int16 pt, char *mime)
+int rtp_parser_reg(rtp_session *rtp_sess, int16 pt, char *mime)
 {
-	// XXX TODO: recode
 	int i, j;
 	
 	if (pt < 96) {
@@ -108,13 +107,14 @@ int rtp_parser_reg(rtp_parser parsers_defs[], int16 pt, char *mime)
 	for (i=0; rtpparsers[i]; i++) {
 		for (j=0; rtpparsers[i]->served->mime[j]; j++) {
 			if ( !strcmpcase(rtpparsers[i]->served->mime[j], mime) ) {
-				parsers_defs[pt] = rtpparsers[i]->rtp_parse;
-				return 0;
+				rtp_sess->parsers[pt] = rtpparsers[i]->rtp_parse;
+				rtp_sess->parsers_inits[pt] = rtpparsers[i]->rtp_init_parser;
+				return RTP_OK;
 			}
 		}
 	}
 	
-	return 0;
+	return RTP_OK;
 }
 
 void rtp_parsers_new(rtp_parser *new_parsers, rtp_parser_init *new_parsers_inits)

@@ -108,7 +108,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 							}
 							*ch = '\0';
 							switch (sdp_m->media_type) {
-								if ( rtp_dynpt_encname(curr_rtsp_m->rtp_sess->rtpptdefs, pt, tkn) )
+								if ( rtp_dynpt_reg(curr_rtsp_m->rtp_sess, pt, tkn) )
 									return 1;
 								case 'A':
 									sscanf(ch+1, "%u/%c", &curr_rtsp_m->rtp_sess->rtpptdefs[pt]->rate, &RTP_AUDIO(curr_rtsp_m->rtp_sess->rtpptdefs[pt])->channels);
