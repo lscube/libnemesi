@@ -185,10 +185,14 @@ int rtp_dynpt_set (rtp_pt *defs[], rtp_pt *pt, uint8 value)
 }
 
 int rtp_dynpt_encname (rtp_pt *defs[], uint8 value, char *enc_name)
-{
-	
+{	
 	if ( value < 96 ) {
 		nms_printf(NMSML_ERR, "You tried to set encoding name for non-dynamic payload type (%u)\n", value);
+		return 1;
+	}
+
+	if (!defs[value]) {
+		nms_printf(NMSML_ERR, "No dynamic payload type initialized for pt %u\n", value);
 		return 1;
 	}
 	

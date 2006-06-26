@@ -128,27 +128,48 @@ inline void rtp_parser_set_uninit(rtp_session *rtp_sess, unsigned pt, rtp_parser
 	rtp_sess->parsers_uninits[pt]=parser_uninit;
 }
 
+#define DEFAULT_PRSR_DATA_FRAME 65535
+
+typedef struct {
+	char *data;
+	uint32 data_size;
+} rtp_def_parser_s;
+
 static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr)
 {
-	// XXX tmp vars to be removed
-	char dst[65535];
-	size_t dst_size = sizeof(dst);
-	// end of tmp vars
+	rtp_def_parser_s *priv = stm_src->prsr_privs[fr->pt];
 	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
+	size_t pkt_len;
+	uint32 tot_pkts=0;
 	
 	if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
-		return RTP_BUFF_EMPTY; // valid only for NON blocking version.
+		return RTP_BUFF_EMPTY;
 	
-	fr->timestamp = RTP_PKT_TS(pkt);
+	// fr->timestamp = RTP_PKT_TS(pkt);
+	
+	if (!priv) {
+		nms_printf(NMSML_DBG3, "[rtp_def_parser] allocating new private struct...");
+		if ( !(stm_src->prsr_privs[fr->pt]=priv=malloc(sizeof(rtp_def_parser_s))) )
+			return RTP_ERRALLOC;
+		priv->data_size = max(DEFAULT_PRSR_DATA_FRAME, pkt_len);
+		if ( !(fr->data=priv->data=malloc(priv->data_size)) )
+			return RTP_ERRALLOC;
+		nms_printf(NMSML_DBG3, "done\n");
+	} else
+		fr->data=priv->data;
 	
 	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
-		dst_used += to_cpy;
+		pkt_len = RTP_PAYLOAD_SIZE(pkt, pkt_len);
+		if ( priv->data_size < tot_pkts + pkt_len) {
+			nms_printf(NMSML_DBG3, "[rtp_def_parser] reallocating data...");
+			if ( (fr->data=priv->data=realloc(priv->data, tot_pkts + pkt_len)) )
+				return RTP_ERRALLOC;
+			nms_printf(NMSML_DBG3, "done\n");
+		}
+		memcpy(fr->data+tot_pkts, RTP_PKT_DATA(pkt), pkt_len);
+		tot_pkts += pkt_len;
 		rtp_rm_pkt(stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
+	} while ( (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) && (RTP_PKT_PT(pkt)==fr->pt) );
 	
-	return dst_used;
+	return RTP_FILL_OK;
 }

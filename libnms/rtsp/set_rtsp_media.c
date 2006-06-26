@@ -67,7 +67,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 				curr_rtsp_m->medium_info = sdp_m;
 				
 				// setup rtp format list for current media
-				for (tkn=sdp_m->fmts; *tkn && (!(pt = strtoul(tkn, &ch, 10)) && ch==tkn); tkn=ch) {
+				for (tkn=sdp_m->fmts; *tkn && !(!(pt = strtoul(tkn, &ch, 10)) && ch==tkn); tkn=ch) {
 					switch (sdp_m->media_type) {
 						case 'A':
 							if (rtp_announce_pt(curr_rtsp_m->rtp_sess, pt, AU))
@@ -107,9 +107,9 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 								break;
 							}
 							*ch = '\0';
+							if ( rtp_dynpt_reg(curr_rtsp_m->rtp_sess, pt, tkn) )
+								return 1;
 							switch (sdp_m->media_type) {
-								if ( rtp_dynpt_reg(curr_rtsp_m->rtp_sess, pt, tkn) )
-									return 1;
 								case 'A':
 									sscanf(ch+1, "%u/%c", &curr_rtsp_m->rtp_sess->rtpptdefs[pt]->rate, &RTP_AUDIO(curr_rtsp_m->rtp_sess->rtpptdefs[pt])->channels);
 									break;

@@ -111,20 +111,21 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	// fr->timestamp = RTP_PKT_TS(pkt);
 	
 	
-	// discard pkt if it's fragmented and the first fragment was lost
 	nms_printf(NMSML_DBG3, "\n[MPV]: header: mbz:%u t:%u tr:%u an:%u n:%u s:%u b:%u e:%u p:%u fbv:%u bfc:%u ffv:%u ffc:%u\n", \
 		RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t, /*ntohs(*/RTP_MPV_TR(pkt)/*)*/, RTP_MPV_PKT(pkt)->an, RTP_MPV_PKT(pkt)->n, RTP_MPV_PKT(pkt)->s, \
 		RTP_MPV_PKT(pkt)->b, RTP_MPV_PKT(pkt)->e, RTP_MPV_PKT(pkt)->p, RTP_MPV_PKT(pkt)->fbv, RTP_MPV_PKT(pkt)->bfc, RTP_MPV_PKT(pkt)->ffv, \
 		RTP_MPV_PKT(pkt)->ffc);
-#if 0
+#if 1
+	// discard pkt if it's fragmented and the first fragment was lost
 	while (!RTP_MPV_PKT(pkt)->b) {
 		rtp_rm_pkt(stm_src);
-		if ( !(pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) )
+		if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
 			return RTP_BUFF_EMPTY;
 		else if (RTP_PKT_PT(pkt) != fr->pt)
 			return RTP_PARSE_ERROR; 
 	}
 #endif
+
 	/* XXX if the frame is not fragmented we could use directly the data contained in bufferpool 
 	 * instead of memcpy the frame in a newly allocated space */ 
 	// init private struct if this is the first time we're called
@@ -157,14 +158,4 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 	nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
 	
 	return RTP_FILL_OK;
-#if 0
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt)+4, to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) );
-	
-	return dst_used;
-#endif
 }
