@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
 
 #include <nemesi/rtsp.h>
 #include <nemesi/rtp.h>
@@ -34,53 +35,49 @@
 
 int main (int argc, char **argv) {
 
-    int opt, dump;
-    char *url, *out="nemesidump";
-    int outfile[128];
+    int opt, i=0;
+    char *url, *out=malloc(12), *base="dump_nms";
+    int outfd[128];
     struct rtsp_ctrl *ctl;
     struct rtsp_thread *rtsp_th;
     rtp_thread *rtp_th;
     struct rtsp_session *sess;
     struct rtsp_medium *med;
-    rtp_ssrc ssrc;
+    rtp_ssrc *ssrc;
+    rtp_buff conf;
     rtp_frame fr;
     nms_rtsp_hints rtsp_hints = { -1 };
 
     if (argc < 2) {
-        fprintf (stderr, "\n\tPlease specify at least an url.\n");
-        fprintf (stderr, "\tUsage: %s [-f basename ] [-d] url\n\n",
+        fprintf (stderr, "\tPlease specify at least an url.\n");
+        fprintf (stderr, "\tUsage: %s [-f basename ][-p port] url\n",
 		argv[0]);
         exit (1);
     }
 
-    while ((opt = getopt (argc, argv, "df:p:")) != -1) {
+    while ((opt = getopt (argc, argv, "f:p:")) != -1) {
         switch (opt)
 	    {
-
-        /*  Full dump  */
-	    case 'd':
-    	        dump = 1;
-	        break;
-
         /*  Set output file  */
 	    case 'f':
-		out = strdup (optarg);
+		base = strdup (optarg);
+                out = realloc(out,strlen(base)+4);
 	        break;
-        /*  Set output file  */
+        /*  Set rtp port  */
 	    case 'p':
 		rtsp_hints.first_rtp_port = atoi (optarg);
 	        break;
         /* Unknown option  */
 	    case '?':
                 fprintf (stderr, "\n  Unknown option `-%c'.\n", optopt);
-                fprintf (stderr, "\tUsage: %s [-f outputfile ] [-d] url\n\n",
+                fprintf (stderr, "\tUsage: %s [-f outputfile ][-p port] url\n",
                                 argv[0]);
 
 	        return 1;
         }
     }
 
-    memset(outfile,0,sizeof(outfile));
+    memset(outfd,0,sizeof(outfd));
 
     url = argv [argc - 1];
 
@@ -110,36 +107,51 @@ int main (int argc, char **argv) {
 	return 1;
     }
 
-    rtsp_play(ctl);
+    rtsp_play(ctl,0.0,0.0);
     
-    fprintf (stderr, "Dumping...\n");
+    fprintf (stderr, "\nDumping...");
+    
     rtp_th = rtsp_th->rtp_th;
-    sess = rtp_th->rtp_sess_head;
 
-	rtp_fill_buffers(rtp_th);
+    rtp_fill_buffers(rtp_th);
 	
     // while(!pthread_mutex_trylock(&(rtp_th->syn))) {
     do {
-        for (ssrc = rtp_active_ssrc_queue(sess);
+        for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
              ssrc;
              ssrc = rtp_next_active_ssrc(ssrc)) {
-            if ( !rtp_fill_buffer(ssrc, &fr)) {
+            if ( !rtp_fill_buffer(ssrc, &fr, &conf)) {
                 
-                if (outfile[fr.pt] || outfile[fr.pt] = open())
-                    write()
+                if (outfd[fr.pt] ||
+                    sprintf(out,"%s.%d",base,fr.pt) &&
+                    (outfd[fr.pt] = creat(out, 00644)) > 0) {
+                        if (write(outfd[fr.pt], fr.data, fr.len) < fr.len)
+                            return 1;
+                    }
                 else
-                    ...
-            
-            
+                    return 1;
             }
 
         }
-    
+
+        switch (i++) {
+            case 0:
+                fprintf(stderr,".");
+            break;
+            case 1:
+                fprintf(stderr,"o");
+            break;
+            case 2:
+                fprintf(stderr,"O");
+            break;
+            case 3:
+                fprintf(stderr,"o");
+            default:
+                i=0;
+        }
     } while (!rtp_fill_buffers(rtp_th));
+    for (i=0; i<128; i++) if (outfd[i]) close(outfd[i]);
+    fprintf(stderr," Complete\n");
 
 return 0;
-
 }
-
-	
-

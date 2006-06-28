@@ -4,11 +4,15 @@ libnmsdir = $(top_srcdir)
 libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir = $(top_srcdir)/include
 
-bin_PROGRAMS = dump_info
+bin_PROGRAMS = dump_info dump_stream
 
 dump_info_SOURCES = dump_info.c
 
 dump_info_LDADD = $(libnmsdir)/libnemesi.la
+
+dump_stream_SOURCES = dump_stream.c
+
+dump_stream_LDADD = $(libnmsdir)/libnemesi.la
 
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)
 
