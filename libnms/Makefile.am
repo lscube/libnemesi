@@ -7,6 +7,7 @@ SUBDIRS =	bufferpool \
 		libCCstreaming \
 		sdp \
 		rtsp \
+		. \
 		example
 		
 # SUBDIRS += 	docs
