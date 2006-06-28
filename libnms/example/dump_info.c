@@ -34,7 +34,7 @@
 
 int main (int argc, char **argv) {
 
-    int opt, dump;
+    int opt;
     char *url, *out="nemesi.bump";
     FILE *outfile=NULL;
     struct rtsp_ctrl *ctl;
@@ -45,8 +45,8 @@ int main (int argc, char **argv) {
     sdp_attr *attr;
 
     if (argc < 2) {
-        fprintf (stderr, "\n\tPlease specify at least an url.\n");
-        fprintf (stderr, "\tUsage: %s [-f outputfile ] [-d] url\n\n",
+        fprintf (stderr, "\tPlease specify at least an url.\n");
+        fprintf (stderr, "\tUsage: %s [-f outputfile ] [-p rtp_port] url\n",
 		argv[0]);
         exit (1);
     }
@@ -55,16 +55,11 @@ int main (int argc, char **argv) {
         switch (opt)
 	    {
 
-        /*  Full dump  */
-	    case 'd':
-    	        dump = 1;
-	        break;
-
         /*  Set output file  */
 	    case 'f':
 		out = strdup (optarg);
 	        break;
-        /*  Set output file  */
+        /*  Set rtp port  */
 	    case 'p':
 		rtsp_hints.first_rtp_port = atoi (optarg);
 	        break;
@@ -111,8 +106,7 @@ int main (int argc, char **argv) {
     
     while(sess) {
         fprintf(outfile, "\tSession %s\n", sess->pathname);
-        if (dump) fprintf(outfile, "\tRaw data\n%s\n", sess->body);
-        
+
 	med = sess->media_queue;
 	while (med) {
 	    switch (med->medium_info->media_type) {
