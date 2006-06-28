@@ -29,6 +29,7 @@ librtsp_la_SOURCES =	body_exists.c \
 			rtsp_clean.c \
 			rtsp_close.c \
 			rtsp_get_rtp_queue.c \
+			rtsp_get_rtp_th.c \
 			rtsp_info_print.c \
 			rtsp_infos.c \
 			rtsp_init.c \

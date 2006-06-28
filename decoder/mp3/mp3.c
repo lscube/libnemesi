@@ -40,14 +40,15 @@
 /* char buf[16384]; */
 /* struct mpstr mp; */
 
-#define BUFFER 8192 
+#include <nemesi/plugin.h>
 
-int get_plugin_pt(void);
-int decode(char *, int, nms_output *);
+plugin_init("MPA", 14)
+
+#define BUFFER 8192 
 
 int get_plugin_pt(void)
 {
-	return 96;
+	return 14;
 }
 
 int decode(char *data, int len, nms_output *outc)

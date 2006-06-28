@@ -22,6 +22,10 @@
 #include <config.h>
 #include <nemesi/types.h>
 #include <nemesi/output.h>
+
+#include <nemesi/plugin.h>
+
+plugin_init("GSM-AMR", 108)
 /*
 void Copyright(void)
 {

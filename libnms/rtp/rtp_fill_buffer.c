@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_fill_buffer(rtp_ssrc *stm_src, rtp_frame *fr)
+int rtp_fill_buffer(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
 	rtp_pkt *pkt;
 	
@@ -39,5 +39,5 @@ int rtp_fill_buffer(rtp_ssrc *stm_src, rtp_frame *fr)
 	fr->timestamp = RTP_PKT_TS(pkt);
 	fr->time_sec = ((double)(fr->timestamp - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->rtpptdefs[pkt->pt]->rate;
 	
-	return stm_src->rtp_sess->parsers[fr->pt](stm_src, fr);
+	return stm_src->rtp_sess->parsers[fr->pt](stm_src, fr, config);
 }

@@ -34,6 +34,9 @@
 #include <nemesi/rtpptdefs.h>
 #include <nemesi/decoder.h>
 #include <nemesi/comm.h>
+
+#include <nemesi/plugin.h>
+
 #include <stdlib.h>
 
 #include <config.h>
@@ -47,6 +50,7 @@ int load_plugins(void)
 	char *path, *ch;
 	char *str=NULL;
 	int (*get_plugin_pt) (void) = NULL;
+	nms_plugin *plugin;
 
 	DIR *plug_dir;
 	struct dirent *dentry;
@@ -130,21 +134,31 @@ int load_plugins(void)
 		module = lt_dlopenext(pp->path);
 
 		/* Find the entry point. */
+// XXX tmp: load plugin struct
 		if (module) {
-			nms_printf(NMSML_NORM, "Loading Plugin %s: ", pp->path);
-			if (!(get_plugin_pt = (int (*)()) lt_dlsym(module, "get_plugin_pt"))) {
+			nms_printf(NMSML_NORM, "Loading Plugin struct %s: ", pp->path);
+			if (!(plugin = (nms_plugin *) lt_dlsym(module, "plugin"))) {
 				lt_dlclose(module);
 				module = NULL;
-				nms_printf(NMSML_NORM,"lt_dsym() failed on get_plugin_pt: %s\n", lt_dlerror());
+				nms_printf(NMSML_NORM,"lt_dsym() failed on plugin: %s\n", lt_dlerror());
 				continue;
 			}
 		} else {
 			nms_printf(NMSML_NORM, "lt_dlopenext() failed on plugin %s: %s\n", pp->path, lt_dlerror());
 			continue;
 		}
+// XXX endof tmp.
+		
+		if (!(get_plugin_pt = (int (*)()) lt_dlsym(module, "get_plugin_pt"))) {
+			lt_dlclose(module);
+			module = NULL;
+			nms_printf(NMSML_NORM,"lt_dsym() failed on get_plugin_pt: %s\n", lt_dlerror());
+			continue;
+		}
 
 		/* Call the entry point function. */
-		pt = get_plugin_pt();
+//		pt = get_plugin_pt();
+		pt = plugin->pt;
 		if ((pt < 0) || (pt > 127)) {
 			nms_printf(NMSML_NORM, "Payload Type Unknown served by plugin %s\n", pp->path);
 			lt_dlclose(module);

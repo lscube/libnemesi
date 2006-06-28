@@ -35,20 +35,20 @@
 
 #include <nemesi/output.h>
 #include <nemesi/video_img.h>
+#include <nemesi/plugin.h>
 
 // #ifdef HAVE_AV_CONFIG_H
 // #undef HAVE_AV_CONFIG_H
 // #endif
 
 int get_plugin_pt(void);
-int decode(char *, int, nms_output *);
 
+plugin_init("MP4V-ES", 96)
 
 int get_plugin_pt(void)
 {
 	return 96;
 }
-
 
 int decode(char *data, int len, nms_output *outc)
 {
@@ -77,7 +77,7 @@ int decode(char *data, int len, nms_output *outc)
 		 	* latency of one frame. You must do the following to have a
 		 	* chance to get the last frame of the video */
 			
-			//é l'ultima chiamata
+			//ï¿½ l'ultima chiamata
 			
 			len_tmp += avcodec_decode_video(c, picture, &got_picture, NULL, 0);
     		

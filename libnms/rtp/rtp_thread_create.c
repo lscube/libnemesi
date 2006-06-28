@@ -28,7 +28,7 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_thread_create(struct rtp_thread *rtp_th)
+int rtp_thread_create(rtp_thread *rtp_th)
 {
 	int n;
 	pthread_attr_t rtp_attr;

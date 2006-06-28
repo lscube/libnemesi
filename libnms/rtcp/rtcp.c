@@ -30,7 +30,7 @@
 
 void *rtcp(void *args)
 {
-	rtp_session *rtp_sess_head=((struct rtp_thread *)args)->rtp_sess_head;
+	rtp_session *rtp_sess_head=((rtp_thread *)args)->rtp_sess_head;
 	rtp_session *rtp_sess;
 	struct rtcp_event *head=NULL;
 	int maxfd=0, ret;

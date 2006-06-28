@@ -40,7 +40,7 @@ rtpparser *rtpparsers[] = {
 	NULL
 };
 
-static int rtp_def_parser(rtp_ssrc *, rtp_frame *fr);
+static int rtp_def_parser(rtp_ssrc *, rtp_frame *fr, rtp_buff *config);
 
 static rtp_parser rtp_parsers[128] = {
 	rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
@@ -135,7 +135,7 @@ typedef struct {
 	uint32 data_size;
 } rtp_def_parser_s;
 
-static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr)
+static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
 	rtp_def_parser_s *priv = stm_src->prsr_privs[fr->pt];
 	rtp_pkt *pkt;
@@ -170,6 +170,9 @@ static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr)
 		tot_pkts += pkt_len;
 		rtp_rm_pkt(stm_src);
 	} while ( (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) && (RTP_PKT_PT(pkt)==fr->pt) );
+	
+	fr->len = tot_pkts;
+	nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
 	
 	return RTP_FILL_OK;
 }

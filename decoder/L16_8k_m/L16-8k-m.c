@@ -32,6 +32,10 @@
 #include <nemesi/types.h>
 #include <nemesi/output.h>
 
+#include <nemesi/plugin.h>
+
+plugin_init("L16", 106)
+
 #define CHANNELS 2
 #define FACTOR_OVERSAMPLE 5
 #define ELEVEN 11

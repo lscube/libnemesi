@@ -127,7 +127,7 @@ static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt)
 	return 0;
 }
 
-static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
+static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
 	rtp_mpa *mpa_priv = stm_src->prsr_privs[fr->pt];
 	rtp_pkt *pkt;

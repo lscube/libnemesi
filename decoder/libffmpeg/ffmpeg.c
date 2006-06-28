@@ -36,19 +36,18 @@
 #include <nemesi/output.h>
 #include <nemesi/video_img.h>
 
+#include <nemesi/plugin.h>
+
+plugin_init("MPV", 32)
+
 // #ifdef HAVE_AV_CONFIG_H
 // #undef HAVE_AV_CONFIG_H
 // #endif
-
-int get_plugin_pt(void);
-int decode(char *, int, nms_output *);
-
 
 int get_plugin_pt(void)
 {
 	return 32;
 }
-
 
 int decode(char *data, int len, nms_output *outc)
 {

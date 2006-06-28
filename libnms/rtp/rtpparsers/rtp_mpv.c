@@ -97,7 +97,7 @@ typedef struct {
 #define RTP_MPV_TR(pkt)					(RTP_MPV_PKT(pkt)->tr_h << 8 | RTP_MPV_PKT(pkt)->tr_l) 
 #endif
 
-static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
+static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
 	rtp_mpv *mpv_priv = stm_src->prsr_privs[fr->pt];
 	rtp_pkt *pkt;
@@ -152,7 +152,6 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr)
 		tot_pkts += pkt_len;
 		rtp_rm_pkt(stm_src);
 	} while ( !RTP_PKT_MARK(pkt) && (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) && (RTP_PKT_PT(pkt)==fr->pt) );
-	
 	
 	fr->len = tot_pkts;
 	nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);

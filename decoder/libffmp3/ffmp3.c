@@ -34,6 +34,10 @@
 #include <nemesi/types.h>
 #include <nemesi/output.h>
 
+#include <nemesi/plugin.h>
+
+plugin_init("MPA", 14)
+
 #ifdef HAVE_AV_CONFIG_H
 #undef HAVE_AV_CONFIG_H
 #endif
@@ -137,4 +141,8 @@ int decode(char *data, int len, nms_output *outc)
 	}
 
 	return 0;
+}
+
+const char *get_plugin_encname(void) {
+	return "MPA";
 }

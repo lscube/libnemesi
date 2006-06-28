@@ -34,9 +34,13 @@ int (*decoders[128])(char *, int, nms_output *);
 
 void *decoder(void *args)
 {
-	struct rtp_thread *rtp_th=(struct rtp_thread *)args;
+	struct rtsp_ctrl *rtsp_ctl=(struct rtsp_ctrl *)args;
+	rtp_thread *rtp_th = rtsp_get_rtp_th(rtsp_ctl);
+	rtp_session *rtp_sess;
+	rtp_fmts_list *fmt;
 	rtp_ssrc *stm_src;
 	rtp_frame fr;
+	rtp_buff config;
 	// time vars
 	struct timeval startime;
 	struct timeval tvstart, tvstop, tvsleep;
@@ -56,22 +60,31 @@ void *decoder(void *args)
 
 	pthread_cleanup_push(dec_clean, (void *)nms_outc /*audio_buffer */);
 	
-	pthread_mutex_lock(&(rtp_th->syn));
-	pthread_mutex_unlock(&(rtp_th->syn));
-
+	rtp_fill_buffers(rtp_th);
+	
+	for (rtp_sess=rtsp_get_rtp_queue(rtsp_ctl); rtp_sess; rtp_sess=rtp_sess->next) {
+		for (fmt=rtp_sess->announced_fmts; fmt; fmt=fmt->next) {
+			if (RTPPT_ISDYNAMIC(fmt->pt)) {
+				nms_printf(NMSML_WARN, "dynamic payload type encountered: %u - %s\n", fmt->pt, fmt->rtppt->name);
+			}
+		}
+	}
+	
 	gettimeofday(&startime, NULL);
 	
-	while(!pthread_mutex_trylock(&(rtp_th->syn))) {
+	do {
 		gettimeofday(&tvstart, NULL);
-		for (stm_src=rtp_active_ssrc_queue(rtp_th->rtp_sess_head); stm_src; stm_src=rtp_next_active_ssrc(stm_src)) {
+		for (stm_src=rtp_active_ssrc_queue(rtsp_get_rtp_queue(rtsp_ctl)); stm_src; stm_src=rtp_next_active_ssrc(stm_src)) {
 			if ( (ts_next=rtp_get_next_ts(stm_src)) < 0 )
 				continue;
 			f2time(ts_next, &tv_elapsed);
 			timeval_add(&tv_elapsed, &tv_elapsed, &startime);
 			
 			if ( timeval_subtract(NULL, &tv_elapsed, &tvstart) ) {
-				if ( !rtp_fill_buffer(stm_src, &fr) && decoders[fr.pt] ) {
+				if ( !rtp_fill_buffer(stm_src, &fr, &config) && decoders[fr.pt] ) {
 					nms_outc->elapsed = ts_next * 1000;
+					if (config.len > 0) // || if (config.data)
+						decoders[fr.pt](config.data, config.len, nms_outc);
 					decoders[fr.pt](fr.data, fr.len, nms_outc);
 					if (nms_outc->audio)
 						nms_outc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
@@ -108,8 +121,6 @@ void *decoder(void *args)
 		
 		if ( ts_min_next ) { // is there next packet?
 			f2time(ts_min_next, &tv_min_next);
-//			tv_min_next.tv_sec=(long)ts_min_next;
-//			tv_min_next.tv_usec=(long)((ts_min_next-tv_min_next.tv_sec)*1000000);
 
 			timeval_add(&tv_min_next, &tv_min_next, &startime);
 			   // timeval_subtract(&tv_min_next, &tv_min_next, &tv_sys_buff);
@@ -123,8 +134,7 @@ void *decoder(void *args)
 		} else // Empty network playout buffer => take a sleep
 			dec_idle();
 
-		pthread_mutex_unlock(&(rtp_th->syn));
-	}
+	} while (!rtp_fill_buffers(rtp_th));
 	
 	pthread_cleanup_pop(1);
 	

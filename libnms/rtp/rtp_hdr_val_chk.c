@@ -30,7 +30,8 @@
 
 int rtp_hdr_val_chk(rtp_pkt *pkt, int len)
 {
-	if (len < (int)sizeof(rtp_pkt)) {
+	if (RTP_PAYLOAD_SIZE(pkt, len) < 0) {
+//	if (len < 12) {
 		nms_printf(NMSML_ERR, "RTP packet too small (%d: smaller than RTP header size)!!!\n", len);
 		return 1;
 	}

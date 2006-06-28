@@ -93,6 +93,11 @@ typedef struct {
 
 typedef struct {
 	uint32 len;
+	char *data;
+} rtp_buff;
+
+typedef struct {
+	uint32 len;
 	uint32 timestamp;
 	double time_sec;
 	uint8 pt;
@@ -108,6 +113,8 @@ typedef struct {
 #define RTP_PKT_DATA(pkt)	(pkt->data  + pkt->cc)
 #define RTP_PAYLOAD_SIZE(pkt, pkt_len)	pkt_len - ((pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+pkt_len-1)) * pkt->pad)
 /*(pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1*/
+
+#define RTPPT_ISDYNAMIC(pt)	(pt >= 96)
 
 #define RTP_TRANSPORT_SPEC			10
 #define RTP_TRANSPORT_DELIVERY		20
@@ -211,6 +218,8 @@ typedef struct _rtp_ssrc {
 	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payolad changes at its best.
 	struct _rtp_ssrc *next; // next known SSRC
 	struct _rtp_ssrc *next_active; // next active SSRC
+	// park is a link for parking external variables (i.e. from decoder). libnms will never use that.
+	void *park;
 } rtp_ssrc;
 
 struct rtp_conflict {
@@ -223,7 +232,7 @@ struct rtp_conflict {
  * for all the parsers registered for announced payload types (present in the <tt>announced_fmts</tt> list)
  * */
 typedef int (*rtp_parser_init)(struct _rtp_session *rtp_sess, unsigned pt);
-typedef int (*rtp_parser)(rtp_ssrc *stm_src, rtp_frame *fr);
+typedef int (*rtp_parser)(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *conf);
 typedef int (*rtp_parser_uninit)(rtp_ssrc *stm_src, unsigned pt);
 
 typedef struct _rtp_session {
@@ -245,15 +254,17 @@ typedef struct _rtp_session {
 	rtp_parser_init parsers_inits[128];
 	rtp_parser parsers[128];
 	rtp_parser_uninit parsers_uninits[128];
+	// park is a link for parking external variables (i.e. from decoder). libnms will never use that.
+	void *park;
 } rtp_session;
 
-struct rtp_thread {
+typedef struct _rtp_thread {
 	rtp_session *rtp_sess_head;
 	// struct timeval startime;
 	pthread_mutex_t syn;
 	pthread_t rtp_tid;
 	pthread_t rtcp_tid;
-};
+} rtp_thread;
 
 enum rtp_protos {
 	RTP,
@@ -262,13 +273,15 @@ enum rtp_protos {
 
 void *rtp(void *);
 
-struct rtp_thread *rtp_init(void);
+rtp_thread *rtp_init(void);
 rtp_session *rtp_session_init(nms_sockaddr *, nms_sockaddr *);
-int rtp_thread_create(struct rtp_thread *); // something like rtp_run could be better?
+int rtp_thread_create(rtp_thread *); // something like rtp_run could be better?
 
 int rtp_announce_pt(rtp_session *rtp_sess, unsigned pt, rtp_media_type media_type);
 int rtp_dynpt_reg(rtp_session *rtp_sess, unsigned pt, char *mime);
 
+// wait until rtp queues are ready
+int rtp_fill_buffers(rtp_thread *);
 // active ssrc list management
 rtp_ssrc *rtp_active_ssrc_queue(rtp_session *rtp_sess_head);
 rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc);
@@ -288,7 +301,7 @@ rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc);
 rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
 rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32);
 inline int rtp_rm_pkt(rtp_ssrc *);
-int rtp_fill_buffer(rtp_ssrc *, rtp_frame *);
+int rtp_fill_buffer(rtp_ssrc *, rtp_frame *, rtp_buff *);
 double rtp_get_next_ts(rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_ssrc *);
 

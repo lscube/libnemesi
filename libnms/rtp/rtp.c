@@ -33,8 +33,8 @@
 
 void *rtp(void *args)
 {
-	rtp_session *rtp_sess_head=((struct rtp_thread *)args)->rtp_sess_head;
-	pthread_mutex_t *syn = &((struct rtp_thread *)args)->syn;
+	rtp_session *rtp_sess_head=((rtp_thread *)args)->rtp_sess_head;
+	pthread_mutex_t *syn = &((rtp_thread *)args)->syn;
 	rtp_session *rtp_sess;
 	struct timeval tv;
 	int maxfd=0;

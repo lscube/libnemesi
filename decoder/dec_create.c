@@ -30,8 +30,8 @@
 
 pthread_t dec_create(struct rtsp_ctrl *rtsp_ctl)
 {
-	rtp_session *rtp_sess_head=((struct rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
-	rtp_session *rtp_sess;
+//	rtp_session *rtp_sess_head=((struct rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
+//	rtp_session *rtp_sess;
 	int n;
 	pthread_attr_t dec_attr;
 	pthread_t dec_tid;
@@ -43,7 +43,7 @@ pthread_t dec_create(struct rtsp_ctrl *rtsp_ctl)
 	}
 
 /*	pthread_attr_setschedpolicy(&dec_attr, SCHED_RR);*/
-	if((n=pthread_create(&dec_tid, &dec_attr, &decoder, (void *) ((struct rtsp_thread *)rtsp_ctl)->rtp_th)) > 0) {
+	if((n=pthread_create(&dec_tid, &dec_attr, &decoder, (void *)rtsp_ctl)) > 0) {
 		nms_printf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n", strerror(n));
 		return 0;
 	}

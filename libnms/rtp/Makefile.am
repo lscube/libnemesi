@@ -12,6 +12,7 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_clean.c \
 			rtp_dynpt_reg.c \
 			rtp_fill_buffer.c \
+			rtp_fill_buffers.c \
 			rtp_get_next_pt.c \
 			rtp_get_next_ts.c \
 			rtp_get_n_pkt.c \

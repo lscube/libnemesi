@@ -39,7 +39,7 @@ int main (int argc, char **argv) {
     int outfile[128];
     struct rtsp_ctrl *ctl;
     struct rtsp_thread *rtsp_th;
-    struct rtp_thread *rtp_th;
+    rtp_thread *rtp_th;
     struct rtsp_session *sess;
     struct rtsp_medium *med;
     rtp_ssrc ssrc;
@@ -116,11 +116,10 @@ int main (int argc, char **argv) {
     rtp_th = rtsp_th->rtp_th;
     sess = rtp_th->rtp_sess_head;
 
-    //Hack!
-    pthread_mutex_lock(&(rtp_th->syn));
-    pthread_mutex_unlock(&(rtp_th->syn));
-
-    while(!pthread_mutex_trylock(&(rtp_th->syn))) {
+	rtp_fill_buffers(rtp_th);
+	
+    // while(!pthread_mutex_trylock(&(rtp_th->syn))) {
+    do {
         for (ssrc = rtp_active_ssrc_queue(sess);
              ssrc;
              ssrc = rtp_next_active_ssrc(ssrc)) {
@@ -136,7 +135,7 @@ int main (int argc, char **argv) {
 
         }
     
-    }
+    } while (!rtp_fill_buffers(rtp_th));
 
 return 0;
 

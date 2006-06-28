@@ -225,7 +225,7 @@ struct rtsp_thread {
 	char *urlname;		/*!< Requested URL */
 	struct rtsp_buffer in_buffer;	/*!< Input buffer. */
 	// struct rtsp_session *rtsp_queue;/*!< Active sessions. */
-	struct rtp_thread *rtp_th;
+	rtp_thread *rtp_th;
 };
 
 struct rtsp_ctrl {
@@ -251,6 +251,7 @@ int rtsp_uninit(struct rtsp_ctrl *);
 // enum states rtsp_status(struct rtsp_ctrl *);
 #define rtsp_status(ctrl) ctrl->status
 void rtsp_info_print(struct rtsp_ctrl *);
+inline rtp_thread *rtsp_get_rtp_th(struct rtsp_ctrl *rtsp_ctl);
 inline rtp_session *rtsp_get_rtp_queue(struct rtsp_ctrl *rtsp_ctl);
 //
 //***** ENDOF interface functions ******************

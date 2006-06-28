@@ -90,4 +90,9 @@ int decode(char *data, int len, int audio_fd, uint8 *(*ab_get)(uint32))
 int get_plugin_pt(void)
 {
 	return 14;
-}	
+}
+
+const char *get_plugin_encname(void)
+{
+	return "MPA";
+}
