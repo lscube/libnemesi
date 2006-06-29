@@ -103,7 +103,7 @@ typedef struct {
 } rtp_mpa_pkt;
 
 #define RTP_MPA_PKT(pkt)				((rtp_mpa_pkt *)(RTP_PKT_DATA(pkt)))
-#define RTP_MPA_DATA_LEN(pkt, pkt_size)	(RTP_PAYLOAD_SIZE(pkt, pkt_size)-4)
+#define RTP_MPA_DATA_LEN(pkt, pkt_size)	((pkt && pkt_size) ? (RTP_PAYLOAD_SIZE(pkt, pkt_size)-4) : 0)
 #define RTP_MPA_FRAG_OFFSET(pkt)		ntohs(RTP_MPA_PKT(pkt)->frag_offset)
 
 // private functions
