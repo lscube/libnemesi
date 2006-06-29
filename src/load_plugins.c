@@ -148,7 +148,7 @@ int load_plugins(void)
 			continue;
 		}
 // XXX endof tmp.
-		
+#if 0 // old plugins interface
 		if (!(get_plugin_pt = (int (*)()) lt_dlsym(module, "get_plugin_pt"))) {
 			lt_dlclose(module);
 			module = NULL;
@@ -157,7 +157,8 @@ int load_plugins(void)
 		}
 
 		/* Call the entry point function. */
-//		pt = get_plugin_pt();
+		pt = get_plugin_pt();
+#endif
 		pt = plugin->pt;
 		if ((pt < 0) || (pt > 127)) {
 			nms_printf(NMSML_NORM, "Payload Type Unknown served by plugin %s\n", pp->path);
@@ -171,12 +172,19 @@ int load_plugins(void)
 				nms_printf(NMSML_NORM, "WARNING! Plugin for RTP Payload Type %d already loaded: skipping...\n", pt);
 				continue;
 			}
+#if 0 // new interface not finished yet 
+			else
+				decoders[pt] = plugin->decode;
+				
+#else
 			if (!(decoders[pt] = (int (*)()) lt_dlsym(module, "decode"))) {
 				lt_dlclose(module);
 				module = NULL;
 				decoders[pt]=NULL;
 				nms_printf(NMSML_NORM, "lt_dsym() failed loading decode function for plugin %s: %s\n", pp->path, lt_dlerror());
 			}
+#endif
+			
 #if 0
 			if (!rtp_pt_defs[pt]->rate)
 				rtp_pt_defs[pt]->rate=RTP_DEF_CLK_RATE;

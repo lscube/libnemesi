@@ -49,7 +49,7 @@ plugin_init("MPA", 14)
 #define RESAMPLED
 
 int get_plugin_pt(void);
-int decode(char *, int, nms_output *);
+// int decode(char *, int, nms_output *);
 
 int get_plugin_pt(void)
 {
