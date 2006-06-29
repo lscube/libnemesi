@@ -76,12 +76,12 @@ void *rtp(void *args)
 						pthread_mutex_unlock(syn);
 						buffering=0;
 					} else { // TODO: buffering based on rtp jitter
-						nms_printf(NMSML_NORM, "\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
+						nms_printf(NMSML_DBG1, "\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
 					}
 				}
 				if(rtp_recv(rtp_sess)){
 					/* Waiting 20 msec for decoder ready */
-					nms_printf(NMSML_NORM, "Waiting for decoder ready!\n");
+					nms_printf(NMSML_DBG1, "Waiting for decoder ready!\n");
 					tv.tv_sec=0;
 					tv.tv_usec=20*(1000);
 					select(0, NULL, NULL, NULL, &tv);

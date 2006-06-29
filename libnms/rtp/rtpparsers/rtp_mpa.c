@@ -185,8 +185,13 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 	}
 	fr->data = mpa_priv->data;
 	
-	for (fr->len=0; pkt && (fr->len<mpa.frm_len) && (fr->timestamp == RTP_PKT_TS(pkt)); fr->len+=pkt_len, \
-			rtp_rm_pkt(stm_src), (pkt=rtp_get_pkt(stm_src, &pkt_len)), pkt_len = RTP_MPA_DATA_LEN(pkt, pkt_len)) {
+	for (fr->len=0; 
+                pkt && (fr->len<mpa.frm_len) && 
+                (fr->timestamp == RTP_PKT_TS(pkt));
+                fr->len+=pkt_len, 
+                rtp_rm_pkt(stm_src),
+                (pkt=rtp_get_pkt(stm_src, &pkt_len)), 
+                pkt_len = RTP_MPA_DATA_LEN(pkt, pkt_len)) {
 		// pkt consistency checks
 		if (RTP_MPA_FRAG_OFFSET(pkt)+pkt_len <= mpa_priv->data_size) {
 			nms_printf(NMSML_DBG3, "copying %d byte of data to offset: %d\n", pkt_len, RTP_MPA_FRAG_OFFSET(pkt));
