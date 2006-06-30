@@ -278,53 +278,52 @@ static long pkt_blocksize(rtp_vorbis_t *vorb, rtp_packet *fr)
 }
 
 //get standard mkv/nut/ffmpeg configuration packet from an rtp one
-static int cfg_fixup(rtp_vorbis_t *vorb, rtp_frame *fr, rtp_pkt *pkt)
+static int cfg_fixup(rtp_vorbis_t *vorb, rtp_frame *fr, rtp_buff *config)
 {
-    unsigned char comment[] = 
+    unsigned char comment[26] = 
     /*quite minimal comment*/
-    { 3,'v','o','r','b','i','s', 
-        10,0,0,0, 
+    { 3,'v','o','r','b','i','s',
+        10,0,0,0,
                 'v','o','r','b','i','s','-','r','t','p',
-                0,0,0,0, 
+                0,0,0,0,
                 1};
 
     int err = cfg_parse(vorb, fr);
     if (err) return err;
 
-    fr->len = fr->len + sizeof(comment);
-    fr->len = realloc(fr->data, fr->len);
+    config->len = fr->len + 26;
+    config->data = realloc(config->data, config->len);
 
-    memcpy(fr->len, fr->data, 30); // id packet
-    memcpy(fr->len+30, comment, sizeof(comment)); // comment packet
-    memcpy(fr->len+30+sizeof(comment), fr->data+30, fr->len-30);
+    memcpy(config->data, fr->data, 30); // id packet
+    memcpy(config->data + 30, comment, 26); // comment packet
+    memcpy(config->data + 30 + 26, fr->data + 30, fr->len - 30);
     vorb->id = RTP_XIPH_ID(pkt);
     //cfg_cache_append() //XXX
     return 0;
 }
 
 static int single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
-                        rtp_ssrc *ssrc, int offset)
+                        rtp_buff *config, rtp_ssrc *ssrc)
 {
 
-    int len = RTP_XIPH_LEN(pkt,offset);
+    int len = RTP_XIPH_LEN(pkt, vorb->offset);
+
+    if( vorb->cfg_id != RTP_XIPH_ID(pkt) || //not the current id
+    //  !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)) || //XXX
+        RTP_XIPH_T(pkt) != 1                //not a config packet
+    ) return RTP_PARSER_ERROR;
 
     if (len > fr->len){
         realloc(fr->data, len);
         fr->len = len;
     }
-    
-    memcpy(fr->data, RTP_XIPH_DATA(pkt, offset), fr->len);
-    
-    if( vorb->cfg_id != RTP_XIPH_ID(pkt) || //not the current id
-//        !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)); //XXX
-        RTP_XIPH_T(pkt) != 1                //not a config packet
-    ) return RTP_PARSER_ERROR;
-    
+
+    memcpy(fr->data, RTP_XIPH_DATA(pkt, vorb->offset), fr->len);
     vorb->pkts--;
-    rtp_rm_pkt(ssrc);
+    if (vorb->pkts == 0) rtp_rm_pkt(ssrc);
 
     if (RTP_XIPH_T(pkt) == 1)
-        return cfg_fixup(vorb, fr);
+        return cfg_fixup(vorb, fr, config);
     else
     {
         vorb->curr_bs = ptk_blocksize(vorb);
@@ -337,18 +336,18 @@ static int single_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
 }
 
 static int pack_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
-                      rtp_ssrc *ssrc)
+                      rtp_buff *config, rtp_ssrc *ssrc)
 {
-    single_parse(vorb, pkt, ssrc, fr, vorb->offset);
+    single_parse(vorb, pkt, ssrc, fr, config);
     vorb->offset+=fr->len;
     return 0;
 }
 
 static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
-                      rtp_ssrc *ssrc)
+                      rtp_buff *config, rtp_ssrc *ssrc)
 {
     int len;
-    
+
     rtp_rm_pkt(ssrc);
 
     switch (RTP_XIPH_T(pkt))
@@ -374,7 +373,7 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
         memcpy(fr->data, vorb->buf, fr->len);
 
         if (RTP_XIPH_T(pkt) == 1)
-            return cfg_fixup(vorb, fr);
+            return cfg_fixup(vorb, fr, config, pkg);
         else
         {
             vorb->curr_bs = ptk_blocksize(vorb);
@@ -386,9 +385,7 @@ static int frag_parse(rtp_vorbis_t *vorb, rtp_pkt *pkt, rtp_frame *fr,
     default: //
         return -1;
     }
-
 }
-
 
 static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
@@ -402,20 +399,21 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
     {
         //get a new packet
         if ( !(pkt=rtp_get_pkt(stm_src, &len)) )
-		return RTP_BUFF_EMPTY;
+            return RTP_BUFF_EMPTY;
         //get the number of packets stuffed in the rtp
         vorb->pkts = RTP_XIPH_PKTS(pkt);
-    
+
         //some error checking
         if (vorb->pkts >0 && (RTP_XIPH_F(pkt) || !RTP_VORB_T(pkt)))
             return RTP_PARSE_ERROR;
+        
+        if (RTP_XIPH_F(pkt))
+            return frag_parse(vorb, pkt, fr, config, stm_src);
         //single packet, easy case
         if (vorb->pkts = 1)
-            return single_parse(vorb, pkt, fr, stm_src, 4);
-        if (RTP_XIPH_F(pkt))
-            return frag_parse(vorb, pkt, fr, stm_src);
+            return single_parse(vorb, pkt, fr, config, stm_src);
         vorb->offset = 4;
     }
-    return pack_parse (vorb, pkt, fr, stm_src);
+    return pack_parse (vorb, pkt, fr, config, stm_src);
 }
 
