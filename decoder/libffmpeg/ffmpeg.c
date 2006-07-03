@@ -49,7 +49,7 @@ int get_plugin_pt(void)
 	return 32;
 }
 
-int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output *outc)
 {
 	nms_video *vc = NULL; // = outc->video;
 	nms_vid_fnc *funcs = NULL; // vc->functions;

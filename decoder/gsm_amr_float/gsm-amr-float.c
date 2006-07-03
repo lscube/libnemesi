@@ -73,7 +73,7 @@ void Copyright(void)
 
 #define L_FRAME 160
 
-int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output *outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 

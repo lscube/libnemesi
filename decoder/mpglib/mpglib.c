@@ -51,7 +51,7 @@ int get_plugin_pt(void)
 	return 96;
 }
 
-int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output *outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 

@@ -111,7 +111,7 @@ typedef struct {
 #define RTP_PKT_TS(pkt)		ntohl(pkt->time)
 #define RTP_PKT_SSRC(pkt)	ntohl(pkt->ssrc)
 #define RTP_PKT_DATA(pkt)	(pkt->data  + pkt->cc)
-#define RTP_PAYLOAD_SIZE(pkt, pkt_len)	pkt_len - ((pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+pkt_len-1)) * pkt->pad)
+#define RTP_PAYLOAD_SIZE(pkt, pkt_len)	((pkt) ? pkt_len - ((pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+pkt_len-1)) * pkt->pad) : 0)
 /*(pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1*/
 
 #define RTPPT_ISDYNAMIC(pt)	(pt >= 96)

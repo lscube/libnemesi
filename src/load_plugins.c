@@ -49,7 +49,6 @@ int load_plugins(void)
 	lt_dlhandle module = NULL;
 	char *path, *ch;
 	char *str=NULL;
-	int (*get_plugin_pt) (void) = NULL;
 	nms_plugin *plugin;
 
 	DIR *plug_dir;
@@ -90,7 +89,6 @@ int load_plugins(void)
 	if( (plug_dir = opendir(path)) == NULL )
 		return nms_printf(NMSML_ERR, "Plugins dir %s does not exist...\n", path);
 	while ((dentry = readdir(plug_dir)) != NULL) {
-
 		free(str);
 		if ((str=(char *)malloc(strlen(path) + strlen(dentry->d_name) + 2))==NULL)
 			return nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
@@ -134,7 +132,6 @@ int load_plugins(void)
 		module = lt_dlopenext(pp->path);
 
 		/* Find the entry point. */
-// XXX tmp: load plugin struct
 		if (module) {
 			nms_printf(NMSML_NORM, "Loading Plugin struct %s: ", pp->path);
 			if (!(plugin = (nms_plugin *) lt_dlsym(module, "plugin"))) {
@@ -147,18 +144,6 @@ int load_plugins(void)
 			nms_printf(NMSML_NORM, "lt_dlopenext() failed on plugin %s: %s\n", pp->path, lt_dlerror());
 			continue;
 		}
-// XXX endof tmp.
-#if 0 // old plugins interface
-		if (!(get_plugin_pt = (int (*)()) lt_dlsym(module, "get_plugin_pt"))) {
-			lt_dlclose(module);
-			module = NULL;
-			nms_printf(NMSML_NORM,"lt_dsym() failed on get_plugin_pt: %s\n", lt_dlerror());
-			continue;
-		}
-
-		/* Call the entry point function. */
-		pt = get_plugin_pt();
-#endif
 		pt = plugin->pt;
 		if ((pt < 0) || (pt > 127)) {
 			nms_printf(NMSML_NORM, "Payload Type Unknown served by plugin %s\n", pp->path);
@@ -172,10 +157,9 @@ int load_plugins(void)
 				nms_printf(NMSML_NORM, "WARNING! Plugin for RTP Payload Type %d already loaded: skipping...\n", pt);
 				continue;
 			}
-#if 0 // new interface not finished yet 
+#if 1 // new interface not finished yet 
 			else
 				decoders[pt] = plugin->decode;
-				
 #else
 			if (!(decoders[pt] = (int (*)()) lt_dlsym(module, "decode"))) {
 				lt_dlclose(module);
@@ -184,13 +168,7 @@ int load_plugins(void)
 				nms_printf(NMSML_NORM, "lt_dsym() failed loading decode function for plugin %s: %s\n", pp->path, lt_dlerror());
 			}
 #endif
-			
-#if 0
-			if (!rtp_pt_defs[pt]->rate)
-				rtp_pt_defs[pt]->rate=RTP_DEF_CLK_RATE;
-			if ((rtp_pt_defs[pt]->type == AU) && !((rtp_audio *)rtp_pt_defs[pt])->channels)
-				((rtp_audio *)rtp_pt_defs[pt])->channels=1;
-#endif
+	
 			nms_printf(NMSML_NORM, "Ok! Loaded plugin for RTP Payload Type %d.\n", pt);
 		}
 	}

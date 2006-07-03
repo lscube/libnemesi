@@ -40,7 +40,7 @@ plugin_init("L16", 106)
 #define FACTOR_OVERSAMPLE 5
 #define ELEVEN 11
 
-int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output *outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 	int i, j, c;

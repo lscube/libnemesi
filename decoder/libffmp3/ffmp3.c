@@ -49,14 +49,13 @@ plugin_init("MPA", 14)
 #define RESAMPLED
 
 int get_plugin_pt(void);
-// int decode(char *, int, nms_output *);
 
 int get_plugin_pt(void)
 {
 	return 14;
 }
 
-int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output *outc)
 {
 	
 	nms_au_fnc *funcs = NULL; // = outc->audio->functions;

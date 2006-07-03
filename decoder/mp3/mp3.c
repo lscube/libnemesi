@@ -37,9 +37,6 @@
 
 /*#include <nemesi/comm.h>*/
 
-/* char buf[16384]; */
-/* struct mpstr mp; */
-
 #include <nemesi/plugin.h>
 
 plugin_init("MPA", 14)
@@ -51,7 +48,7 @@ int get_plugin_pt(void)
 	return 14;
 }
 
-int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output *outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 	static struct mpstr *mp = NULL;

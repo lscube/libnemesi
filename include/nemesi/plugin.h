@@ -37,19 +37,8 @@ typedef struct {
 	int (*decode)(char *, int, nms_output *);
 } nms_plugin;
 
-//int get_plugin_pt(void);
-//const char *get_plugin_encname(void);
-
-
 #define plugin_init(x, y) \
-			/* static */ int decode(char *, int, nms_output *); \
-			\
+			static int decode(char *, int, nms_output *);\
 			nms_plugin plugin = { x, y, decode};
-#if 0			
-			\
-			nms_plugin *introduce(void) { \
-				return &plugin; \
-			}
-#endif
 
 #endif /*PLUGIN_H_*/
