@@ -30,7 +30,9 @@
 #ifdef ENABLE_DECODER_2
 
 pthread_t decoder_tid; // decoder thread ID
-int (*decoders[128])(char *, int, nms_output *);
+
+//int (*decoders[128])(char *, int, nms_output *);
+decoder_fnc decoders[128];
 
 void *decoder(void *args)
 {
@@ -63,6 +65,12 @@ void *decoder(void *args)
 	rtp_fill_buffers(rtp_th);
 	
 	for (rtp_sess=rtsp_get_rtp_queue(rtsp_ctl); rtp_sess; rtp_sess=rtp_sess->next) {
+		// we use void *park inside rtp_sess to store decoders array
+		if ( !(rtp_sess->park=malloc(sizeof(decoders))) ) {
+			nms_printf(NMSML_FATAL, "Could not allocate memory for decoders\n");
+			return NULL;
+		}
+		memcpy(rtp_sess->park, decoders, sizeof(decoders));
 		for (fmt=rtp_sess->announced_fmts; fmt; fmt=fmt->next) {
 			if (RTPPT_ISDYNAMIC(fmt->pt)) {
 				nms_printf(NMSML_WARN, "dynamic payload type encountered: %u - %s\n", fmt->pt, fmt->rtppt->name);
@@ -81,11 +89,11 @@ void *decoder(void *args)
 			timeval_add(&tv_elapsed, &tv_elapsed, &startime);
 			
 			if ( timeval_subtract(NULL, &tv_elapsed, &tvstart) ) {
-				if ( !rtp_fill_buffer(stm_src, &fr, &config) && decoders[fr.pt] ) {
+				if ( !rtp_fill_buffer(stm_src, &fr, &config) && DECODERS(stm_src->rtp_sess->park)[fr.pt] ) {
 					nms_outc->elapsed = ts_next * 1000;
 					if (config.len > 0) // || if (config.data)
-						decoders[fr.pt](config.data, config.len, nms_outc);
-					decoders[fr.pt](fr.data, fr.len, nms_outc);
+						DECODERS(stm_src->rtp_sess->park)[fr.pt](config.data, config.len, nms_outc);
+					DECODERS(stm_src->rtp_sess->park)[fr.pt](fr.data, fr.len, nms_outc);
 					if (nms_outc->audio)
 						nms_outc->audio->functions->control(ACTRL_GET_SYSBUF, &audio_sysbuff);
 					if (nms_outc->video)
