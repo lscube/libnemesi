@@ -215,7 +215,7 @@ typedef struct _rtp_ssrc {
 	playout_buff po;
 	struct _rtp_session *rtp_sess; // RTP session SSRC belogns to.
 //	rtp_pt **rtpptdefs; // convenience pointer to the same struct as rtp_session. (not to be freed here)
-	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payolad changes at its best.
+	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payload changes at its best.
 	struct _rtp_ssrc *next; // next known SSRC
 	struct _rtp_ssrc *next_active; // next active SSRC
 	// park is a link for parking external variables (i.e. from decoder). libnms will never use that.
@@ -268,7 +268,7 @@ typedef struct _rtp_thread {
 
 enum rtp_protos {
 	RTP,
-	RTCP	
+	RTCP
 };
 
 void *rtp(void *);
@@ -286,7 +286,7 @@ int rtp_fill_buffers(rtp_thread *);
 rtp_ssrc *rtp_active_ssrc_queue(rtp_session *rtp_sess_head);
 rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc);
 
-#define RTP_FILL_OK			0
+#define RTP_FILL_OK		0
 // rtp_fill error codes
 #define RTP_BUFF_EMPTY		91
 #define RTP_PARSE_ERROR		92
