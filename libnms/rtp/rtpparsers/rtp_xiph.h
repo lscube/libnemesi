@@ -37,7 +37,7 @@
 #define RTP_XIPH_PKTS(pkt)  (RTP_PKT_DATA(pkt)[3]& 0x0F)
 #define RTP_XIPH_LEN(pkt,off)   (RTP_PKT_DATA(pkt)[off]<<8+\
                                  RTP_PKT_DATA(pkt)[off+1])
-#define RTP_XIPH_DATA(pkt,off)  (RTP_PKT_DATA(pkt)[off+2])
+#define RTP_XIPH_DATA(pkt,off)  (RTP_PKT_DATA(pkt)+off+2)
 
 /*
  * Bit I/O code from libogg
@@ -83,11 +83,13 @@ static const unsigned long mask[]=
  0x01ffffff,0x03ffffff,0x07ffffff,0x0fffffff,0x1fffffff,
  0x3fffffff,0x7fffffff,0xffffffff };
 
-typedef bit_context {
-    int pos;
-    int left;
-    unsigned char *buf;
-}
+typedef struct bit_context_s {
+    long endbyte;
+    int  endbit;
+    unsigned char *buffer;
+    unsigned char *ptr;
+    long storage;
+} bit_context;
 
 static inline long bit_read(bit_context *b,int bits){
   long ret;
@@ -127,6 +129,6 @@ static inline long bit_read(bit_context *b,int bits){
 static inline void bit_readinit(bit_context *b, unsigned char *buf, int bytes){
   memset(b,0,sizeof(*b));
   b->buffer=b->ptr=buf;
-  b->left=bytes;
+  b->storage=bytes;
 }
 
