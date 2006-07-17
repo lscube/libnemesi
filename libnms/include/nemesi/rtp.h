@@ -61,10 +61,10 @@
 
 #define BANDWIDTH 16000 /* bytes-per-second */
 
-#define RTP_OK			0
+#define RTP_OK           0
 // general error codes. other, specific, error codes below
-#define RTP_ERROR		1
-#define RTP_ERRALLOC	-1
+#define RTP_ERROR        1
+#define RTP_ERRALLOC    -1
 
 typedef struct {
 #ifdef WORDS_BIGENDIAN
@@ -116,30 +116,30 @@ typedef struct {
 
 #define RTPPT_ISDYNAMIC(pt)	(pt >= 96)
 
-#define RTP_TRANSPORT_SPEC			10
-#define RTP_TRANSPORT_DELIVERY		20
-#define RTP_TRANSPORT_SRCADDR		30
-#define RTP_TRANSPORT_SRCADDRSTR	31
-#define RTP_TRANSPORT_DSTADDR		40
-#define RTP_TRANSPORT_DSTADDRSTR	41
-#define RTP_TRANSPORT_LAYERS		50
-#define RTP_TRANSPORT_MODE			60
-#define RTP_TRANSPORT_APPEND		70
-#define RTP_TRANSPORT_TTL			80
-#define RTP_TRANSPORT_MCSRTP		90
-#define RTP_TRANSPORT_MCSRTCP		91
-#define RTP_TRANSPORT_MCSPORTS		92
-#define RTP_TRANSPORT_CLIRTP		100
-#define RTP_TRANSPORT_CLIRTCP		101
-#define RTP_TRANSPORT_CLIPORTS		102
-#define RTP_TRANSPORT_SRVRTP		110
-#define RTP_TRANSPORT_SRVRTCP		111
-#define RTP_TRANSPORT_SRVPORTS		112
-#define RTP_TRANSPORT_SSRC			120
+#define RTP_TRANSPORT_SPEC              10
+#define RTP_TRANSPORT_DELIVERY          20
+#define RTP_TRANSPORT_SRCADDR           30
+#define RTP_TRANSPORT_SRCADDRSTR        31
+#define RTP_TRANSPORT_DSTADDR           40
+#define RTP_TRANSPORT_DSTADDRSTR        41
+#define RTP_TRANSPORT_LAYERS            50
+#define RTP_TRANSPORT_MODE              60
+#define RTP_TRANSPORT_APPEND            70
+#define RTP_TRANSPORT_TTL               80
+#define RTP_TRANSPORT_MCSRTP            90
+#define RTP_TRANSPORT_MCSRTCP           91
+#define RTP_TRANSPORT_MCSPORTS          92
+#define RTP_TRANSPORT_CLIRTP            100
+#define RTP_TRANSPORT_CLIRTCP           101
+#define RTP_TRANSPORT_CLIPORTS          102
+#define RTP_TRANSPORT_SRVRTP            110
+#define RTP_TRANSPORT_SRVRTCP           111
+#define RTP_TRANSPORT_SRVPORTS          112
+#define RTP_TRANSPORT_SSRC              120
 
-#define RTP_TRANSPORT_NOTSET		-1
-#define RTP_TRANSPORT_SET			0
-#define RTP_TRANSPORT_ERR			1
+#define RTP_TRANSPORT_NOTSET            -1
+#define RTP_TRANSPORT_SET                0
+#define RTP_TRANSPORT_ERR                1
 
 struct rtp_transport {
 	char *spec;
@@ -188,14 +188,23 @@ struct rtp_ssrc_descr {
 
 struct rtp_session_stats {
 	struct timeval tp;	/* the last time an RTCP pkt was transmitted */
-	struct timeval tn;	/* the next scheduled transmission time of an RTCP pkt */
-	uint32 pmembers;	/* the estimated number of session members at time tm was last recomputed */
-	uint32 members;		/* the most currente estimate for the number of the session members */
-	uint32 senders;		/* the most currente estimate for the number of senders in the session */
+	struct timeval tn;	/* the next scheduled transmission time of an
+                                   RTCP pkt */
+	uint32 pmembers;	/* the estimated number of session members at
+                                   time tm was last recomputed */
+	uint32 members;		/* the most currente estimate for the number of
+                                   the session members */
+	uint32 senders;		/* the most currente estimate for the number of
+                                   senders in the session */
 	double rtcp_bw;		/* the target RTCP bandwidht */
-	uint8 we_sent;		/* flag that is true if the app has sent data since the second previous RTCP Report was transmitted */
-	double avg_rtcp_size;	/* the average Compound RTCP pkt size, in octets, over all RTCP pkts sent and received by this partecipant */
-	uint8 initial;		/* the flag that is true if the app has not yet sent an RTCP pkt */
+	uint8 we_sent;		/* flag that is true if the app has sent data
+                                   since the second previous RTCP Report was
+                                   transmitted */
+	double avg_rtcp_size;	/* the average Compound RTCP pkt size, in
+                                   octets, over all RTCP pkts sent and received
+                                   by this partecipant */
+	uint8 initial;		/* the flag that is true if the app has not yet
+                                   sent an RTCP pkt */
 };
 
 #define SSRC_KNOWN	0
@@ -214,11 +223,16 @@ typedef struct _rtp_ssrc {
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
 	struct _rtp_session *rtp_sess; // RTP session SSRC belogns to.
-//	rtp_pt **rtpptdefs; // convenience pointer to the same struct as rtp_session. (not to be freed here)
-	void *prsr_privs[128]; //!< I would like to keep rtp able to manage dimanic payload changes at its best.
+//	rtp_pt **rtpptdefs;  /* convenience pointer to the same struct as 
+//	                        rtp_session. (not to be freed here) */
+	void *prsr_privs[128]; /*!< I would like to keep rtp able to manage
+                                    dynamic payload changes at its best. */
 	struct _rtp_ssrc *next; // next known SSRC
 	struct _rtp_ssrc *next_active; // next active SSRC
-	// park is a link for parking external variables (i.e. from decoder). libnms will never use that.
+	/* 
+         * park is a link for parking external variables (i.e. from decoder).
+         * libnms will never use that.
+         */
 	void *park;
 } rtp_ssrc;
 
@@ -228,8 +242,9 @@ struct rtp_conflict {
 	struct rtp_conflict *next;
 };
 
-/*! the <tt>rtp_parser_init</tt> function is called at rtp thread start (in <tt>rtp_thread_create</tt>)
- * for all the parsers registered for announced payload types (present in the <tt>announced_fmts</tt> list)
+/*! the <tt>rtp_parser_init</tt> function is called at rtp thread start
+ * (in <tt>rtp_thread_create</tt>) for all the parsers registered for announced
+ * payload types (present in the <tt>announced_fmts</tt> list)
  * */
 typedef int (*rtp_parser_init)(struct _rtp_session *rtp_sess, unsigned pt);
 typedef int (*rtp_parser)(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *conf);
@@ -247,14 +262,19 @@ typedef struct _rtp_session {
 	buffer_pool bp;
 	struct _rtp_session *next;
 	pthread_mutex_t syn;
-	// payload type definitions for the session (included dynamically defined)
+	// payload type definitions for the session 
+        // (included dynamically defined)
 	rtp_pt *rtpptdefs[128];
-	rtp_fmts_list *announced_fmts; // list of rtp pt announced in sdp description (if present)
+	rtp_fmts_list *announced_fmts; /* list of rtp pt announced in sdp 
+                                        * description (if present) */
 	// parsers functions
 	rtp_parser_init parsers_inits[128];
 	rtp_parser parsers[128];
 	rtp_parser_uninit parsers_uninits[128];
-	// park is a link for parking external variables (i.e. from decoder). libnms will never use that.
+	/*
+         * park is a link for parking external variables (i.e. from decoder).
+         * libnms will never use that.
+         */
 	void *park;
 } rtp_session;
 
@@ -277,11 +297,13 @@ rtp_thread *rtp_init(void);
 rtp_session *rtp_session_init(nms_sockaddr *, nms_sockaddr *);
 int rtp_thread_create(rtp_thread *); // something like rtp_run could be better?
 
-int rtp_announce_pt(rtp_session *rtp_sess, unsigned pt, rtp_media_type media_type);
+int rtp_announce_pt(rtp_session *rtp_sess, unsigned pt,
+                    rtp_media_type media_type);
 int rtp_dynpt_reg(rtp_session *rtp_sess, unsigned pt, char *mime);
 
 // wait until rtp queues are ready
 int rtp_fill_buffers(rtp_thread *);
+
 // active ssrc list management
 rtp_ssrc *rtp_active_ssrc_queue(rtp_session *rtp_sess_head);
 rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc);
@@ -353,20 +375,24 @@ inline int rtp_set_ssrc(rtp_session *, uint32);
 // internal functions
 
 // parsers
-#define RTP_PRSR_ERROR		-1
-#define RTP_DST_TOO_SMALL	-2
-#define RTP_REG_STATIC		-3
+#define RTP_PRSR_ERROR      -1
+#define RTP_DST_TOO_SMALL   -2
+#define RTP_REG_STATIC      -3
 
 void rtp_parsers_init(void);
 int rtp_parser_reg(rtp_session *, int16, char *);
-void rtp_parsers_new(rtp_parser *new_parsers, rtp_parser_init *new_parsers_inits);
-inline void rtp_parser_set_uninit(rtp_session *rtp_sess, unsigned pt, rtp_parser_uninit parser_uninit);
+void rtp_parsers_new(rtp_parser *new_parsers, 
+                     rtp_parser_init *new_parsers_inits);
+inline void rtp_parser_set_uninit(rtp_session *rtp_sess, unsigned pt,
+                                  rtp_parser_uninit parser_uninit);
 
 // rtp basic functions
 int rtp_recv(rtp_session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
-int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *, enum rtp_protos);
-int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,  enum rtp_protos);
+int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *,
+                   enum rtp_protos);
+int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,
+                  enum rtp_protos);
 
 // rtcp connection functions
 int rtcp_to_connect(rtp_ssrc *, nms_addr *, in_port_t);
