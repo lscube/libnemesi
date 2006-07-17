@@ -45,10 +45,10 @@ typedef struct vorbis_s {
 
 static rtpparser_info served = {
         -1,
-        {"XIPHIS", NULL}
+        {"audio/vorbis", NULL}
 };
 
-RTPPRSR(vorbis);
+RTP_PARSER_FULL(vorbis);
 
 //helpers
 static int rtp_ilog(unsigned int v)
@@ -396,18 +396,53 @@ static int frag_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
     }
 }
 
-static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
+
+#if 0
+static int rtp_init_parser(struct _rtp_session *rtp_sess, unsigned pt)
+{
+    rtp_vorbis *vorb = malloc(sizeof(rtp_vorbis));
+    rtp_ssrc *ssrc = rtp_sess->active_ssrc_queue; //FIXME
+
+    if (!vorb) return RTP_ERRALLOC;
+
+    memset(vorb, 0, sizeof(rtp_vorbis));
+
+// parse the sdp to get the first configuration
+
+// setup the config cache //LATER
+
+// associate it to the right payload
+
+    ssrc->prsr_privs[pt]=vorb;
+
+    return 0;
+}
+
+int rtp_parser_uninit(rtp_ssrc *stm_src, unsigned pt){
+
+    rtp_vorbis *vorb = stm_src->prsr_privs[pt];
+
+    if (vorb && vorb->buf) free(vorb->buf);
+    if (vorb) free(vorb);
+
+    return 0;
+
+}
+
+#endif
+
+static int rtp_parse(rtp_ssrc *ssrc, rtp_frame *fr, rtp_buff *config)
 {
     rtp_pkt *pkt;
     int len;
 
-    rtp_vorbis *vorb = stm_src->prsr_privs[rtp_get_next_pt(stm_src)];
+    rtp_vorbis *vorb = ssrc->prsr_privs[fr->pt];
 
     //if I don't have previous work
     if (!vorb->pkts)
     {
         //get a new packet
-        if ( !(pkt=rtp_get_pkt(stm_src, &len)) )
+        if ( !(pkt=rtp_get_pkt(ssrc, &len)) )
             return RTP_BUFF_EMPTY;
         //get the number of packets stuffed in the rtp
         vorb->pkts = RTP_XIPH_PKTS(pkt);
@@ -417,12 +452,12 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
             return RTP_PARSE_ERROR;
         
         if (RTP_XIPH_F(pkt))
-            return frag_parse(vorb, pkt, fr, config, stm_src);
+            return frag_parse(vorb, pkt, fr, config, ssrc);
         //single packet, easy case
         if (vorb->pkts = 1)
-            return single_parse(vorb, pkt, fr, config, stm_src);
+            return single_parse(vorb, pkt, fr, config, ssrc);
         vorb->offset = 4;
     }
-    return pack_parse (vorb, pkt, fr, config, stm_src);
+    return pack_parse (vorb, pkt, fr, config, ssrc);
 }
 
