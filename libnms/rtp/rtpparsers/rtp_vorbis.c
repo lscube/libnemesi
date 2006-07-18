@@ -217,16 +217,16 @@ static int cfg_parse(rtp_vorbis *vorb, rtp_frame *fr) //FIXME checks missing!
     }
 
     //residues
-    num = bit_read(&opb,6)+1;
+    num = bit_read(&opb, 6)+1;
     for(;num>0;num--)
     {
-            int partitions,acc=0;
-            bit_read(&opb,16); // unpack is always the same
-            bit_read(&opb,24); // begin
-            bit_read(&opb,24); // end
-            bit_read(&opb,24); // grouping
-            partitions=bit_read(&opb,6)+1;
-            bit_read(&opb,8); // groupbook
+            int partitions, acc = 0;
+            bit_read(&opb, 16); // unpack is always the same
+            bit_read(&opb, 24); // begin
+            bit_read(&opb, 24); // end
+            bit_read(&opb, 24); // grouping
+            partitions=bit_read(&opb, 6)+1;
+            bit_read(&opb, 8); // groupbook
             for(j=0;j<partitions;j++){
                     int cascade=bit_read(&opb,3);
                     if(bit_read(&opb,1))
@@ -237,14 +237,14 @@ static int cfg_parse(rtp_vorbis *vorb, rtp_frame *fr) //FIXME checks missing!
                     bit_read(&opb,8);
     }
     //maps
-    num = bit_read(&opb,6)+1;  
+    num = bit_read(&opb, 6)+1;  
     for(;num>0;num--)
     {
-            int submaps=1;
-            bit_read(&opb,16); // maps is just mapping0
-            if(bit_read(&opb,1))
-                    submaps=bit_read(&opb,4)+1;
-            if(bit_read(&opb,1))
+            int submaps = 1;
+            bit_read(&opb, 16); // maps is just mapping0
+            if(bit_read(&opb, 1))
+                    submaps=bit_read(&opb, 4)+1;
+            if(bit_read(&opb, 1))
                     for(i=bit_read(&opb,8)+1;i>0;i--){
                             bit_read(&opb,rtp_ilog(channels-1));
                             bit_read(&opb,rtp_ilog(channels-1));
@@ -348,16 +348,14 @@ static int pack_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
                       rtp_buff *config, rtp_ssrc *ssrc)
 {
     single_parse(vorb, pkt, fr, config, ssrc);
-    vorb->offset+=fr->len;
+    vorb->offset += fr->len + 2;
     return 0;
 }
 
 static int frag_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
                       rtp_buff *config, rtp_ssrc *ssrc)
 {
-    int len;
-
-    rtp_rm_pkt(ssrc);
+    int len, err = 0;
 
     switch (RTP_XIPH_T(pkt))
     {
@@ -368,7 +366,8 @@ static int frag_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
         vorb->buf = realloc(vorb->buf, vorb->len + len);
         memcpy(vorb->buf + vorb->len, RTP_XIPH_DATA(pkt, 4), len);
         vorb->len+=len;
-        return 0; //FIXME
+        //FIXME return value
+        break;
     case 3:
         len = RTP_XIPH_LEN(pkt,4);
         vorb->buf = realloc(vorb->buf, vorb->len + len);
@@ -382,7 +381,7 @@ static int frag_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
         memcpy(fr->data, vorb->buf, fr->len);
 
         if (RTP_XIPH_T(pkt) == 1)
-            return cfg_fixup(vorb, fr, config, RTP_XIPH_ID(pkt));
+            err = cfg_fixup(vorb, fr, config, RTP_XIPH_ID(pkt));
         else
         {
             vorb->curr_bs = ptk_blocksize(vorb);
@@ -390,18 +389,22 @@ static int frag_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
                 fr->timestamp += (vorb->curr_bs + vorb->prev_bs)/4;
             vorb->prev_bs = vorb->curr_bs;
         }
-        return 0;
-    default: //
-        return -1;
+        break;
+    default:
+        err = -1;
+        break;
     }
+
+    rtp_rm_pkt(ssrc);
+
+    return err;
 }
 
 
-#if 0
-static int rtp_init_parser(struct _rtp_session *rtp_sess, unsigned pt)
+
+static int rtp_init_parser(rtp_session *rtp_sess, unsigned pt)
 {
     rtp_vorbis *vorb = malloc(sizeof(rtp_vorbis));
-    rtp_ssrc *ssrc = rtp_sess->active_ssrc_queue; //FIXME
 
     if (!vorb) return RTP_ERRALLOC;
 
@@ -413,23 +416,28 @@ static int rtp_init_parser(struct _rtp_session *rtp_sess, unsigned pt)
 
 // associate it to the right payload
 
-    ssrc->privs[pt]=vorb;
+    rtp_sess->ptdefs[pt]->priv = vorb;
 
     return 0;
 }
 
-int rtp_parser_uninit(rtp_ssrc *stm_src, unsigned pt){
+int rtp_uninit_parser(rtp_ssrc *ssrc, unsigned pt){
 
-    rtp_vorbis *vorb = stm_src->privs[pt];
+    rtp_vorbis *vorb = ssrc->privs[pt];
 
     if (vorb && vorb->buf) free(vorb->buf);
     if (vorb) free(vorb);
 
-    return 0;
+    vorb = ssrc->rtp_sess->ptdefs[pt]->priv;
 
+    ssrc->rtp_sess->ptdefs[pt]->priv = NULL;
+
+    if (vorb) free(vorb);
+
+    return 0;
 }
 
-#endif
+
 
 static int rtp_parse(rtp_ssrc *ssrc, rtp_frame *fr, rtp_buff *config)
 {
@@ -437,6 +445,12 @@ static int rtp_parse(rtp_ssrc *ssrc, rtp_frame *fr, rtp_buff *config)
     int len;
 
     rtp_vorbis *vorb = ssrc->privs[fr->pt];
+
+    if (!vorb) {
+        vorb = ssrc->privs[fr->pt] = malloc(sizeof(rtp_vorbis));
+        vorb = memcpy(vorb, ssrc->rtp_sess->ptdefs[fr->pt]->priv,
+                      sizeof(rtp_vorbis));
+    }
 
     //if I don't have previous work
     if (!vorb->pkts)

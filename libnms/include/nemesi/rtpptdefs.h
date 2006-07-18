@@ -60,7 +60,7 @@ typedef struct {
                                         (A)udio(/)(V)ideo,
                                         (N)ot(/)(A)pplicable */ \
         uint32 rate; /* Clock Rate - in Hertz*/ \
-        rtp_pt_attrs attrs; /* attribute strings from sdp description */
+        rtp_pt_attrs attrs; /* attribute strings from sdp description */ \
         void *priv; /* private data for rtp playload type*/
     
 /* XXX audio and video fields must have different names, 
