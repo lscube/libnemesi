@@ -137,7 +137,7 @@ typedef struct {
 
 static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
-	rtp_def_parser_s *priv = stm_src->prsr_privs[fr->pt];
+	rtp_def_parser_s *priv = stm_src->privs[fr->pt];
 	rtp_pkt *pkt;
 	size_t pkt_len;
 	uint32 tot_pkts=0;
@@ -149,7 +149,7 @@ static int rtp_def_parser(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 	
 	if (!priv) {
 		nms_printf(NMSML_DBG3, "[rtp_def_parser] allocating new private struct...");
-		if ( !(stm_src->prsr_privs[fr->pt]=priv=malloc(sizeof(rtp_def_parser_s))) )
+		if ( !(stm_src->privs[fr->pt]=priv=malloc(sizeof(rtp_def_parser_s))) )
 			return RTP_ERRALLOC;
 		priv->data_size = max(DEFAULT_PRSR_DATA_FRAME, pkt_len);
 		if ( !(fr->data=priv->data=malloc(priv->data_size)) )

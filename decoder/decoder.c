@@ -129,7 +129,7 @@ void *decoder(void *args)
 					nms_printf(NMSML_DBG3, "SSRC Number:%lu\n", ntohl(pkt->ssrc));
 					nms_printf(NMSML_DBG3, "RTP Timestamp:%lu\n", ntohl(pkt->time));
 				/**/	
-					ts_elapsed=((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_sess->rtpptdefs[pkt->pt]->rate;
+					ts_elapsed=((double)(ntohl(pkt->time) - stm_src->ssrc_stats.firstts))/(double)rtp_sess->ptdefs[pkt->pt]->rate;
 					tv_elapsed.tv_sec=(long)ts_elapsed;
 					tv_elapsed.tv_usec=(long)((ts_elapsed-tv_elapsed.tv_sec)*1000000);
 

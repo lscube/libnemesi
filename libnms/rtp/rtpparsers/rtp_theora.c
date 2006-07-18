@@ -149,7 +149,7 @@ static int rtp_parse(rtp_ssrc *stm_src,
     rtp_pkt *pkt;
     int len;
 
-    rtp_theora_t *theo = stm_src->prsr_privs[pt];
+    rtp_theora_t *theo = stm_src->privs[pt];
 
     //if I don't have previous work
     if (!theo->pkts)

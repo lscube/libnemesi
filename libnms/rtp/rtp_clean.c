@@ -77,10 +77,10 @@ void rtp_clean(void *args)
 		for(fmtlist=rtp_sess->announced_fmts; fmtlist; pfmtlist=fmtlist, fmtlist=fmtlist->next, free(pfmtlist));
 		// rtp payload types definitions attributes
 		for (i=0; i<128; i++)
-			if (rtp_sess->rtpptdefs[i])
-				free(rtp_sess->rtpptdefs[i]->attrs.data);
+			if (rtp_sess->ptdefs[i])
+				free(rtp_sess->ptdefs[i]->attrs.data);
 		// rtp payload types dynamic definitions
-		for (i=96; i<128; free(rtp_sess->rtpptdefs[i++]));
+		for (i=96; i<128; free(rtp_sess->ptdefs[i++]));
 
 		prev_rtp_sess=rtp_sess;
 		rtp_sess=rtp_sess->next;

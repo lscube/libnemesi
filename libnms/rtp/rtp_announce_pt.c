@@ -39,14 +39,14 @@ int rtp_announce_pt(rtp_session *rtp_sess, unsigned pt, rtp_media_type media_typ
 	} else if (pt >= 96) {
 		if ( !(rtppt = rtp_pt_new(media_type)) )
 			return RTP_ERROR;
-		rtp_dynpt_set(rtp_sess->rtpptdefs, rtppt, pt);
+		rtp_dynpt_set(rtp_sess->ptdefs, rtppt, pt);
 	}
 	if ( !(fmt=malloc(sizeof(rtp_fmts_list))) ) {
 		nms_printf(NMSML_FATAL, "Could not alloc memory for rtp_fmts_list\n");
 		return RTP_ERRALLOC;
 	}
 	fmt->pt = pt;
-	fmt->rtppt = rtp_sess->rtpptdefs[pt];
+	fmt->rtppt = rtp_sess->ptdefs[pt];
 	fmt->next = NULL;
 	for (prev_fmt=&rtp_sess->announced_fmts; *prev_fmt; prev_fmt = &(*prev_fmt)->next);
 	*prev_fmt = fmt;

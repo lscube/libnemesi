@@ -223,9 +223,9 @@ typedef struct _rtp_ssrc {
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
 	struct _rtp_session *rtp_sess; // RTP session SSRC belogns to.
-//	rtp_pt **rtpptdefs;  /* convenience pointer to the same struct as 
+//	rtp_pt **ptdefs;  /* convenience pointer to the same struct as 
 //	                        rtp_session. (not to be freed here) */
-	void *prsr_privs[128]; /*!< I would like to keep rtp able to manage
+	void *privs[128]; /*!< I would like to keep rtp able to manage
                                     dynamic payload changes at its best. */
 	struct _rtp_ssrc *next; // next known SSRC
 	struct _rtp_ssrc *next_active; // next active SSRC
@@ -264,7 +264,7 @@ typedef struct _rtp_session {
 	pthread_mutex_t syn;
 	// payload type definitions for the session 
         // (included dynamically defined)
-	rtp_pt *rtpptdefs[128];
+	rtp_pt *ptdefs[128];
 	rtp_fmts_list *announced_fmts; /* list of rtp pt announced in sdp 
                                         * description (if present) */
 	// parsers functions

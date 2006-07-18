@@ -99,7 +99,7 @@ typedef struct {
 
 static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
-	rtp_mpv *mpv_priv = stm_src->prsr_privs[fr->pt];
+	rtp_mpv *mpv_priv = stm_src->privs[fr->pt];
 	rtp_pkt *pkt;
 	size_t pkt_len;
 	uint32 tot_pkts=0;
@@ -131,7 +131,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 	// init private struct if this is the first time we're called
 	if (!mpv_priv) {
 		nms_printf(NMSML_DBG3, "[rtp_mpv] allocating new private struct...");
-		if ( !(stm_src->prsr_privs[fr->pt]=mpv_priv=malloc(sizeof(rtp_mpv))) )
+		if ( !(stm_src->privs[fr->pt]=mpv_priv=malloc(sizeof(rtp_mpv))) )
 			return RTP_ERRALLOC;
 		mpv_priv->data_size = max(DEFAULT_MPV_DATA_FRAME, pkt_len);
 		if ( !(fr->data=mpv_priv->data=malloc(mpv_priv->data_size)) )

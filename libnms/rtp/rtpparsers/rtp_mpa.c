@@ -116,7 +116,7 @@ static void mpa_info(mpa_frm *);
 
 static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt)
 {
-	rtp_mpa *mpa_priv = stm_src->prsr_privs[pt];
+	rtp_mpa *mpa_priv = stm_src->privs[pt];
 	
 	if (mpa_priv) {
 		nms_printf(NMSML_DBG2, "[rtp_mpa] freeing private resources...\n");
@@ -129,7 +129,7 @@ static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt)
 
 static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 {
-	rtp_mpa *mpa_priv = stm_src->prsr_privs[fr->pt];
+	rtp_mpa *mpa_priv = stm_src->privs[fr->pt];
 	rtp_pkt *pkt;
 	size_t pkt_len; // size of RTP packet, rtp header included.
 	mpa_frm mpa;
@@ -170,7 +170,7 @@ static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
 	// init private struct if this is the first time we're called
 	if (!mpa_priv) {
 		nms_printf(NMSML_DBG3, "[rtp_mpa] allocating new private struct...");
-		if ( !(stm_src->prsr_privs[fr->pt]=mpa_priv=malloc(sizeof(rtp_mpa))) )
+		if ( !(stm_src->privs[fr->pt]=mpa_priv=malloc(sizeof(rtp_mpa))) )
 			return RTP_ERRALLOC;
 		mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
 		if ( !(mpa_priv->data=malloc(mpa_priv->data_size)) )

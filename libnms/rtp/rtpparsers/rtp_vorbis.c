@@ -413,14 +413,14 @@ static int rtp_init_parser(struct _rtp_session *rtp_sess, unsigned pt)
 
 // associate it to the right payload
 
-    ssrc->prsr_privs[pt]=vorb;
+    ssrc->privs[pt]=vorb;
 
     return 0;
 }
 
 int rtp_parser_uninit(rtp_ssrc *stm_src, unsigned pt){
 
-    rtp_vorbis *vorb = stm_src->prsr_privs[pt];
+    rtp_vorbis *vorb = stm_src->privs[pt];
 
     if (vorb && vorb->buf) free(vorb->buf);
     if (vorb) free(vorb);
@@ -436,7 +436,7 @@ static int rtp_parse(rtp_ssrc *ssrc, rtp_frame *fr, rtp_buff *config)
     rtp_pkt *pkt;
     int len;
 
-    rtp_vorbis *vorb = ssrc->prsr_privs[fr->pt];
+    rtp_vorbis *vorb = ssrc->privs[fr->pt];
 
     //if I don't have previous work
     if (!vorb->pkts)

@@ -111,10 +111,10 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 								return 1;
 							switch (sdp_m->media_type) {
 								case 'A':
-									sscanf(ch+1, "%u/%c", &curr_rtsp_m->rtp_sess->rtpptdefs[pt]->rate, &RTP_AUDIO(curr_rtsp_m->rtp_sess->rtpptdefs[pt])->channels);
+									sscanf(ch+1, "%u/%c", &curr_rtsp_m->rtp_sess->ptdefs[pt]->rate, &RTP_AUDIO(curr_rtsp_m->rtp_sess->ptdefs[pt])->channels);
 									break;
 								case 'V':
-									sscanf(ch+1, "%u", &curr_rtsp_m->rtp_sess->rtpptdefs[pt]->rate);
+									sscanf(ch+1, "%u", &curr_rtsp_m->rtp_sess->ptdefs[pt]->rate);
 									break;
 								default:
 									// not recognized
@@ -137,7 +137,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 						if ( (pt=(uint8)strtoul(tkn, &tkn, 10)) <= 127 ) {
 							while ( *tkn == ' ' )
 								tkn++;
-							rtp_pt_attr_add(curr_rtsp_m->rtp_sess->rtpptdefs, pt, tkn);
+							rtp_pt_attr_add(curr_rtsp_m->rtp_sess->ptdefs, pt, tkn);
 						} else {
 							// shawill: should be an error or a warning?
 							nms_printf(NMSML_WARN, "Warning: fmtp attribute is trying to set an out of bounds payload type: not permitted\n");
