@@ -43,18 +43,21 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
  * <tt>rtp_parser_uninit *rtp_parsers_uninits</tt> array in rtp_session struct.
  * */
  
-#define RTPPRSR(x) rtpparser rtp_parser_##x = { \
+#define RTP_PARSER(x) rtpparser rtp_parser_##x = { \
 	&served, \
 	NULL, \
-	rtp_parse \
+	rtp_parse, \
+	NULL \
 }
 
-#define RTPPRSR_WITH_INIT(x) \
+#define RTP_PARSER_FULL(x) \
 	static int rtp_init_parser(struct _rtp_session *rtp_sess, unsigned pt); \
+	static int rtp_parser_uninit(rtp_ssrc *stm_src, unsigned pt); \
 	rtpparser rtp_parser_##x = {\
 		&served, \
 		rtp_init_parser, \
-		rtp_parse \
+		rtp_parse, \
+		rtp_uninit_parser \
 	}
 
 #endif /*RTPPTFRAMER_H_*/

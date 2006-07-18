@@ -37,7 +37,7 @@ static rtpparser_info served = {
 	{"MPA", NULL}
 };
 
-RTPPRSR(mpa);
+RTP_PARSER(mpa);
 
 #define DEFAULT_MPA_DATA_FRAME 1024
 

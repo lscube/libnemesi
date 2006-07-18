@@ -87,8 +87,8 @@ void rtp_parsers_init(void)
 		
 	for (i=0; rtpparsers[i]; i++) {
 		if (rtpparsers[i]->served->static_pt < 96) {
-			rtp_parsers[rtpparsers[i]->served->static_pt] = rtpparsers[i]->rtp_parse;
-			rtp_parsers_inits[rtpparsers[i]->served->static_pt] = rtpparsers[i]->rtp_init_parser;
+			rtp_parsers[rtpparsers[i]->served->static_pt] = rtpparsers[i]->parse;
+			rtp_parsers_inits[rtpparsers[i]->served->static_pt] = rtpparsers[i]->init;
 			nms_printf(NMSML_DBG1, "Added rtp parser for pt %d\n", rtpparsers[i]->served->static_pt);
 		} else
 			nms_printf(NMSML_ERR, "rtp framer could not serve %d (>=96) payload as static... rejected\n");
@@ -107,8 +107,8 @@ int rtp_parser_reg(rtp_session *rtp_sess, int16 pt, char *mime)
 	for (i=0; rtpparsers[i]; i++) {
 		for (j=0; rtpparsers[i]->served->mime[j]; j++) {
 			if ( !strcmpcase(rtpparsers[i]->served->mime[j], mime) ) {
-				rtp_sess->parsers[pt] = rtpparsers[i]->rtp_parse;
-				rtp_sess->parsers_inits[pt] = rtpparsers[i]->rtp_init_parser;
+				rtp_sess->parsers[pt] = rtpparsers[i]->parse;
+				rtp_sess->parsers_inits[pt] = rtpparsers[i]->init;
 				return RTP_OK;
 			}
 		}

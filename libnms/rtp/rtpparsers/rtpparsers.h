@@ -29,7 +29,6 @@
 #ifndef RTPFRAMERS_H_
 #define RTPFRAMERS_H_
 
-//#include <nemesi/rtpparsers.h>
 #include <nemesi/rtp.h>
 
 typedef struct {
@@ -38,9 +37,10 @@ typedef struct {
 } rtpparser_info;
 
 typedef struct {
-	rtpparser_info *served;
-	rtp_parser_init rtp_init_parser;
-	rtp_parser rtp_parse;
+	rtpparser_info      *served;
+	rtp_parser_init     init;
+	rtp_parser          parse;
+	rtp_parser_uninit   uninit;
 } rtpparser;
 
 #endif /* RTPFRAMERS_H_ */

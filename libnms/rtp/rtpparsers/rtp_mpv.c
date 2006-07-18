@@ -37,7 +37,7 @@ static rtpparser_info served = {
 	{"MPV", NULL}
 };
 
-RTPPRSR(mpv);
+RTP_PARSER(mpv);
 
 #define DEFAULT_MPV_DATA_FRAME 65535
 
