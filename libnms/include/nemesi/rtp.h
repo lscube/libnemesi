@@ -213,7 +213,7 @@ struct rtp_session_stats {
 #define SSRC_RTCPNEW	3
 #define SSRC_COLLISION	4
 
-typedef struct _rtp_ssrc {
+typedef struct rtp_ssrc_s {
 	uint32 ssrc;
 	nms_sockaddr rtp_from;
 	nms_sockaddr rtcp_from;
@@ -222,13 +222,13 @@ typedef struct _rtp_ssrc {
 	struct rtp_ssrc_stats ssrc_stats;
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
-	struct _rtp_session *rtp_sess; // RTP session SSRC belogns to.
+	struct rtp_session_s *rtp_sess; // RTP session SSRC belogns to.
 //	rtp_pt **ptdefs;  /* convenience pointer to the same struct as 
 //	                        rtp_session. (not to be freed here) */
 	void *privs[128]; /*!< I would like to keep rtp able to manage
                                     dynamic payload changes at its best. */
-	struct _rtp_ssrc *next; // next known SSRC
-	struct _rtp_ssrc *next_active; // next active SSRC
+	struct rtp_ssrc_s *next; // next known SSRC
+	struct rtp_ssrc_s *next_active; // next active SSRC
 	/* 
          * park is a link for parking external variables (i.e. from decoder).
          * libnms will never use that.
@@ -246,11 +246,11 @@ struct rtp_conflict {
  * (in <tt>rtp_thread_create</tt>) for all the parsers registered for announced
  * payload types (present in the <tt>announced_fmts</tt> list)
  * */
-typedef int (*rtp_parser_init)(struct _rtp_session *rtp_sess, unsigned pt);
+typedef int (*rtp_parser_init)(struct rtp_session_s *rtp_sess, unsigned pt);
 typedef int (*rtp_parser)(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *conf);
 typedef int (*rtp_parser_uninit)(rtp_ssrc *stm_src, unsigned pt);
 
-typedef struct _rtp_session {
+typedef struct rtp_session_s {
 	uint32 local_ssrc;
 	int rtpfd;
 	int rtcpfd;
@@ -260,7 +260,7 @@ typedef struct _rtp_session {
 	rtp_ssrc *active_ssrc_queue; // queue of active SSRCs
 	struct rtp_conflict *conf_queue;
 	buffer_pool bp;
-	struct _rtp_session *next;
+	struct rtp_session_s *next;
 	pthread_mutex_t syn;
 	// payload type definitions for the session 
         // (included dynamically defined)

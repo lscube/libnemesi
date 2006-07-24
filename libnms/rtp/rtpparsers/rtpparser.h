@@ -31,10 +31,6 @@
 
 #include "rtpparsers.h"
 
-/*! the <tt>rtp_parser_init</tt> function is called at rtp thread start (in <tt>rtp_thread_create</tt>)
- * for all the parsers registered for announced payload types (present in the <tt>announced_fmts</tt> list)
- * */
-//static int rtp_init_parser(struct _rtp_session *rtp_sess, unsigned pt);
 static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
 
 /*! the parser could define an "unint function" of the type:
@@ -50,6 +46,10 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
 	NULL \
 }
 
+/* the <tt>rtp_parser_init</tt> function is called at rtp thread start (in <tt>rtp_thread_create</tt>)
+ * for all the parsers registered for announced payload types (present in the <tt>announced_fmts</tt> list)
+ * */
+ 
 #define RTP_PARSER_FULL(x) \
 	static int rtp_init_parser(rtp_session *rtp_sess, unsigned pt); \
 	static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt); \
