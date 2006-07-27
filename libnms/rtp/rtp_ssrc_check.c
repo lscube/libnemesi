@@ -86,13 +86,13 @@ int rtp_ssrc_check(rtp_session *rtp_sess, uint32 ssrc, rtp_ssrc **stm_src, nms_s
 			sock.addr_len = (*stm_src)->rtcp_from.addr_len;
 
 			if (!(*stm_src)->rtcp_to.addr) {
-				nms_addr nms_addr;
+				nms_addr nms_address;
 
-				if (sock_get_addr(recfrom->addr, &nms_addr))
+				if (sock_get_addr(recfrom->addr, &nms_address))
 					return -nms_printf(NMSML_ERR, "Invalid address for received packet\n");
 				
 				// if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).srv_ports[1]) < 0 )
-				if ( rtcp_to_connect(*stm_src, &nms_addr, (rtp_sess->transport).srv_ports[1]) < 0 )
+				if ( rtcp_to_connect(*stm_src, &nms_address, (rtp_sess->transport).srv_ports[1]) < 0 )
 					return -1;
 			}
 		}

@@ -37,7 +37,7 @@
 rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 {
 	rtp_session *rtp_sess;
-	nms_addr nms_addr;
+	nms_addr nms_address;
 
 	if((rtp_sess=(rtp_session *)calloc(1, sizeof(rtp_session))) == NULL) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
@@ -53,11 +53,11 @@ rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 		RET_ERR(NMSML_FATAL, "Cannot duplicate string!\n")
 	rtp_sess->transport.delivery=unicast;
 	// --- remote address
-	if ( sock_get_addr(peer->addr, &nms_addr) )
+	if ( sock_get_addr(peer->addr, &nms_address) )
 		RET_ERR(NMSML_ERR, "remote address not valid\n")
-	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDR, &nms_addr))
+	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDR, &nms_address))
 		RET_ERR(NMSML_ERR, "Could not set srcaddr in transport string\n")
-	switch (nms_addr.family) {
+	switch (nms_address.family) {
 		case AF_INET:
 			nms_printf(NMSML_DBG1, "IPv4 address\n");
 			break;
@@ -66,11 +66,11 @@ rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer)
 			break;
 	}
 	// --- local address
-	if ( sock_get_addr(local->addr, &nms_addr) )
+	if ( sock_get_addr(local->addr, &nms_address) )
 		RET_ERR(NMSML_ERR, "local address not valid\n")
-	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDR, &nms_addr))
+	if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDR, &nms_address))
 		RET_ERR(NMSML_ERR, "Could not set dstaddr in transport string\n")
-	switch (nms_addr.family) {
+	switch (nms_address.family) {
 		case AF_INET:
 			nms_printf(NMSML_DBG1, "IPv4 local address\n");
 			break;

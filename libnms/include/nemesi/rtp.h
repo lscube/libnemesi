@@ -54,6 +54,7 @@
 
 // #define RTP_AVP_UDP "RTP/AVP/UDP"
 #define RTP_AVP_UDP "RTP/AVP" // Default low-trasport is UDP. See RFC2326 12.39
+#define RTP_AVP_TCP "RTP/AVP/TCP" // interleaved TCP low transport. 
 #define RTP_SEQ_MOD (1<<16)
 #define MIN_SEQUENTIAL 2
 #define MAX_DROPOUT 3000
@@ -141,7 +142,7 @@ typedef struct {
 #define RTP_TRANSPORT_SET                0
 #define RTP_TRANSPORT_ERR                1
 
-struct rtp_transport {
+typedef struct {
 	char *spec;
 	enum deliveries { unicast, multicast } delivery;
 	nms_addr srcaddr; //!< stored in network order
@@ -154,7 +155,7 @@ struct rtp_transport {
 	in_port_t cli_ports[2]; //!< stored in host order
 	in_port_t srv_ports[2]; //!< stored in host order
 	uint32 ssrc;
-};
+} rtp_transport;
 
 struct rtp_ssrc_stats {
 	uint16 max_seq;		/* highest seq number seen */
@@ -254,7 +255,7 @@ typedef struct rtp_session_s {
 	uint32 local_ssrc;
 	int rtpfd;
 	int rtcpfd;
-	struct rtp_transport transport;
+	rtp_transport transport;
 	struct rtp_session_stats sess_stats;
 	rtp_ssrc *ssrc_queue; // queue of all known SSRCs
 	rtp_ssrc *active_ssrc_queue; // queue of active SSRCs

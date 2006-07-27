@@ -31,7 +31,7 @@
 int rtp_ssrc_init(rtp_session *rtp_sess, rtp_ssrc **stm_src, uint32 ssrc, nms_sockaddr *recfrom, enum rtp_protos proto_type)
 {
 	int addrcmp_err;
-	nms_addr nms_addr;
+	nms_addr nms_address;
 	
 	if(((*stm_src)=(rtp_ssrc *)calloc(1, sizeof(rtp_ssrc))) == NULL)
 		return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
@@ -60,9 +60,9 @@ int rtp_ssrc_init(rtp_session *rtp_sess, rtp_ssrc **stm_src, uint32 ssrc, nms_so
 
 	// we do not need to reset memory area 'cause we use calloc
 	// memset(&(*stm_src)->rtcp_to, 0, sizeof(nms_sockaddr));
-	if ( sock_get_addr(recfrom->addr, &nms_addr) )
+	if ( sock_get_addr(recfrom->addr, &nms_address) )
 		return -nms_printf(NMSML_ERR, "Address of received packet not valid\n");
-	if (!(addrcmp_err = addrcmp(&nms_addr, &rtp_sess->transport.srcaddr ))) {
+	if (!(addrcmp_err = addrcmp(&nms_address, &rtp_sess->transport.srcaddr ))) {
 		/* IT: Nel caso in cui l'indirizzo IP da cui riceviamo i dati
 		 * sia uguale a quello annunciato in RTSP, utilizziamo le
 		 * informazioni specificate nella sessione RTSP per impostare
@@ -82,13 +82,13 @@ int rtp_ssrc_init(rtp_session *rtp_sess, rtp_ssrc **stm_src, uint32 ssrc, nms_so
 		/* EN: If we lack of informations we assume that net address of
 		 * RTCP destination is the same of RTP address and port is that
 		 * specified in RTSP*/
-		if ( rtcp_to_connect(*stm_src, &nms_addr, (rtp_sess->transport).srv_ports[1]) < 0 )
+		if ( rtcp_to_connect(*stm_src, &nms_address, (rtp_sess->transport).srv_ports[1]) < 0 )
 			return -1;
 		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
 	} else {
 		switch (addrcmp_err) {
 			case WSOCK_ERRFAMILY:
-				nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n", nms_addr.family, rtp_sess->transport.srcaddr.family);
+				nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n", nms_address.family, rtp_sess->transport.srcaddr.family);
 				break;
 			case WSOCK_ERRADDR:
 				nms_printf(NMSML_DBG2, "WSOCK_ERRADDR\n");
