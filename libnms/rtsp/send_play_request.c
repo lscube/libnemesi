@@ -31,11 +31,11 @@
 #include <nemesi/methods.h>
 #include <nemesi/wsocket.h>
 
-int send_play_request(struct rtsp_thread *rtsp_th, char *range)
+int send_play_request(rtsp_thread *rtsp_th, char *range)
 {
 	char b[256];
-	struct rtsp_session *rtsp_sess;
-	struct rtsp_medium *rtsp_med;
+	rtsp_session *rtsp_sess;
+	rtsp_medium *rtsp_med;
 	cc_perm_mask cc_mask, cc_conflict;
 
 	// get_curr_sess(NULL, &rtsp_sess, NULL);
@@ -77,7 +77,7 @@ int send_play_request(struct rtsp_thread *rtsp_th, char *range)
 	
 	strcat(b, RTSP_EL);
 
-	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
+	if (!tcp_write(rtsp_th->transport.fd, b, strlen(b))) {
 		nms_printf(NMSML_ERR, "Cannot send PLAY request...\n");
 		return 1;
 	}

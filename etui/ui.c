@@ -30,7 +30,7 @@
 #include <nemesi/comm.h>
 #include <nemesi/etui.h>
 
-int ui(struct rtsp_ctrl *rtsp_ctl, nms_ui_hints *ui_hints, int argc, char **argv)
+int ui(rtsp_ctrl *rtsp_ctl, nms_ui_hints *ui_hints, int argc, char **argv)
 {
 	char *urlname = ui_hints->url; // NULL;
 	char optstr[256];

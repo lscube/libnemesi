@@ -38,11 +38,10 @@ int main (int argc, char **argv) {
     int opt, i=0;
     char *url, *out=malloc(12), *base="dump_nms";
     int outfd[128];
-    struct rtsp_ctrl *ctl;
-    struct rtsp_thread *rtsp_th;
+    rtsp_ctrl *ctl;
     rtp_thread *rtp_th;
-    struct rtsp_session *sess;
-    struct rtsp_medium *med;
+    rtsp_session *sess;
+    rtsp_medium *med;
     rtp_ssrc *ssrc;
     rtp_buff conf;
     rtp_frame fr;
@@ -96,11 +95,9 @@ int main (int argc, char **argv) {
     }
     
     rtsp_wait(ctl);
-    
-    rtsp_th = (struct rtsp_thread *)ctl;
 
     //Get the session information
-    sess = rtsp_th->rtsp_queue;
+    sess = ctl->rtsp_queue;
 
     if (!sess) {
 	fprintf (stderr, "No session available.\n");
@@ -111,7 +108,7 @@ int main (int argc, char **argv) {
     
     fprintf (stderr, "\nDumping...");
     
-    rtp_th = rtsp_th->rtp_th;
+    rtp_th = rtsp_get_rtp_th(ctl);
 
     rtp_fill_buffers(rtp_th);
 	

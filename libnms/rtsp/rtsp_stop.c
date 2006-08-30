@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_stop(struct rtsp_ctrl *rtsp_ctl)
+int rtsp_stop(rtsp_ctrl *rtsp_ctl)
 {
 
 	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));

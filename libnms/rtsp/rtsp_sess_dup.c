@@ -28,16 +28,16 @@
 
 #include <nemesi/rtsp.h>
 
-struct rtsp_session *rtsp_sess_dup(struct rtsp_session *curr_rtsp_s)
+rtsp_session *rtsp_sess_dup(rtsp_session *curr_rtsp_s)
 {
-	struct rtsp_session *new_rtsp_s;
+	rtsp_session *new_rtsp_s;
 
-	if ( (new_rtsp_s=(struct rtsp_session *)malloc(sizeof(struct rtsp_session))) == NULL ) {
+	if ( (new_rtsp_s=(rtsp_session *)malloc(sizeof(rtsp_session))) == NULL ) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}
 
-	memcpy(new_rtsp_s, curr_rtsp_s, sizeof(struct rtsp_session));
+	memcpy(new_rtsp_s, curr_rtsp_s, sizeof(rtsp_session));
 
 	new_rtsp_s->Session_ID=0;
 	new_rtsp_s->next=NULL;

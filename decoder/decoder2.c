@@ -36,7 +36,7 @@ decoder_fnc decoders[128];
 
 void *decoder(void *args)
 {
-	struct rtsp_ctrl *rtsp_ctl=(struct rtsp_ctrl *)args;
+	rtsp_ctrl *rtsp_ctl=(rtsp_ctrl *)args;
 	rtp_thread *rtp_th = rtsp_get_rtp_th(rtsp_ctl);
 	rtp_session *rtp_sess;
 	rtp_fmts_list *fmt;

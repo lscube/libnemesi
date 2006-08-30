@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <stdarg.h>
 
-int close_cmd(struct rtsp_thread *rtsp_th, ...)
+int close_cmd(rtsp_thread *rtsp_th, ...)
 {
 
 	if(rtsp_th->status == INIT){

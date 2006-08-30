@@ -30,7 +30,7 @@
 #include <nemesi/methods.h>
 #include <nemesi/utils.h>
 
-int check_response(struct rtsp_thread *rtsp_th)
+int check_response(rtsp_thread *rtsp_th)
 {
 	int wait_res;
 	uint64 wait_s_id;

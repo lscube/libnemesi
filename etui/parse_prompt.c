@@ -30,7 +30,7 @@
 #include <nemesi/preferences.h>
 
 
-int parse_prompt(struct rtsp_ctrl *rtsp_ctl, char *optstr)
+int parse_prompt(rtsp_ctrl *rtsp_ctl, char *optstr)
 {
 	char argstr[256];
 	char opt;
@@ -93,7 +93,7 @@ int parse_prompt(struct rtsp_ctrl *rtsp_ctl, char *optstr)
 		/*
 		fgets(argstr, 256, stdin);
 		*(argstr+strlen(argstr)-1)='\0';
-		edit_pref(argstr+1); // c'è lo spazio all'inizio, lo togliamo
+		edit_pref(argstr+1); // c'ï¿½ lo spazio all'inizio, lo togliamo
 		 */
 		if ( sscanf(optstr, "%*s %[^\n]", argstr) > 0)
 			edit_pref(argstr);

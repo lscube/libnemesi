@@ -21,7 +21,7 @@
 #include <nemesi/egui.h>
 #include <nemesi/comm.h>
 
-int gui(struct rtsp_ctrl *rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
+int gui(rtsp_ctrl *rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
 {
 	GtkWidget *nemesi;
 	char *path;

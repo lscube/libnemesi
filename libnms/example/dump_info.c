@@ -37,10 +37,9 @@ int main (int argc, char **argv) {
     int opt;
     char *url, *out="nemesi.bump";
     FILE *outfile=NULL;
-    struct rtsp_ctrl *ctl;
-    struct rtsp_thread *rtsp_th;
-    struct rtsp_session *sess;
-    struct rtsp_medium *med;
+    rtsp_ctrl *ctl;
+    rtsp_session *sess;
+    rtsp_medium *med;
     nms_rtsp_hints rtsp_hints = { -1 };
     sdp_attr *attr;
 
@@ -94,10 +93,9 @@ int main (int argc, char **argv) {
     
     rtsp_wait(ctl);
     
-    rtsp_th = (struct rtsp_thread *)ctl;
 
     //Get the session information
-    sess = rtsp_th->rtsp_queue;
+    sess = ctl->rtsp_queue;
 
     if (!sess) {
 	fprintf (stderr, "No session available.\n");

@@ -29,12 +29,12 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int send_teardown_request(struct rtsp_thread *rtsp_th)
+int send_teardown_request(rtsp_thread *rtsp_th)
 {
 
 	char b[256];
-	struct rtsp_session *rtsp_sess;
-	struct rtsp_medium *rtsp_med;
+	rtsp_session *rtsp_sess;
+	rtsp_medium *rtsp_med;
 
 	memset(b, 0, 256);
 
@@ -52,7 +52,7 @@ int send_teardown_request(struct rtsp_thread *rtsp_th)
 		sprintf(b + strlen(b), "Session: %llu"RTSP_EL, rtsp_sess->Session_ID);
 	strcat(b, RTSP_EL);
 
-	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
+	if (!tcp_write(rtsp_th->transport.fd, b, strlen(b))) {
 		nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
 		return 1;
 	}

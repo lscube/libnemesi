@@ -96,10 +96,10 @@
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS
 #define CL_LONG_OPTIONS CL_MAIN_LONG_OPTIONS
 
-int ui(struct rtsp_ctrl *, nms_ui_hints *, int, char **);
+int ui(rtsp_ctrl *, nms_ui_hints *, int, char **);
 int parse_cl(int, char **, nms_cl_opts *);
-int parse_prompt(struct rtsp_ctrl *, char *);
-int tui_event(struct rtsp_ctrl *, char);
+int parse_prompt(rtsp_ctrl *, char *);
+int tui_event(rtsp_ctrl *, char);
 void throbber(void *);
 char *statustostr(int);
 

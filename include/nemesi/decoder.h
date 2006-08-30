@@ -52,7 +52,7 @@ extern int (*decoders[128])(char *, int, nms_output *); // defined in decoder.c
 void *decoder(void *);
 
 //int dec_create(rtp_thread *);
-pthread_t dec_create(struct rtsp_ctrl *);
+pthread_t dec_create(rtsp_ctrl *);
 void dec_idle(void);
 int dec_destroy(pthread_t);
 void dec_clean(void *);

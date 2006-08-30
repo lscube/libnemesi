@@ -4,7 +4,10 @@ libnmsincludedir = $(libnmsdir)/include
 
 noinst_LTLIBRARIES = libwsocket.la
 
-libwsocket_la_SOURCES = 	server_connect.c \
+libwsocket_la_SOURCES = \
+				nmst_init.c \
+				nmst_close.c \
+				server_connect.c \
 				server_create.c \
 				tcp_open.c \
 				tcp_write.c \

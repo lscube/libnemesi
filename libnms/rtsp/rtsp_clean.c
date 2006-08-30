@@ -30,10 +30,10 @@
 
 #include <fcntl.h>
 
-void rtsp_clean(void *rtsp_thread)
+void rtsp_clean(void *rtsp_thrd)
 {
-	// struct rtsp_ctrl *rtsp_ctl = (struct rtsp_ctrl *)rtsp_control;
-	struct rtsp_thread *rtsp_th = (struct rtsp_thread *)rtsp_thread;
+	// rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *)rtsp_control;
+	rtsp_thread *rtsp_th = (rtsp_thread *)rtsp_thrd;
 	int n;
 #ifdef USE_UIPRINTF
 	char optstr[256];
@@ -52,7 +52,7 @@ void rtsp_clean(void *rtsp_thread)
 	if((n=read(command_fd, ch, 1)) == 1)
 		if(cmd[comm->opcode] (rtsp_th, comm->arg))
 			return;
-	if( (*(rtsp_th->waiting_for)) && (rtsp_th->fd != -1) ) {
+	if( (*(rtsp_th->waiting_for)) && (rtsp_th->transport.fd != -1) ) {
 		if ((n=rtsp_recv(rtsp_th)) < 0)
 			nms_printf(NMSML_WARN, "No teardown response received\n");
 		else if (n > 0){

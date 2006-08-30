@@ -29,13 +29,13 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int send_setup_request(struct rtsp_thread *rtsp_th)
+int send_setup_request(rtsp_thread *rtsp_th)
 {
 
 	char b[256];
 	char *options = NULL;
-	struct rtsp_session *rtsp_sess;
-	struct rtsp_medium *rtsp_med;
+	rtsp_session *rtsp_sess;
+	rtsp_medium *rtsp_med;
 	struct sockaddr_storage rtpaddr, rtcpaddr;
 	socklen_t rtplen=sizeof(rtpaddr), rtcplen=sizeof(rtcpaddr);
 	unsigned int rnd;
@@ -85,12 +85,12 @@ int send_setup_request(struct rtsp_thread *rtsp_th)
 	sprintf(b + strlen(b), "CSeq: %d"RTSP_EL, ++(rtsp_sess->CSeq));
 	sprintf(b + strlen(b), "Transport: %s"RTSP_EL, options);
 	
-	if (rtsp_sess->Session_ID) //Caso di controllo aggregato: è già stato definito un numero per la sessione corrente.
+	if (rtsp_sess->Session_ID) //Caso di controllo aggregato: ï¿½ giï¿½ stato definito un numero per la sessione corrente.
 		sprintf(b + strlen(b), "Session: %llu"RTSP_EL, rtsp_sess->Session_ID);
 	
 	strcat(b, RTSP_EL); 
 
-	if (!tcp_write(rtsp_th->fd, b, strlen(b))) {
+	if (!tcp_write(rtsp_th->transport.fd, b, strlen(b))) {
 		nms_printf(NMSML_ERR, "Cannot send SETUP request...\n");
 		return 1;
 	}

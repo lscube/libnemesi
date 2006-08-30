@@ -28,9 +28,9 @@
 
 #include <nemesi/rtsp.h>
 
-struct rtsp_medium *rtsp_med_create(int fd)
+rtsp_medium *rtsp_med_create(int fd)
 {
-	struct rtsp_medium *rtsp_m;
+	rtsp_medium *rtsp_m;
 	struct sockaddr_storage localaddr, peeraddr;
 	nms_sockaddr local = { (struct sockaddr *)&localaddr, sizeof(localaddr) };
 	nms_sockaddr peer = { (struct sockaddr *)&peeraddr, sizeof(peeraddr) };
@@ -38,7 +38,7 @@ struct rtsp_medium *rtsp_med_create(int fd)
 	getsockname(fd, (struct sockaddr *)local.addr, &local.addr_len);
 	getpeername(fd, (struct sockaddr *)peer.addr, &peer.addr_len);
 	
-	if ( (rtsp_m=(struct rtsp_medium *)calloc(1, sizeof(struct rtsp_medium))) == NULL ) {
+	if ( (rtsp_m=(rtsp_medium *)calloc(1, sizeof(rtsp_medium))) == NULL ) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}

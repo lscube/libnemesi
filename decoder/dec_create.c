@@ -28,9 +28,9 @@
 
 #include <nemesi/decoder.h>
 
-pthread_t dec_create(struct rtsp_ctrl *rtsp_ctl)
+pthread_t dec_create(rtsp_ctrl *rtsp_ctl)
 {
-//	rtp_session *rtp_sess_head=((struct rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
+//	rtp_session *rtp_sess_head=((rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
 //	rtp_session *rtp_sess;
 	int n;
 	pthread_attr_t dec_attr;

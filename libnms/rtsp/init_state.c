@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int init_state(struct rtsp_thread *rtsp_th, short event)
+int init_state(rtsp_thread *rtsp_th, short event)
 {
 	switch (event) {
 	case RTSP_GET_RESPONSE:

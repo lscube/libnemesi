@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_uninit(struct rtsp_ctrl *rtsp_ctl)
+int rtsp_uninit(rtsp_ctrl *rtsp_ctl)
 {
 	void *ret=NULL;
 

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int remove_pkt(struct rtsp_thread *rtsp_th)
+int remove_pkt(rtsp_thread *rtsp_th)
 {
 
 	char *buff=NULL;

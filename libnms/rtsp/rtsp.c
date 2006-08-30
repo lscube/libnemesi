@@ -33,17 +33,17 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/version.h>
 
-int (*cmd[COMMAND_NUM]) (struct rtsp_thread *, ...);
-int (*state_machine[STATES_NUM]) (struct rtsp_thread *, short);
+int (*cmd[COMMAND_NUM]) (rtsp_thread *, ...);
+int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
 
 /**
 * funzione che implementa il thread rtsp.
 * Si mette in attesa di comandi dalla UI e li gestisce.
 * Il funzionamento e' quello di una macchina a stati.
 * */
-void *rtsp(void *rtsp_thread)
+void *rtsp(void *rtsp_thrd)
 {
-	struct rtsp_thread *rtsp_th = (struct rtsp_thread *) rtsp_thread;
+	rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_thrd;
 	struct command *comm = rtsp_th->comm;
 	int command_fd = rtsp_th->pipefd[0];
 	fd_set readset;
@@ -52,20 +52,20 @@ void *rtsp(void *rtsp_thread)
 	
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-	pthread_cleanup_push(rtsp_clean, rtsp_thread);
+	pthread_cleanup_push(rtsp_clean, rtsp_thrd);
 
 	while (1) {
 		FD_ZERO(&readset);
 
 		FD_SET(command_fd, &readset);
-		if (rtsp_th->fd != -1)
-			FD_SET(rtsp_th->fd, &readset);
-		if (select(max(rtsp_th->fd, command_fd) + 1 , &readset, NULL, NULL, NULL) < 0){
+		if (rtsp_th->transport.fd != -1)
+			FD_SET(rtsp_th->transport.fd, &readset);
+		if (select(max(rtsp_th->transport.fd, command_fd) + 1 , &readset, NULL, NULL, NULL) < 0){
 			nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
 			pthread_exit(NULL);
 		}
-		if (rtsp_th->fd != -1)
-			if (FD_ISSET(rtsp_th->fd, &readset)) {
+		if (rtsp_th->transport.fd != -1)
+			if (FD_ISSET(rtsp_th->transport.fd, &readset)) {
 				if ((n=rtsp_recv(rtsp_th)) < 0)
 					pthread_exit(NULL);
 				else if (n > 0){

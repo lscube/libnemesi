@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int full_msg_rcvd( struct rtsp_thread *rtsp_th )
+int full_msg_rcvd(rtsp_thread *rtsp_th)
 {
 	struct rtsp_buffer *in_buffer=&(rtsp_th->in_buffer);
 	char *back_n; /* puntatore ai caratteri newline */

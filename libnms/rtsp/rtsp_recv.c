@@ -31,14 +31,14 @@
 #ifndef BUFFERSIZE
 #define BUFFERSIZE 163840
 #endif
-int rtsp_recv(struct rtsp_thread *rtsp_th)
+int rtsp_recv(rtsp_thread *rtsp_th)
 {
 	int n;
 	char buffer[BUFFERSIZE];
 
 	memset(buffer, '\0', BUFFERSIZE);
 
-	if ((n = tcp_read(rtsp_th->fd, buffer, BUFFERSIZE)) < 0) {
+	if ((n = tcp_read(rtsp_th->transport.fd, buffer, BUFFERSIZE)) < 0) {
 		nms_printf(NMSML_ERR, "ERROR reading from TCP socket\n");
 		return n;
 	}

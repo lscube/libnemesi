@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int set_rtsp_sessions(struct rtsp_thread *rtsp_th, int content_length, char *content_base, char *body)
+int set_rtsp_sessions(rtsp_thread *rtsp_th, int content_length, char *content_base, char *body)
 {
 	sdp_attr *sdp_a;
 	char *tkn;

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int handle_rtsp_pkt(struct rtsp_thread *rtsp_th)
+int handle_rtsp_pkt(rtsp_thread *rtsp_th)
 {
 	char ver[32];
 	int opcode;

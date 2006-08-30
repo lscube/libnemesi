@@ -36,7 +36,7 @@
  * \param status_line the status line in the reply
  * \return reply status code or -1 on error
  */
-int check_status(char *status_line, struct rtsp_thread *rtsp_th)
+int check_status(char *status_line, rtsp_thread *rtsp_th)
 {
 	char ver[32];
 	unsigned short res_state;

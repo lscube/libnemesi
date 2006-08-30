@@ -28,10 +28,10 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_reinit(struct rtsp_thread *rtsp_th)
+int rtsp_reinit(rtsp_thread *rtsp_th)
 {
-	struct rtsp_medium *med, *pmed;
-	struct rtsp_session *sess, *psess;
+	rtsp_medium *med, *pmed;
+	rtsp_session *sess, *psess;
 	void *ret;
 	
 	if ( !(sess=psess=rtsp_th->rtsp_queue) )
@@ -88,8 +88,8 @@ int rtsp_reinit(struct rtsp_thread *rtsp_th)
 	free(rtsp_th->urlname);
 	free((rtsp_th->in_buffer).data);
 	
-	close(rtsp_th->fd);
-	rtsp_th->fd = -1;
+	nmst_close(&rtsp_th->transport);
+	nmst_init(&rtsp_th->transport);
 	rtsp_th->status = INIT;
 	memset(rtsp_th->waiting_for, '\0', strlen(rtsp_th->waiting_for));
 	rtsp_th->urlname = NULL;

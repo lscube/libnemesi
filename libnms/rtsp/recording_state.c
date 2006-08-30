@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int recording_state(struct rtsp_thread *rtsp_th, short event)
+int recording_state(rtsp_thread *rtsp_th, short event)
 {
 	switch(event){
 		default:

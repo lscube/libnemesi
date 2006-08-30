@@ -28,7 +28,7 @@
 
 #include <nemesi/etui.h>
 
-int tui_event(struct rtsp_ctrl *rtsp_ctl, char event)
+int tui_event(rtsp_ctrl *rtsp_ctl, char event)
 {
 	switch (event) {
 		case 'q':

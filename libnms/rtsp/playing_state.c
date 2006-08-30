@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int playing_state(struct rtsp_thread *rtsp_th, short event)
+int playing_state(rtsp_thread *rtsp_th, short event)
 {
 	switch(event){
 	case RTSP_PAUSE_RESPONSE:

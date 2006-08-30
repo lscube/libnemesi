@@ -66,10 +66,10 @@ void unload_plugins(void);
 
 // commands to be used from ui
 // for some of these we need only the rtsp function so it will be just a macro.
-int nms_open(struct rtsp_ctrl *, char *, void (*)(void *), void *);
-int nms_play(struct rtsp_ctrl *, double start, double stop);
+int nms_open(rtsp_ctrl *, char *, void (*)(void *), void *);
+int nms_play(rtsp_ctrl *, double start, double stop);
 #define nms_pause(x) rtsp_pause(x)
 #define nms_stop(x) rtsp_stop(x)
-int nms_close(struct rtsp_ctrl *, void (*)(void *), void *);
+int nms_close(rtsp_ctrl *, void (*)(void *), void *);
 
 #endif

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int seturlname(struct rtsp_thread *rtsp_th, char *urlname)
+int seturlname(rtsp_thread *rtsp_th, char *urlname)
 {
 	char *server = NULL, *port = NULL, *path = NULL;
 

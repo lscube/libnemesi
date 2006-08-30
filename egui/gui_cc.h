@@ -28,5 +28,5 @@
 
 #include <nemesi/rtsp.h>
 
-int cc_stbarw_add(struct rtsp_ctrl *);
+int cc_stbarw_add(rtsp_ctrl *);
 

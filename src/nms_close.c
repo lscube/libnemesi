@@ -30,7 +30,7 @@
 #include <nemesi/main.h>
 #include <nemesi/decoder.h>
 
-int nms_close(struct rtsp_ctrl *rtsp_ctl, void (*throbber_func)(void *), void *targ)
+int nms_close(rtsp_ctrl *rtsp_ctl, void (*throbber_func)(void *), void *targ)
 {
 	if( dec_destroy(decoder_tid) )
 		nms_printf(NMSML_ERR, "Cannot initialize decoder\n");

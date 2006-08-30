@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_play(struct rtsp_ctrl *rtsp_ctl, double start, double stop)
+int rtsp_play(rtsp_ctrl *rtsp_ctl, double start, double stop)
 {
 	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
 		rtsp_ctl->comm->opcode= PLAY;
@@ -52,7 +52,7 @@ int rtsp_play(struct rtsp_ctrl *rtsp_ctl, double start, double stop)
 /* This function was the previous rtsp_play... It is now obsolete, but it will NEVER be deleted from this file 
  * 'cause it recalls us the amazing moments when we implemented the first lines of NeMeSI.
 */
-int rtsp_play(struct rtsp_ctrl *rtsp_ctl, char *range)
+int rtsp_play(rtsp_ctrl *rtsp_ctl, char *range)
 {
 	char *tkn;
 	char *meno;

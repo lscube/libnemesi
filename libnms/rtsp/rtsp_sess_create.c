@@ -28,11 +28,11 @@
 
 #include <nemesi/rtsp.h>
 
-struct rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
+rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
 {
-	struct rtsp_session *rtsp_s;
+	rtsp_session *rtsp_s;
 
-	if ( (rtsp_s=(struct rtsp_session *)malloc(sizeof(struct rtsp_session))) == NULL ) {
+	if ( (rtsp_s=(rtsp_session *)malloc(sizeof(rtsp_session))) == NULL ) {
 		nms_printf(NMSML_FATAL, "rtsp_sess_create: Cannot allocate memory.\n");
 		return NULL;
 	}

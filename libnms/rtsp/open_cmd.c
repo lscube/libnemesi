@@ -34,7 +34,7 @@
 * Si occupa di inizializzare la sessione e di mettere il thread nello stato READY.
 * @param rtap_t il puntatore che conterra la nuova struttura rtsp_thread.
 * */
-int open_cmd(struct rtsp_thread *rtsp_th, ...)
+int open_cmd(rtsp_thread *rtsp_th, ...)
 {
 	char *server;
 
@@ -49,8 +49,8 @@ int open_cmd(struct rtsp_thread *rtsp_th, ...)
 	if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
 		return 1;
 	urltokenize(rtsp_th->urlname, &server, NULL, NULL);
-	if (server_connect(server, rtsp_th->server_port, &(rtsp_th->fd), TCP)) {
-		rtsp_th->fd=-1;
+	if (server_connect(server, rtsp_th->server_port, &rtsp_th->transport.fd, TCP)) {
+		rtsp_th->transport.fd = -1;
 		return nms_printf(NMSML_ERR, "Cannot connect to the server\n");
 	}
 	free(server);

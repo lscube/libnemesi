@@ -29,14 +29,14 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int handle_setup_response(struct rtsp_thread *rtsp_th)
+int handle_setup_response(rtsp_thread *rtsp_th)
 {
 	char *tkn;		/* contiene una riga di descrizione */
 	char *prev_tkn;		/* punta prima al token precedente per il controllo sulla fine dell'header
 				   e poi ai vari componenti della riga di comando */
 	
-	struct rtsp_session *rtsp_sess;
-	struct rtsp_medium *rtsp_med;
+	rtsp_session *rtsp_sess;
+	rtsp_medium *rtsp_med;
 
 	// if (get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
 	if ( !(rtsp_sess=get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med=get_curr_sess(GCS_CUR_MED)))

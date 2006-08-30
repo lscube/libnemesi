@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-inline rtp_thread *rtsp_get_rtp_th(struct rtsp_ctrl *rtsp_ctl)
+inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl *rtsp_ctl)
 {
-	return ((struct rtsp_thread *)rtsp_ctl)->rtp_th;
+	return ((rtsp_thread *)rtsp_ctl)->rtp_th;
 }

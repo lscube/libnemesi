@@ -32,7 +32,7 @@
 
 void throbber(void *arg)
 {
-	struct rtsp_ctrl *rtsp_ctl = (struct rtsp_ctrl *)arg;
+	rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *)arg;
 	struct timeval tv;
 	char throbber[20][13] = { "[=          ]",
 		"[ =         ]",

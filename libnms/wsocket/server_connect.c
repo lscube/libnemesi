@@ -52,15 +52,21 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 #else
 	hints.ai_family = AF_INET;
 #endif
-	if (sock_type == TCP)
-		hints.ai_socktype = SOCK_STREAM;
-	else if (sock_type == UDP)
-		hints.ai_socktype = SOCK_DGRAM;
 
-	if ((n = gethostinfo(&res, host, port, &hints)) != 0) {
-		nms_printf(NMSML_ERR, "%s: %s\n", PROG_NAME, gai_strerror(n));
-		return 1;
+	switch (sock_type) {
+		case TCP:
+			hints.ai_socktype = SOCK_STREAM;
+			break;
+		case UDP:
+			hints.ai_socktype = SOCK_DGRAM;
+			break;
+		default:
+			return nms_printf(NMSML_ERR, "%s: Unknown socket type specified\n", PROG_NAME);
+			break;
 	}
+	
+	if ((n = gethostinfo(&res, host, port, &hints)) != 0)
+		return nms_printf(NMSML_ERR, "%s: %s\n", PROG_NAME, gai_strerror(n));
 
 	ressave = res;
 

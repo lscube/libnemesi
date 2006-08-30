@@ -33,14 +33,14 @@
 void *get_curr_sess(int cmd, ...)
 {
 	va_list ap;
-	struct rtsp_thread *rtsp_th;
-	static struct rtsp_session *static_sess = NULL;
-	static struct rtsp_medium *static_med = NULL;
+	rtsp_thread *rtsp_th;
+	static rtsp_session *static_sess = NULL;
+	static rtsp_medium *static_med = NULL;
 
 	switch (cmd) {
 		case GCS_INIT:
 			va_start(ap, cmd);
-			rtsp_th = va_arg(ap, struct rtsp_thread *);
+			rtsp_th = va_arg(ap, rtsp_thread *);
 			static_sess = rtsp_th->rtsp_queue;
 			static_med = static_sess->media_queue;
 			va_end(ap);
@@ -106,10 +106,10 @@ void *get_curr_sess(int cmd, ...)
 * sessioni ne' media RTSP da scandire.
 * */
 
-int get_curr_sess(struct rtsp_thread *rtsp_th, struct rtsp_session **rtsp_sess, struct rtsp_medium **rtsp_med)
+int get_curr_sess(rtsp_thread *rtsp_th, rtsp_session **rtsp_sess, rtsp_medium **rtsp_med)
 {
-	static struct rtsp_session *static_sess = NULL;
-	static struct rtsp_medium *static_med = NULL;
+	static rtsp_session *static_sess = NULL;
+	static rtsp_medium *static_med = NULL;
 
 	if ((rtsp_th == NULL) && (rtsp_sess == NULL) && (rtsp_med == NULL)) {
 		static_sess = NULL;

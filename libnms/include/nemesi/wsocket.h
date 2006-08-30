@@ -71,9 +71,22 @@ typedef struct {
 } nms_addr;
 
 enum sock_types {
-	TCP = 0,
-	UDP = 1
+	SOCK_NONE = 0,
+	TCP,
+	UDP,
+	SCTP
 };
+
+typedef struct {
+	enum sock_types type;
+	int fd; /*!< file descriptor for reading the data to and from the server */
+	nms_sockaddr peer;
+	/*human readable datas*/
+	char *remote_port;
+	char *local_port;
+	char *remote_host;
+	/**/
+} nms_transport;
 
 #define WSOCK_ERRFAMILYUNKNOWN	-1
 #define WSOCK_ERRSIZE	1
@@ -98,5 +111,10 @@ int sockaddrcmp(struct sockaddr *, socklen_t, struct sockaddr *, socklen_t);
 int sockaddrdup(nms_sockaddr *, nms_sockaddr *);
 int addrcmp(const nms_addr *, const nms_addr *);
 char *addr_ntop(const nms_addr *, char *, size_t);
+
+// --------------- Transport Layer Wrapper API --------------- //
+void nmst_init(nms_transport *);
+int nmst_close(nms_transport *);
+// ----------- End of Transport Layer Wrapper API ----------- //
 
 #endif

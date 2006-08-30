@@ -44,17 +44,17 @@
  * \return rtsp_ctrl structure. This is the interface structure between user
  * interface and RTSP librarween user interface and RTSP library.
  */
-struct rtsp_ctrl *rtsp_init(nms_rtsp_hints *hints)
+rtsp_ctrl *rtsp_init(nms_rtsp_hints *hints)
 {
-	struct rtsp_thread *rtsp_th;
+	rtsp_thread *rtsp_th;
 	pthread_attr_t rtsp_attr;
 	pthread_mutexattr_t mutex_attr;
 	// pthread_condattr_t cond_attr;
 	int n;
 
-	// if ( !(rtsp_th = (struct rtsp_thread *) malloc(sizeof(struct rtsp_thread))) )
+	// if ( !(rtsp_th = (rtsp_thread *) malloc(sizeof(rtsp_thread))) )
 	// We use calloc so that we are not in need to initialize to zero below
-	if ( !(rtsp_th = (struct rtsp_thread *) calloc(1, sizeof(struct rtsp_thread))) ) {
+	if ( !(rtsp_th = (rtsp_thread *) calloc(1, sizeof(rtsp_thread))) ) {
 		nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
 		return NULL;
 	}
@@ -88,7 +88,7 @@ struct rtsp_ctrl *rtsp_init(nms_rtsp_hints *hints)
 	if ((rtsp_th->comm = (struct command *) malloc(sizeof(struct command))) == NULL)
 		RET_ERR(NMSML_FATAL, "Could not alloc memory\n")
 
-	rtsp_th->fd = -1;
+	nmst_init(&rtsp_th->transport);
 	rtsp_th->status = INIT;
 #if 0 // we do not need to initilize to zero because of calloc usage
 	rtsp_th->descr_fmt = 0;
@@ -140,5 +140,5 @@ struct rtsp_ctrl *rtsp_init(nms_rtsp_hints *hints)
 	if ((n = pthread_create(&rtsp_th->rtsp_tid, NULL, &rtsp, (void *) rtsp_th)) > 0)
 		RET_ERR(NMSML_FATAL, "Cannot create RTSP Thread: %s\n", strerror(n))
 
-	return (struct rtsp_ctrl *)rtsp_th;
+	return (rtsp_ctrl *)rtsp_th;
 }

@@ -35,7 +35,7 @@ static GNMSurl *gnmsurl = NULL;
 
 static gint infowidth = 0;
 
-static struct rtsp_ctrl *rtsp_ctl;
+static rtsp_ctrl *rtsp_ctl;
 
 static gboolean internal_call = FALSE;
 // end of static variables declarations

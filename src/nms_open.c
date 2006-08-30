@@ -29,7 +29,7 @@
 #include <nemesi/main.h>
 #include <nemesi/decoder.h>
 
-int nms_open(struct rtsp_ctrl *rtsp_ctl, char *urlname, void (*throbber_func)(void *), void *targ)
+int nms_open(rtsp_ctrl *rtsp_ctl, char *urlname, void (*throbber_func)(void *), void *targ)
 {
 	rtsp_open(rtsp_ctl, urlname);
 	

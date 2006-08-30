@@ -108,15 +108,15 @@ struct command {
  * \see Medium_info
  * \see rtsp_session
  * */
-struct rtsp_medium {
+typedef struct rtsp_medium_s {
 	sdp_medium_info *medium_info;	/*!< Medium informations. */
 	rtp_session *rtp_sess;	/*!< RTP session whom
 					  the medium belongs */
-	struct rtsp_medium *next;	/*!< Next medium. */
+	struct rtsp_medium_s *next;	/*!< Next medium. */
 	char *filename;			/*!< Medium identifier. Used for the
 					  ``per medium'' methods
 					  (SETUP, TEARDOWN). */
-};
+} rtsp_medium;
 
 /*!
  * \brief RTSP session description.
@@ -136,7 +136,7 @@ struct rtsp_medium {
  * \see rtsp_session_info
  * \see rtsp_medium
  * */
-struct rtsp_session {
+typedef struct rtsp_session_s {
 	uint64 Session_ID;	/*!< RTSP identifier. */
 	int CSeq;		/*!< Last sent RTSP packet 
 				  sequence number */
@@ -151,8 +151,8 @@ struct rtsp_session {
 				  are relative to \c content_base path. */
 	sdp_session_info *info;	/*!< Session informations */
 	
-	struct rtsp_medium *media_queue; /*!< Media queue */
-	struct rtsp_session *next;	/*!< Next session */
+	rtsp_medium *media_queue; /*!< Media queue */
+	struct rtsp_session_s *next;	/*!< Next session */
 	/********************************************/
 	/* Do NOT USE IT! JUST FOR INTERNAL USAGE!  */
 	/********************************************/
@@ -160,12 +160,12 @@ struct rtsp_session {
 				  It should be NEVER accessed directly.
 				  All the data is available through
 				  <tt>\ref rtsp_session_info</tt>. */
-};
+} rtsp_session;
 
 /*!
  * \brief RTSP Packet buffer.
  *
- * There the packets read on the RTSP port are composed and stored.
+ * There the packets read from the RTSP port are composed and stored.
  * Since it's possible that the message comes fragmented in many packets
  * from the underlying transport protocol, we first check for completion and
  * then the message will be processed.
@@ -192,7 +192,7 @@ struct rtsp_buffer {
 						the rtsp module is busy waiting reply from server*/ \
 			pthread_t rtsp_tid; \
 			char descr_fmt; /* Description format inside RTSP body */ \
-			struct rtsp_session *rtsp_queue;/*!< List of active sessions. */ \
+			rtsp_session *rtsp_queue;/*!< List of active sessions. */ \
 			cc_perm_mask accepted_CC; /* accepted CC licenses */
 
 /*!
@@ -207,13 +207,13 @@ struct rtsp_buffer {
  * \see rtsp_session
  * \see buffer
  * */
-struct rtsp_thread {
+typedef struct {
 	RTSP_COMMON_IF
 	nms_rtsp_hints *hints;
 	uint16 force_rtp_port;
 	pthread_cond_t cond_busy;
-	int fd;		/*!< file descriptor for reading the data coming 
-			  from the server */
+	nms_transport transport;
+	// int fd; /*!< file descriptor for reading the data coming from the server */
 		/*! \enum types enum possible kind of stream. */
 	enum types { M_ON_DEMAND, CONTAINER } type;	/*!< Kind of active
 							  media stream:
@@ -224,13 +224,13 @@ struct rtsp_thread {
 				 */
 	char *urlname;		/*!< Requested URL */
 	struct rtsp_buffer in_buffer;	/*!< Input buffer. */
-	// struct rtsp_session *rtsp_queue;/*!< Active sessions. */
+	// rtsp_session *rtsp_queue;/*!< Active sessions. */
 	rtp_thread *rtp_th;
-};
+} rtsp_thread;
 
-struct rtsp_ctrl {
+typedef struct {
 	RTSP_COMMON_IF
-};
+} rtsp_ctrl;
 
 //******** interface functions ********************
 
@@ -238,65 +238,65 @@ struct rtsp_ctrl {
 	// /-------------------------------/
 	// |- int init_rtsp(void);
 	// \- struct rtsp_ctrl *init_rtsp(void);
-struct rtsp_ctrl *rtsp_init(nms_rtsp_hints *);
-inline int rtsp_is_busy(struct rtsp_ctrl *);
-void rtsp_wait(struct rtsp_ctrl *);
-int rtsp_close(struct rtsp_ctrl *);
-int rtsp_open(struct rtsp_ctrl *, char *);
-int rtsp_pause(struct rtsp_ctrl *);
-int rtsp_stop(struct rtsp_ctrl *);
-//int rtsp_play(struct rtsp_ctrl *, char *);
-int rtsp_play(struct rtsp_ctrl *, double, double);
-int rtsp_uninit(struct rtsp_ctrl *);
-// enum states rtsp_status(struct rtsp_ctrl *);
+rtsp_ctrl *rtsp_init(nms_rtsp_hints *);
+inline int rtsp_is_busy(rtsp_ctrl *);
+void rtsp_wait(rtsp_ctrl *);
+int rtsp_close(rtsp_ctrl *);
+int rtsp_open(rtsp_ctrl *, char *);
+int rtsp_pause(rtsp_ctrl *);
+int rtsp_stop(rtsp_ctrl *);
+//int rtsp_play(rtsp_ctrl *, char *);
+int rtsp_play(rtsp_ctrl *, double, double);
+int rtsp_uninit(rtsp_ctrl *);
+// enum states rtsp_status(rtsp_ctrl *);
 #define rtsp_status(ctrl) ctrl->status
-void rtsp_info_print(struct rtsp_ctrl *);
-inline rtp_thread *rtsp_get_rtp_th(struct rtsp_ctrl *rtsp_ctl);
-inline rtp_session *rtsp_get_rtp_queue(struct rtsp_ctrl *rtsp_ctl);
+void rtsp_info_print(rtsp_ctrl *);
+inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl *rtsp_ctl);
+inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl *rtsp_ctl);
 //
 //***** ENDOF interface functions ******************
 
-void rtsp_unbusy(struct rtsp_thread *);
-int rtsp_reinit(struct rtsp_thread *);
+void rtsp_unbusy(rtsp_thread *);
+int rtsp_reinit(rtsp_thread *);
 void rtsp_clean(void *);
 
 /*
-extern int (*cmd[COMMAND_NUM]) (struct rtsp_thread *, char *);
+extern int (*cmd[COMMAND_NUM]) (rtsp_thread *, char *);
 */
-extern int (*cmd[COMMAND_NUM]) (struct rtsp_thread *, ...);
+extern int (*cmd[COMMAND_NUM]) (rtsp_thread *, ...);
 
-extern int (*state_machine[STATES_NUM]) (struct rtsp_thread *, short);
+extern int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
 
 void *rtsp(void *);
 
-int send_get_request(struct rtsp_thread *);
-int send_pause_request(struct rtsp_thread *, char *);
-int send_play_request(struct rtsp_thread *, char *);
-int send_setup_request(struct rtsp_thread *);
-int send_teardown_request(struct rtsp_thread *);
+int send_get_request(rtsp_thread *);
+int send_pause_request(rtsp_thread *, char *);
+int send_play_request(rtsp_thread *, char *);
+int send_setup_request(rtsp_thread *);
+int send_teardown_request(rtsp_thread *);
 
 /*
-int play_cmd(struct rtsp_thread *, char *);
-int pause_cmd(struct rtsp_thread *, char *);
-int stop_cmd(struct rtsp_thread *, char *);
-int open_cmd(struct rtsp_thread *, char *);
-int close_cmd(struct rtsp_thread *, char *);
+int play_cmd(rtsp_thread *, char *);
+int pause_cmd(rtsp_thread *, char *);
+int stop_cmd(rtsp_thread *, char *);
+int open_cmd(rtsp_thread *, char *);
+int close_cmd(rtsp_thread *, char *);
 */
 
-int play_cmd(struct rtsp_thread *, ...);
-int pause_cmd(struct rtsp_thread *, ...);
-int stop_cmd(struct rtsp_thread *, ...);
-int open_cmd(struct rtsp_thread *, ...);
-int close_cmd(struct rtsp_thread *, ...);
+int play_cmd(rtsp_thread *, ...);
+int pause_cmd(rtsp_thread *, ...);
+int stop_cmd(rtsp_thread *, ...);
+int open_cmd(rtsp_thread *, ...);
+int close_cmd(rtsp_thread *, ...);
 
 // RTSP packet handling/creation funcs.
-int seturlname(struct rtsp_thread *, char *);
-int handle_rtsp_pkt(struct rtsp_thread *);
-int full_msg_rcvd( struct rtsp_thread *);
-int rtsp_recv(struct rtsp_thread *);
+int seturlname(rtsp_thread *, char *);
+int handle_rtsp_pkt(rtsp_thread *);
+int full_msg_rcvd(rtsp_thread *);
+int rtsp_recv(rtsp_thread *);
 int body_exists(char *);
-int check_response(struct rtsp_thread *);
-int check_status(char *, struct rtsp_thread *);
+int check_response(rtsp_thread *);
+int check_status(char *, rtsp_thread *);
 int set_transport_str(rtp_session *, char **);
 int get_transport_str(rtp_session *, char *);
 
@@ -307,25 +307,25 @@ int get_transport_str(rtp_session *, char *);
 #define GCS_CUR_MED 4
 #define GCS_UNINIT 5
 void *get_curr_sess(int cmd, ...);
-// int get_curr_sess(struct rtsp_thread *, struct rtsp_session **, struct rtsp_medium **);
+// int get_curr_sess(rtsp_thread *, rtsp_session **, rtsp_medium **);
 
-int set_rtsp_sessions(struct rtsp_thread *, int, char *, char *);
-int set_rtsp_media(struct rtsp_thread *);
-struct rtsp_session *rtsp_sess_dup(struct rtsp_session *);
-struct rtsp_session *rtsp_sess_create(char *, char *);
-struct rtsp_medium *rtsp_med_create(int);
-int remove_pkt(struct rtsp_thread *);
+int set_rtsp_sessions(rtsp_thread *, int, char *, char *);
+int set_rtsp_media(rtsp_thread *);
+rtsp_session *rtsp_sess_dup(rtsp_session *);
+rtsp_session *rtsp_sess_create(char *, char *);
+rtsp_medium *rtsp_med_create(int);
+int remove_pkt(rtsp_thread *);
 
-int init_state(struct rtsp_thread *, short);
-int ready_state(struct rtsp_thread *, short);
-int playing_state(struct rtsp_thread *, short);
-int recording_state(struct rtsp_thread *, short);
+int init_state(rtsp_thread *, short);
+int ready_state(rtsp_thread *, short);
+int playing_state(rtsp_thread *, short);
+int recording_state(rtsp_thread *, short);
 
-int handle_get_response(struct rtsp_thread *);
-int handle_setup_response(struct rtsp_thread *);
-int handle_play_response(struct rtsp_thread *);
-int handle_pause_response(struct rtsp_thread *);
-int handle_teardown_response(struct rtsp_thread *);
+int handle_get_response(rtsp_thread *);
+int handle_setup_response(rtsp_thread *);
+int handle_play_response(rtsp_thread *);
+int handle_pause_response(rtsp_thread *);
+int handle_teardown_response(rtsp_thread *);
 
 
 #endif

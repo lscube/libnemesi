@@ -36,7 +36,7 @@
 * @return 0 in caso di successo, 1 altrimenti.
 * @see send_play_request.
 * */
-int play_cmd(struct rtsp_thread *rtsp_th, ...)
+int play_cmd(rtsp_thread *rtsp_th, ...)
 {
 	va_list ap;
 	char *args;

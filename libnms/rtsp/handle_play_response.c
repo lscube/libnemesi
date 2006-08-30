@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int handle_play_response(struct rtsp_thread *rtsp_th)
+int handle_play_response(rtsp_thread *rtsp_th)
 {
 	char *prev_tkn;
 

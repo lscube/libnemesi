@@ -279,7 +279,7 @@ typedef struct rtp_session_s {
 	void *park;
 } rtp_session;
 
-typedef struct _rtp_thread {
+typedef struct {
 	rtp_session *rtp_sess_head;
 	// struct timeval startime;
 	pthread_mutex_t syn;

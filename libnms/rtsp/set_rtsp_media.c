@@ -31,11 +31,11 @@
 #include <nemesi/utils.h>
 #include <nemesi/rtpptdefs.h>
 
-int set_rtsp_media(struct rtsp_thread *rtsp_th)
+int set_rtsp_media(rtsp_thread *rtsp_th)
 {
 
-	struct rtsp_session *curr_rtsp_s=rtsp_th->rtsp_queue;
-	struct rtsp_medium *curr_rtsp_m=NULL;
+	rtsp_session *curr_rtsp_s=rtsp_th->rtsp_queue;
+	rtsp_medium *curr_rtsp_m=NULL;
 	sdp_medium_info *sdp_m;
 	sdp_attr *sdp_attr;
 	char *tkn, *ch;
@@ -46,11 +46,11 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 			for(sdp_m=curr_rtsp_s->info->media_info_queue; sdp_m; sdp_m=sdp_m->next) {
 				if ( curr_rtsp_m==NULL ) {
 					/* first medium */
-					if ( ( curr_rtsp_s->media_queue=curr_rtsp_m=rtsp_med_create(rtsp_th->fd) )==NULL )
+					if ( ( curr_rtsp_s->media_queue=curr_rtsp_m=rtsp_med_create(rtsp_th->transport.fd) )==NULL )
 						return 1;
 				} else if ( rtsp_th->type==CONTAINER ) {
 					/* media in the same session */
-					if ( (curr_rtsp_m->next=rtsp_med_create(rtsp_th->fd))==NULL )
+					if ( (curr_rtsp_m->next=rtsp_med_create(rtsp_th->transport.fd))==NULL )
 						return 1;
 					curr_rtsp_m->rtp_sess->next=curr_rtsp_m->next->rtp_sess;
 					curr_rtsp_m=curr_rtsp_m->next;
@@ -59,7 +59,7 @@ int set_rtsp_media(struct rtsp_thread *rtsp_th)
 					if ( (curr_rtsp_s->next=rtsp_sess_dup(curr_rtsp_s))==NULL )
 						return 1;
 					curr_rtsp_s=curr_rtsp_s->next;
-					if ( (curr_rtsp_s->media_queue=rtsp_med_create(rtsp_th->fd))==NULL )
+					if ( (curr_rtsp_s->media_queue=rtsp_med_create(rtsp_th->transport.fd))==NULL )
 						return 1;
 					curr_rtsp_m->rtp_sess->next=curr_rtsp_s->media_queue->rtp_sess;
 					curr_rtsp_m=curr_rtsp_s->media_queue;

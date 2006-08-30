@@ -139,7 +139,7 @@ static GtkWidget *add_leaf(const GtkWidget *where)
 
 static void cc_button_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 {
-	struct rtsp_ctrl *rtsp_ctl = (struct rtsp_ctrl *)user_data;
+	rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *)user_data;
 	sdp_session_info *sdp_s;
 	sdp_medium_info *sdp_m;
 	cc_license *cc;
@@ -243,14 +243,14 @@ static gboolean cc_sdp_check(sdp_medium_info *sdp_mqueue)
 
 static void cc_stbarw_upd(void *userdata)
 {
-	struct rtsp_ctrl *rtsp_ctrl = (struct rtsp_ctrl *)userdata;
+	rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *)userdata;
 
-	switch (rtsp_status(rtsp_ctrl)) {
+	switch (rtsp_status(rtsp_ctl)) {
 		case READY:
 		case PLAYING:
-			switch (rtsp_ctrl->descr_fmt) {
+			switch (rtsp_ctl->descr_fmt) {
 				case DESCRIPTION_SDP_FORMAT:
-					if (cc_sdp_check(rtsp_ctrl->rtsp_queue->media_queue->medium_info))
+					if (cc_sdp_check(rtsp_ctl->rtsp_queue->media_queue->medium_info))
 						gtk_widget_show(cc_box);
 					break;
 				default:
@@ -279,7 +279,7 @@ static void cc_stbarw_rm(GtkWidget *widget)
 	gtk_widget_destroy(widget);
 }
 
-int cc_stbarw_add(struct rtsp_ctrl *rtsp_ctl)
+int cc_stbarw_add(rtsp_ctrl *rtsp_ctl)
 {
 	if (cc_box)
 		gtk_widget_destroy(cc_box);

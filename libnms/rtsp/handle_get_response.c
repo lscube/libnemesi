@@ -30,7 +30,7 @@
 #include <nemesi/utils.h>
 #include <nemesi/methods.h>
 
-int handle_get_response(struct rtsp_thread *rtsp_th)
+int handle_get_response(rtsp_thread *rtsp_th)
 {
 	char *tkn; /* contains an RTSP description line */
 	char *prev_tkn; /* addresses first the previous token in order to check the end of RTSP header 

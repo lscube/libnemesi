@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,17 +26,15 @@
  *  
  * */
 
-#include <nemesi/rtsp.h>
+#include <nemesi/wsocket.h>
 
-int rtsp_pause(rtsp_ctrl *rtsp_ctl)
+int nmst_close(nms_transport *transport)
 {
-
-	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-		rtsp_ctl->comm->opcode= PAUSE;
-		write(rtsp_ctl->pipefd[1], "z", 1);
-		*(rtsp_ctl->comm->arg)='\0';
-		rtsp_ctl->busy=1;
-	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
-
-	return 0;
+	free(transport->local_port);
+	free(transport->remote_host);
+	free(transport->remote_port);
+	
+	// TODO should we do something else?
+	
+	return close(transport->fd);
 }

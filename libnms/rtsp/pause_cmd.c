@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <stdarg.h>
 
-int pause_cmd(struct rtsp_thread *rtsp_th, ...)
+int pause_cmd(rtsp_thread *rtsp_th, ...)
 {
 	va_list ap;
 	char *args;
