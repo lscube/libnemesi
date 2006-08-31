@@ -98,8 +98,8 @@ int gethostinfo(struct addrinfo **, char *, char *, struct addrinfo *);
 int tcp_open(struct sockaddr *, int);
 int server_connect(char *, char *, int *, enum sock_types);
 int server_create(char *, char *, int *);
-int tcp_write(int, void *, int);
-int tcp_read(int, void *, int);
+int tcp_write(int, void *, size_t);
+int tcp_read(int, void *, size_t);
 int sock_cmp_addr(const struct sockaddr *, const struct sockaddr * /*, socklen_t */);
 int sock_cmp_port(const struct sockaddr *, const struct sockaddr * /*, socklen_t */);
 void sock_set_port(struct sockaddr *, /* socklen_t,*/ int);
@@ -115,6 +115,9 @@ char *addr_ntop(const nms_addr *, char *, size_t);
 // --------------- Transport Layer Wrapper API --------------- //
 void nmst_init(nms_transport *);
 int nmst_close(nms_transport *);
+int nmst_read(nms_transport *, void *, size_t);
+int nmst_write(nms_transport *, void *, size_t);
+inline int nmst_is_active(nms_transport *);
 // ----------- End of Transport Layer Wrapper API ----------- //
 
 #endif

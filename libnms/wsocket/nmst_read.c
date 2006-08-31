@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,15 @@
 
 #include <nemesi/wsocket.h>
 
-int tcp_read(int fd, void *buffer, size_t nbytes)
+int nmst_read(nms_transport *transport, void *buffer, size_t nbytes)
 {
-	return read(fd, buffer, nbytes);
+	switch (transport->type) {
+		case TCP:
+			return read(transport->fd, buffer, nbytes);
+			break;
+		default:
+			break;
+	}
+	
+	return 1;
 }

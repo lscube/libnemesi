@@ -6,7 +6,10 @@ noinst_LTLIBRARIES = libwsocket.la
 
 libwsocket_la_SOURCES = \
 				nmst_init.c \
+				nmst_read.c \
+				nmst_write.c \
 				nmst_close.c \
+				nmst_is_active.c \
 				server_connect.c \
 				server_create.c \
 				tcp_open.c \

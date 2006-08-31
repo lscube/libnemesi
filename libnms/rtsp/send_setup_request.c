@@ -90,7 +90,7 @@ int send_setup_request(rtsp_thread *rtsp_th)
 	
 	strcat(b, RTSP_EL); 
 
-	if (!tcp_write(rtsp_th->transport.fd, b, strlen(b))) {
+	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
 		nms_printf(NMSML_ERR, "Cannot send SETUP request...\n");
 		return 1;
 	}

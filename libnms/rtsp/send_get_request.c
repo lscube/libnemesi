@@ -41,7 +41,7 @@ int send_get_request(rtsp_thread *rtsp_th)
 	sprintf(b + strlen(b), "User-Agent: %s - %s -- Release %s (%s)"RTSP_EL, PROG_NAME, PROG_DESCR, VERSION,
 		VERSION_NAME);
 	strcat(b, RTSP_EL);
-	if (!tcp_write(rtsp_th->transport.fd, b, strlen(b))) {
+	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
 		nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
 		return 1;
 	}

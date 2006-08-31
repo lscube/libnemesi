@@ -55,7 +55,7 @@ int send_pause_request(rtsp_thread *rtsp_th, char *range)
 	
 	strcat(b, RTSP_EL);
 
-	if (!tcp_write(rtsp_th->transport.fd, b, strlen(b))) {
+	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
 		nms_printf(NMSML_ERR, "Cannot send PAUSE request...\n");
 		return 1;
 	}

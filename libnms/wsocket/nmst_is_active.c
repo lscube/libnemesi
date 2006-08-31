@@ -7,8 +7,8 @@
  *
  *  Copyright (C) 2001 by
  *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *	Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
 #include <nemesi/wsocket.h>
 
-int tcp_read(int fd, void *buffer, size_t nbytes)
+inline int nmst_is_active(nms_transport *transport)
 {
-	return read(fd, buffer, nbytes);
+	return ((transport->type != SOCK_NONE) && (transport->fd >= 0));
 }

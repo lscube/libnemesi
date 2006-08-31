@@ -26,23 +26,9 @@
  *  
  * */
 
-#include <unistd.h>
-
-#include <nemesi/rtsp.h>
 #include <nemesi/wsocket.h>
 
-int tcp_write(int fd, void *buffer, int nbytes)
+int tcp_write(int fd, void *buffer, size_t nbytes)
 {
-	int n;
-
-	n = write(fd, buffer, nbytes);
-	/* in caso di debug 
-	   * if ( debug_toggle )
-	   {
-	   fprintf (stderr,"Write:\n");
-	   dump_buffer(buffer, n);
-	   }
-	 */
-
-	return n;
+	return write(fd, buffer, nbytes);
 }
