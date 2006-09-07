@@ -54,6 +54,11 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 #endif
 
 	switch (sock_type) {
+		case SCTP:
+#ifndef HAVE_SCTP
+			return nms_printf(NMSML_ERR, "%s: SCTP protocol not compiled in\n", PROG_NAME);
+			break;
+#endif // else go down to TCP case (SCTP and TCP are both SOCK_STREAM type)
 		case TCP:
 			hints.ai_socktype = SOCK_STREAM;
 			break;

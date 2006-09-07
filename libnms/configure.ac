@@ -33,6 +33,9 @@ AC_ARG_ENABLE(optimize,
 AC_ARG_ENABLE(ipv6,
 [  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
 	enable_ipv6="yes")
+AC_ARG_ENABLE(sctp,
+[  --enable-sctp            enable SCTP support [[default=autodetected]]],,
+	enable_sctp="yes")
 
 dnl Check for programs.
 AC_PROG_CC
@@ -89,7 +92,16 @@ else
 	dnl AM_CONDITIONAL(NEMESI_HAVE_IPV6, /bin/false)
 	dnl NEMESI_HAVE_IPV6=no
 fi
-	
+
+dnl Check for SCTP support
+if test "$enable_sctp" = "yes"; then
+	AC_CHECK_TYPE(struct sctp_sndrcvinfo, AC_DEFINE([HAVE_SCTP], 1, [Define SCTP support]), , [#include <netinet/sctp.h>])
+else
+	AC_MSG_WARN([SCTP disabled: check skipped.])
+	dnl AM_CONDITIONAL(NEMESI_HAVE_SCTP, /bin/false)
+	dnl NEMESI_HAVE_SCTP=no
+fi
+
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
 

@@ -96,7 +96,7 @@ typedef struct _rtp_fmts_list {
 	rtp_pt *rtppt;
 	struct _rtp_fmts_list *next;
 } rtp_fmts_list;
-#define RTP_FMTS_INITIALIZER {NULL, 0, 0}
+#define RTP_FMTS_INITIALIZER {0, NULL, NULL}
 
 #define RTP_PT(x) ((rtp_pt *)x)
 #define RTP_AUDIO(x) ((rtp_audio *)x)
