@@ -147,8 +147,12 @@ int main (int argc, char **argv) {
                 i=0;
         }
     } while (!rtp_fill_buffers(rtp_th));
+
     for (i=0; i<128; i++) if (outfd[i]) close(outfd[i]);
+
     fprintf(stderr," Complete\n");
 
-return 0;
+    rtsp_close(ctl);
+
+    return 0;
 }

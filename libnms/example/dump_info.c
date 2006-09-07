@@ -35,7 +35,7 @@
 int main (int argc, char **argv) {
 
     int opt;
-    char *url, *out="nemesi.bump";
+    char *url, *out="nemesi.dump";
     FILE *outfile=NULL;
     rtsp_ctrl *ctl;
     rtsp_session *sess;
