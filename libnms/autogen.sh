@@ -33,7 +33,7 @@ else
 fi
 if which aclocal >/dev/null 2>&1 ; then
 	echo -n "Running aclocal..."
-	aclocal -I config &
+	aclocal -I m4 &
 	dots $! 
 	echo " done."
 fi
