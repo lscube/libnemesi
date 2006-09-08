@@ -46,12 +46,22 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+m4_undefine([AC_PROG_CXX])
+m4_defun([AC_PROG_CXX],[])
+m4_undefine([AC_PROG_F77])
+m4_defun([AC_PROG_F77],[])
+
 AC_PROG_LIBTOOL
 LIBTOOL="$LIBTOOL --silent"
 AC_SUBST([LIBTOOL_DEPS])
 
 dnl Check for pthread libraries.
-AC_CHECK_LIB(pthread,pthread_create)
+ACX_PTHREAD(,AC_MSG_ERROR([Missing POSIX Threads support]))
+
+CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+LIBS="$LIBS $PTHREAD_LIBS"
+
+dnl AC_CHECK_LIB(pthread,pthread_create)
 
 dnl Check for Endianess
 AC_C_BIGENDIAN([BIGENDIAN="Big Endian"] AC_DEFINE([WORDS_BIGENDIAN], 1, [Define if manchine is big-endian]),[BIGENDIAN="Little Endian"] )
@@ -77,6 +87,7 @@ AC_FUNC_MMAP
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv)
 AC_CHECK_FUNC(getaddrinfo)
+AC_CHECK_LIBM
 
 dnl check if we have the generic struct for net addresses the has max possible size
 AC_CHECK_TYPES(struct sockaddr_storage,,, [#include <sys/socket.h>])
@@ -104,6 +115,7 @@ fi
 
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
+AC_SUBST(LIBM)
 
 AM_CONDITIONAL(NEMESI_EFENCE, /bin/false)
 if test "$enable_efence" = "yes"; then
@@ -198,7 +210,7 @@ dnl AC_SUBST(nemesi_gui)
 libnms_docsdir=$datadir/doc/$PACKAGE_NAME
 AC_SUBST(libnms_docsdir)
 
-libnms_libdir="$prefix"/lib/$PACKAGE_NAME
+libnms_libdir="$prefix"/lib
 AC_SUBST(libnms_libdir)
 dnl nemesi_plugindir="$nemesi_libdir"/plugins
 dnl AC_SUBST(nemesi_plugindir)
@@ -224,18 +236,19 @@ dnl AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name fo
 dnl AC_DEFINE_UNQUOTED(NEMESI_PIXMAPS_DIR_DEFAULT, "$nemesi_pixmapdir", [Define default directory for NeMeSI pixmaps])
 dnl AC_DEFINE(NEMESI_PIXMAPS_DIR_ENV, "NEMESI_PIXMAP_DIR",[Define the name for the ENV variable forn NeMeSI pixmaps dir])
 
-AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([bufferpool/Makefile])
-AC_CONFIG_FILES([libCCstreaming/Makefile])
-AC_CONFIG_FILES([rtp/Makefile])
-AC_CONFIG_FILES([rtp/rtpparsers/Makefile])
-AC_CONFIG_FILES([rtcp/Makefile])
-AC_CONFIG_FILES([sdp/Makefile])
-AC_CONFIG_FILES([rtsp/Makefile])
-AC_CONFIG_FILES([wsocket/Makefile])
-AC_CONFIG_FILES([md5/Makefile])
-AC_CONFIG_FILES([utils/Makefile])
-AC_CONFIG_FILES([example/Makefile])
+AC_CONFIG_FILES([Makefile
+                 bufferpool/Makefile
+                 libCCstreaming/Makefile
+                 rtp/Makefile
+                 rtp/rtpparsers/Makefile
+                 rtcp/Makefile
+                 sdp/Makefile
+                 rtsp/Makefile
+                 wsocket/Makefile
+                 md5/Makefile
+                 utils/Makefile
+                 example/Makefile
+                 libnms.pc])
 AC_OUTPUT
 
 AC_MSG_NOTICE([Release is .......... : $VERSION])

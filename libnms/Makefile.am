@@ -15,7 +15,24 @@ SUBDIRS =	bufferpool \
 # nemesiincludedir = $(top_srcdir)/include
 # libnmsincludedir = $(srcdir)/include
 
-noinst_LTLIBRARIES = libnemesi.la
+lib_LTLIBRARIES = libnemesi.la
+
+libincludedir = $(includedir)/nemesi
+libinclude_HEADERS = 	include/nemesi/bufferpool.h\
+			include/nemesi/rtpptdefs.h\
+			include/nemesi/cc.h\
+			include/nemesi/rtsp.h\
+			include/nemesi/comm.h\
+			include/nemesi/sdp.h\
+			include/nemesi/md5.h\
+			include/nemesi/types.h\
+			include/nemesi/md5global.h\
+			include/nemesi/utils.h\
+			include/nemesi/methods.h\
+			include/nemesi/version.h\
+			include/nemesi/rtcp.h\
+			include/nemesi/wsocket.h\
+			include/nemesi/rtp.h
 
 libnemesi_la_SOURCES =
 
@@ -27,7 +44,12 @@ libnemesi_la_LIBADD =	rtsp/librtsp.la \
 			bufferpool/libbuffpool.la \
 			wsocket/libwsocket.la \
 			utils/libutils.la \
-			md5/libmd5.la
+			md5/libmd5.la \
+			$(LIBM)
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libnms.pc
+
 
 # libnemesi_la_LDFLAGS = -static
 # libnemesi_la_LDFLAGS = -shared
