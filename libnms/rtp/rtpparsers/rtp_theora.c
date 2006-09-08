@@ -50,7 +50,7 @@ static int cfg_fixup(rtp_theora_t *theo, rtp_frame *fr, rtp_pkt *pkt)
     memcpy(fr->len, fr->data, 30); // id packet
     memcpy(fr->len+30, comment, sizeof(comment)); // comment packet
     memcpy(fr->len+30+sizeof(comment), fr->data+30, fr->len-30);
-    theo->id = RTP_VORB_ID(pkt);
+    theo->id = RTP_XIPH_ID(pkt);
     //cfg_cache_append() //XXX
     return 0;
 }
@@ -59,28 +59,28 @@ static int single_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
                         rtp_ssrc *ssrc, int offset)
 {
 
-    int len = RTP_VORB_LEN(pkt,offset);
+    int len = RTP_XIPH_LEN(pkt,offset);
 
     if (len > fr->len){
         realloc(fr->buf, len);
         fr->len = len;
     }
     
-    memcpy(fr->data, RTP_VORB_DATA(pkt, offset), fr->len);
+    memcpy(fr->data, RTP_XIPH_DATA(pkt, offset), fr->len);
     
-    if( theo->cfg_id != RTP_VORB_ID(pkt) || //not the current id
-//        !cfg_cache_find(theo,RTP_VORB_ID(pkt)); //XXX
-        RTP_VORB_T(pkt) != 1                //not a config packet
+    if( theo->cfg_id != RTP_XIPH_ID(pkt) || //not the current id
+//        !cfg_cache_find(theo,RTP_XIPH_ID(pkt)); //XXX
+        RTP_XIPH_T(pkt) != 1                //not a config packet
     ) return RTP_PARSER_ERROR;
     
     theo->pkts--;
     rtp_rm_pkt(ssrc);
 
-    if (RTP_VORB_T(pkt) == 1)
+    if (RTP_XIPH_T(pkt) == 1)
         return cfg_fixup(theo, fr);
     else
     {
-        theo->curr_bs = ptk_blocksize(theo);
+        theo->curr_bs = pkt_blocksize(theo, fr);
         if(theo->prev_bs)
             fr->timestamp += (theo->curr_bs + theo->prev_bs)/4;
         theo->prev_bs = theo->curr_bs;
@@ -104,20 +104,20 @@ static int frag_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
     
     rtp_rm_pkt(ssrc);
 
-    switch (RTP_VORB_T(pkt))
+    switch (RTP_XIPH_T(pkt))
     {
     case 1:
         theo->len = 0;
     case 2:
-        len = RTP_VORB_LEN(pkt,4);
+        len = RTP_XIPH_LEN(pkt,4);
         theo->buf = realloc(theo->buf, vorb->len + len);
-        memcpy(theo->buf + theo->len, RTP_VORB_DATA(pkt, 4), len);
+        memcpy(theo->buf + theo->len, RTP_XIPH_DATA(pkt, 4), len);
         theo->len+=len;
         return 0; //FIXME
     case 3:
-        len = RTP_VORB_LEN(pkt,4);
+        len = RTP_XIPH_LEN(pkt,4);
         theo->buf = realloc(theo->buf, vorb->len + len);
-        memcpy(theo->buf + theo->len, RTP_VORB_DATA(pkt, 4), len);
+        memcpy(theo->buf + theo->len, RTP_XIPH_DATA(pkt, 4), len);
         theo->len+=len;
         
         if (theo->len > fr->len) {
@@ -126,11 +126,11 @@ static int frag_parse(rtp_theora_t *theo, rtp_pkt *pkt, rtp_frame *fr,
         }
         memcpy(fr->data, theo->buf, fr->len);
 
-        if (RTP_VORB_T(pkt) == 1)
+        if (RTP_XIPH_T(pkt) == 1)
             return cfg_fixup(theo, fr);
         else
         {
-            theo->curr_bs = ptk_blocksize(theo);
+            theo->curr_bs = pkt_blocksize(theo, fr);
             if(theo->prev_bs)
                 fr->timestamp += (theo->curr_bs + theo->prev_bs)/4;
             theo->prev_bs = theo->curr_bs;
@@ -158,15 +158,15 @@ static int rtp_parse(rtp_ssrc *stm_src,
         if ( !(pkt=rtp_get_pkt(stm_src, &len)) )
 		return RTP_BUFF_EMPTY;
         //get the number of packets stuffed in the rtp
-        theo->pkts = RTP_VORB_PKTS(pkt);
+        theo->pkts = RTP_XIPH_PKTS(pkt);
     
         //some error checking
-        if (theo->pkts >0 && (RTP_VORB_F(pkt) || !RTP_VORB_T(pkt)))
+        if (theo->pkts >0 && (RTP_XIPH_F(pkt) || !RTP_XIPH_T(pkt)))
             return RTP_PARSE_ERROR;
         //single packet, easy case
         if (theo->pkts = 1)
             return single_parse(theo, pkt, fr, stm_src, 4);
-        if (RTP_VORB_F(pkt))
+        if (RTP_XIPH_F(pkt))
             return frag_parse(theo, pkt, fr, stm_src);
         theo->offset = 4;
     }

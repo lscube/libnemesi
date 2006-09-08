@@ -279,7 +279,7 @@ static long pkt_blocksize(rtp_vorbis *vorb, rtp_frame *fr)
     int mode;
     bit_context bc;
     bit_readinit(&bc, fr->data, fr->len);
-    read_bit(bc,1);
+    bit_read(&bc,1);
 
     mode = bit_read(&bc,rtp_ilog(vorb->modes));
     
@@ -335,7 +335,7 @@ static int single_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
         return cfg_fixup(vorb, fr, config, RTP_XIPH_ID(pkt));
     else
     {
-        vorb->curr_bs = ptk_blocksize(vorb);
+        vorb->curr_bs = pkt_blocksize(vorb, fr);
         if(vorb->prev_bs)
             fr->timestamp += (vorb->curr_bs + vorb->prev_bs)/4;
         vorb->prev_bs = vorb->curr_bs;
@@ -384,7 +384,7 @@ static int frag_parse(rtp_vorbis *vorb, rtp_pkt *pkt, rtp_frame *fr,
             err = cfg_fixup(vorb, fr, config, RTP_XIPH_ID(pkt));
         else
         {
-            vorb->curr_bs = ptk_blocksize(vorb);
+            vorb->curr_bs = pkt_blocksize(vorb, fr);
             if(vorb->prev_bs)
                 fr->timestamp += (vorb->curr_bs + vorb->prev_bs)/4;
             vorb->prev_bs = vorb->curr_bs;
@@ -462,7 +462,7 @@ static int rtp_parse(rtp_ssrc *ssrc, rtp_frame *fr, rtp_buff *config)
         vorb->pkts = RTP_XIPH_PKTS(pkt);
 
         //some error checking
-        if (vorb->pkts >0 && (RTP_XIPH_F(pkt) || !RTP_VORB_T(pkt)))
+        if (vorb->pkts >0 && (RTP_XIPH_F(pkt) || !RTP_XIPH_T(pkt)))
             return RTP_PARSE_ERROR;
         
         if (RTP_XIPH_F(pkt))
