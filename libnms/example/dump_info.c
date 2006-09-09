@@ -127,8 +127,10 @@ int main (int argc, char **argv) {
         }
         sess=sess->next;
     } 
-return 0;
 
+    rtsp_close(ctl);
+
+    return 0;
 }
 
 	
