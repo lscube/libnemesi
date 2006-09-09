@@ -92,7 +92,7 @@ AC_CHECK_LIBM
 dnl check if we have the generic struct for net addresses the has max possible size
 AC_CHECK_TYPES(struct sockaddr_storage,,, [#include <sys/socket.h>])
 dnl AC_CHECK_MEMBERS(struct sockaddr_in.sin_len,,, [#include <netinet/in.h>])
-
+EXTRA_FLAGS="-DHAVE_STRUCT_SOCKET_STORAGE ${EXTRA_FLAGS}"
 dnl CFLAGS=""
 
 dnl Check for IPv6 support
@@ -115,7 +115,11 @@ fi
 
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
+
 AC_SUBST(LIBM)
+AC_SUBST(EXTRA_FLAGS)
+AC_SUBST(PTHREADS_LIBS)
+AC_SUBST(PTHREADS_CFLAGS)
 
 AM_CONDITIONAL(NEMESI_EFENCE, /bin/false)
 if test "$enable_efence" = "yes"; then

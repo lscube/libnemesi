@@ -7,5 +7,5 @@ Name: libnms
 Description: rtp/rtsp client library
 Version: @VERSION@
 Libs: -L${libdir} @PTHREADS_LIBS@
-Cflags: -I${includedir}/nemesi @PTHREADS_CFLAGS@
+Cflags: -I${includedir}/nemesi @PTHREADS_CFLAGS@ @EXTRA_FLAGS@
 
