@@ -18,6 +18,4 @@ libutils_la_SOURCES =	urltokenize.c \
 			nmsprint.c \
 			nms_header.c
 
-libutils_la_LDFLAGS = -static
-
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

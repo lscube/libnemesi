@@ -7,5 +7,4 @@ libmd5_la_SOURCES =	md5c.c
 			
 EXTRA_DIST = md5.h global.h
 
-libmd5_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

@@ -27,5 +27,4 @@ librtcp_la_SOURCES =	 \
 			rtcp_thread_create.c \
 			rtcp.c
 
-librtcp_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

@@ -13,5 +13,4 @@ libbuffpool_la_SOURCES =	poadd.c \
 				bpget.c \
 				bprmv.c
 				
-libbuffpool_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

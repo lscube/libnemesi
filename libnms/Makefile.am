@@ -50,37 +50,13 @@ libnemesi_la_LIBADD =	rtsp/librtsp.la \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnms.pc
 
-
-# libnemesi_la_LDFLAGS = -static
-# libnemesi_la_LDFLAGS = -shared
-# INCLUDES = -I$(nemesiincludedir) -I$(top_srcdir)
+#fixme use VERSION
+libnemesi_la_LDFLAGS = -version-info 0:6:0
 
 EXTRA_DIST = 	config \
 		include \
 		debian
 
-
-install-exec-hook:
-	@echo -n "Removing static libraries..."; \
-	rm -f $(DESTDIR)$(nemesi_plugindir)/*.a; \
-	echo " done.";
-
-dist-hook:
-	@for plugin in $(distdir)/plugins/plugins/*; do \
-		rm -rf $$plugin; \
-	done
-	@for svn in `find $(distdir) -iname .svn`; do \
-		rm -rf $$svn; \
-	done
-
-uninstall-local:
-	test x"`ls $(DESTDIR)$(nemesi_libdir)`" = x && rm -rf $(DESTDIR)$(nemesi_libdir) || echo "$(DESTDIR)$(nemesi_libdir): Directory non empty"
-	test x"`ls $(DESTDIR)$(nemesi_sharedir)`" = x && rm -rf $(DESTDIR)$(nemesi_sharedir) || echo "$(DESTDIR)$(nemesi_sharedir): Directory non empty"
-	
-distclean-local:
-	@if test -d autom4te.cache; then \
-		rm -rf autom4te.cache; \
-	fi
 
 MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log egui/*.glade.bak egui/*.gladep.bak
 MAINTAINER_DIRS = config

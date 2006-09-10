@@ -11,5 +11,4 @@ libsdp_la_SOURCES =	sdp_session_setup.c \
 			sdp_media_destroy.c \
 			sdp_parse_m_descr.c
 			
-libsdp_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

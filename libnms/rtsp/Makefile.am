@@ -57,5 +57,4 @@ librtsp_la_SOURCES =	body_exists.c \
 			seturlname.c \
 			stop_cmd.c
 			
-librtsp_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

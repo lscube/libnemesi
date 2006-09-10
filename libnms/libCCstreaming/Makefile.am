@@ -13,5 +13,4 @@ libCCstreaming_la_SOURCES =	issdplicense.c \
 				cc_tag_file.c \
 				cc_id3v2.c
 			
-libCCstreaming_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

@@ -28,5 +28,4 @@ libwsocket_la_SOURCES = \
 				addrcmp.c \
 				addr_ntop.c
 				
-libwsocket_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)
