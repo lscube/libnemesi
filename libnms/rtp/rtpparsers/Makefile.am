@@ -15,5 +15,4 @@ librtpparsers_la_SOURCES =	\
 				rtp_mpv.c \
 				rtp_vorbis.c
 
-librtpparsers_la_LDFLAGS = -static
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)
