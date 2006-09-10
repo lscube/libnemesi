@@ -262,7 +262,7 @@ AC_SUBST(nemesi_gui)
 nemesi_docsdir=$datadir/doc/$PACKAGE_NAME
 AC_SUBST(nemesi_docsdir)
 
-nemesi_libdir="$prefix"/lib/$PACKAGE_NAME
+nemesi_libdir="$libdir"/$PACKAGE_NAME
 AC_SUBST(nemesi_libdir)
 nemesi_plugindir="$nemesi_libdir"/plugins
 AC_SUBST(nemesi_plugindir)

@@ -206,39 +206,19 @@ AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
 AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
 AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
 
-dnl nemesi_bin=$PACKAGE_NAME
-dnl AC_SUBST(nemesi_bin)
-dnl nemesi_gui=g$nemesi_bin
-dnl AC_SUBST(nemesi_gui)
-
 libnms_docsdir=$datadir/doc/$PACKAGE_NAME
 AC_SUBST(libnms_docsdir)
 
 libnms_libdir="$prefix"/lib
 AC_SUBST(libnms_libdir)
-dnl nemesi_plugindir="$nemesi_libdir"/plugins
-dnl AC_SUBST(nemesi_plugindir)
 
 libnms_sharedir="$prefix"/share/$PACKAGE_NAME
 AC_SUBST(libnms_sharedir)
-dnl nemesi_throbberdir="$nemesi_sharedir"/throbber
-dnl AC_SUBST(nemesi_throbberdir)
-dnl nemesi_pixmapdir="$nemesi_sharedir"/pixmaps
-dnl AC_SUBST(nemesi_pixmapdir)
 
 if test -f svnrev.h; then
 	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
 	REVISION=`sed -n -e 's/\(.*Rev: \)\([[0-9]]\+\)\(.*\)/\2/p' svnrev.h`
 fi
-
-dnl AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
-dnl AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
-
-dnl AC_DEFINE_UNQUOTED(NEMESI_THROBBER_DIR_DEFAULT, "$nemesi_throbberdir", [Define default directory for NeMeSI throbber])
-dnl AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name for the ENV variable forn NeMeSI throbber dir])
-
-dnl AC_DEFINE_UNQUOTED(NEMESI_PIXMAPS_DIR_DEFAULT, "$nemesi_pixmapdir", [Define default directory for NeMeSI pixmaps])
-dnl AC_DEFINE(NEMESI_PIXMAPS_DIR_ENV, "NEMESI_PIXMAP_DIR",[Define the name for the ENV variable forn NeMeSI pixmaps dir])
 
 AC_CONFIG_FILES([Makefile
                  bufferpool/Makefile
