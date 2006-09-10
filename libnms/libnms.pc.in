@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: libnms
 Description: rtp/rtsp client library
 Version: @VERSION@
-Libs: -L${libdir} @PTHREAD_LIBS@
+Libs: -L${libdir} -lnemesi @PTHREAD_LIBS@
 Cflags: -I${includedir}/nemesi @PTHREAD_CFLAGS@ @EXTRA_FLAGS@
 
