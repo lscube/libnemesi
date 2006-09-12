@@ -104,23 +104,21 @@ int main (int argc, char **argv) {
 	return 1;
     }
 
-    rtsp_play(ctl,0.0,0.0);
-    
+    rtsp_play(ctl, 0.0, 0.0);
+
     fprintf (stderr, "\nDumping...");
-    
+
     rtp_th = rtsp_get_rtp_th(ctl);
 
-    rtp_fill_buffers(rtp_th);
-	
-    // while(!pthread_mutex_trylock(&(rtp_th->syn))) {
-    do {
+    while (!rtp_fill_buffers(rtp_th)) // Till there is something to parse
+    {   // Foreach ssrc active
         for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
              ssrc;
              ssrc = rtp_next_active_ssrc(ssrc)) {
-            if ( !rtp_fill_buffer(ssrc, &fr, &conf)) {
-                
-                if (outfd[fr.pt] ||
-                    sprintf(out,"%s.%d",base,fr.pt) &&
+            if ( !rtp_fill_buffer(ssrc, &fr, &conf)) { // Parse the stream
+
+                if (outfd[fr.pt] || // Write it to a file
+                    sprintf(out,"%s.%d", base, fr.pt) &&
                     (outfd[fr.pt] = creat(out, 00644)) > 0) {
                         if (write(outfd[fr.pt], fr.data, fr.len) < fr.len)
                             return 1;
@@ -144,15 +142,18 @@ int main (int argc, char **argv) {
             case 3:
                 fprintf(stderr,"o");
             default:
+                fprintf(stderr,"\r");
                 i=0;
         }
-    } while (!rtp_fill_buffers(rtp_th));
+    }
 
     for (i=0; i<128; i++) if (outfd[i]) close(outfd[i]);
 
     fprintf(stderr," Complete\n");
 
     rtsp_close(ctl);
+
+    rtsp_uninit(ctl);
 
     return 0;
 }

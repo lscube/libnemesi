@@ -50,7 +50,7 @@ int main (int argc, char **argv) {
         exit (1);
     }
 
-    while ((opt = getopt (argc, argv, "df:p:")) != -1) {
+    while ((opt = getopt (argc, argv, "df:p:v:")) != -1) {
         switch (opt)
 	    {
 
@@ -62,6 +62,10 @@ int main (int argc, char **argv) {
 	    case 'p':
 		rtsp_hints.first_rtp_port = atoi (optarg);
 	        break;
+        /*  Set verbosity  */
+            case 'v':
+                nms_verbosity_set(atoi (optarg));
+                break;
         /* Unknown option  */
 	    case '?':
                 fprintf (stderr, "\n  Unknown option `-%c'.\n", optopt);
@@ -79,22 +83,26 @@ int main (int argc, char **argv) {
 
     fprintf (stderr, "URL %s.\n", url);
 
+    /* initialize the rtsp state machine, starts the rtsp and the rtp threads
+     * the hints available are just one:
+     *  - the first port to use (instead of picking one at random)
+     */
     if ( (ctl = rtsp_init(&rtsp_hints))==NULL ) {
         fprintf (stderr, "Cannot init rtsp.\n");
         return 1;
     } 
-    
+
     if ( rtsp_open( ctl, url) )
     {
         fprintf (stderr, "rtsp_open failed.\n");
 	// die
 	return 1;
     }
-    
-    rtsp_wait(ctl);
-    
 
-    //Get the session information
+    // you must call rtsp_wait after issuing any command
+    rtsp_wait(ctl);
+
+    // Get the session information
     sess = ctl->rtsp_queue;
 
     if (!sess) {
@@ -102,12 +110,13 @@ int main (int argc, char **argv) {
 	return 1;
     }
     
-    while(sess) {
+    while(sess) { // foreach session...
         fprintf(outfile, "\tSession %s\n", sess->pathname);
 
 	med = sess->media_queue;
-	while (med) {
+	while (med) { //... foreach medium
 	    switch (med->medium_info->media_type) {
+            // Just care about audio and video
                 case 'A':
                 case 'V':
                     fprintf(outfile, "\tTransport %s\n", 
@@ -120,6 +129,7 @@ int main (int argc, char **argv) {
 		    break;
 	    }
 
+            // attributes are already parsed, get them from the list
             for(attr=med->medium_info->attr_list; attr; attr=attr->next)
                     fprintf(outfile, "\t* %s\n", attr->a);
             
@@ -128,7 +138,17 @@ int main (int argc, char **argv) {
         sess=sess->next;
     } 
 
+    /*
+     * Close the rtsp connection, we are polite
+     */
+
     rtsp_close(ctl);
+
+    /*
+     * Kill the threads, dealloc everything.
+     */
+
+    rtsp_uninit(ctl);
 
     return 0;
 }
