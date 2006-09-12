@@ -3,7 +3,6 @@ AC_INIT(libnms, 0.6.0)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
-
 AC_PREFIX_PROGRAM(libnms)
 
 test "x$prefix" = x. || test "x$prefix" = xNONE && prefix=/usr/local
@@ -256,7 +255,7 @@ Byte order ..................... : this is a $BIGENDIAN machine
 $debug_msg
 $efence_msg
 
- 'make' will now compile NeMeSI and 'su -c make install' will install it.
+ 'make' will now compile libnemesi and 'su -c make install' will install it.
  Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.
 ])
 dnl
