@@ -37,10 +37,11 @@ int (*cmd[COMMAND_NUM]) (rtsp_thread *, ...);
 int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
 
 /**
-* funzione che implementa il thread rtsp.
-* Si mette in attesa di comandi dalla UI e li gestisce.
-* Il funzionamento e' quello di una macchina a stati.
+* Thread rtsp.
+* Waits for commands and handle them
+* It is modeled as a state machine
 * */
+
 void *rtsp(void *rtsp_thrd)
 {
 	rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_thrd;
