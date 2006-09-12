@@ -1,7 +1,5 @@
 -- Api stabilization
 
--- Namespace cleanup
-
--- example code
-
 -- netembryo/NeuTrino integration
+
+-- handle bye packets correctly
