@@ -9,11 +9,8 @@ SUBDIRS =	bufferpool \
 		rtsp \
 		. \
 		example
-		
-# SUBDIRS += 	docs
 
-# nemesiincludedir = $(top_srcdir)/include
-# libnmsincludedir = $(srcdir)/include
+ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES = libnemesi.la
 
