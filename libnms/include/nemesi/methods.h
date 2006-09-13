@@ -28,9 +28,9 @@
 
 #ifndef __METHODS_H
 #define __METHODS_H
-
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
+#endif
 #define SETUP_TKN	"SETUP"
 #define REDIRECT_TKN	"REDIRECT"
 #define PLAY_TKN	"PLAY"

@@ -28,9 +28,9 @@
 
 #ifndef __RTP_H
 #define __RTP_H
-
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

@@ -29,7 +29,9 @@
 #ifndef __VERSION_H
 #define __VERSION_H
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #ifndef VERSION
 #define VERSION "0.4.0"

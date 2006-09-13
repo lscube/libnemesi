@@ -28,9 +28,9 @@
 
 #ifndef __RTP_PT_DEFS_H
 #define __RTP_PT_DEFS_H
-
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
+#endif
 #include <nemesi/types.h>
 
 #define RTP_DEF_CLK_RATE 8000

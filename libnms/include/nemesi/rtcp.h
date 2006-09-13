@@ -29,7 +29,9 @@
 #ifndef __RTCP_H
 #define __RTCP_H
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <unistd.h>
 

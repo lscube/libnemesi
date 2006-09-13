@@ -43,7 +43,9 @@
 #ifndef __RTSP_H
 #define __RTSP_H
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <stdio.h>
 #include <netdb.h>

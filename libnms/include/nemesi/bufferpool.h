@@ -59,9 +59,9 @@
 
 #ifndef __BUFFERPOOL_H
 #define __BUFFERPOOL_H
-
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

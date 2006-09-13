@@ -29,7 +29,9 @@
 #ifndef __UTILS_H
 #define __UTILS_H
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
