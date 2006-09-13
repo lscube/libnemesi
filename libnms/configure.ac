@@ -86,6 +86,9 @@ AC_FUNC_MMAP
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv)
 AC_CHECK_FUNC(getaddrinfo)
+AC_CHECK_FUNC(strdup,
+            [EXTRA_FLAGS="-DHAVE_STRDUP ${EXTRA_FLAGS}"],
+            )
 AC_CHECK_LIBM
 
 dnl check if we have the generic struct for net addresses the has max possible size
