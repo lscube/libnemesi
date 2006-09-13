@@ -17,10 +17,9 @@
  *  along with libnms; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
- *  Description: sample program, takes a url and dumps the sdp and 
- *  the information formatted per medium with proper descriptions.
+ *  Description: sample program, takes an url and dumps the demuxed streams to
+ *  files.
  */
-
 
 #include <unistd.h>
 #include <stdlib.h>
