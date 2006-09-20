@@ -40,9 +40,7 @@ dnl Check for programs.
 AC_PROG_CC
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_CPP
-AC_PROG_AWK
 AC_PROG_INSTALL
-AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
 m4_undefine([AC_PROG_CXX])
@@ -188,8 +186,6 @@ esac
 ARCH_DEFINES=""
 case "$host" in 
 	i386-*-* | i486-*-* | i586-*-* | i686-*-* | i86pc-*-*)
-		dnl CFLAGS="$CFLAGS -mcpu=i486"
-		CFLAGS="$CFLAGS -march=i386"
 		ARCH_DEFINES="-DI386_ASSEM"
 		arch_type=ix86
 	;;
@@ -218,6 +214,10 @@ AC_SUBST(libnms_libdir)
 
 libnms_sharedir="$prefix"/share/$PACKAGE_NAME
 AC_SUBST(libnms_sharedir)
+
+VERSION_INFO=${VERSION//\./:}
+
+AC_SUBST(VERSION_INFO)
 
 if test -f svnrev.h; then
 	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])

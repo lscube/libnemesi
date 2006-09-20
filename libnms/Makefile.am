@@ -48,14 +48,14 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnms.pc
 
 #fixme use VERSION
-libnemesi_la_LDFLAGS = -version-info 0:6:0
+libnemesi_la_LDFLAGS = -version-info $(VERSION_INFO)
 
 EXTRA_DIST = 	config \
 		include \
 		debian
 
 
-MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log egui/*.glade.bak egui/*.gladep.bak
+MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log
 MAINTAINER_DIRS = config
 
 maintainer-clean-local:
