@@ -231,6 +231,10 @@ if test "x$acx_pthread_ok" = xyes; then
    # First, check whether caller wants us to skip -shared checks
    # this is useful
    AC_MSG_CHECKING([whether to check for GCC pthread/shared inconsistencies])
+   #darwin/osx wacky dylib stuff isn't considered...
+   case "${host_cpu}-${host_os}" in
+            *-darwin*) GCC=no;;
+   esac
    if test x"$GCC" != xyes; then
       AC_MSG_RESULT([no])
    else
