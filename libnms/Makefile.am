@@ -48,7 +48,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnms.pc
 
 #fixme use VERSION
-libnemesi_la_LDFLAGS = -version-info $(VERSION_INFO)
+libnemesi_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 EXTRA_DIST = 	config \
 		include \

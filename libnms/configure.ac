@@ -1,5 +1,20 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(libnms, 0.6.0)
+
+m4_define([nemesi_major_version], [0])
+m4_define([nemesi_minor_version], [6])
+m4_define([nemesi_micro_version], [0])
+m4_define([nemesi_interface_age], [0])
+m4_define([nemesi_binary_age],
+          [m4_eval(100 * nemesi_minor_version + nemesi_micro_version)])
+m4_define([nemesi_version],
+          [nemesi_major_version.nemesi_minor_version.nemesi_micro_version])
+m4_define([nemesi_lt_current],
+          [m4_eval(100 * nemesi_minor_version + nemesi_micro_version - nemesi_interface_age)])
+m4_define([nemesi_lt_revision], [nemesi_interface_age])
+m4_define([nemesi_lt_age], [m4_eval(nemesi_binary_age - nemesi_interface_age)])
+
+AC_INIT(libnms, [nemesi_version], [http://streaming.polito.it/tracker/nemesi/newticket])
+
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
@@ -117,9 +132,6 @@ else
 	dnl NEMESI_HAVE_SCTP=no
 fi
 
-AC_SUBST(PACKAGE_CFLAGS)
-AC_SUBST(PACKAGE_LIBS)
-
 AC_SUBST(LIBM)
 AC_SUBST(EXTRA_FLAGS)
 
@@ -215,9 +227,14 @@ AC_SUBST(libnms_libdir)
 libnms_sharedir="$prefix"/share/$PACKAGE_NAME
 AC_SUBST(libnms_sharedir)
 
-VERSION_INFO=${VERSION//\./:}
+dnl libtool nonsense
+LT_CURRENT=nemesi_lt_current
+LT_REVISION=nemesi_lt_revision
+LT_AGE=nemesi_lt_age
 
-AC_SUBST(VERSION_INFO)
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
 
 if test -f svnrev.h; then
 	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
