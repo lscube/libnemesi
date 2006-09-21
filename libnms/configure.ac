@@ -110,17 +110,11 @@ AC_CHECK_TYPES(struct sockaddr_storage,
             ,
             [#include <sys/socket.h>])
 
-dnl AC_CHECK_MEMBERS(struct sockaddr_in.sin_len,,, [#include <netinet/in.h>])
-
-dnl CFLAGS=""
-
 dnl Check for IPv6 support
 if test "$enable_ipv6" = "yes"; then
 	AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
 else
 	AC_MSG_WARN([IPv6 disabled: check skipped.])
-	dnl AM_CONDITIONAL(NEMESI_HAVE_IPV6, /bin/false)
-	dnl NEMESI_HAVE_IPV6=no
 fi
 
 dnl Check for SCTP support
@@ -128,25 +122,21 @@ if test "$enable_sctp" = "yes"; then
 	AC_CHECK_TYPE(struct sctp_sndrcvinfo, AC_DEFINE([HAVE_SCTP], 1, [Define SCTP support]), , [#include <netinet/sctp.h>])
 else
 	AC_MSG_WARN([SCTP disabled: check skipped.])
-	dnl AM_CONDITIONAL(NEMESI_HAVE_SCTP, /bin/false)
-	dnl NEMESI_HAVE_SCTP=no
 fi
 
 AC_SUBST(LIBM)
 AC_SUBST(EXTRA_FLAGS)
 
-AM_CONDITIONAL(NEMESI_EFENCE, /bin/false)
+AM_CONDITIONAL(NEMESI_EFENCE, [test "$enable_efence" = "yes"])
 if test "$enable_efence" = "yes"; then
-	AM_CONDITIONAL(NEMESI_EFENCE, /bin/true)
 	AC_DEFINE(ENABLE_EFENCE, 1,[Debug enabled])
 	enable_debug=yes
 	efence_msg="   You chose to compile against Electric Fence lib"
 fi
 
-AM_CONDITIONAL(NEMESI_DEBUG, /bin/false)
+AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])
 if test "$enable_debug" = "yes"; then
 	CFLAGS="$CFLAGS -g -ggdb"
-	AM_CONDITIONAL(NEMESI_DEBUG, /bin/true) \
 	AC_DEFINE(ENABLE_DEBUG, 1,[Debug enabled])
 	debug_msg="
    Debuging flags enabled: welcome developer!!!"
