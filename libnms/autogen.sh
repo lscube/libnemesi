@@ -9,7 +9,7 @@ export WANT_AUTOCONF WANT_AUTOMAKE WANT_LIBTOOL
 
 function dots ()
 {
-	while ps h | grep $1 >/dev/null; do
+	while ps h | grep " $1 " >/dev/null; do
 		sleep 1;
 		echo -n ".";
 	done	
