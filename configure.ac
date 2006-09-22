@@ -9,6 +9,7 @@ AC_PREFIX_PROGRAM(nemesi)
 
 test "x$prefix" = x. || test "x$prefix" = xNONE && prefix=/usr/local
 test "x$exec_prefix" = xNONE && exec_prefix=$prefix
+test "x$libdir" = 'x${exec_prefix}/lib' && libdir="${exec_prefix}/lib"
 test "x$sysconfdir" = 'x${prefix}/etc' && sysconfdir="/etc"
 test "x$localstatedir" = 'x${prefix}/var' && localstatedir="/var"
 test "x$mandir" = 'x${prefix}/man' && mandir="${prefix}/share/man"
@@ -65,6 +66,11 @@ AC_MSG_ERROR([
  *           or check for a version suitable to your distro.         *
  *                                                                   *
  *********************************************************************]))
+
+m4_undefine([AC_PROG_CXX])
+m4_defun([AC_PROG_CXX],[])
+m4_undefine([AC_PROG_F77])
+m4_defun([AC_PROG_F77],[])
 
 AC_PROG_LIBTOOL
 LIBTOOL="$LIBTOOL --silent"
@@ -259,19 +265,19 @@ AC_SUBST(nemesi_bin)
 nemesi_gui=g$nemesi_bin
 AC_SUBST(nemesi_gui)
 
-nemesi_docsdir=$datadir/doc/$PACKAGE_NAME
+nemesi_docsdir="$datadir/doc/$PACKAGE_NAME"
 AC_SUBST(nemesi_docsdir)
 
-nemesi_libdir="$libdir"/$PACKAGE_NAME
+nemesi_libdir="$libdir/$PACKAGE_NAME"
 AC_SUBST(nemesi_libdir)
-nemesi_plugindir="$nemesi_libdir"/plugins
+nemesi_plugindir="$nemesi_libdir/plugins"
 AC_SUBST(nemesi_plugindir)
 
-nemesi_sharedir="$prefix"/share/$PACKAGE_NAME
+nemesi_sharedir="$prefix/share/$PACKAGE_NAME"
 AC_SUBST(nemesi_sharedir)
-nemesi_throbberdir="$nemesi_sharedir"/throbber
+nemesi_throbberdir="$nemesi_sharedir/throbber"
 AC_SUBST(nemesi_throbberdir)
-nemesi_pixmapdir="$nemesi_sharedir"/pixmaps
+nemesi_pixmapdir="$nemesi_sharedir/pixmaps"
 AC_SUBST(nemesi_pixmapdir)
 
 if test -f svnrev.h; then
@@ -336,7 +342,7 @@ fi
 AC_MSG_NOTICE([config files successfully generated!
 
 NeMeSI Install prefix .......... : $prefix
-NeMeSI Binary path ............. : $exec_prefix/bin/$nemesi_bin
+NeMeSI Binary path ............. : ${exec_prefix}/bin/$nemesi_bin
 NeMeSI Plugins dir ............. : $nemesi_plugindir
 NeMeSI Throbbers dir ........... : $nemesi_throbberdir
 NeMeSI Pixmaps dir ............. : $nemesi_pixmapdir
