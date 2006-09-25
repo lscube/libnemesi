@@ -143,12 +143,14 @@ int main (int argc, char **argv) {
      */
 
     rtsp_close(ctl);
+    rtsp_wait(ctl);
 
     /*
      * Kill the threads, dealloc everything.
      */
 
     rtsp_uninit(ctl);
+    rtsp_wait(ctl);
 
     return 0;
 }

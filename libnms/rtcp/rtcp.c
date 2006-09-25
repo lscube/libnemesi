@@ -60,6 +60,7 @@ void *rtcp(void *args)
 
 		if ( (head=rtcp_schedule(head, rtp_sess, rtp_sess->sess_stats.tn, RTCP_RR)) == NULL)
 			pthread_exit(NULL);
+		nms_printf(NMSML_DBG1, "RTCP: %d.%d -> %d.%d\n", now.tv_sec, now.tv_usec, head->tv.tv_sec, head->tv.tv_usec);
 	}
 
 	while(1){
@@ -78,6 +79,7 @@ void *rtcp(void *args)
 			tv.tv_sec=0;
 			tv.tv_usec=0;
 		}
+		nms_printf(NMSML_DBG1, "RTCP: now: %d.%d -> head:%d.%d - sleep: %d.%d\n", now.tv_sec, now.tv_usec, head->tv.tv_sec, head->tv.tv_usec, tv.tv_sec, tv.tv_usec);
 
 		if (select(maxfd+1, &readset, NULL, NULL, &tv) == 0){
 			/* timer scaduto */
