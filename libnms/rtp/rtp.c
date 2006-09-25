@@ -36,7 +36,7 @@ void *rtp(void *args)
 	rtp_session *rtp_sess_head=((rtp_thread *)args)->rtp_sess_head;
 	pthread_mutex_t *syn = &((rtp_thread *)args)->syn;
 	rtp_session *rtp_sess;
-	struct timeval tv;
+	struct timespec ts;
 	int maxfd=0;
 	
 	fd_set readset;
@@ -82,9 +82,9 @@ void *rtp(void *args)
 				if(rtp_recv(rtp_sess)){
 					/* Waiting 20 msec for decoder ready */
 					nms_printf(NMSML_DBG1, "Waiting for decoder ready!\n");
-					tv.tv_sec=0;
-					tv.tv_usec=20*(1000);
-					select(0, NULL, NULL, NULL, &tv);
+					ts.tv_sec=0;
+					ts.tv_nsec=20*(1000);
+					nanosleep(&ts, NULL);
 				}
 			}
 	}
