@@ -9,7 +9,7 @@ export WANT_AUTOCONF WANT_AUTOMAKE WANT_LIBTOOL
 
 function dots ()
 {
-	while ps h $1 >/dev/null; do
+	while ps h -p $1 >/dev/null; do
 		sleep 1;
 		echo -n ".";
 	done	
@@ -25,6 +25,7 @@ fi
 if which libtoolize >/dev/null 2>&1 ; then
 	echo -n "Running libtoolize..."
 	libtoolize --force --copy --automake &
+	dots $! 
 	echo " done."
 else
 	echo "WARNING! NeMeSI SVN needs LibTool!"
@@ -52,7 +53,7 @@ if which autoconf >/dev/null 2>&1 ; then
 fi
 if which automake >/dev/null 2>&1 ; then
 	echo -n "Running automake..."
-	automake --gnu --add-missing --copy --force-missing 2>&1 | grep -v installing&
+	automake --gnu --add-missing --copy --force-missing 2>&1 | grep -v installing &
 	dots $! 
 	echo " done."
 fi

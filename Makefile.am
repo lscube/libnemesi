@@ -59,7 +59,6 @@ svndist: dist
 	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)+svn$(REVISION).tar.gz
 	mv $(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE)-$(VERSION)+svn$(REVISION).tar.bz2
 
-
 indent:
 	@echo -n "indenting code with Kernighan & Ritchie coding style... "; \
 	VERSION_CONTROL=simple \
