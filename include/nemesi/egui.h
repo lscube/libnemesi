@@ -33,5 +33,4 @@
 
 int gui(rtsp_ctrl *, nms_ui_hints *, int, char **);
 
-#endif // __E_GUI_H
-
+#endif				// __E_GUI_H

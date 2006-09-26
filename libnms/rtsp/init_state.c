@@ -29,11 +29,11 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int init_state(rtsp_thread *rtsp_th, short event)
+int init_state(rtsp_thread * rtsp_th, short event)
 {
 	switch (event) {
 	case RTSP_GET_RESPONSE:
-		if (handle_get_response(rtsp_th)) //{
+		if (handle_get_response(rtsp_th))	//{
 			// close(rtsp_th->fd);
 			// rtsp_th->fd=-1;
 			return 1;
@@ -41,19 +41,19 @@ int init_state(rtsp_thread *rtsp_th, short event)
 		// get_curr_sess(NULL, NULL, NULL);
 		get_curr_sess(GCS_UNINIT);
 		/*
-		if (get_curr_sess(rtsp_th, NULL, NULL))
-			return 1;
-		*/
+		   if (get_curr_sess(rtsp_th, NULL, NULL))
+		   return 1;
+		 */
 		get_curr_sess(GCS_INIT, rtsp_th);
-		if (send_setup_request(rtsp_th)) // {
-			// rtsp_reinit(rtsp_th);	
+		if (send_setup_request(rtsp_th))	// {
+			// rtsp_reinit(rtsp_th);        
 			return 1;
 		// }
 		break;
 
 	case RTSP_SETUP_RESPONSE:
-		if (handle_setup_response(rtsp_th))// {
-			// rtsp_reinit(rtsp_th);	
+		if (handle_setup_response(rtsp_th))	// {
+			// rtsp_reinit(rtsp_th);        
 			return 1;
 		// }
 		// if (get_curr_sess(rtsp_th, NULL, NULL)) {

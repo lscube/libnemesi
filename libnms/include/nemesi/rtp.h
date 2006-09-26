@@ -53,14 +53,14 @@
 #define RTP_VERSION 2
 
 // #define RTP_AVP_UDP "RTP/AVP/UDP"
-#define RTP_AVP_UDP "RTP/AVP" // Default low-trasport is UDP. See RFC2326 12.39
-#define RTP_AVP_TCP "RTP/AVP/TCP" // interleaved TCP low transport. 
+#define RTP_AVP_UDP "RTP/AVP"	// Default low-trasport is UDP. See RFC2326 12.39
+#define RTP_AVP_TCP "RTP/AVP/TCP"	// interleaved TCP low transport.
 #define RTP_SEQ_MOD (1<<16)
 #define MIN_SEQUENTIAL 2
 #define MAX_DROPOUT 3000
 #define MAX_MISORDER 100
 
-#define BANDWIDTH 16000 /* bytes-per-second */
+#define BANDWIDTH 16000		/* bytes-per-second */
 
 #define RTP_OK           0
 // general error codes. other, specific, error codes below
@@ -74,22 +74,22 @@ typedef struct {
 	uint32 ext:1;
 	uint32 cc:4;
 #else
-	uint32 cc:4;	/* source count */
-	uint32 ext:1;	/* extension flag */
-	uint32 pad:1;	/* padding flag */
-	uint32 ver:2;	/* version */
+	uint32 cc:4;		/* source count */
+	uint32 ext:1;		/* extension flag */
+	uint32 pad:1;		/* padding flag */
+	uint32 ver:2;		/* version */
 #endif
 #ifdef WORDS_BIGENDIAN
 	uint32 mark:1;
 	uint32 pt:7;
 #else
-	uint32 pt:7;	/* payload type */
-	uint32 mark:1;	/* marker flag */
+	uint32 pt:7;		/* payload type */
+	uint32 mark:1;		/* marker flag */
 #endif
-	uint32 seq:16;	/* sequence number */
-	uint32 time;	/* timestamp */
-	uint32 ssrc;	/* synchronization source identifier */
-	uint8 data[1];	/* beginning of RTP data */
+	uint32 seq:16;		/* sequence number */
+	uint32 time;		/* timestamp */
+	uint32 ssrc;		/* synchronization source identifier */
+	uint8 data[1];		/* beginning of RTP data */
 } rtp_pkt;
 
 typedef struct {
@@ -145,15 +145,15 @@ typedef struct {
 typedef struct {
 	char *spec;
 	enum deliveries { unicast, multicast } delivery;
-	nms_addr srcaddr; //!< stored in network order
-	nms_addr dstaddr; //!< stored in network order
+	nms_addr srcaddr;	//!< stored in network order
+	nms_addr dstaddr;	//!< stored in network order
 	int layers;
 	enum modes { play, record } mode;
 	int append;
 	int ttl;
-	in_port_t mcs_ports[2]; //!< stored in host order
-	in_port_t cli_ports[2]; //!< stored in host order
-	in_port_t srv_ports[2]; //!< stored in host order
+	in_port_t mcs_ports[2];	//!< stored in host order
+	in_port_t cli_ports[2];	//!< stored in host order
+	in_port_t srv_ports[2];	//!< stored in host order
 	uint32 ssrc;
 } rtp_transport;
 
@@ -190,22 +190,22 @@ struct rtp_ssrc_descr {
 struct rtp_session_stats {
 	struct timeval tp;	/* the last time an RTCP pkt was transmitted */
 	struct timeval tn;	/* the next scheduled transmission time of an
-                                   RTCP pkt */
+				   RTCP pkt */
 	uint32 pmembers;	/* the estimated number of session members at
-                                   time tm was last recomputed */
+				   time tm was last recomputed */
 	uint32 members;		/* the most currente estimate for the number of
-                                   the session members */
+				   the session members */
 	uint32 senders;		/* the most currente estimate for the number of
-                                   senders in the session */
+				   senders in the session */
 	double rtcp_bw;		/* the target RTCP bandwidht */
 	uint8 we_sent;		/* flag that is true if the app has sent data
-                                   since the second previous RTCP Report was
-                                   transmitted */
+				   since the second previous RTCP Report was
+				   transmitted */
 	double avg_rtcp_size;	/* the average Compound RTCP pkt size, in
-                                   octets, over all RTCP pkts sent and received
-                                   by this partecipant */
+				   octets, over all RTCP pkts sent and received
+				   by this partecipant */
 	uint8 initial;		/* the flag that is true if the app has not yet
-                                   sent an RTCP pkt */
+				   sent an RTCP pkt */
 };
 
 #define SSRC_KNOWN	0
@@ -223,17 +223,17 @@ typedef struct rtp_ssrc_s {
 	struct rtp_ssrc_stats ssrc_stats;
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
-	struct rtp_session_s *rtp_sess; // RTP session SSRC belogns to.
-//	rtp_pt **ptdefs;  /* convenience pointer to the same struct as 
-//	                        rtp_session. (not to be freed here) */
-	void *privs[128]; /*!< I would like to keep rtp able to manage
-                                    dynamic payload changes at its best. */
-	struct rtp_ssrc_s *next; // next known SSRC
-	struct rtp_ssrc_s *next_active; // next active SSRC
+	struct rtp_session_s *rtp_sess;	// RTP session SSRC belogns to.
+//      rtp_pt **ptdefs;  /* convenience pointer to the same struct as 
+//                              rtp_session. (not to be freed here) */
+	void *privs[128];	/*!< I would like to keep rtp able to manage
+				   dynamic payload changes at its best. */
+	struct rtp_ssrc_s *next;	// next known SSRC
+	struct rtp_ssrc_s *next_active;	// next active SSRC
 	/* 
-         * park is a link for parking external variables (i.e. from decoder).
-         * libnms will never use that.
-         */
+	 * park is a link for parking external variables (i.e. from decoder).
+	 * libnms will never use that.
+	 */
 	void *park;
 } rtp_ssrc;
 
@@ -247,9 +247,9 @@ struct rtp_conflict {
  * (in <tt>rtp_thread_create</tt>) for all the parsers registered for announced
  * payload types (present in the <tt>announced_fmts</tt> list)
  * */
-typedef int (*rtp_parser_init)(struct rtp_session_s *rtp_sess, unsigned pt);
-typedef int (*rtp_parser)(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *conf);
-typedef int (*rtp_parser_uninit)(rtp_ssrc *stm_src, unsigned pt);
+typedef int (*rtp_parser_init) (struct rtp_session_s * rtp_sess, unsigned pt);
+typedef int (*rtp_parser) (rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * conf);
+typedef int (*rtp_parser_uninit) (rtp_ssrc * stm_src, unsigned pt);
 
 typedef struct rtp_session_s {
 	uint32 local_ssrc;
@@ -257,25 +257,25 @@ typedef struct rtp_session_s {
 	int rtcpfd;
 	rtp_transport transport;
 	struct rtp_session_stats sess_stats;
-	rtp_ssrc *ssrc_queue; // queue of all known SSRCs
-	rtp_ssrc *active_ssrc_queue; // queue of active SSRCs
+	rtp_ssrc *ssrc_queue;	// queue of all known SSRCs
+	rtp_ssrc *active_ssrc_queue;	// queue of active SSRCs
 	struct rtp_conflict *conf_queue;
 	buffer_pool bp;
 	struct rtp_session_s *next;
 	pthread_mutex_t syn;
 	// payload type definitions for the session 
-        // (included dynamically defined)
+	// (included dynamically defined)
 	rtp_pt *ptdefs[128];
-	rtp_fmts_list *announced_fmts; /* list of rtp pt announced in sdp 
-                                        * description (if present) */
+	rtp_fmts_list *announced_fmts;	/* list of rtp pt announced in sdp 
+					 * description (if present) */
 	// parsers functions
 	rtp_parser_init parsers_inits[128];
 	rtp_parser parsers[128];
 	rtp_parser_uninit parsers_uninits[128];
 	/*
-         * park is a link for parking external variables (i.e. from decoder).
-         * libnms will never use that.
-         */
+	 * park is a link for parking external variables (i.e. from decoder).
+	 * libnms will never use that.
+	 */
 	void *park;
 } rtp_session;
 
@@ -296,18 +296,17 @@ void *rtp(void *);
 
 rtp_thread *rtp_init(void);
 rtp_session *rtp_session_init(nms_sockaddr *, nms_sockaddr *);
-int rtp_thread_create(rtp_thread *); // something like rtp_run could be better?
+int rtp_thread_create(rtp_thread *);	// something like rtp_run could be better?
 
-int rtp_announce_pt(rtp_session *rtp_sess, unsigned pt,
-                    rtp_media_type media_type);
-int rtp_dynpt_reg(rtp_session *rtp_sess, unsigned pt, char *mime);
+int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt, rtp_media_type media_type);
+int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime);
 
 // wait until rtp queues are ready
 int rtp_fill_buffers(rtp_thread *);
 
 // active ssrc list management
-rtp_ssrc *rtp_active_ssrc_queue(rtp_session *rtp_sess_head);
-rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc);
+rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head);
+rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc);
 
 #define RTP_FILL_OK		0
 // rtp_fill error codes
@@ -346,11 +345,11 @@ inline int rtp_get_layers(rtp_session *);
 inline enum modes rtp_get_mode(rtp_session *);
 inline int rtp_get_append(rtp_session *);
 inline int rtp_get_ttl(rtp_session *);
-inline int rtp_get_mcsports(rtp_session *, in_port_t [2]);
+inline int rtp_get_mcsports(rtp_session *, in_port_t[2]);
 inline in_port_t rtp_get_mcsrtcpport(rtp_session *);
-inline int rtp_get_srvports(rtp_session *, in_port_t [2]);
+inline int rtp_get_srvports(rtp_session *, in_port_t[2]);
 inline in_port_t rtp_get_srvrtcpport(rtp_session *);
-inline int rtp_get_cliports(rtp_session *, in_port_t [2]);
+inline int rtp_get_cliports(rtp_session *, in_port_t[2]);
 inline in_port_t rtp_get_clirtcpport(rtp_session *);
 inline uint32 rtp_get_ssrc(rtp_session *);
 
@@ -365,11 +364,11 @@ inline int rtp_set_layers(rtp_session *, int);
 inline int rtp_set_mode(rtp_session *, enum modes);
 inline int rtp_set_append(rtp_session *, int);
 inline int rtp_set_ttl(rtp_session *, int);
-inline int rtp_set_mcsports(rtp_session *, in_port_t [2]);
+inline int rtp_set_mcsports(rtp_session *, in_port_t[2]);
 inline int rtp_set_mcsrtcpport(rtp_session *, in_port_t);
-inline int rtp_set_srvports(rtp_session *, in_port_t [2]);
+inline int rtp_set_srvports(rtp_session *, in_port_t[2]);
 inline int rtp_set_srvrtcpport(rtp_session *, in_port_t);
-inline int rtp_set_cliports(rtp_session *, in_port_t [2]);
+inline int rtp_set_cliports(rtp_session *, in_port_t[2]);
 inline int rtp_set_clirtcpport(rtp_session *, in_port_t);
 inline int rtp_set_ssrc(rtp_session *, uint32);
 
@@ -382,18 +381,14 @@ inline int rtp_set_ssrc(rtp_session *, uint32);
 
 void rtp_parsers_init(void);
 int rtp_parser_reg(rtp_session *, int16, char *);
-void rtp_parsers_new(rtp_parser *new_parsers, 
-                     rtp_parser_init *new_parsers_inits);
-inline void rtp_parser_set_uninit(rtp_session *rtp_sess, unsigned pt,
-                                  rtp_parser_uninit parser_uninit);
+void rtp_parsers_new(rtp_parser * new_parsers, rtp_parser_init * new_parsers_inits);
+inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt, rtp_parser_uninit parser_uninit);
 
 // rtp basic functions
 int rtp_recv(rtp_session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
-int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *,
-                   enum rtp_protos);
-int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,
-                  enum rtp_protos);
+int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *, enum rtp_protos);
+int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *, enum rtp_protos);
 
 // rtcp connection functions
 int rtcp_to_connect(rtp_ssrc *, nms_addr *, in_port_t);

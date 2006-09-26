@@ -40,26 +40,26 @@
  * in this case, we understand that you are not interested about this value.
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
- * */ 
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc *stm_src, int *len, uint32 n)
-{ // TODO complete;
+ * */
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, int *len, uint32 n)
+{				// TODO complete;
 	int i;
-	
+
 	pthread_mutex_lock(&(stm_src->po.po_mutex));
 	i = stm_src->po.potail;
-	while ( (i >= 0) && (n-- > 0) ) {
+	while ((i >= 0) && (n-- > 0)) {
 		i = stm_src->po.pobuff[i].next;
 	}
-	if(i < 0) {
+	if (i < 0) {
 		pthread_mutex_unlock(&(stm_src->po.po_mutex));
 		return NULL;
 	}
 	pthread_mutex_unlock(&(stm_src->po.po_mutex));
-	
-	
+
+
 	if (len)
 		*len = (stm_src->po.pobuff[i]).pktlen;
-//	pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
-	
-	return (rtp_pkt *)(*(stm_src->po.bufferpool)+i);
+//      pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
+
+	return (rtp_pkt *) (*(stm_src->po.bufferpool) + i);
 }

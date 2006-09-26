@@ -29,199 +29,198 @@
 #include <nemesi/rtp.h>
 
 // get wrappers
-inline char *rtp_get_spec(rtp_session *rtp_sess)
+inline char *rtp_get_spec(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.spec;
 }
 
-inline enum deliveries rtp_get_delivery(rtp_session *rtp_sess)
+inline enum deliveries rtp_get_delivery(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.delivery;
 }
 
-inline int rtp_get_srcaddrstr(rtp_session *rtp_sess, char *addrstr, uint32 strlen)
+inline int rtp_get_srcaddrstr(rtp_session * rtp_sess, char *addrstr, uint32 strlen)
 {
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addrstr, strlen);
 }
 
-inline nms_addr *rtp_get_srcaddr(rtp_session *rtp_sess)
+inline nms_addr *rtp_get_srcaddr(rtp_session * rtp_sess)
 {
 	return &rtp_sess->transport.srcaddr;
 }
 
-inline int rtp_get_dstaddrstr(rtp_session *rtp_sess, char *addrstr, uint32 strlen)
+inline int rtp_get_dstaddrstr(rtp_session * rtp_sess, char *addrstr, uint32 strlen)
 {
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addrstr, strlen);
 }
 
-inline nms_addr *rtp_get_dstaddr(rtp_session *rtp_sess)
+inline nms_addr *rtp_get_dstaddr(rtp_session * rtp_sess)
 {
 	return &rtp_sess->transport.dstaddr;
 }
 
-inline enum modes rtp_get_mode(rtp_session *rtp_sess)
+inline enum modes rtp_get_mode(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.mode;
 }
 
-inline int rtp_get_layers(rtp_session *rtp_sess)
+inline int rtp_get_layers(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.layers;
 }
 
-inline int rtp_get_append(rtp_session *rtp_sess)
+inline int rtp_get_append(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.append;
 }
 
-inline int rtp_get_ttl(rtp_session *rtp_sess)
+inline int rtp_get_ttl(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.ttl;
 }
 
-inline in_port_t rtp_transport_get_mcsrtpport(rtp_session *rtp_sess)
+inline in_port_t rtp_transport_get_mcsrtpport(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.mcs_ports[0];
 }
 
-inline in_port_t rtp_get_mcsrtcpport(rtp_session *rtp_sess)
+inline in_port_t rtp_get_mcsrtcpport(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.mcs_ports[1];
 }
 
-inline int rtp_get_mcsports(rtp_session *rtp_sess, in_port_t ports[2])
+inline int rtp_get_mcsports(rtp_session * rtp_sess, in_port_t ports[2])
 {
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_MCSPORTS, ports, sizeof(ports));
 }
 
-inline in_port_t rtp_transport_get_srvrtpport(rtp_session *rtp_sess)
+inline in_port_t rtp_transport_get_srvrtpport(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.srv_ports[0];
 }
 
-inline in_port_t rtp_get_srvrtcpport(rtp_session *rtp_sess)
+inline in_port_t rtp_get_srvrtcpport(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.srv_ports[1];
 }
 
-inline int rtp_get_srvports(rtp_session *rtp_sess, in_port_t ports[2])
+inline int rtp_get_srvports(rtp_session * rtp_sess, in_port_t ports[2])
 {
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRVPORTS, ports, sizeof(ports));
 }
 
-inline in_port_t rtp_transport_get_clirtpport(rtp_session *rtp_sess)
+inline in_port_t rtp_transport_get_clirtpport(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.cli_ports[0];
 }
 
-inline in_port_t rtp_get_clirtcpport(rtp_session *rtp_sess)
+inline in_port_t rtp_get_clirtcpport(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.cli_ports[1];
 }
 
-inline int rtp_get_cliports(rtp_session *rtp_sess, in_port_t ports[2])
+inline int rtp_get_cliports(rtp_session * rtp_sess, in_port_t ports[2])
 {
 	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_CLIPORTS, ports, sizeof(ports));
 }
 
-inline uint32 rtp_get_ssrc(rtp_session *rtp_sess)
+inline uint32 rtp_get_ssrc(rtp_session * rtp_sess)
 {
 	return rtp_sess->transport.ssrc;
 }
 
 // set wrappers
-inline int rtp_set_delivery(rtp_session *rtp_sess, enum deliveries delivery)
+inline int rtp_set_delivery(rtp_session * rtp_sess, enum deliveries delivery)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DELIVERY, &delivery);
 }
 
-inline int rtp_set_srcaddrstr(rtp_session *rtp_sess, char *address)
+inline int rtp_set_srcaddrstr(rtp_session * rtp_sess, char *address)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, address);
 }
 
-inline int rtp_set_srcaddr(rtp_session *rtp_sess, nms_addr *address)
+inline int rtp_set_srcaddr(rtp_session * rtp_sess, nms_addr * address)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDR, address);
 }
 
-inline int rtp_set_dstaddrstr(rtp_session *rtp_sess, char *address)
+inline int rtp_set_dstaddrstr(rtp_session * rtp_sess, char *address)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, address);
 }
 
-inline int rtp_set_dstaddr(rtp_session *rtp_sess, nms_addr *address)
+inline int rtp_set_dstaddr(rtp_session * rtp_sess, nms_addr * address)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDR, address);
 }
 
-inline int rtp_set_layers(rtp_session *rtp_sess, int layers)
+inline int rtp_set_layers(rtp_session * rtp_sess, int layers)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS, &layers);
 }
 
-inline int rtp_set_mode(rtp_session *rtp_sess, enum modes mode)
+inline int rtp_set_mode(rtp_session * rtp_sess, enum modes mode)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MODE, &mode);
 }
 
-inline int rtp_set_append(rtp_session *rtp_sess, int append)
+inline int rtp_set_append(rtp_session * rtp_sess, int append)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_APPEND, &append);
 }
 
-inline int rtp_set_ttl(rtp_session *rtp_sess, int ttl)
+inline int rtp_set_ttl(rtp_session * rtp_sess, int ttl)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_TTL, &ttl);
 }
 
-inline int rtp_set_mcsports(rtp_session *rtp_sess, in_port_t ports[2])
+inline int rtp_set_mcsports(rtp_session * rtp_sess, in_port_t ports[2])
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MCSPORTS, ports);
 }
 
-inline int rtp_transport_set_mcsrtpport(rtp_session *rtp_sess, in_port_t port)
+inline int rtp_transport_set_mcsrtpport(rtp_session * rtp_sess, in_port_t port)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MCSRTP, &port);
 }
 
-inline int rtp_set_mcsrtcpport(rtp_session *rtp_sess, in_port_t port)
+inline int rtp_set_mcsrtcpport(rtp_session * rtp_sess, in_port_t port)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_MCSRTCP, &port);
 }
 
-inline int rtp_set_srvports(rtp_session *rtp_sess, in_port_t ports[2])
+inline int rtp_set_srvports(rtp_session * rtp_sess, in_port_t ports[2])
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVPORTS, ports);
 }
 
-inline int rtp_transport_set_srvrtpport(rtp_session *rtp_sess, in_port_t port)
+inline int rtp_transport_set_srvrtpport(rtp_session * rtp_sess, in_port_t port)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP, &port);
 }
 
-inline int rtp_set_srvrtcpport(rtp_session *rtp_sess, in_port_t port)
+inline int rtp_set_srvrtcpport(rtp_session * rtp_sess, in_port_t port)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP, &port);
 }
 
-inline int rtp_set_cliports(rtp_session *rtp_sess, in_port_t ports[2])
+inline int rtp_set_cliports(rtp_session * rtp_sess, in_port_t ports[2])
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_CLIPORTS, ports);
 }
 
-inline int rtp_transport_set_clirtpport(rtp_session *rtp_sess, in_port_t port)
+inline int rtp_transport_set_clirtpport(rtp_session * rtp_sess, in_port_t port)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_CLIRTP, &port);
 }
 
-inline int rtp_set_clirtcpport(rtp_session *rtp_sess, in_port_t port)
+inline int rtp_set_clirtcpport(rtp_session * rtp_sess, in_port_t port)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_CLIRTCP, &port);
 }
 
-inline int rtp_set_ssrc(rtp_session *rtp_sess, uint32 ssrc)
+inline int rtp_set_ssrc(rtp_session * rtp_sess, uint32 ssrc)
 {
 	return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 }
-

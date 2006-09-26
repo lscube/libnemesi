@@ -33,7 +33,7 @@
 #include <nemesi/diskwriter.h>
 #include <nemesi/comm.h>
 
-int get_file_fd(nms_diskwriter *dc, int pt)
+int get_file_fd(nms_diskwriter * dc, int pt)
 {
 	char filename[256];
 	uint32 written;
@@ -41,29 +41,29 @@ int get_file_fd(nms_diskwriter *dc, int pt)
 	if (pt > MAX_PT)
 		return -nms_printf(NMSML_ERR, "Payload type exeded max allowed\n");
 
-	if ( dc->fd[pt] < 0 ) {
+	if (dc->fd[pt] < 0) {
 		cc_getag(pt, &(dc->tag[pt]), &(dc->ext[pt]));
 		if (dc->ext[pt])
 			sprintf(filename, "%s.%d.%s", dc->basename, pt, dc->ext[pt]);
 		else
 			sprintf(filename, "%s.%d", dc->basename, pt);
-		if ( (dc->fd[pt]=creat( filename, 00644 )) < 0 )
+		if ((dc->fd[pt] = creat(filename, 00644)) < 0)
 			nms_printf(NMSML_ERR, "file %s in current directory cannot be created\n", filename);
 		if (dc->tag[pt]->hdim)
-			if ( (written=write(dc->fd[pt], dc->tag[pt]->header, dc->tag[pt]->hdim)) < dc->tag[pt]->hdim )
-				nms_printf(NMSML_DBG1, "WARNING: only %d bytes of %d written\n", written, dc->tag[pt]->hdim);
+			if ((written = write(dc->fd[pt], dc->tag[pt]->header, dc->tag[pt]->hdim)) < dc->tag[pt]->hdim)
+				nms_printf(NMSML_DBG1, "WARNING: only %d bytes of %d written\n", written,
+					   dc->tag[pt]->hdim);
 	}
 
 	return dc->fd[pt];
 
 	/*
-	if ( (dc->fd[pt] < 0) && ( (dc->fd[pt]=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
-		nms_printf(NMSML_ERR, "file %s in current directory cannot be created\n", DEFAULT_FILENAME);
+	   if ( (dc->fd[pt] < 0) && ( (dc->fd[pt]=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
+	   nms_printf(NMSML_ERR, "file %s in current directory cannot be created\n", DEFAULT_FILENAME);
 
-	if ( (global_disk_buffer->file_fd < 0) && ( (global_disk_buffer->file_fd=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
-		nms_printf(NMSML_ERR, "file %s in current directory cannot be created\n", DEFAULT_FILENAME);
+	   if ( (global_disk_buffer->file_fd < 0) && ( (global_disk_buffer->file_fd=creat( DEFAULT_FILENAME, 00644 )) < 0 ) )
+	   nms_printf(NMSML_ERR, "file %s in current directory cannot be created\n", DEFAULT_FILENAME);
 
-	return global_disk_buffer->file_fd;
-	*/
+	   return global_disk_buffer->file_fd;
+	 */
 }
-

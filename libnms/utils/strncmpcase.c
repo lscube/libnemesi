@@ -35,10 +35,10 @@ int strncmpcase(const char *s1, const char *s2, size_t n)
 	int res;
 	unsigned int i;
 
-	if ((str1=strdup(s1)) == NULL)
+	if ((str1 = strdup(s1)) == NULL)
 		return 1;
 
-	if ((str2=strdup(s2)) == NULL)
+	if ((str2 = strdup(s2)) == NULL)
 		return 1;
 
 	for (i = 0; i < strlen(str1); i++)
@@ -54,4 +54,3 @@ int strncmpcase(const char *s1, const char *s2, size_t n)
 
 	return res;
 }
-

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int handle_rtsp_pkt(rtsp_thread *rtsp_th)
+int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 {
 	char ver[32];
 	int opcode;
@@ -46,9 +46,9 @@ int handle_rtsp_pkt(rtsp_thread *rtsp_th)
 		return 1;
 	}
 	/*
-	if (state_machine[rtsp_th->status] (rtsp_th, opcode))
-		return 1;
-	*/
+	   if (state_machine[rtsp_th->status] (rtsp_th, opcode))
+	   return 1;
+	 */
 	return state_machine[rtsp_th->status] (rtsp_th, opcode);
 
 	return 0;

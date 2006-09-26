@@ -61,10 +61,10 @@
  * */
 typedef struct _sdp_attr {
 	char *a;		/*!< Pointer to the string containig the
-				  attribute. */
+				   attribute. */
 	struct _sdp_attr *next;	/*!< Pointer to the next element of attributes
-				  list. \c NULL if the current element is the
-				  last. */
+				   list. \c NULL if the current element is the
+				   last. */
 } sdp_attr;
 
 #define SDP_MEDIA_FIELDS	"Multimedia Type & Transport Address", \
@@ -91,13 +91,13 @@ typedef struct _sdp_medium_info {
 	char *k;		/*!< encryption key */
 	sdp_attr *attr_list;	/*!< zero or more medium attribute lines */
 
-	cc_license *cc;		/*!< Creative Commons License struct*/
+	cc_license *cc;		/*!< Creative Commons License struct */
 	/*! informations from media description string (m=) */
 	char media_type;	/*!< possibile values: A=Audio, V=Video, P=aPplication, D=Data, C=Control */
-	int port;		/*!< port of stream*/	
+	int port;		/*!< port of stream */
 	int n_ports;		/*!< number of consecutive ports */
 	char transport[8];	/*!< transport string */
-	char *fmts;		/*!< media formats: AVP payload types for audio/video*/
+	char *fmts;		/*!< media formats: AVP payload types for audio/video */
 
 	struct _sdp_medium_info *next;	/*!< Next medium informatioin struct */
 } sdp_medium_info;
@@ -157,16 +157,15 @@ typedef struct {
 
 	cc_license *cc;		/*!< Creative Commons License struct */
 
-	sdp_medium_info *media_info_queue; /*!< Media information queue */
+	sdp_medium_info *media_info_queue;	/*!< Media information queue */
 } sdp_session_info;
 
 sdp_session_info *sdp_session_setup(char *descr, int descr_len);
 sdp_medium_info *sdp_media_setup(char **descr, int descr_len);
-int sdp_set_attr(sdp_attr **attr_list, char *a);
+int sdp_set_attr(sdp_attr ** attr_list, char *a);
 void sdp_session_destroy(sdp_session_info *);
 void sdp_media_destroy(sdp_medium_info *);
 int sdp_parse_m_descr(sdp_medium_info *, char *);
 
-#endif // __SDP_H
+#endif				// __SDP_H
 /* @} */
-

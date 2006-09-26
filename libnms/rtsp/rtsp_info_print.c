@@ -29,21 +29,21 @@
 #include <nemesi/rtsp.h>
 
 // shawill: TODO: modify for protocol abstraction
-void rtsp_info_print(rtsp_ctrl *rtsp_ctl)
+void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
 {
 	// tmp
-	rtsp_thread *rtsp_th = (rtsp_thread *)rtsp_ctl;
+	rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_ctl;
 	rtsp_session *sess;
 	rtsp_medium *med;
 	char **str;
 	// struct attr *attr;
 	sdp_attr *attr;
 
-	char *sdes[/*13*/] =  {SDP_SESSION_FIELDS };
-	char *mdes[/*5*/] = { SDP_MEDIA_FIELDS };
-	
-	sess=rtsp_th->rtsp_queue;
-	
+	char *sdes[ /*13 */ ] = { SDP_SESSION_FIELDS };
+	char *mdes[ /*5 */ ] = { SDP_MEDIA_FIELDS };
+
+	sess = rtsp_th->rtsp_queue;
+
 	nms_printf(NMSML_NORM, BLANK_LINE);
 
 	if (!sess) {
@@ -51,24 +51,25 @@ void rtsp_info_print(rtsp_ctrl *rtsp_ctl)
 		return;
 	}
 
-	while(sess){
-		med=sess->media_queue;
+	while (sess) {
+		med = sess->media_queue;
 		nms_printf(NMSML_NORM, "---- RTSP Session Infos: %s ----\n", sess->pathname);
-		for(str=(char **)(sess->info); str < (char **)&(sess->info->attr_list); str++)
+		for (str = (char **) (sess->info); str < (char **) &(sess->info->attr_list); str++)
 			if (*str)
-				nms_printf(NMSML_ALWAYS, "* %s: %s\n", sdes[str-(char **)(sess->info)], *str);
-		for(attr=sess->info->attr_list; attr; attr=attr->next)
+				nms_printf(NMSML_ALWAYS, "* %s: %s\n", sdes[str - (char **) (sess->info)], *str);
+		for (attr = sess->info->attr_list; attr; attr = attr->next)
 			nms_printf(NMSML_ALWAYS, "%s\n", attr->a);
 		while (med) {
 			nms_printf(NMSML_NORM, "\n\t---- RTSP Medium Infos: %s ----\n", med->filename);
-			for(str=(char **)(med->medium_info); str < (char **)&(med->medium_info->attr_list); str++)
-				if(*str)
-					nms_printf(NMSML_ALWAYS, "\t* %s: %s\n", mdes[str-(char **)(med->medium_info)], *str);
-			for(attr=med->medium_info->attr_list; attr; attr=attr->next)
+			for (str = (char **) (med->medium_info); str < (char **) &(med->medium_info->attr_list); str++)
+				if (*str)
+					nms_printf(NMSML_ALWAYS, "\t* %s: %s\n",
+						   mdes[str - (char **) (med->medium_info)], *str);
+			for (attr = med->medium_info->attr_list; attr; attr = attr->next)
 				nms_printf(NMSML_ALWAYS, "\t* %s\n", attr->a);
-			med=med->next;
+			med = med->next;
 		}
-		sess=sess->next;
+		sess = sess->next;
 	}
 	nms_printf(NMSML_ALWAYS, "\n");
 

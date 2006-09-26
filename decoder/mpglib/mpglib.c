@@ -43,15 +43,13 @@
 #include <nemesi/plugin.h>
 
 plugin_init("MPA", 14)
-
 #define BUFFER 8192
-
 int get_plugin_pt(void)
 {
 	return 96;
 }
 
-static int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output * outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 
@@ -76,16 +74,15 @@ static int decode(char *data, int len, nms_output *outc)
 /*		write(audio_fd, out, size); */
 		audio_data = (*ab_get) ((uint32) size);
 		memcpy(audio_data, out, size);
-		ret = decodeMP3(mp, data + 4 , 0, out, BUFFER, &size);
+		ret = decodeMP3(mp, data + 4, 0, out, BUFFER, &size);
 		fprintf(stderr, "\rret = %d\n", ret);
 	}
 #else
 	if (ret == MP3_OK) {
-		audio_data = funcs->get_buff((uint32)size);
+		audio_data = funcs->get_buff((uint32) size);
 		memcpy(audio_data, out, size);
-		funcs->play_buff(audio_data, (uint32)size);
-	}
-	else {
+		funcs->play_buff(audio_data, (uint32) size);
+	} else {
 		fprintf(stderr, "\ndecoded %d bytes with %d status\n", size, ret);
 	}
 #endif

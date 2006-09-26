@@ -28,22 +28,22 @@
 
 #include <nemesi/rtsp.h>
 
-int remove_pkt(rtsp_thread *rtsp_th)
+int remove_pkt(rtsp_thread * rtsp_th)
 {
 
-	char *buff=NULL;
+	char *buff = NULL;
 
-	if ((rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size)){
-		if((buff=(char *)malloc(rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size)) == NULL)
+	if ((rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size)) {
+		if ((buff = (char *) malloc(rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size)) == NULL)
 			return nms_printf(NMSML_FATAL, "remove_pkt: Cannot allocate memory!\n");
 
-		memcpy(buff, rtsp_th->in_buffer.data+rtsp_th->in_buffer.first_pkt_size, \
-				rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size);
+		memcpy(buff, rtsp_th->in_buffer.data + rtsp_th->in_buffer.first_pkt_size,
+		       rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size);
 	} else
-		buff=NULL;
+		buff = NULL;
 	free(rtsp_th->in_buffer.data);
-	rtsp_th->in_buffer.data=buff;
-	rtsp_th->in_buffer.size=rtsp_th->in_buffer.size-rtsp_th->in_buffer.first_pkt_size;
-	rtsp_th->in_buffer.first_pkt_size=0;
+	rtsp_th->in_buffer.data = buff;
+	rtsp_th->in_buffer.size = rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size;
+	rtsp_th->in_buffer.first_pkt_size = 0;
 	return 0;
 }

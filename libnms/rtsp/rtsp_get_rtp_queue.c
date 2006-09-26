@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl *rtsp_ctl)
+inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl)
 {
-	return ((rtsp_thread *)rtsp_ctl)->rtp_th->rtp_sess_head;
+	return ((rtsp_thread *) rtsp_ctl)->rtp_th->rtp_sess_head;
 }

@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int handle_pause_response(rtsp_thread *rtsp_th)
+int handle_pause_response(rtsp_thread * rtsp_th)
 {
 	char *prev_tkn;
 
@@ -36,7 +36,7 @@ int handle_pause_response(rtsp_thread *rtsp_th)
 		nms_printf(NMSML_ERR, "Invalid RTSP-PAUSE response\n");
 		return 1;
 	}
-	if ( check_status(prev_tkn, rtsp_th) < 0 ){
+	if (check_status(prev_tkn, rtsp_th) < 0) {
 		remove_pkt(rtsp_th);
 		return 1;
 	}
@@ -45,4 +45,3 @@ int handle_pause_response(rtsp_thread *rtsp_th)
 	memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
 	return 0;
 }
-

@@ -26,9 +26,9 @@
  *  
  * */
 
- #ifdef HAVE_CONFIG_H
- #include <config.h>
- #endif
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "rtpparser.h"
 
@@ -42,7 +42,7 @@ RTP_PARSER(mpv);
 #define DEFAULT_MPV_DATA_FRAME 65535
 
 typedef struct {
-//	mpa_data mpa_info;
+//      mpa_data mpa_info;
 	char *data;
 	uint32 data_size;
 } rtp_mpv;
@@ -94,67 +94,70 @@ typedef struct {
 #ifdef WORDS_BIGENDIAN
 #define RTP_MPV_TR(pkt)					(RTP_MPV_PKT(pkt)->tr)
 #else
-#define RTP_MPV_TR(pkt)					(RTP_MPV_PKT(pkt)->tr_h << 8 | RTP_MPV_PKT(pkt)->tr_l) 
+#define RTP_MPV_TR(pkt)					(RTP_MPV_PKT(pkt)->tr_h << 8 | RTP_MPV_PKT(pkt)->tr_l)
 #endif
 
-static int rtp_parse(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
+static int rtp_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
 	rtp_mpv *mpv_priv = stm_src->privs[fr->pt];
 	rtp_pkt *pkt;
 	size_t pkt_len;
-	uint32 tot_pkts=0;
-	
-	if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
+	uint32 tot_pkts = 0;
+
+	if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
 		return RTP_BUFF_EMPTY;
-	
+
 	// pkt_pt = RTP_PKT_PT(pkt);
 	// fr->timestamp = RTP_PKT_TS(pkt);
-	
-	
-	nms_printf(NMSML_DBG3, "\n[MPV]: header: mbz:%u t:%u tr:%u an:%u n:%u s:%u b:%u e:%u p:%u fbv:%u bfc:%u ffv:%u ffc:%u\n", \
-		RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t, /*ntohs(*/RTP_MPV_TR(pkt)/*)*/, RTP_MPV_PKT(pkt)->an, RTP_MPV_PKT(pkt)->n, RTP_MPV_PKT(pkt)->s, \
-		RTP_MPV_PKT(pkt)->b, RTP_MPV_PKT(pkt)->e, RTP_MPV_PKT(pkt)->p, RTP_MPV_PKT(pkt)->fbv, RTP_MPV_PKT(pkt)->bfc, RTP_MPV_PKT(pkt)->ffv, \
-		RTP_MPV_PKT(pkt)->ffc);
+
+
+	nms_printf(NMSML_DBG3,
+		   "\n[MPV]: header: mbz:%u t:%u tr:%u an:%u n:%u s:%u b:%u e:%u p:%u fbv:%u bfc:%u ffv:%u ffc:%u\n",
+		   RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t, /*ntohs( */ RTP_MPV_TR(pkt) /*) */ ,
+		   RTP_MPV_PKT(pkt)->an, RTP_MPV_PKT(pkt)->n, RTP_MPV_PKT(pkt)->s,
+		   RTP_MPV_PKT(pkt)->b, RTP_MPV_PKT(pkt)->e, RTP_MPV_PKT(pkt)->p, RTP_MPV_PKT(pkt)->fbv,
+		   RTP_MPV_PKT(pkt)->bfc, RTP_MPV_PKT(pkt)->ffv, RTP_MPV_PKT(pkt)->ffc);
 #if 1
 	// discard pkt if it's fragmented and the first fragment was lost
 	while (!RTP_MPV_PKT(pkt)->b) {
 		rtp_rm_pkt(stm_src);
-		if ( !(pkt=rtp_get_pkt(stm_src, &pkt_len)) )
+		if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
 			return RTP_BUFF_EMPTY;
 		else if (RTP_PKT_PT(pkt) != fr->pt)
-			return RTP_PARSE_ERROR; 
+			return RTP_PARSE_ERROR;
 	}
 #endif
 
 	/* XXX if the frame is not fragmented we could use directly the data contained in bufferpool 
-	 * instead of memcpy the frame in a newly allocated space */ 
+	 * instead of memcpy the frame in a newly allocated space */
 	// init private struct if this is the first time we're called
 	if (!mpv_priv) {
 		nms_printf(NMSML_DBG3, "[rtp_mpv] allocating new private struct...");
-		if ( !(stm_src->privs[fr->pt]=mpv_priv=malloc(sizeof(rtp_mpv))) )
+		if (!(stm_src->privs[fr->pt] = mpv_priv = malloc(sizeof(rtp_mpv))))
 			return RTP_ERRALLOC;
 		mpv_priv->data_size = max(DEFAULT_MPV_DATA_FRAME, pkt_len);
-		if ( !(fr->data=mpv_priv->data=malloc(mpv_priv->data_size)) )
+		if (!(fr->data = mpv_priv->data = malloc(mpv_priv->data_size)))
 			return RTP_ERRALLOC;
 		nms_printf(NMSML_DBG3, "done\n");
 	} else
-		fr->data=mpv_priv->data;
-	
+		fr->data = mpv_priv->data;
+
 	do {
 		pkt_len = RTP_MPV_DATA_LEN(pkt, pkt_len);
-		if ( mpv_priv->data_size < tot_pkts + pkt_len) {
+		if (mpv_priv->data_size < tot_pkts + pkt_len) {
 			nms_printf(NMSML_DBG3, "[rtp_mpv] reallocating data...");
-			if ( (fr->data=mpv_priv->data=realloc(mpv_priv->data, tot_pkts + pkt_len)) )
+			if ((fr->data = mpv_priv->data = realloc(mpv_priv->data, tot_pkts + pkt_len)))
 				return RTP_ERRALLOC;
 			nms_printf(NMSML_DBG3, "done\n");
 		}
-		memcpy(fr->data+tot_pkts, RTP_MPV_DATA(pkt), pkt_len);
+		memcpy(fr->data + tot_pkts, RTP_MPV_DATA(pkt), pkt_len);
 		tot_pkts += pkt_len;
 		rtp_rm_pkt(stm_src);
-	} while ( !RTP_PKT_MARK(pkt) && (pkt=rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt)==fr->timestamp) && (RTP_PKT_PT(pkt)==fr->pt) );
-	
+	} while (!RTP_PKT_MARK(pkt) && (pkt = rtp_get_pkt(stm_src, &pkt_len)) && (RTP_PKT_TS(pkt) == fr->timestamp)
+		 && (RTP_PKT_PT(pkt) == fr->pt));
+
 	fr->len = tot_pkts;
 	nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
-	
+
 	return RTP_FILL_OK;
 }

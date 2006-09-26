@@ -44,37 +44,36 @@
 * \see bpkill
 * \see bufferpool.h
 * */
-int bpinit(buffer_pool *bp)
+int bpinit(buffer_pool * bp)
 {
 	pthread_mutexattr_t mutex_attr;
 	pthread_condattr_t cond_attr;
 	int i;
 
-	if (((bp->bufferpool) = (bp_slot *) malloc(BP_SLOT_NUM*sizeof(bp_slot))) == NULL) {
+	if (((bp->bufferpool) = (bp_slot *) malloc(BP_SLOT_NUM * sizeof(bp_slot))) == NULL) {
 		return 1;
 	}
-	memset(bp->bufferpool, 0, BP_SLOT_NUM*sizeof(bp_slot));
+	memset(bp->bufferpool, 0, BP_SLOT_NUM * sizeof(bp_slot));
 	for (i = 0; i < BP_SLOT_NUM; bp->freelist[i] = i + 1, i++);
 	bp->freelist[BP_SLOT_NUM - 1] = -1;
 	bp->flhead = 0;
 	bp->flcount = 0;
 
-	if ( (i = pthread_mutexattr_init(&mutex_attr) ) > 0)
-	 	RET_ERR(i)
+	if ((i = pthread_mutexattr_init(&mutex_attr)) > 0)
+		RET_ERR(i)
 #if 0
 #ifdef	_POSIX_THREAD_PROCESS_SHARED
-	if ((i = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
-		RET_ERR(i)
+		    if ((i = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
+			RET_ERR(i)
 #endif
 #endif
-	if ( (i = pthread_mutex_init(&(bp->fl_mutex), &mutex_attr) ) > 0)
-	 	RET_ERR(i)
+			    if ((i = pthread_mutex_init(&(bp->fl_mutex), &mutex_attr)) > 0)
+				RET_ERR(i)
+				    // cond initialization
+				    if ((i = pthread_condattr_init(&cond_attr)) > 0)
+					RET_ERR(i)
+					    if ((i = pthread_cond_init(&(bp->cond_full), &cond_attr)) > 0)
+						RET_ERR(i)
 
-	// cond initialization
-	if ( (i = pthread_condattr_init(&cond_attr) ) > 0)
-		RET_ERR(i)
-	if ( (i = pthread_cond_init(&(bp->cond_full), &cond_attr) ) > 0)
-		RET_ERR(i)
-
-	return 0;
+						    return 0;
 }

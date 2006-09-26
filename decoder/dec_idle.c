@@ -37,4 +37,3 @@ void dec_idle(void)
 
 	select(0, NULL, NULL, NULL, &tvsleep);
 }
-

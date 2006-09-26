@@ -43,11 +43,10 @@ int sockaddrcmp(struct sockaddr *addr1, socklen_t addr1_len, struct sockaddr *ad
 		return WSOCK_ERRSIZE;
 	if (addr1->sa_family != addr1->sa_family)
 		return WSOCK_ERRFAMILY;
-	if (sock_cmp_addr(addr1, addr2 /*, addr1_len */))
+	if (sock_cmp_addr(addr1, addr2 /*, addr1_len */ ))
 		return WSOCK_ERRADDR;
-	if (sock_cmp_port(addr1, addr2 /*, addr1_len */))
+	if (sock_cmp_port(addr1, addr2 /*, addr1_len */ ))
 		return WSOCK_ERRPORT;
 
 	return 0;
 }
-

@@ -28,10 +28,10 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_fill_buffers(rtp_thread *rtp_th)
+int rtp_fill_buffers(rtp_thread * rtp_th)
 {
 	pthread_mutex_lock(&(rtp_th->syn));
 	pthread_mutex_unlock(&(rtp_th->syn));
-	
+
 	return 0;
 }

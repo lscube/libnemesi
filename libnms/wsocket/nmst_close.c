@@ -28,13 +28,13 @@
 
 #include <nemesi/wsocket.h>
 
-int nmst_close(nms_transport *transport)
+int nmst_close(nms_transport * transport)
 {
 	free(transport->local_port);
 	free(transport->remote_host);
 	free(transport->remote_port);
-	
+
 	// TODO should we do something else?
-	
+
 	return close(transport->fd);
 }

@@ -30,70 +30,71 @@
 
 void *rtcp(void *args)
 {
-	rtp_session *rtp_sess_head=((rtp_thread *)args)->rtp_sess_head;
+	rtp_session *rtp_sess_head = ((rtp_thread *) args)->rtp_sess_head;
 	rtp_session *rtp_sess;
-	struct rtcp_event *head=NULL;
-	int maxfd=0, ret;
+	struct rtcp_event *head = NULL;
+	int maxfd = 0, ret;
 	double t;
 	struct timeval tv, now;
 
 	fd_set readset;
-	
+
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	// pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
-	pthread_cleanup_push(rtcp_clean, (void *)&rtp_sess_head);
-	pthread_cleanup_push(rtcp_clean_events, (void *)&head);
+	pthread_cleanup_push(rtcp_clean, (void *) &rtp_sess_head);
+	pthread_cleanup_push(rtcp_clean_events, (void *) &head);
 
-	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next){
-		t=rtcp_interval(rtp_sess->sess_stats.members, \
-				rtp_sess->sess_stats.senders, \
-				rtp_sess->sess_stats.rtcp_bw, \
-				rtp_sess->sess_stats.we_sent, \
-				rtp_sess->sess_stats.avg_rtcp_size, \
-				rtp_sess->sess_stats.initial);
+	for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next) {
+		t = rtcp_interval(rtp_sess->sess_stats.members,
+				  rtp_sess->sess_stats.senders,
+				  rtp_sess->sess_stats.rtcp_bw,
+				  rtp_sess->sess_stats.we_sent,
+				  rtp_sess->sess_stats.avg_rtcp_size, rtp_sess->sess_stats.initial);
 
-		tv.tv_sec=(long int)t;
-		tv.tv_usec=(long int)((t-tv.tv_sec)*1000000);
+		tv.tv_sec = (long int) t;
+		tv.tv_usec = (long int) ((t - tv.tv_sec) * 1000000);
 		gettimeofday(&now, NULL);
 		timeval_add(&(rtp_sess->sess_stats.tn), &now, &tv);
 
-		if ( (head=rtcp_schedule(head, rtp_sess, rtp_sess->sess_stats.tn, RTCP_RR)) == NULL)
+		if ((head = rtcp_schedule(head, rtp_sess, rtp_sess->sess_stats.tn, RTCP_RR)) == NULL)
 			pthread_exit(NULL);
-		nms_printf(NMSML_DBG1, "RTCP: %d.%d -> %d.%d\n", now.tv_sec, now.tv_usec, head->tv.tv_sec, head->tv.tv_usec);
+		nms_printf(NMSML_DBG1, "RTCP: %d.%d -> %d.%d\n", now.tv_sec, now.tv_usec, head->tv.tv_sec,
+			   head->tv.tv_usec);
 	}
 
-	while(1){
-		
+	while (1) {
+
 		pthread_testcancel();
-		
+
 		FD_ZERO(&readset);
 
-		for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next){
+		for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next) {
 			maxfd = max(rtp_sess->rtcpfd, maxfd);
 			FD_SET(rtp_sess->rtcpfd, &readset);
 		}
-		
-		gettimeofday(&now, NULL);
-		if (timeval_subtract(&tv, &(head->tv), &now)){
-			tv.tv_sec=0;
-			tv.tv_usec=0;
-		}
-		nms_printf(NMSML_DBG1, "RTCP: now: %d.%d -> head:%d.%d - sleep: %d.%d\n", now.tv_sec, now.tv_usec, head->tv.tv_sec, head->tv.tv_usec, tv.tv_sec, tv.tv_usec);
 
-		if (select(maxfd+1, &readset, NULL, NULL, &tv) == 0){
+		gettimeofday(&now, NULL);
+		if (timeval_subtract(&tv, &(head->tv), &now)) {
+			tv.tv_sec = 0;
+			tv.tv_usec = 0;
+		}
+		nms_printf(NMSML_DBG1, "RTCP: now: %d.%d -> head:%d.%d - sleep: %d.%d\n", now.tv_sec, now.tv_usec,
+			   head->tv.tv_sec, head->tv.tv_usec, tv.tv_sec, tv.tv_usec);
+
+		if (select(maxfd + 1, &readset, NULL, NULL, &tv) == 0) {
 			/* timer scaduto */
-			if ( (head=rtcp_handle_event(head)) == NULL)
+			if ((head = rtcp_handle_event(head)) == NULL)
 				pthread_exit(NULL);
 		}
-		
-		for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
-			if (FD_ISSET(rtp_sess->rtcpfd, &readset)){
-				if((ret=rtcp_recv(rtp_sess)) < 0)
+
+		for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
+			if (FD_ISSET(rtp_sess->rtcpfd, &readset)) {
+				if ((ret = rtcp_recv(rtp_sess)) < 0)
 					pthread_exit(NULL);
 			}
 	}
-	
+
 	pthread_cleanup_pop(1);
 	pthread_cleanup_pop(1);
 }

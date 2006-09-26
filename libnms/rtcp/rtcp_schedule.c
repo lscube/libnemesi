@@ -28,34 +28,34 @@
 
 #include <nemesi/rtcp.h>
 
-struct rtcp_event *rtcp_schedule(struct rtcp_event *head, rtp_session *rtp_sess, struct timeval tv, rtcp_type_t type)
+struct rtcp_event *rtcp_schedule(struct rtcp_event *head, rtp_session * rtp_sess, struct timeval tv, rtcp_type_t type)
 {
 	struct rtcp_event *new_event;
-	struct rtcp_event *pevent=head;
-	struct rtcp_event *event=head;
-	
-	if( (new_event=(struct rtcp_event *)malloc(sizeof(struct rtcp_event))) == NULL) {
+	struct rtcp_event *pevent = head;
+	struct rtcp_event *event = head;
+
+	if ((new_event = (struct rtcp_event *) malloc(sizeof(struct rtcp_event))) == NULL) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 		return NULL;
 	}
-	new_event->rtp_sess=rtp_sess;
-	new_event->tv=tv;
-	new_event->type=type;
-	new_event->next=NULL;
+	new_event->rtp_sess = rtp_sess;
+	new_event->tv = tv;
+	new_event->type = type;
+	new_event->next = NULL;
 
-	if ( ! head )
+	if (!head)
 		return new_event;
 
-	while( event && timeval_subtract(NULL, &(event->tv), &tv)){
-		pevent=event;
-		event=event->next;
+	while (event && timeval_subtract(NULL, &(event->tv), &tv)) {
+		pevent = event;
+		event = event->next;
 	}
-	if (pevent == head ){
-		new_event->next=head;
+	if (pevent == head) {
+		new_event->next = head;
 		return new_event;
 	}
-	pevent->next=new_event;
-	new_event->next=event;
-	
+	pevent->next = new_event;
+	new_event->next = event;
+
 	return head;
 }

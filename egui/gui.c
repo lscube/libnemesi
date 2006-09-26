@@ -21,7 +21,7 @@
 #include <nemesi/egui.h>
 #include <nemesi/comm.h>
 
-int gui(rtsp_ctrl *rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
+int gui(rtsp_ctrl * rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
 {
 	GtkWidget *nemesi;
 	char *path;
@@ -71,11 +71,12 @@ int gui(rtsp_ctrl *rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
 	if (ui_hints->url) {
 		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
 		nms_open(rtsp_ctl, ui_hints->url, gui_throbber, &rtsp_ctl->busy);
-		while (gtk_events_pending ()) gtk_main_iteration ();
+		while (gtk_events_pending())
+			gtk_main_iteration();
 		nms_play(rtsp_ctl, -1, -1);
 		gui_throbber(&rtsp_ctl->busy);
 	}
-	
+
 	gtk_main();
 	return 0;
 }

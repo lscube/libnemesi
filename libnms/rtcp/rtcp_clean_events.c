@@ -31,7 +31,7 @@
 
 void rtcp_clean_events(void *events)
 {
-	struct rtcp_event *event=*(struct rtcp_event **)events;
+	struct rtcp_event *event = *(struct rtcp_event **) events;
 	struct rtcp_event *free_event;
 
 	while (event) {
@@ -41,4 +41,3 @@ void rtcp_clean_events(void *events)
 		free(free_event);
 	}
 }
-

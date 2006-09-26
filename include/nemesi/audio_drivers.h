@@ -38,67 +38,68 @@
 #define ACTRL_GET_ELAPTM 1
 
 typedef struct {
-        /* driver name */
-        const char *name;
-        /* short name (for config strings) (e.g.:"sdl") */
-        const char *short_name;
-        /* author ("Author name & surname <mail>") */
-        const char *author;
-        /* any additional comments */
-        const char *comment;
+	/* driver name */
+	const char *name;
+	/* short name (for config strings) (e.g.:"sdl") */
+	const char *short_name;
+	/* author ("Author name & surname <mail>") */
+	const char *author;
+	/* any additional comments */
+	const char *comment;
 } NMSADrvInfo;
 
 typedef struct {
 	NMSADrvInfo *info;
-        /*
-         * Initialize the audio driver.
+	/*
+	 * Initialize the audio driver.
 	 * params: (in and out)
-         * 	rate:
-	 * 	channels: number of channels
-	 * 	format:
-         * returns : zero on successful initialization, non-zero on error.
-         */
+	 *      rate:
+	 *      channels: number of channels
+	 *      format:
+	 * returns : zero on successful initialization, non-zero on error.
+	 */
 	// XXX: rate, channels and format are both input and output parameters
-        uint32 (*init)(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms, uint32 flags, const char *arg);
+	 uint32(*init) (uint32 * rate, uint8 * channels, uint32 * format, uint32 buff_ms, uint32 flags,
+			const char *arg);
 	/*
 	 * Control interface
 	 * params:
-	 *	cmd: commnand to exec
-	 *	arg: argument for command
+	 *      cmd: commnand to exec
+	 *      arg: argument for command
 	 */
-	 uint32 (*control)(uint32 cmd, void *arg);
+	 uint32(*control) (uint32 cmd, void *arg);
 	/*
 	 * allocs buffer for new decoded data.
 	 * params:
-	 *	len: length of requested buffer
+	 *      len: length of requested buffer
 	 * returns pointer to new buffer
 	 */
-	uint8 *(*get_buff)(uint32 len);
+	uint8 *(*get_buff) (uint32 len);
 	/*
 	 * This function must be called by decoder after the decoded data has
 	 * been written on the allocated buffer
 	 * params:
-	 * 	data: buffer to play.
-	 *	len: length of buffer
+	 *      data: buffer to play.
+	 *      len: length of buffer
 	 * retuns 1 on error, 0 otherwise
 	 */
-	uint32 (*play_buff)(uint8 *data, uint32 len, double pts);
-        /*
-         * Pauses the driver
-         */
-        void (*pause)(void);
-        /*
-         * Resume playing
-         */
-        void (*resume)(void);
+	 uint32(*play_buff) (uint8 * data, uint32 len, double pts);
+	/*
+	 * Pauses the driver
+	 */
+	void (*pause) (void);
+	/*
+	 * Resume playing
+	 */
+	void (*resume) (void);
 	/*
 	 * Reset audio buffer. For seeking pourpose
 	 */
-	 void (*reset)(void);
-        /*
-         * Closes driver. Should restore the original state of the system.
-         */
-        void (*uninit)(void);
+	void (*reset) (void);
+	/*
+	 * Closes driver. Should restore the original state of the system.
+	 */
+	void (*uninit) (void);
 } nms_au_fnc;
 
 #if 0
@@ -109,7 +110,7 @@ extern nms_au_fnc nms_audio_sdl;
 #endif
 
 void list_audio_out(void);
-nms_au_fnc *init_best_audio_out(char *,uint32 *, uint8 *, uint32 *, uint32);
+nms_au_fnc *init_best_audio_out(char *, uint32 *, uint8 *, uint32 *, uint32);
 /*
 char *ao_format_name(int format);
 int ao_init(void);
@@ -120,5 +121,4 @@ void list_audio_out();
 extern ao_functions_t* audio_out_drivers[];
  */
 
-#endif // __AUDIO_DRIVERS_H
-
+#endif				// __AUDIO_DRIVERS_H

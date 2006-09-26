@@ -27,8 +27,8 @@
 
 // static variables declaration
 static GtkWidget *nemesi;
-static GtkWidget *opendialog=NULL;
-static GtkWidget *aboutdialog=NULL;
+static GtkWidget *opendialog = NULL;
+static GtkWidget *aboutdialog = NULL;
 static GtkWidget *info = NULL;
 
 static GNMSurl *gnmsurl = NULL;
@@ -69,29 +69,29 @@ void update_toolbar(void)
 	close_but = lookup_widget(nemesi, "close_cmd");
 	internal_call = TRUE;
 	switch (rtsp_status(rtsp_ctl)) {
-		case INIT:
-			gtk_widget_set_sensitive(open_but, TRUE);
-			gtk_widget_set_sensitive(play_tog, FALSE);
-			gtk_widget_set_sensitive(stop_but, FALSE);
-			gtk_widget_set_sensitive(close_but, FALSE);
-			// gnms_stbar_clear();
-			break;
-		case READY:
-			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), FALSE);
-			gtk_widget_set_sensitive(open_but, FALSE);
-			gtk_widget_set_sensitive(play_tog, TRUE);
-			gtk_widget_set_sensitive(stop_but, FALSE);
-			gtk_widget_set_sensitive(close_but, TRUE);
-			break;
-		case PLAYING:
-			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), TRUE);
-			gtk_widget_set_sensitive(open_but, FALSE);
-			gtk_widget_set_sensitive(play_tog, TRUE);
-			gtk_widget_set_sensitive(stop_but, TRUE);
-			gtk_widget_set_sensitive(close_but, TRUE);
-			break;
-		default:
-			break;
+	case INIT:
+		gtk_widget_set_sensitive(open_but, TRUE);
+		gtk_widget_set_sensitive(play_tog, FALSE);
+		gtk_widget_set_sensitive(stop_but, FALSE);
+		gtk_widget_set_sensitive(close_but, FALSE);
+		// gnms_stbar_clear();
+		break;
+	case READY:
+		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), FALSE);
+		gtk_widget_set_sensitive(open_but, FALSE);
+		gtk_widget_set_sensitive(play_tog, TRUE);
+		gtk_widget_set_sensitive(stop_but, FALSE);
+		gtk_widget_set_sensitive(close_but, TRUE);
+		break;
+	case PLAYING:
+		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), TRUE);
+		gtk_widget_set_sensitive(open_but, FALSE);
+		gtk_widget_set_sensitive(play_tog, TRUE);
+		gtk_widget_set_sensitive(stop_but, TRUE);
+		gtk_widget_set_sensitive(close_but, TRUE);
+		break;
+	default:
+		break;
 	}
 	internal_call = FALSE;
 	gtk_widget_set_sensitive(toolbar, TRUE);
@@ -102,25 +102,25 @@ void update_toolbar(void)
 
 }
 
-void view_info(GtkWidget *infow)
+void view_info(GtkWidget * infow)
 {
 	gint nmsx, nmsy, nmsw, nmsh;
 	// GdkGravity nemesi_gvty;
 
 	if (!info)
 		info = create_info();
-	else { // TODO: destroy only the internal, not the window
+	else {			// TODO: destroy only the internal, not the window
 		gtk_widget_destroy(info);
 		info = create_info();
 	}
 
-	gtk_container_add (GTK_CONTAINER (info), infow);
+	gtk_container_add(GTK_CONTAINER(info), infow);
 
 	/*
-	nemesi_gvty = gtk_window_get_gravity(GTK_WINDOW(nemesi));
-	gtk_window_set_gravity(GTK_WINDOW(nemesi), GDK_GRAVITY_STATIC);
-	gtk_window_set_gravity(GTK_WINDOW(info), GDK_GRAVITY_STATIC);
-	*/
+	   nemesi_gvty = gtk_window_get_gravity(GTK_WINDOW(nemesi));
+	   gtk_window_set_gravity(GTK_WINDOW(nemesi), GDK_GRAVITY_STATIC);
+	   gtk_window_set_gravity(GTK_WINDOW(info), GDK_GRAVITY_STATIC);
+	 */
 	gtk_window_get_position(GTK_WINDOW(nemesi), &nmsx, &nmsy);
 	gtk_window_get_size(GTK_WINDOW(nemesi), &nmsw, &nmsh);
 	gtk_window_get_size(GTK_WINDOW(info), &infowidth, NULL);
@@ -138,32 +138,27 @@ void hide_info()
 		info = NULL;
 	}
 }
+
 // *** ENDOF generic functions *** //
 
 // *** event functions *** //
 //
 // *** main window *** //
 
-void
-on_open1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_open1_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	if (!opendialog)
 		opendialog = create_opendialog();
 	gtk_widget_show(opendialog);
 }
 
-void
-on_quit1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_quit1_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	gnms_stbar_clear();
 	gtk_main_quit();
 }
 
-void
-on_about1_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	if (!aboutdialog)
 		aboutdialog = create_aboutdialog();
@@ -171,9 +166,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
-                                        gpointer         user_data)
+void on_toggle_play_pause_toggled(GtkToggleToolButton * togglebutton, gpointer user_data)
 {
 	char argstr[] = " ";
 
@@ -189,27 +182,21 @@ on_toggle_play_pause_toggled           (GtkToggleToolButton *togglebutton,
 
 }
 
-void
-on_stop_cmd_clicked                    (GtkButton       *button,
-                                        gpointer         user_data)
+void on_stop_cmd_clicked(GtkButton * button, gpointer user_data)
 {
 	nms_stop(rtsp_ctl);
 	gui_throbber(&rtsp_ctl->busy);
 }
 
 
-void
-on_close_cmd_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
+void on_close_cmd_clicked(GtkButton * button, gpointer user_data)
 {
 	nms_close(rtsp_ctl, gui_throbber, &rtsp_ctl->busy);
-//	gui_throbber(&rtsp_ctl->busy);
+//      gui_throbber(&rtsp_ctl->busy);
 }
 
 
-void
-on_open_cmd_clicked                    (GtkButton       *button,
-                                        gpointer         user_data)
+void on_open_cmd_clicked(GtkButton * button, gpointer user_data)
 {
 	if (!opendialog)
 		opendialog = create_opendialog();
@@ -217,10 +204,7 @@ on_open_cmd_clicked                    (GtkButton       *button,
 }
 
 
-gboolean
-on_nemesi_configure_event              (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data)
+gboolean on_nemesi_configure_event(GtkWidget * widget, GdkEventConfigure * event, gpointer user_data)
 {
 	if (info)
 		gtk_window_move(GTK_WINDOW(info), event->x + event->width - infowidth, event->y + event->height);
@@ -232,19 +216,17 @@ on_nemesi_configure_event              (GtkWidget       *widget,
 //
 // *** open dialog *** //
 
-void
-on_urlname_realize                     (GtkWidget       *widget,
-                                        gpointer         user_data)
+void on_urlname_realize(GtkWidget * widget, gpointer user_data)
 {
 	GtkEntryCompletion *completion;
 
 	if (!gnmsurl)
 		gnmsurl = gnmsurl_init();
-	
+
 	completion = gtk_entry_completion_new();
 
 	// GtkComboBox
-	gtk_combo_box_set_model (GTK_COMBO_BOX(widget), gnmsurl->model);
+	gtk_combo_box_set_model(GTK_COMBO_BOX(widget), gnmsurl->model);
 	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(widget), gnmsurl->txt_col);
 
 	// GtkEntryCompletion
@@ -263,10 +245,7 @@ on_urlname_realize                     (GtkWidget       *widget,
 }
 
 
-void
-on_opendialog_response                 (GtkDialog       *dialog,
-                                        gint             response_id,
-                                        gpointer         user_data)
+void on_opendialog_response(GtkDialog * dialog, gint response_id, gpointer user_data)
 {
 	GtkWidget *combo_box;
 	char *url, *true_url;
@@ -276,73 +255,73 @@ on_opendialog_response                 (GtkDialog       *dialog,
 	gint txt_col;
 
 	switch (response_id) {
-		case GTK_RESPONSE_NONE:
-			nms_printf(NMSML_DBG3, "response: NONE\n");
-			break;
-		case GTK_RESPONSE_REJECT:
-			nms_printf(NMSML_DBG3, "response: REJECT\n");
-			break;
-		case GTK_RESPONSE_ACCEPT:
-			nms_printf(NMSML_DBG3, "response: ACCEPT\n");
-			break;
-		case GTK_RESPONSE_OK:
-			nms_printf(NMSML_DBG3, "response: OK\n");
-			combo_box = lookup_widget(opendialog, "urlname");
-				
-			// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
-			url = (char *)gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
-		
-			txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(combo_box));
-			list_store = gtk_combo_box_get_model(GTK_COMBO_BOX(combo_box));
-			valid = gtk_tree_model_get_iter_first(list_store, &iter);
-		
-			nms_printf(NMSML_DBG1, "List of urls\n");
-			while (valid) {
-				gchar *str_data;
-				gtk_tree_model_get (list_store, &iter, txt_col, &str_data, -1);
-				nms_printf(NMSML_DBG1, "%s\n", str_data);
-				if (!strcmp(url, str_data)) {
-					found = TRUE;
-					break;
-				}
-				g_free(str_data);
-				valid = gtk_tree_model_iter_next (list_store, &iter);
+	case GTK_RESPONSE_NONE:
+		nms_printf(NMSML_DBG3, "response: NONE\n");
+		break;
+	case GTK_RESPONSE_REJECT:
+		nms_printf(NMSML_DBG3, "response: REJECT\n");
+		break;
+	case GTK_RESPONSE_ACCEPT:
+		nms_printf(NMSML_DBG3, "response: ACCEPT\n");
+		break;
+	case GTK_RESPONSE_OK:
+		nms_printf(NMSML_DBG3, "response: OK\n");
+		combo_box = lookup_widget(opendialog, "urlname");
+
+		// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
+		url = (char *) gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
+
+		txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(combo_box));
+		list_store = gtk_combo_box_get_model(GTK_COMBO_BOX(combo_box));
+		valid = gtk_tree_model_get_iter_first(list_store, &iter);
+
+		nms_printf(NMSML_DBG1, "List of urls\n");
+		while (valid) {
+			gchar *str_data;
+			gtk_tree_model_get(list_store, &iter, txt_col, &str_data, -1);
+			nms_printf(NMSML_DBG1, "%s\n", str_data);
+			if (!strcmp(url, str_data)) {
+				found = TRUE;
+				break;
 			}
-			nms_printf(NMSML_DBG1, "ENDOF List of urls\n");
-			if (!found)
-				gtk_combo_box_append_text (GTK_COMBO_BOX (combo_box), url);
-		
-			true_url = strdup(url);
-			gtk_widget_destroy(opendialog);
-			opendialog = NULL;
-			/*
-			gtk_widget_hide(opendialog);
-			*/
-			nms_printf(NMSML_DBG1, "%s\n", true_url);
-			nms_open(rtsp_ctl, true_url, gui_throbber, &rtsp_ctl->busy);
-			break;
-		case GTK_RESPONSE_CLOSE:
-			nms_printf(NMSML_DBG3, "response: CLOSE\n");
-			break;
-		case GTK_RESPONSE_YES:
-			nms_printf(NMSML_DBG3, "response: YES\n");
-			break;
-		case GTK_RESPONSE_NO:
-			nms_printf(NMSML_DBG3, "response: NO\n");
-			break;
-		case GTK_RESPONSE_APPLY:
-			nms_printf(NMSML_DBG3, "response: APPLY\n");
-			break;
-		case GTK_RESPONSE_HELP:
-			nms_printf(NMSML_DBG3, "response: HELP\n");
-			break;
-		case GTK_RESPONSE_CANCEL:
-		case GTK_RESPONSE_DELETE_EVENT:
-		default:
-			gtk_widget_destroy(opendialog);
-			opendialog = NULL;
-			nms_printf(NMSML_DBG3, "opendialog closed\n");
-			break;
+			g_free(str_data);
+			valid = gtk_tree_model_iter_next(list_store, &iter);
+		}
+		nms_printf(NMSML_DBG1, "ENDOF List of urls\n");
+		if (!found)
+			gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), url);
+
+		true_url = strdup(url);
+		gtk_widget_destroy(opendialog);
+		opendialog = NULL;
+		/*
+		   gtk_widget_hide(opendialog);
+		 */
+		nms_printf(NMSML_DBG1, "%s\n", true_url);
+		nms_open(rtsp_ctl, true_url, gui_throbber, &rtsp_ctl->busy);
+		break;
+	case GTK_RESPONSE_CLOSE:
+		nms_printf(NMSML_DBG3, "response: CLOSE\n");
+		break;
+	case GTK_RESPONSE_YES:
+		nms_printf(NMSML_DBG3, "response: YES\n");
+		break;
+	case GTK_RESPONSE_NO:
+		nms_printf(NMSML_DBG3, "response: NO\n");
+		break;
+	case GTK_RESPONSE_APPLY:
+		nms_printf(NMSML_DBG3, "response: APPLY\n");
+		break;
+	case GTK_RESPONSE_HELP:
+		nms_printf(NMSML_DBG3, "response: HELP\n");
+		break;
+	case GTK_RESPONSE_CANCEL:
+	case GTK_RESPONSE_DELETE_EVENT:
+	default:
+		gtk_widget_destroy(opendialog);
+		opendialog = NULL;
+		nms_printf(NMSML_DBG3, "opendialog closed\n");
+		break;
 	}
 
 }
@@ -351,9 +330,7 @@ on_opendialog_response                 (GtkDialog       *dialog,
 //
 // *** about dialog *** //
 
-void
-on_aboutdialog_realize                 (GtkWidget       *widget,
-                                        gpointer         user_data)
+void on_aboutdialog_realize(GtkWidget * widget, gpointer user_data)
 {
 	GtkWidget *aboutimage;
 	GtkWidget *aboutlabel;
@@ -361,19 +338,17 @@ on_aboutdialog_realize                 (GtkWidget       *widget,
 	nms_printf(NMSML_DBG3, "about dialog realized\n");
 	aboutimage = create_pixmap(NULL, "about-nemesi.png");
 	gtk_widget_set_name(aboutimage, "aboutimage");
-	g_object_set_data_full (G_OBJECT (aboutdialog), "aboutimage", gtk_widget_ref (aboutimage), (GDestroyNotify) gtk_widget_unref);
-	gtk_box_pack_start (GTK_BOX (lookup_widget(aboutdialog, "dialogvbox")), aboutimage, FALSE, FALSE, 0);
+	g_object_set_data_full(G_OBJECT(aboutdialog), "aboutimage", gtk_widget_ref(aboutimage),
+			       (GDestroyNotify) gtk_widget_unref);
+	gtk_box_pack_start(GTK_BOX(lookup_widget(aboutdialog, "dialogvbox")), aboutimage, FALSE, FALSE, 0);
 	gtk_widget_show(aboutimage);
 	// aboutlabel
 	aboutlabel = lookup_widget(aboutdialog, "aboutlabel");
-	gtk_label_set_markup (GTK_LABEL(aboutlabel), "Release "VERSION"\n");
+	gtk_label_set_markup(GTK_LABEL(aboutlabel), "Release " VERSION "\n");
 }
 
 
-void
-on_aboutdialog_response                (GtkDialog       *dialog,
-                                        gint             response_id,
-                                        gpointer         user_data)
+void on_aboutdialog_response(GtkDialog * dialog, gint response_id, gpointer user_data)
 {
 	GtkWidget *aboutimage;
 	GtkWidget *credits;
@@ -381,61 +356,61 @@ on_aboutdialog_response                (GtkDialog       *dialog,
 	GtkRequisition requisition;
 
 	switch (response_id) {
-		case 1: // show credits
-			nms_printf(NMSML_DBG3, "response: CREDITS\n");
-			aboutimage = lookup_widget(aboutdialog, "aboutimage");
-			credits = lookup_widget(aboutdialog, "creditscroller");
-			creditsview = lookup_widget(aboutdialog, "creditsview");
-			gtk_widget_size_request(aboutimage, &requisition);
-			gtk_widget_set_size_request(credits, requisition.width, requisition.height);
-			gtk_text_buffer_set_text(gtk_text_view_get_buffer (GTK_TEXT_VIEW (creditsview)), CREDITS, -1);
-			gtk_widget_hide(aboutimage);
-			gtk_widget_show(credits);
-			// gtk_widget_hide(GTK_WIDGET(button));
-			gtk_widget_hide(lookup_widget(aboutdialog, "credits"));
-			gtk_widget_show(lookup_widget(aboutdialog, "backabout"));
-			break;
-		case 2: // return back
-			nms_printf(NMSML_DBG3, "response: BACK\n");
-			gtk_widget_hide(lookup_widget(aboutdialog, "creditscroller"));
-			gtk_widget_show(lookup_widget(aboutdialog, "aboutimage"));
-			gtk_widget_hide(lookup_widget(aboutdialog, "backabout"));
-			gtk_widget_show(lookup_widget(aboutdialog, "credits"));
-			break;
-		case GTK_RESPONSE_NONE:
-			nms_printf(NMSML_DBG3, "response: NONE\n");
-			break;
-		case GTK_RESPONSE_REJECT:
-			nms_printf(NMSML_DBG3, "response: REJECT\n");
-			break;
-		case GTK_RESPONSE_ACCEPT:
-			nms_printf(NMSML_DBG3, "response: ACCEPT\n");
-			break;
-		case GTK_RESPONSE_OK:
-			nms_printf(NMSML_DBG3, "response: OK\n");
-			break;
-		case GTK_RESPONSE_CANCEL:
-		case GTK_RESPONSE_CLOSE:
-		case GTK_RESPONSE_DELETE_EVENT:
-			nms_printf(NMSML_DBG3, "response: CLOSE\n");
-			gtk_widget_destroy(aboutdialog);
-			aboutdialog = NULL;
-			break;
-		case GTK_RESPONSE_YES:
-			nms_printf(NMSML_DBG3, "response: YES\n");
-			break;
-		case GTK_RESPONSE_NO:
-			nms_printf(NMSML_DBG3, "response: NO\n");
-			break;
-		case GTK_RESPONSE_APPLY:
-			nms_printf(NMSML_DBG3, "response: APPLY\n");
-			break;
-		case GTK_RESPONSE_HELP:
-			nms_printf(NMSML_DBG3, "response: HELP\n");
-			break;
-		default:
-			nms_printf(NMSML_DBG3, "NO EVENT\n");
-			break;
+	case 1:		// show credits
+		nms_printf(NMSML_DBG3, "response: CREDITS\n");
+		aboutimage = lookup_widget(aboutdialog, "aboutimage");
+		credits = lookup_widget(aboutdialog, "creditscroller");
+		creditsview = lookup_widget(aboutdialog, "creditsview");
+		gtk_widget_size_request(aboutimage, &requisition);
+		gtk_widget_set_size_request(credits, requisition.width, requisition.height);
+		gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(creditsview)), CREDITS, -1);
+		gtk_widget_hide(aboutimage);
+		gtk_widget_show(credits);
+		// gtk_widget_hide(GTK_WIDGET(button));
+		gtk_widget_hide(lookup_widget(aboutdialog, "credits"));
+		gtk_widget_show(lookup_widget(aboutdialog, "backabout"));
+		break;
+	case 2:		// return back
+		nms_printf(NMSML_DBG3, "response: BACK\n");
+		gtk_widget_hide(lookup_widget(aboutdialog, "creditscroller"));
+		gtk_widget_show(lookup_widget(aboutdialog, "aboutimage"));
+		gtk_widget_hide(lookup_widget(aboutdialog, "backabout"));
+		gtk_widget_show(lookup_widget(aboutdialog, "credits"));
+		break;
+	case GTK_RESPONSE_NONE:
+		nms_printf(NMSML_DBG3, "response: NONE\n");
+		break;
+	case GTK_RESPONSE_REJECT:
+		nms_printf(NMSML_DBG3, "response: REJECT\n");
+		break;
+	case GTK_RESPONSE_ACCEPT:
+		nms_printf(NMSML_DBG3, "response: ACCEPT\n");
+		break;
+	case GTK_RESPONSE_OK:
+		nms_printf(NMSML_DBG3, "response: OK\n");
+		break;
+	case GTK_RESPONSE_CANCEL:
+	case GTK_RESPONSE_CLOSE:
+	case GTK_RESPONSE_DELETE_EVENT:
+		nms_printf(NMSML_DBG3, "response: CLOSE\n");
+		gtk_widget_destroy(aboutdialog);
+		aboutdialog = NULL;
+		break;
+	case GTK_RESPONSE_YES:
+		nms_printf(NMSML_DBG3, "response: YES\n");
+		break;
+	case GTK_RESPONSE_NO:
+		nms_printf(NMSML_DBG3, "response: NO\n");
+		break;
+	case GTK_RESPONSE_APPLY:
+		nms_printf(NMSML_DBG3, "response: APPLY\n");
+		break;
+	case GTK_RESPONSE_HELP:
+		nms_printf(NMSML_DBG3, "response: HELP\n");
+		break;
+	default:
+		nms_printf(NMSML_DBG3, "NO EVENT\n");
+		break;
 	}
 }
 
@@ -446,4 +421,3 @@ on_aboutdialog_response                (GtkDialog       *dialog,
 // *** ENDOF info dialog *** //
 //
 // *** ENDOF event functions *** //
-

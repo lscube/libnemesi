@@ -34,7 +34,7 @@ int server_create(char *host, char *port, int *sock)
 	int n;
 	struct addrinfo *res, *ressave;
 	struct addrinfo hints;
-	
+
 	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_flags = AI_PASSIVE;
 #ifdef IPV6

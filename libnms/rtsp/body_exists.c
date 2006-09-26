@@ -30,14 +30,14 @@
 
 int body_exists(char *in_buffer)
 {
-	int body_len=0;
+	int body_len = 0;
 	char *con_len;
 
-	if ( (con_len=strstrcase(in_buffer,"Content-Length")) != NULL ) {
-		con_len+=14;
-		while ( (*(con_len)==' ') || (*(con_len)==':') )
+	if ((con_len = strstrcase(in_buffer, "Content-Length")) != NULL) {
+		con_len += 14;
+		while ((*(con_len) == ' ') || (*(con_len) == ':'))
 			con_len++;
-		sscanf(con_len,"%d",&body_len);
+		sscanf(con_len, "%d", &body_len);
 	}
 	return body_len;
 }

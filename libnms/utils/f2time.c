@@ -30,6 +30,6 @@
 
 void f2time(double ftime, struct timeval *time)
 {
-	time->tv_sec=(long)ftime;
-	time->tv_usec=(long)((ftime-time->tv_sec)*1000000);
+	time->tv_sec = (long) ftime;
+	time->tv_usec = (long) ((ftime - time->tv_sec) * 1000000);
 }

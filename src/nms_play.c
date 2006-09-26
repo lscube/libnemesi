@@ -29,12 +29,12 @@
 #include <nemesi/main.h>
 #include <nemesi/ccprefs.h>
 
-int nms_play(rtsp_ctrl *rtsp_ctl, double start, double stop)
+int nms_play(rtsp_ctrl * rtsp_ctl, double start, double stop)
 {
 	cc_perm_mask cc_mask;
-	
+
 	pref2ccmask(&cc_mask);
 	memcpy(&rtsp_ctl->accepted_CC, &cc_mask, sizeof(cc_perm_mask));
-	
+
 	return rtsp_play(rtsp_ctl, start, stop);
 }

@@ -28,34 +28,34 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_parse_pkt(rtp_ssrc *stm_src, rtcp_pkt *pkt, int len)
+int rtcp_parse_pkt(rtp_ssrc * stm_src, rtcp_pkt * pkt, int len)
 {
 	rtcp_pkt *end;
-	end = (rtcp_pkt *)((uint32 *)pkt + len/4);
-	
-	while ( pkt < end ){
+	end = (rtcp_pkt *) ((uint32 *) pkt + len / 4);
+
+	while (pkt < end) {
 		switch ((pkt->common).pt) {
-			case RTCP_SR:
-				rtcp_parse_sr(stm_src, pkt);
-				break;
-			case RTCP_SDES:
-				if(rtcp_parse_sdes(stm_src, pkt))
-					return -1;
-				break;
-			case RTCP_RR:
-				rtcp_parse_rr(pkt);
-				break;
-			case RTCP_BYE:
-				rtcp_parse_bye(pkt);
-				break;
-			case RTCP_APP:
-				rtcp_parse_app(pkt);
-				break;
-			default:
-				nms_printf(NMSML_WARN, "Received unknown RTCP pkt\n");
-				return 1;
+		case RTCP_SR:
+			rtcp_parse_sr(stm_src, pkt);
+			break;
+		case RTCP_SDES:
+			if (rtcp_parse_sdes(stm_src, pkt))
+				return -1;
+			break;
+		case RTCP_RR:
+			rtcp_parse_rr(pkt);
+			break;
+		case RTCP_BYE:
+			rtcp_parse_bye(pkt);
+			break;
+		case RTCP_APP:
+			rtcp_parse_app(pkt);
+			break;
+		default:
+			nms_printf(NMSML_WARN, "Received unknown RTCP pkt\n");
+			return 1;
 		}
-		pkt=(rtcp_pkt *)((uint32 *)pkt + ntohs((pkt->common).len) + 1);
+		pkt = (rtcp_pkt *) ((uint32 *) pkt + ntohs((pkt->common).len) + 1);
 	}
 	return 0;
 }

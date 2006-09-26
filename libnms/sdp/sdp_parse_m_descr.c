@@ -32,7 +32,7 @@
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>
 
-int sdp_parse_m_descr(sdp_medium_info *m_info, char *m_descr)
+int sdp_parse_m_descr(sdp_medium_info * m_info, char *m_descr)
 {
 	char *tkn, *endtkn;
 
@@ -56,32 +56,37 @@ int sdp_parse_m_descr(sdp_medium_info *m_info, char *m_descr)
 
 	// parse port and number of ports
 	m_info->port = strtol(tkn, &endtkn, 10);
-	if ( tkn == endtkn )
-		return nms_printf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\nCould not find port field\n", m_descr);
-	tkn = endtkn; // + 1;
+	if (tkn == endtkn)
+		return nms_printf(NMSML_ERR,
+				  "SDP Media description string not valid: (m=%s)\nCould not find port field\n",
+				  m_descr);
+	tkn = endtkn;		// + 1;
 	if (*endtkn == '/') {
-		m_info->n_ports = strtol(tkn+1, &endtkn, 10);
-		tkn = endtkn; // + 1;
+		m_info->n_ports = strtol(tkn + 1, &endtkn, 10);
+		tkn = endtkn;	// + 1;
 	} else
 		m_info->n_ports = 1;
 
-	for (;*tkn==' ';tkn++); // skip spaces
+	for (; *tkn == ' '; tkn++);	// skip spaces
 	if (!(*tkn))
-		return nms_printf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\nCould not find transport field\n", m_descr);
+		return nms_printf(NMSML_ERR,
+				  "SDP Media description string not valid: (m=%s)\nCould not find transport field\n",
+				  m_descr);
 
 	// parse transport protocol
 	if (!(endtkn = strchr(tkn, ' ')))
-		return nms_printf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\nDescription terminates whithout <fmt list>\n", m_descr);
+		return nms_printf(NMSML_ERR,
+				  "SDP Media description string not valid: (m=%s)\nDescription terminates whithout <fmt list>\n",
+				  m_descr);
 	*endtkn = '\0';
 	strncpy(m_info->transport, tkn, 7);
 	m_info->transport[7] = '\0';
 	*endtkn = ' ';
-	tkn=endtkn + 1;
+	tkn = endtkn + 1;
 
 	// fmt list: here we expect to store payload types
-	for (;*tkn==' ';tkn++); // skip spaces
+	for (; *tkn == ' '; tkn++);	// skip spaces
 	m_info->fmts = tkn;
 
 	return 0;
 }
-

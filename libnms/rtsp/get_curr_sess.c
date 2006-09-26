@@ -38,48 +38,49 @@ void *get_curr_sess(int cmd, ...)
 	static rtsp_medium *static_med = NULL;
 
 	switch (cmd) {
-		case GCS_INIT:
-			va_start(ap, cmd);
-			rtsp_th = va_arg(ap, rtsp_thread *);
-			static_sess = rtsp_th->rtsp_queue;
+	case GCS_INIT:
+		va_start(ap, cmd);
+		rtsp_th = va_arg(ap, rtsp_thread *);
+		static_sess = rtsp_th->rtsp_queue;
+		static_med = static_sess->media_queue;
+		va_end(ap);
+		break;
+	case GCS_NXT_SESS:
+		if (static_sess)
+			static_sess = static_sess->next;
+		if (static_sess)
 			static_med = static_sess->media_queue;
-			va_end(ap);
-			break;
-		case GCS_NXT_SESS:
-			if ( static_sess )
-				static_sess = static_sess->next;
-			if ( static_sess )
-				static_med = static_sess->media_queue;
-			else
-				static_med = NULL;
-		case GCS_CUR_SESS:
-				return static_sess;
-			break;
-		case GCS_NXT_MED:
-			/* sessione corrente, prossimo media */
-			if ( static_med )
-				static_med = static_med->next;
-			/* prossima sessione, primo media */
-			if ( (!static_med) && static_sess ) {
-				static_sess = static_sess->next;
-				if (static_sess)
-					static_med = static_sess->media_queue;
-			}
-		case GCS_CUR_MED:
-			return static_med;
-			break;
-		case GCS_UNINIT:
-			static_sess = NULL;
+		else
 			static_med = NULL;
-			break;
-		default:
-			break;
+	case GCS_CUR_SESS:
+		return static_sess;
+		break;
+	case GCS_NXT_MED:
+		/* sessione corrente, prossimo media */
+		if (static_med)
+			static_med = static_med->next;
+		/* prossima sessione, primo media */
+		if ((!static_med) && static_sess) {
+			static_sess = static_sess->next;
+			if (static_sess)
+				static_med = static_sess->media_queue;
+		}
+	case GCS_CUR_MED:
+		return static_med;
+		break;
+	case GCS_UNINIT:
+		static_sess = NULL;
+		static_med = NULL;
+		break;
+	default:
+		break;
 	}
-	
+
 	return NULL;
 }
+
 // XXX: OLD get_curr_session FUNCTION
-#if 0 
+#if 0
 #include <nemesi/rtsp.h>
 
 /**
@@ -106,7 +107,7 @@ void *get_curr_sess(int cmd, ...)
 * sessioni ne' media RTSP da scandire.
 * */
 
-int get_curr_sess(rtsp_thread *rtsp_th, rtsp_session **rtsp_sess, rtsp_medium **rtsp_med)
+int get_curr_sess(rtsp_thread * rtsp_th, rtsp_session ** rtsp_sess, rtsp_medium ** rtsp_med)
 {
 	static rtsp_session *static_sess = NULL;
 	static rtsp_medium *static_med = NULL;
@@ -145,4 +146,4 @@ int get_curr_sess(rtsp_thread *rtsp_th, rtsp_session **rtsp_sess, rtsp_medium **
 
 	return 0;
 }
-#endif // if 0
+#endif				// if 0

@@ -28,11 +28,10 @@
 
 #include <nemesi/audio.h>
 
-void ab_uninit(nms_audio_buffer *ab)
+void ab_uninit(nms_audio_buffer * ab)
 {
 	pthread_mutex_unlock(&(ab->syn));
 
 	free(ab->audio_data);
 	free(ab);
 }
-

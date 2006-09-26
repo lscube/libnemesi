@@ -51,9 +51,9 @@ static uint32 md_32(char *string, int length)
 
 	md5_init(&context);
 	md5_update(&context, string, length);
-	md5_final((unsigned char *)&digest, &context);
-	r=0;
-	for (i=0; i<3; i++)
+	md5_final((unsigned char *) &digest, &context);
+	r = 0;
+	for (i = 0; i < 3; i++)
 		r ^= digest.x[i];
 	return r;
 }
@@ -73,12 +73,12 @@ uint32 random32(int type)
 
 	gettimeofday(&s.tv, NULL);
 	uname(&s.name);
-	s.type=type;
-	s.cpu=clock();
-	s.pid=getpid();
-	s.hid=gethostid();
-	s.uid=getuid();
-	s.gid=getgid();
+	s.type = type;
+	s.cpu = clock();
+	s.pid = getpid();
+	s.hid = gethostid();
+	s.uid = getuid();
+	s.gid = getgid();
 
-	return md_32((char *)&s, sizeof(s));
+	return md_32((char *) &s, sizeof(s));
 }

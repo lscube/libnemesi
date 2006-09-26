@@ -33,32 +33,33 @@
 void rtsp_clean(void *rtsp_thrd)
 {
 	// rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *)rtsp_control;
-	rtsp_thread *rtsp_th = (rtsp_thread *)rtsp_thrd;
+	rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_thrd;
 	int n;
 #ifdef USE_UIPRINTF
 	char optstr[256];
-#endif // USE_UIPRINTF
+#endif				// USE_UIPRINTF
 	struct command *comm = rtsp_th->comm;
 	int command_fd = rtsp_th->pipefd[0];
 	char ch[1];
 
-	if ( (n = fcntl(command_fd, F_GETFL, 0)) < 0 )
+	if ((n = fcntl(command_fd, F_GETFL, 0)) < 0)
 		nms_printf(NMSML_ERR, "fcntl F_GETFL error\n");
 	n |= O_NONBLOCK;
-	 if (fcntl(command_fd, F_SETFL, n) < 0)
-		 nms_printf(NMSML_ERR, "fcntl F_SETFL error\n");
-#if 1 // We must read last teardown reply from server
+	if (fcntl(command_fd, F_SETFL, n) < 0)
+		nms_printf(NMSML_ERR, "fcntl F_SETFL error\n");
+#if 1				// We must read last teardown reply from server
 	nms_printf(NMSML_DBG1, "Waiting for last Teardown response\n");
-	if((n=read(command_fd, ch, 1)) == 1)
-		if(cmd[comm->opcode] (rtsp_th, comm->arg))
+	if ((n = read(command_fd, ch, 1)) == 1)
+		if (cmd[comm->opcode] (rtsp_th, comm->arg))
 			return;
-	if( (*(rtsp_th->waiting_for)) && nmst_is_active(&rtsp_th->transport) ) {
-		if ((n=rtsp_recv(rtsp_th)) < 0)
+	if ((*(rtsp_th->waiting_for)) && nmst_is_active(&rtsp_th->transport)) {
+		if ((n = rtsp_recv(rtsp_th)) < 0)
 			nms_printf(NMSML_WARN, "No teardown response received\n");
-		else if (n > 0){
+		else if (n > 0) {
 			if (full_msg_rcvd(rtsp_th))
-				/*if (*/handle_rtsp_pkt(rtsp_th);/*)*/
-					/*nms_printf(NMSML_ERR, "\nError!\n");*/
+				/*if ( */
+				handle_rtsp_pkt(rtsp_th);	/*) */
+			/*nms_printf(NMSML_ERR, "\nError!\n"); */
 		} else
 			nms_printf(NMSML_ERR, "Server died prematurely!\n");
 	}
@@ -66,10 +67,10 @@ void rtsp_clean(void *rtsp_thrd)
 	rtsp_reinit(rtsp_th);
 	nms_printf(NMSML_DBG1, "RTSP Thread R.I.P.\n");
 #ifdef USE_UIPRINTF
-	fprintf(stderr, "\r"); /* TODO Da ottimizzare */
-	while((n=read(UIINPUT_FILENO, optstr, 1)) > 0)
+	fprintf(stderr, "\r");	/* TODO Da ottimizzare */
+	while ((n = read(UIINPUT_FILENO, optstr, 1)) > 0)
 		write(STDERR_FILENO, optstr, n);
-#endif // USE_UIPRINTF
+#endif				// USE_UIPRINTF
 
 	close(rtsp_th->pipefd[0]);
 	close(rtsp_th->pipefd[1]);

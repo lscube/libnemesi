@@ -39,43 +39,43 @@
 int main(int argc, char *argv[])
 {
 	rtsp_ctrl *rtsp_ctl;
-	nms_out_hints output_hints = {NULL, NULL, NULL, 0};
+	nms_out_hints output_hints = { NULL, NULL, NULL, 0 };
 	nms_ui_hints ui_hints = { 0, 0, NULL };
 	nms_rtsp_hints rtsp_hints = { -1 };
 	nms_cl_opts cl_opt = { &output_hints, &ui_hints, &rtsp_hints };
 	int n;
 	char *slash;
-	
+
 	// extern int (*decoders[])(char *, int, uint8 *(*)());
 
 	// nms_printf(0, "\nWelcome! This is %s - %s -- version %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 	nms_header();
 
 	// command line parsing
-	if ( (n=parse_cl(argc, argv, &cl_opt)) )
-		exit((n<0) ? 1 : 0);
+	if ((n = parse_cl(argc, argv, &cl_opt)))
+		exit((n < 0) ? 1 : 0);
 
-	memset(decoders, 0, 128*sizeof(int (*)()));
+	memset(decoders, 0, 128 * sizeof(int (*)()));
 
 	srand(time(NULL));
-	
+
 #ifdef USE_UIPRINTF
-	if(pipe(uipipe) < 0)
-		exit( nms_printf(NMSML_FATAL, "Cannot create UI pipe!\n") );
-#endif // USE_UIPRINTF
+	if (pipe(uipipe) < 0)
+		exit(nms_printf(NMSML_FATAL, "Cannot create UI pipe!\n"));
+#endif				// USE_UIPRINTF
 
 	if ((n = load_plugins()) > 0)
-		exit( nms_printf(NMSML_FATAL, "Cannot load plugins: %s\n", strerror(n)) );
+		exit(nms_printf(NMSML_FATAL, "Cannot load plugins: %s\n", strerror(n)));
 
 	// output initialization
 	if (output_init(&output_hints))
-		exit( nms_printf(NMSML_FATAL, "Error initializing output module\n") );
+		exit(nms_printf(NMSML_FATAL, "Error initializing output module\n"));
 
-	if ( !(rtsp_ctl = rtsp_init(&rtsp_hints)) )
-		exit( nms_printf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)) );
+	if (!(rtsp_ctl = rtsp_init(&rtsp_hints)))
+		exit(nms_printf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)));
 	// UI interface function
-	if (argv[0]) // if we are called with the initial 'g' => start gui
-		if ((*argv[0]=='g') || ((slash=strrchr(argv[0],'/')) && (*(slash + 1) == 'g'))) {
+	if (argv[0])		// if we are called with the initial 'g' => start gui
+		if ((*argv[0] == 'g') || ((slash = strrchr(argv[0], '/')) && (*(slash + 1) == 'g'))) {
 			ui_hints.gui = 1;
 			nms_statusprintf(NO_STATUS, NULL);
 		}
@@ -83,23 +83,23 @@ int main(int argc, char *argv[])
 #if HAVE_GUI
 		gui(rtsp_ctl, &ui_hints, argc, argv);
 	else
-#else	// HAVE_GUI
+#else				// HAVE_GUI
 		nms_printf(NMSML_ERR, "no GUI present: falling back to e-TUI\n");
-#endif	// HAVE_GUI
-		if ((n=ui(rtsp_ctl, &ui_hints, argc, argv)) > 0)
-			exit(1);
+#endif				// HAVE_GUI
+	if ((n = ui(rtsp_ctl, &ui_hints, argc, argv)) > 0)
+		exit(1);
 
 	rtsp_uninit(rtsp_ctl);
 
 	output_uninit();
 
 	// if (output_hints.audio)
-		free(output_hints.audio);
+	free(output_hints.audio);
 	// if (output_hints.video)
-		free(output_hints.video);
+	free(output_hints.video);
 	// if (output_hints.diskwriter)
-		free(output_hints.diskwriter);
-		free(ui_hints.url);
+	free(output_hints.diskwriter);
+	free(ui_hints.url);
 
 	unload_plugins();
 

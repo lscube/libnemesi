@@ -32,4 +32,3 @@ void unload_plugins(void)
 {
 	lt_dlexit();
 }
-

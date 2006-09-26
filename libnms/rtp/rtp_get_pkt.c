@@ -39,8 +39,8 @@
  * in this case, we understand that you are not interested about this value.
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
- * */ 
-rtp_pkt *rtp_get_pkt(rtp_ssrc *stm_src, size_t *len)
+ * */
+rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
 {
 	pthread_mutex_lock(&(stm_src->po.po_mutex));
 	do {
@@ -48,13 +48,13 @@ rtp_pkt *rtp_get_pkt(rtp_ssrc *stm_src, size_t *len)
 			pthread_mutex_unlock(&(stm_src->po.po_mutex));
 			return NULL;
 		}
-	} while ( !stm_src->rtp_sess->ptdefs[((rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail))->pt] \
-		&& /* always true - XXX be careful if bufferpool API changes -> */!rtp_rm_pkt(stm_src));
+	} while (!stm_src->rtp_sess->ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) + stm_src->po.potail))->pt]
+		 && /* always true - XXX be careful if bufferpool API changes -> */ !rtp_rm_pkt(stm_src));
 	pthread_mutex_unlock(&(stm_src->po.po_mutex));
-	
+
 	if (len)
 		*len = (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
-//	pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
-	
-	return (rtp_pkt *)(*(stm_src->po.bufferpool)+stm_src->po.potail);
+//      pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
+
+	return (rtp_pkt *) (*(stm_src->po.bufferpool) + stm_src->po.potail);
 }

@@ -32,18 +32,18 @@
 rtp_thread *rtp_init(void)
 {
 	rtp_thread *rtp_th;
-	
-	if ( !(rtp_th = (rtp_thread *) calloc(1, sizeof(rtp_thread))) ) {
+
+	if (!(rtp_th = (rtp_thread *) calloc(1, sizeof(rtp_thread)))) {
 		nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
 		return NULL;
 	}
-	
+
 	rtp_parsers_init();
-	
-	if ( pthread_mutex_init(&(rtp_th->syn), NULL) )
+
+	if (pthread_mutex_init(&(rtp_th->syn), NULL))
 		return NULL;
 	/* Decoder blocked 'till buffering is complete */
 	pthread_mutex_lock(&(rtp_th->syn));
-	
+
 	return rtp_th;
 }

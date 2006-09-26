@@ -38,7 +38,7 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
  * and link this function to che corresponding pointer in 
  * <tt>rtp_parser_uninit *rtp_parsers_uninits</tt> array in rtp_session struct.
  * */
- 
+
 #define RTP_PARSER(x) rtpparser rtp_parser_##x = { \
 	&served, \
 	NULL, \
@@ -49,7 +49,7 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
 /* the <tt>rtp_parser_init</tt> function is called at rtp thread start (in <tt>rtp_thread_create</tt>)
  * for all the parsers registered for announced payload types (present in the <tt>announced_fmts</tt> list)
  * */
- 
+
 #define RTP_PARSER_FULL(x) \
 	static int rtp_init_parser(rtp_session *rtp_sess, unsigned pt); \
 	static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt); \
@@ -60,4 +60,4 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
 		rtp_uninit_parser \
 	}
 
-#endif /*RTPPTFRAMER_H_*/
+#endif				/*RTPPTFRAMER_H_ */

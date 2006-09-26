@@ -31,7 +31,7 @@
 #ifndef BUFFERSIZE
 #define BUFFERSIZE 163840
 #endif
-int rtsp_recv(rtsp_thread *rtsp_th)
+int rtsp_recv(rtsp_thread * rtsp_th)
 {
 	int n;
 	char buffer[BUFFERSIZE];
@@ -42,7 +42,7 @@ int rtsp_recv(rtsp_thread *rtsp_th)
 		nms_printf(NMSML_ERR, "Could not read from RTSP socket\n");
 		return n;
 	}
-	
+
 	if (((rtsp_th->in_buffer).size) == 0) {
 		if (((rtsp_th->in_buffer).data = (char *) malloc(n + 1)) == NULL)
 			return nms_printf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
@@ -52,10 +52,10 @@ int rtsp_recv(rtsp_thread *rtsp_th)
 		if (((rtsp_th->in_buffer).data = (char *) realloc((rtsp_th->in_buffer).data,
 								  n + (rtsp_th->in_buffer).size + 1)) == NULL)
 			return nms_printf(NMSML_FATAL, "Cannot alloc memory space for received RTSP data\n");
-			
+
 		strcat((rtsp_th->in_buffer).data, buffer);
 	}
 	(rtsp_th->in_buffer).size += n;
-	(rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size]='\0';
+	(rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size] = '\0';
 	return n;
 }

@@ -34,7 +34,7 @@ FFMpegDec *init_ffmpeg(void)
 {
 	FFMpegDec *ff;
 
-	if (!(ff=malloc(sizeof(FFMpegDec)))) {
+	if (!(ff = malloc(sizeof(FFMpegDec)))) {
 		fprintf(stderr, "Could not alloc memory for FFMpeg data structures\n");
 		return NULL;
 	}
@@ -51,10 +51,10 @@ FFMpegDec *init_ffmpeg(void)
 	}
 	ff->context = avcodec_alloc_context();
 	ff->frame = avcodec_alloc_frame();
-	
-	if(ff->codec->capabilities&CODEC_CAP_TRUNCATED)
-		ff->context->flags|= CODEC_FLAG_TRUNCATED; /* we dont send complete frames */
- 
+
+	if (ff->codec->capabilities & CODEC_CAP_TRUNCATED)
+		ff->context->flags |= CODEC_FLAG_TRUNCATED;	/* we dont send complete frames */
+
 	/* open it */
 	if (avcodec_open(ff->context, ff->codec) < 0) {
 		fprintf(stderr, "libffmpeg: could not open codec\n");
@@ -62,8 +62,8 @@ FFMpegDec *init_ffmpeg(void)
 	}
 
 	ff->got_frame = 0;
-	
+
 	fprintf(stderr, "\nlibavcodec MPEG-1 decoder plugin succesfully initialized\n");
-   
+
 	return ff;
 }

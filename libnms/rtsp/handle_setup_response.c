@@ -29,24 +29,24 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int handle_setup_response(rtsp_thread *rtsp_th)
+int handle_setup_response(rtsp_thread * rtsp_th)
 {
 	char *tkn;		/* contiene una riga di descrizione */
 	char *prev_tkn;		/* punta prima al token precedente per il controllo sulla fine dell'header
 				   e poi ai vari componenti della riga di comando */
-	
+
 	rtsp_session *rtsp_sess;
 	rtsp_medium *rtsp_med;
 
 	// if (get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
-	if ( !(rtsp_sess=get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med=get_curr_sess(GCS_CUR_MED)))
+	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
 		return 1;
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
 		nms_printf(NMSML_ERR, "Invalid RTSP-SETUP response\n");
 		return 1;
 	}
-	if ( check_status(prev_tkn, rtsp_th) < 0 ){
+	if (check_status(prev_tkn, rtsp_th) < 0) {
 		remove_pkt(rtsp_th);
 		return 1;
 	}
@@ -64,10 +64,10 @@ int handle_setup_response(rtsp_thread *rtsp_th)
 			sscanf(prev_tkn, " : %llu ; ", &(rtsp_sess->Session_ID));
 		}
 	}
-	while ( (tkn!=NULL) && ((*tkn=='\r') || (*tkn=='\n') || (*tkn=='\0')) )
-		tkn=strtok(NULL, "\n"); /* cerco l'inizio del body o, eventualmente, del prossimo pkt */
-	if ( tkn!=NULL )
-		tkn[strlen(tkn)]='\n'; /* rimetto a posto il \n modificato dalla strtok */
+	while ((tkn != NULL) && ((*tkn == '\r') || (*tkn == '\n') || (*tkn == '\0')))
+		tkn = strtok(NULL, "\n");	/* cerco l'inizio del body o, eventualmente, del prossimo pkt */
+	if (tkn != NULL)
+		tkn[strlen(tkn)] = '\n';	/* rimetto a posto il \n modificato dalla strtok */
 
 	remove_pkt(rtsp_th);
 	memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));

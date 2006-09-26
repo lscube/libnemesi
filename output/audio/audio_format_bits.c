@@ -72,4 +72,3 @@ int audio_format_bits(int format)
 	}
 	return 8;
 }
-

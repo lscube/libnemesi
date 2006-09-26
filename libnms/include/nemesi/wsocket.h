@@ -47,15 +47,15 @@
 #ifdef WORDS_BIGENDIAN
 #define ntohl24(x) (x)
 #else
-#define ntohl24(x) (((x&0xff) << 16) | (x&0xff00) | ((x&0xff0000)>>16)) 
+#define ntohl24(x) (((x&0xff) << 16) | (x&0xff00) | ((x&0xff0000)>>16))
 #endif
 
 #ifndef HAVE_STRUCT_SOCKADDR_STORAGE
-#define MAXSOCKADDR 128 /*!< max socket address structure size */
+#define MAXSOCKADDR 128		/*!< max socket address structure size */
 struct sockaddr_storage {
 	char padding[MAXSOCKADDR];
 };
-#endif // HAVE_STRUCT_SOCKADDR_STORAGE
+#endif				// HAVE_STRUCT_SOCKADDR_STORAGE
 
 typedef struct {
 	struct sockaddr *addr;
@@ -79,14 +79,13 @@ enum sock_types {
 
 typedef struct {
 	enum sock_types type;
-	int fd; /*!< file descriptor for reading the data to and from the server */
+	int fd;			/*!< file descriptor for reading the data to and from the server */
 	nms_sockaddr peer;
-	/*human readable datas*/
+	/*human readable datas */
 	char *remote_port;
 	char *local_port;
 	char *remote_host;
-	/**/
-} nms_transport;
+ /**/} nms_transport;
 
 #define WSOCK_ERRFAMILYUNKNOWN	-1
 #define WSOCK_ERRSIZE	1
@@ -100,11 +99,11 @@ int server_connect(char *, char *, int *, enum sock_types);
 int server_create(char *, char *, int *);
 int tcp_write(int, void *, size_t);
 int tcp_read(int, void *, size_t);
-int sock_cmp_addr(const struct sockaddr *, const struct sockaddr * /*, socklen_t */);
-int sock_cmp_port(const struct sockaddr *, const struct sockaddr * /*, socklen_t */);
-void sock_set_port(struct sockaddr *, /* socklen_t,*/ int);
-void sock_set_addr(struct sockaddr *, /* socklen_t,*/ const void *addr);
-uint16 sock_get_port(const struct sockaddr * /*, socklen_t*/);
+int sock_cmp_addr(const struct sockaddr *, const struct sockaddr * /*, socklen_t */ );
+int sock_cmp_port(const struct sockaddr *, const struct sockaddr * /*, socklen_t */ );
+void sock_set_port(struct sockaddr *, /* socklen_t, */ int);
+void sock_set_addr(struct sockaddr *, /* socklen_t, */ const void *addr);
+uint16 sock_get_port(const struct sockaddr * /*, socklen_t */ );
 int sock_get_addr(const struct sockaddr *, nms_addr *);
 char *sock_ntop_host(const struct sockaddr *, socklen_t, char *, size_t);
 int sockaddrcmp(struct sockaddr *, socklen_t, struct sockaddr *, socklen_t);

@@ -27,7 +27,7 @@
  *  This file is largely and freely inspired by video_out_internal.h from MPlayer project.
  *  
  * */
- 
+
 #ifndef __VIDEO_DRIVER_H
 #define __VIDEO_DRIVER_H
 
@@ -36,14 +36,13 @@
 
 static uint32 preinit(const char *arg, uint32 buff_ms);
 static uint32 config(uint32 width, uint32 height, uint32 d_width,
-		     uint32 d_height, uint32 fps, uint8 fullscreen,
-		     char *title, uint32 format);
+		     uint32 d_height, uint32 fps, uint8 fullscreen, char *title, uint32 format);
 /*
 static void *config(uint32 width, uint32 height, char *title, uint32 format);
 */
 static uint32 control(uint32 cmd, void *arg, ...);
-static uint32 get_picture(int w, int h, nms_picture *pict);
-static uint32 draw_picture(nms_picture *pict, double pts);
+static uint32 get_picture(int w, int h, nms_picture * pict);
+static uint32 draw_picture(nms_picture * pict, double pts);
 static uint32 update_screen(double *next_pts);
 static void reset(void);
 static void uninit(void);
@@ -61,5 +60,4 @@ static void uninit(void);
 	uninit \
 }
 
-#endif // __VIDEO_DRIVER_H
-
+#endif				// __VIDEO_DRIVER_H

@@ -32,21 +32,21 @@
 char *statustostr(int status)
 {
 
-	switch(status){
-		case INIT:
-			// return strcpy((char *)calloc(4+1, 1),"INIT");
-			return "INIT";
-		case READY:
-			// return strcpy((char *)calloc(5+1, 1),"READY");
-			return "READY";
-		case PLAYING:
-			// return strcpy((char *)calloc(7+1, 1),"PLAYING");
-			return "PLAYING";
-		case RECORDING:
-			// return strcpy((char *)calloc(9+1, 1),"RECORDING");
-			return "RECORDING";
-		default:
-			break;
+	switch (status) {
+	case INIT:
+		// return strcpy((char *)calloc(4+1, 1),"INIT");
+		return "INIT";
+	case READY:
+		// return strcpy((char *)calloc(5+1, 1),"READY");
+		return "READY";
+	case PLAYING:
+		// return strcpy((char *)calloc(7+1, 1),"PLAYING");
+		return "PLAYING";
+	case RECORDING:
+		// return strcpy((char *)calloc(9+1, 1),"RECORDING");
+		return "RECORDING";
+	default:
+		break;
 	}
 	// return strcpy((char *)calloc(4+1, 1),"BOUH");
 	return "BOUH";

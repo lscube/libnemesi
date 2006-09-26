@@ -31,22 +31,22 @@
 
 void dec_clean(void *args)
 {
-	nms_output *outc = (nms_output *)args;
+	nms_output *outc = (nms_output *) args;
 
 	// kill Video Thread
 	video_th_stop(outc->video);
 	// Uninit Output modules
-	if ( (outc->video) && (outc->video->init) ) {
+	if ((outc->video) && (outc->video->init)) {
 		// outc->video->functions->uninit();
 		outc->video->functions->reset();
 		outc->video->init = 0;
 	}
-	if ( (outc->audio) && (outc->audio->init) ) {
+	if ((outc->audio) && (outc->audio->init)) {
 		outc->audio->functions->pause();
 		outc->audio->functions->reset();
 	}
 	if (outc->diskwriter)
-		close_files(outc->diskwriter->fd); 
+		close_files(outc->diskwriter->fd);
 
 	nms_printf(NMSML_DBG1, "Decoder Thread R.I.P.\n");
 }

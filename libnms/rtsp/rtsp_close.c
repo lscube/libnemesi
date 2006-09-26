@@ -28,12 +28,12 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_close(rtsp_ctrl *rtsp_ctl)
+int rtsp_close(rtsp_ctrl * rtsp_ctl)
 {
 	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-		rtsp_ctl->comm->opcode = CLOSE;
-		write(rtsp_ctl->pipefd[1], "c", 1);
-		rtsp_ctl->busy=1;
+	rtsp_ctl->comm->opcode = CLOSE;
+	write(rtsp_ctl->pipefd[1], "c", 1);
+	rtsp_ctl->busy = 1;
 	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
 	return 0;

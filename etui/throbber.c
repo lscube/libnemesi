@@ -32,7 +32,7 @@
 
 void throbber(void *arg)
 {
-	rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *)arg;
+	rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *) arg;
 	struct timeval tv;
 	char throbber[20][13] = { "[=          ]",
 		"[ =         ]",
@@ -56,15 +56,15 @@ void throbber(void *arg)
 		"[ =         ]"
 	};
 
-	
-	int i=0, j=0;
-	
+
+	int i = 0, j = 0;
+
 	setbuf(stdout, NULL);
-	
+
 	fprintf(stdout, "             ");
-	while ( rtsp_is_busy(rtsp_ctl) ) {
-		tv.tv_sec=0;
-		tv.tv_usec=50000;
+	while (rtsp_is_busy(rtsp_ctl)) {
+		tv.tv_sec = 0;
+		tv.tv_usec = 50000;
 		fprintf(stdout, "\b\b\b\b\b\b\b\b\b\b\b\b\b");
 		for (j = 0; j < 13; j++)
 			fprintf(stdout, "%c", throbber[i][j]);

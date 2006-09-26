@@ -28,27 +28,26 @@
 
 #include <nemesi/rtsp.h>
 
-int seturlname(rtsp_thread *rtsp_th, char *urlname)
+int seturlname(rtsp_thread * rtsp_th, char *urlname)
 {
 	char *server = NULL, *port = NULL, *path = NULL;
 
 	if (urltokenize(urlname, &server, &port, &path) > 0)
 		return 1;
 	if (port == NULL) {
-		if ( (port = (char *) malloc(4)) )
+		if ((port = (char *) malloc(4)))
 			sprintf(port, "%d", RTSP_DEFAULT_PORT);
 		else
 			return 1;
 	}
 	nms_printf(NMSML_DBG1, "server %s port %s\n", server, port);
 
-	if ((rtsp_th->urlname =
-	     (char *) malloc(strlen("rtsp://") + strlen(server) + strlen(path) + 1)) == NULL)
+	if ((rtsp_th->urlname = (char *) malloc(strlen("rtsp://") + strlen(server) + strlen(path) + 1)) == NULL)
 		return 1;
 	strcpy(rtsp_th->urlname, "rtsp://");
 	strcat(rtsp_th->urlname, server);
 	strcat(rtsp_th->urlname, path);
-#if 0 // port is already an allocated space => we use this without duplicating string;
+#if 0				// port is already an allocated space => we use this without duplicating string;
 	if ((rtsp_th->server_port = (char *) malloc(strlen(port) + 1)) == NULL)
 		return 1;
 	strcpy(rtsp_th->server_port, port);

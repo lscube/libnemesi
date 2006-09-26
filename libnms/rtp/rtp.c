@@ -33,57 +33,58 @@
 
 void *rtp(void *args)
 {
-	rtp_session *rtp_sess_head=((rtp_thread *)args)->rtp_sess_head;
-	pthread_mutex_t *syn = &((rtp_thread *)args)->syn;
+	rtp_session *rtp_sess_head = ((rtp_thread *) args)->rtp_sess_head;
+	pthread_mutex_t *syn = &((rtp_thread *) args)->syn;
 	rtp_session *rtp_sess;
 	struct timespec ts;
-	int maxfd=0;
-	
+	int maxfd = 0;
+
 	fd_set readset;
-	char buffering=1;
-	
-	for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
+	char buffering = 1;
+
+	for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
 		bpinit(&(rtp_sess->bp));
-	
+
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 /*	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
-	pthread_cleanup_push(rtp_clean, (void *)args);
+	pthread_cleanup_push(rtp_clean, (void *) args);
 
 	/* Playout Buffer Size */
 	/*
-	dec_args->startime.tv_sec=0;
-	dec_args->startime.tv_usec=700*(1000);
-	*/
+	   dec_args->startime.tv_sec=0;
+	   dec_args->startime.tv_usec=700*(1000);
+	 */
 	// dec_args->startime.tv_sec=PO_BUFF_SIZE_SEC;
 	// dec_args->startime.tv_usec=PO_BUFF_SIZE_MSEC*(1000);
 	/* 500 msec */
 
-	while(1){
+	while (1) {
 		FD_ZERO(&readset);
 
-		for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next){
-			maxfd = max(rtp_sess->rtpfd,maxfd);
+		for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next) {
+			maxfd = max(rtp_sess->rtpfd, maxfd);
 			FD_SET(rtp_sess->rtpfd, &readset);
 		}
-		
-		select(maxfd+1, &readset, NULL, NULL, NULL);
-		
-		for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next)
-			if (FD_ISSET(rtp_sess->rtpfd, &readset)){
+
+		select(maxfd + 1, &readset, NULL, NULL, NULL);
+
+		for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
+			if (FD_ISSET(rtp_sess->rtpfd, &readset)) {
 				if (buffering) {
-					if (rtp_sess->bp.flcount > BP_SLOT_NUM/2) {
+					if (rtp_sess->bp.flcount > BP_SLOT_NUM / 2) {
 						pthread_mutex_unlock(syn);
-						buffering=0;
-					} else { // TODO: buffering based on rtp jitter
-						nms_printf(NMSML_DBG1, "\rBuffering (%d)%\t", (100*rtp_sess->bp.flcount)/(BP_SLOT_NUM/2));
+						buffering = 0;
+					} else {	// TODO: buffering based on rtp jitter
+						nms_printf(NMSML_DBG1, "\rBuffering (%d)%\t",
+							   (100 * rtp_sess->bp.flcount) / (BP_SLOT_NUM / 2));
 					}
 				}
-				if(rtp_recv(rtp_sess)){
+				if (rtp_recv(rtp_sess)) {
 					/* Waiting 20 msec for decoder ready */
 					nms_printf(NMSML_DBG1, "Waiting for decoder ready!\n");
-					ts.tv_sec=0;
-					ts.tv_nsec=20*(1000);
+					ts.tv_sec = 0;
+					ts.tv_nsec = 20 * (1000);
 					nanosleep(&ts, NULL);
 				}
 			}

@@ -36,7 +36,7 @@
 * @return 0 in caso di successo, 1 altrimenti.
 * @see send_play_request.
 * */
-int play_cmd(rtsp_thread *rtsp_th, ...)
+int play_cmd(rtsp_thread * rtsp_th, ...)
 {
 	va_list ap;
 	char *args;
@@ -58,7 +58,7 @@ int play_cmd(rtsp_thread *rtsp_th, ...)
 	// get_curr_sess(GCS_UNINIT); // useless
 	// get_curr_sess(rtsp_th, NULL, NULL);
 	get_curr_sess(GCS_INIT, rtsp_th);
-	if (send_play_request(rtsp_th, args)){
+	if (send_play_request(rtsp_th, args)) {
 		va_end(ap);
 		return 1;
 	}

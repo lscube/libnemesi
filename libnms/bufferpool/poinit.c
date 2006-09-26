@@ -38,13 +38,13 @@
  * \see podel
  * \see bufferpool.h
  * */
-int poinit(playout_buff *po, buffer_pool *bp)
+int poinit(playout_buff * po, buffer_pool * bp)
 {
 	pthread_mutexattr_t mutex_attr;
 	pthread_condattr_t cond_attr;
 	int i;
 
-	po->bufferpool=&(bp->bufferpool);
+	po->bufferpool = &(bp->bufferpool);
 	po->pohead = po->potail = -1;
 	po->cycles = 0;
 	po->pocount = 0;
@@ -59,12 +59,12 @@ int poinit(playout_buff *po, buffer_pool *bp)
 #endif
 	if ((i = pthread_mutex_init(&(po->po_mutex), &mutex_attr)) > 0)
 		return i;
-		
+
 	// cond initialization
-	if ( (i = pthread_condattr_init(&cond_attr) ) > 0)
+	if ((i = pthread_condattr_init(&cond_attr)) > 0)
 		return i;
-//	if ( (i = pthread_cond_init(&(po->cond_empty), &cond_attr) ) > 0)
-//		return i;
+//      if ( (i = pthread_cond_init(&(po->cond_empty), &cond_attr) ) > 0)
+//              return i;
 
 	return 0;
 }

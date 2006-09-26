@@ -28,15 +28,15 @@
 
 #include <nemesi/wsocket.h>
 
-int nmst_read(nms_transport *transport, void *buffer, size_t nbytes)
+int nmst_read(nms_transport * transport, void *buffer, size_t nbytes)
 {
 	switch (transport->type) {
-		case TCP:
-			return read(transport->fd, buffer, nbytes);
-			break;
-		default:
-			break;
+	case TCP:
+		return read(transport->fd, buffer, nbytes);
+		break;
+	default:
+		break;
 	}
-	
+
 	return 1;
 }

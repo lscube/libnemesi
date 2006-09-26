@@ -30,9 +30,9 @@
 
 #include <nemesi/ccprefs.h>
 
-int pref2ccmask(cc_perm_mask *mask)
+int pref2ccmask(cc_perm_mask * mask)
 {
-	if (!strcmp(get_pref("acceptAll"),"yes"))
+	if (!strcmp(get_pref("acceptAll"), "yes"))
 		memset(mask, 0xFF, sizeof(cc_perm_mask));
 	else {
 		memset(mask, 0, sizeof(cc_perm_mask));
@@ -48,7 +48,6 @@ int pref2ccmask(cc_perm_mask *mask)
 		if (!strcmp(get_pref("publicDomain"), "yes"))
 			mask->spec_license = CC_PD;
 	}
-		
+
 	return 0;
 }
-

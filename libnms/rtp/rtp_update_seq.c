@@ -28,16 +28,16 @@
 
 #include <nemesi/rtp.h>
 
-void rtp_update_seq(rtp_ssrc *stm_src, uint16 seq)
+void rtp_update_seq(rtp_ssrc * stm_src, uint16 seq)
 {
-	struct rtp_ssrc_stats *stats=&(stm_src->ssrc_stats);
+	struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
 	uint16 udelta = seq - stats->max_seq;
 
-	if(stats->probation) {
-		if (seq == stats->max_seq + 1){
+	if (stats->probation) {
+		if (seq == stats->max_seq + 1) {
 			stats->probation--;
 			stats->max_seq = seq;
-			if (stats->probation == 0){
+			if (stats->probation == 0) {
 				rtp_init_seq(stm_src, seq);
 				stats->received++;
 				return;
@@ -47,25 +47,25 @@ void rtp_update_seq(rtp_ssrc *stm_src, uint16 seq)
 			stats->max_seq = seq;
 		}
 		return;
-	} else if ( udelta < MAX_DROPOUT ){
-		if ( seq < stats->max_seq ){
+	} else if (udelta < MAX_DROPOUT) {
+		if (seq < stats->max_seq) {
 			/*
 			 * Sequence number wrapped - count another 64k cycle.
 			 */
-			stats->cycles+=RTP_SEQ_MOD;
+			stats->cycles += RTP_SEQ_MOD;
 		}
 		stats->max_seq = seq;
-	} else if ( udelta <= RTP_SEQ_MOD - MAX_MISORDER ){
+	} else if (udelta <= RTP_SEQ_MOD - MAX_MISORDER) {
 		/* the sequence number made a very large jump */
-		if ( seq == stats->bad_seq ){
+		if (seq == stats->bad_seq) {
 			rtp_init_seq(stm_src, seq);
 		} else {
-			stats->bad_seq = (seq + 1) & ( RTP_SEQ_MOD-1 );
+			stats->bad_seq = (seq + 1) & (RTP_SEQ_MOD - 1);
 			return;
 		}
-	}/* else {
-			duplicate or reorder packet
-	}*/
+	}			/* else {
+				   duplicate or reorder packet
+				   } */
 	stats->received++;
 	return;
 }

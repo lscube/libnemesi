@@ -32,15 +32,15 @@
 #include <nemesi/rtp.h>
 
 typedef struct {
-	int16 static_pt; // -1 terminated list of served static payload numbers (MUST be <96)
-	char *mime[]; // NULL terminated list of served mime tipes in the form "type/subtype"
+	int16 static_pt;	// -1 terminated list of served static payload numbers (MUST be <96)
+	char *mime[];		// NULL terminated list of served mime tipes in the form "type/subtype"
 } rtpparser_info;
 
 typedef struct {
-	rtpparser_info      *served;
-	rtp_parser_init     init;
-	rtp_parser          parse;
-	rtp_parser_uninit   uninit;
+	rtpparser_info *served;
+	rtp_parser_init init;
+	rtp_parser parse;
+	rtp_parser_uninit uninit;
 } rtpparser;
 
-#endif /* RTPFRAMERS_H_ */
+#endif				/* RTPFRAMERS_H_ */

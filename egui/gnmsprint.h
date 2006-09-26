@@ -34,5 +34,4 @@
 void gnmsprint_init(void);
 int gnms_showmsgs(void);
 
-#endif // __GNMSPRINTF_H
-
+#endif				// __GNMSPRINTF_H

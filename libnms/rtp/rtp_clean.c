@@ -30,35 +30,35 @@
 
 void rtp_clean(void *args)
 {
-	rtp_thread *rtp_th = (rtp_thread *)args;
-	rtp_session *rtp_sess=rtp_th->rtp_sess_head;
+	rtp_thread *rtp_th = (rtp_thread *) args;
+	rtp_session *rtp_sess = rtp_th->rtp_sess_head;
 	rtp_session *prev_rtp_sess;
 	rtp_ssrc *csrc, *psrc;
 	struct rtp_conflict *conf, *pconf;
 	rtp_fmts_list *fmtlist, *pfmtlist;
 	int i;
-	
+
 	nms_printf(NMSML_DBG1, "RTP Thread is dying suicide!\n");
-//	pthread_mutex_lock(&rtp_th->syn);
-//	pthread_mutex_trylock(&rtp_th->syn);
-	
-	while(rtp_sess != NULL) {
+//      pthread_mutex_lock(&rtp_th->syn);
+//      pthread_mutex_trylock(&rtp_th->syn);
+
+	while (rtp_sess != NULL) {
 		close(rtp_sess->rtpfd);
 		close(rtp_sess->rtcpfd);
 
-		csrc=rtp_sess->ssrc_queue;
+		csrc = rtp_sess->ssrc_queue;
 
-		while(csrc != NULL){
-			psrc=csrc;
-			csrc=csrc->next;
-			for(i=0; i<9; i++)
-				free( ((char **)(&(psrc->ssrc_sdes)))[i] );
+		while (csrc != NULL) {
+			psrc = csrc;
+			csrc = csrc->next;
+			for (i = 0; i < 9; i++)
+				free(((char **) (&(psrc->ssrc_sdes)))[i]);
 			free(psrc->rtp_from.addr);
 			free(psrc->rtcp_from.addr);
 			free(psrc->rtcp_to.addr);
-			for (i=0; i<128; i++)
+			for (i = 0; i < 128; i++)
 				if (rtp_sess->parsers_uninits[i])
-					rtp_sess->parsers_uninits[i](psrc, i);
+					rtp_sess->parsers_uninits[i] (psrc, i);
 			free(psrc);
 		}
 		bpkill(&(rtp_sess->bp));
@@ -66,29 +66,30 @@ void rtp_clean(void *args)
 		// transport allocs
 		free((rtp_sess->transport).spec);
 
-		conf=rtp_sess->conf_queue;
-		while(conf) {
-			pconf=conf;
-			conf=conf->next;
+		conf = rtp_sess->conf_queue;
+		while (conf) {
+			pconf = conf;
+			conf = conf->next;
 			free(pconf->transaddr.addr);
 			free(pconf);
 		}
 		// announced rtp payload list
-		for(fmtlist=rtp_sess->announced_fmts; fmtlist; pfmtlist=fmtlist, fmtlist=fmtlist->next, free(pfmtlist));
+		for (fmtlist = rtp_sess->announced_fmts; fmtlist;
+		     pfmtlist = fmtlist, fmtlist = fmtlist->next, free(pfmtlist));
 		// rtp payload types definitions attributes
-		for (i=0; i<128; i++)
+		for (i = 0; i < 128; i++)
 			if (rtp_sess->ptdefs[i])
 				free(rtp_sess->ptdefs[i]->attrs.data);
 		// rtp payload types dynamic definitions
-		for (i=96; i<128; free(rtp_sess->ptdefs[i++]));
+		for (i = 96; i < 128; free(rtp_sess->ptdefs[i++]));
 
-		prev_rtp_sess=rtp_sess;
-		rtp_sess=rtp_sess->next;
+		prev_rtp_sess = rtp_sess;
+		rtp_sess = rtp_sess->next;
 		free(prev_rtp_sess);
 	}
 	rtp_th->rtp_sess_head = NULL;
-	
-//	pthread_mutex_unlock(&rtp_th->syn);
+
+//      pthread_mutex_unlock(&rtp_th->syn);
 
 	nms_printf(NMSML_DBG1, "RTP Thread R.I.P.\n");
 }

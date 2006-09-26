@@ -40,19 +40,19 @@
 * \see bprmv
 * \see bufferpool.h
 * */
-int bpget(buffer_pool *bp)
+int bpget(buffer_pool * bp)
 {
 	int offset;
 
 	/*
-	if (bp->flhead == -1) {
-		fprintf(stderr, "\n\tFreelist empty\n");
-		return -1;
-	}
-	*/
+	   if (bp->flhead == -1) {
+	   fprintf(stderr, "\n\tFreelist empty\n");
+	   return -1;
+	   }
+	 */
 
 	pthread_mutex_lock(&(bp->fl_mutex));
-	while(bp->flhead == -1)
+	while (bp->flhead == -1)
 		pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
 	offset = bp->flhead;
 	bp->flhead = bp->freelist[bp->flhead];

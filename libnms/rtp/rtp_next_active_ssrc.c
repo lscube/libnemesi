@@ -28,19 +28,19 @@
 
 #include <nemesi/rtp.h>
 
-rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc *ssrc)
+rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc)
 {
 	rtp_session *rtp_sess;
-	
+
 	if (!ssrc)
 		return NULL;
-		
+
 	if (ssrc->next_active)
 		return ssrc->next_active;
-	
-	for (rtp_sess=ssrc->rtp_sess->next; rtp_sess; rtp_sess=rtp_sess->next)
+
+	for (rtp_sess = ssrc->rtp_sess->next; rtp_sess; rtp_sess = rtp_sess->next)
 		if (rtp_sess->active_ssrc_queue)
 			return rtp_sess->active_ssrc_queue;
-	
+
 	return NULL;
 }

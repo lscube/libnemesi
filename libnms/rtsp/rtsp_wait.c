@@ -28,9 +28,9 @@
 
 #include <nemesi/rtsp.h>
 
-void rtsp_wait(rtsp_ctrl *rtsp_ctl)
+void rtsp_wait(rtsp_ctrl * rtsp_ctl)
 {
-	rtsp_thread *rtsp_th = (rtsp_thread *)rtsp_ctl;
+	rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_ctl;
 
 	pthread_mutex_lock(&(rtsp_th->comm_mutex));
 	while (rtsp_th->busy)
@@ -38,4 +38,3 @@ void rtsp_wait(rtsp_ctrl *rtsp_ctl)
 
 	pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 }
-

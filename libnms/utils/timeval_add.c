@@ -30,15 +30,14 @@
 
 int timeval_add(struct timeval *res, const struct timeval *x, const struct timeval *y)
 {
-	res->tv_sec = x->tv_sec+y->tv_sec;
-	
+	res->tv_sec = x->tv_sec + y->tv_sec;
+
 	res->tv_usec = x->tv_usec + y->tv_usec;
 
-	while( res->tv_usec > 1000000 ){
+	while (res->tv_usec > 1000000) {
 		res->tv_usec -= 1000000;
 		res->tv_sec++;
 	}
-	
+
 	return 0;
 }
-

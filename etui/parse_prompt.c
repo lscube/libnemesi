@@ -30,7 +30,7 @@
 #include <nemesi/preferences.h>
 
 
-int parse_prompt(rtsp_ctrl *rtsp_ctl, char *optstr)
+int parse_prompt(rtsp_ctrl * rtsp_ctl, char *optstr)
 {
 	char argstr[256];
 	char opt;
@@ -52,19 +52,22 @@ int parse_prompt(rtsp_ctrl *rtsp_ctl, char *optstr)
 		nms_printf(NMSML_NORM, "\t* stop                stop the playback\n");
 		nms_printf(NMSML_NORM, "\t* close               close the connection\n");
 		nms_printf(NMSML_NORM, "\t* edit option value   change the value of specified option\n");
-		nms_printf(NMSML_NORM, "\t* list                show list of editable options, with assigned values and short description\n");
-		nms_printf(NMSML_NORM, "\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
+		nms_printf(NMSML_NORM,
+			   "\t* list                show list of editable options, with assigned values and short description\n");
+		nms_printf(NMSML_NORM,
+			   "\nEvery command accepts also its first char as abbreviation (e.g. \'h\' for help).\n\n");
 		break;
 	case 'q':
 		nms_close(rtsp_ctl, throbber, rtsp_ctl);
 		return 1;
 	case 'v':
-		nms_printf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+		nms_printf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION,
+			   VERSION_NAME);
 		nms_printf(NMSML_NORM, "Copyleft 2001 - mancho@cclif.polito.it\n");
 		nms_printf(NMSML_NORM, "              - shawill@cclinf.polito.it\n\n");
 		break;
 	case 'o':
-		if ( sscanf(optstr, "%*s %s", argstr) != 1)
+		if (sscanf(optstr, "%*s %s", argstr) != 1)
 			nms_printf(NMSML_ERR, "Can't connect: no address given\n");
 		else {
 			nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"\n", argstr);
@@ -91,11 +94,11 @@ int parse_prompt(rtsp_ctrl *rtsp_ctl, char *optstr)
 		break;
 	case 'e':
 		/*
-		fgets(argstr, 256, stdin);
-		*(argstr+strlen(argstr)-1)='\0';
-		edit_pref(argstr+1); // c'� lo spazio all'inizio, lo togliamo
+		   fgets(argstr, 256, stdin);
+		   *(argstr+strlen(argstr)-1)='\0';
+		   edit_pref(argstr+1); // c'� lo spazio all'inizio, lo togliamo
 		 */
-		if ( sscanf(optstr, "%*s %[^\n]", argstr) > 0)
+		if (sscanf(optstr, "%*s %[^\n]", argstr) > 0)
 			edit_pref(argstr);
 		else
 			nms_printf(NMSML_ERR, "No preference give to edit\n");

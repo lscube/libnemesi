@@ -48,7 +48,7 @@ int load_plugins(void)
 	int pt;
 	lt_dlhandle module = NULL;
 	char *path, *ch;
-	char *str=NULL;
+	char *str = NULL;
 	nms_plugin *plugin;
 
 	DIR *plug_dir;
@@ -62,7 +62,7 @@ int load_plugins(void)
 
 	struct plugin *plugins, *pp, *ppp;
 
-	plugins=NULL;
+	plugins = NULL;
 
 	/* Set the module search path. */
 	if (!lt_dlinit()) {
@@ -73,24 +73,24 @@ int load_plugins(void)
 				return 1;
 			nms_printf(NMSML_VERB, "NEMESI_PLUGIN_DIR_ENV: %s\n", path);
 		} else {
-			if(lt_dlsetsearchpath(NEMESI_PLUGIN_DIR_DEFAULT))
+			if (lt_dlsetsearchpath(NEMESI_PLUGIN_DIR_DEFAULT))
 				return 1;
 			/* use strdup
-			if ((path = (char *) malloc(strlen(NEMESI_PLUGIN_DIR_DEFAULT) + 1)) == NULL)
-				return nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
-			strcpy(path, NEMESI_PLUGIN_DIR_DEFAULT);
-			*/
+			   if ((path = (char *) malloc(strlen(NEMESI_PLUGIN_DIR_DEFAULT) + 1)) == NULL)
+			   return nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
+			   strcpy(path, NEMESI_PLUGIN_DIR_DEFAULT);
+			 */
 			path = strdup(NEMESI_PLUGIN_DIR_DEFAULT);
-			nms_printf(NMSML_VERB,"NEMESI_PLUGIN_DIR: %s\n", path);
+			nms_printf(NMSML_VERB, "NEMESI_PLUGIN_DIR: %s\n", path);
 		}
 	} else
 		return 1;
 
-	if( (plug_dir = opendir(path)) == NULL )
+	if ((plug_dir = opendir(path)) == NULL)
 		return nms_printf(NMSML_ERR, "Plugins dir %s does not exist...\n", path);
 	while ((dentry = readdir(plug_dir)) != NULL) {
 		free(str);
-		if ((str=(char *)malloc(strlen(path) + strlen(dentry->d_name) + 2))==NULL)
+		if ((str = (char *) malloc(strlen(path) + strlen(dentry->d_name) + 2)) == NULL)
 			return nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 		strcpy(str, path);
 		strcat(str, "/");
@@ -98,36 +98,36 @@ int load_plugins(void)
 
 		stat(str, &buf);
 
-		if ( (dentry->d_name[0] == '.' ) || S_ISDIR(buf.st_mode))
+		if ((dentry->d_name[0] == '.') || S_ISDIR(buf.st_mode))
 			continue;
-		
+
 		strcpy(str, dentry->d_name);
-		if ( (ch=strrchr(str, '.')) )
-			*ch=0;
-		
-		if (plugins == NULL){
-			plugins=(struct plugin *)malloc(sizeof(struct plugin));
+		if ((ch = strrchr(str, '.')))
+			*ch = 0;
+
+		if (plugins == NULL) {
+			plugins = (struct plugin *) malloc(sizeof(struct plugin));
 			/* use strdup
-			plugins->path=(char *)malloc(strlen(str)+1);
-			strcpy(plugins->path,str);
-			*/
+			   plugins->path=(char *)malloc(strlen(str)+1);
+			   strcpy(plugins->path,str);
+			 */
 			plugins->path = strdup(str);
-			plugins->next=NULL;
+			plugins->next = NULL;
 		}
 
-		for (pp=plugins; ( pp->next != NULL ) && ( strcmp(pp->path, str) != 0 ); pp=pp->next);
-	
-		if (pp->next == NULL && strcmp(pp->path, str)){
-			pp->next=(struct plugin *)malloc(sizeof(struct plugin));
+		for (pp = plugins; (pp->next != NULL) && (strcmp(pp->path, str) != 0); pp = pp->next);
+
+		if (pp->next == NULL && strcmp(pp->path, str)) {
+			pp->next = (struct plugin *) malloc(sizeof(struct plugin));
 			/* use strdup
-			pp->next->path=(char *)malloc(strlen(str)+1);
-			strcpy(pp->next->path,str);
-			*/
+			   pp->next->path=(char *)malloc(strlen(str)+1);
+			   strcpy(pp->next->path,str);
+			 */
 			pp->next->path = strdup(str);
-			pp->next->next=NULL;
+			pp->next->next = NULL;
 		}
 	}
-	for (pp=plugins; pp != NULL ; pp=pp->next) {
+	for (pp = plugins; pp != NULL; pp = pp->next) {
 		/* Load the module. */
 		module = lt_dlopenext(pp->path);
 
@@ -137,7 +137,7 @@ int load_plugins(void)
 			if (!(plugin = (nms_plugin *) lt_dlsym(module, "plugin"))) {
 				lt_dlclose(module);
 				module = NULL;
-				nms_printf(NMSML_NORM,"lt_dsym() failed on plugin: %s\n", lt_dlerror());
+				nms_printf(NMSML_NORM, "lt_dsym() failed on plugin: %s\n", lt_dlerror());
 				continue;
 			}
 		} else {
@@ -151,33 +151,35 @@ int load_plugins(void)
 			module = NULL;
 			continue;
 		} else {
-			if ( decoders[pt] ){
+			if (decoders[pt]) {
 				lt_dlclose(module);
 				module = NULL;
-				nms_printf(NMSML_NORM, "WARNING! Plugin for RTP Payload Type %d already loaded: skipping...\n", pt);
+				nms_printf(NMSML_NORM,
+					   "WARNING! Plugin for RTP Payload Type %d already loaded: skipping...\n", pt);
 				continue;
 			}
-#if 1 // new interface not finished yet 
+#if 1				// new interface not finished yet
 			else
 				decoders[pt] = plugin->decode;
 #else
 			if (!(decoders[pt] = (int (*)()) lt_dlsym(module, "decode"))) {
 				lt_dlclose(module);
 				module = NULL;
-				decoders[pt]=NULL;
-				nms_printf(NMSML_NORM, "lt_dsym() failed loading decode function for plugin %s: %s\n", pp->path, lt_dlerror());
+				decoders[pt] = NULL;
+				nms_printf(NMSML_NORM, "lt_dsym() failed loading decode function for plugin %s: %s\n",
+					   pp->path, lt_dlerror());
 			}
 #endif
-	
+
 			nms_printf(NMSML_NORM, "Ok! Loaded plugin for RTP Payload Type %d.\n", pt);
 		}
 	}
-	pp=plugins;
-	while(pp) {
-		ppp=pp->next;
+	pp = plugins;
+	while (pp) {
+		ppp = pp->next;
 		free(pp->path);
 		free(pp);
-		pp=ppp;
+		pp = ppp;
 	}
 	free(str);
 	closedir(plug_dir);

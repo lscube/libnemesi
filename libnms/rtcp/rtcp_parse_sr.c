@@ -28,12 +28,12 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_parse_sr(rtp_ssrc *stm_src, rtcp_pkt *pkt)
+int rtcp_parse_sr(rtp_ssrc * stm_src, rtcp_pkt * pkt)
 {
 	nms_printf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
 	gettimeofday(&(stm_src->ssrc_stats.lastsr), NULL);
-	stm_src->ssrc_stats.ntplastsr[0]=ntohl(pkt->r.sr.si.ntp_seq);
-	stm_src->ssrc_stats.ntplastsr[1]=ntohl(pkt->r.sr.si.ntp_frac);
+	stm_src->ssrc_stats.ntplastsr[0] = ntohl(pkt->r.sr.si.ntp_seq);
+	stm_src->ssrc_stats.ntplastsr[1] = ntohl(pkt->r.sr.si.ntp_frac);
 	/* Per ora, non ci interessa altro. */
 	/* Forse le altre informazioni possono */
 	/* servire per un monitor RTP/RTCP */

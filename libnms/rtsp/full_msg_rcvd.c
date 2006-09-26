@@ -28,34 +28,33 @@
 
 #include <nemesi/rtsp.h>
 
-int full_msg_rcvd(rtsp_thread *rtsp_th)
+int full_msg_rcvd(rtsp_thread * rtsp_th)
 {
-	struct rtsp_buffer *in_buffer=&(rtsp_th->in_buffer);
-	char *back_n; /* puntatore ai caratteri newline */
-	char *head_end; /* puntatore alla fine dell'header */
+	struct rtsp_buffer *in_buffer = &(rtsp_th->in_buffer);
+	char *back_n;		/* puntatore ai caratteri newline */
+	char *head_end;		/* puntatore alla fine dell'header */
 	unsigned int body_len;
-	
-	if ( (head_end=strchr(in_buffer->data, '\n')) == NULL )
+
+	if ((head_end = strchr(in_buffer->data, '\n')) == NULL)
 		return 0;
 	do {
-		back_n=head_end;
-		if ( (head_end=strchr(head_end+1, '\n')) == NULL )
-			return 0; /* non e' arrivato un header intero */
-		if ( ((head_end-back_n)==2) && (*(back_n+1)=='\r') )
+		back_n = head_end;
+		if ((head_end = strchr(head_end + 1, '\n')) == NULL)
+			return 0;	/* non e' arrivato un header intero */
+		if (((head_end - back_n) == 2) && (*(back_n + 1) == '\r'))
 			break;
-	} while( (head_end-back_n)>1 ); /* trovata la fine dell'header */
-	while( (*(++head_end)=='\n') || (*head_end=='\r') ); /* cerca il primo 
-								carattere valido dopo
-							     la line vuota. */
-	if ( (body_len=body_exists(in_buffer->data)) == 0 ){
-		in_buffer->first_pkt_size=head_end-in_buffer->data;
-		return 1; /* ricevuto un intero messaggio (contenente solo l'header) */
+	} while ((head_end - back_n) > 1);	/* trovata la fine dell'header */
+	while ((*(++head_end) == '\n') || (*head_end == '\r'));	/* cerca il primo 
+								   carattere valido dopo
+								   la line vuota. */
+	if ((body_len = body_exists(in_buffer->data)) == 0) {
+		in_buffer->first_pkt_size = head_end - in_buffer->data;
+		return 1;	/* ricevuto un intero messaggio (contenente solo l'header) */
 	}
-	
-	if ( strlen(head_end)<body_len )
-		return 0; /* non e' arrivato ancora per intero il body */
 
-	in_buffer->first_pkt_size=head_end-in_buffer->data+body_len;
-	return 1; /* e' arrivato il messaggio per intero */
+	if (strlen(head_end) < body_len)
+		return 0;	/* non e' arrivato ancora per intero il body */
+
+	in_buffer->first_pkt_size = head_end - in_buffer->data + body_len;
+	return 1;		/* e' arrivato il messaggio per intero */
 }
-

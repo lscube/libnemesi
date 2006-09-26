@@ -43,11 +43,11 @@
 #include <nemesi/output.h>
 #include <nemesi/types.h>
 
-typedef int (*decoder_fnc)(char *, int, nms_output *);
+typedef int (*decoder_fnc) (char *, int, nms_output *);
 #define DECODERS(x) ((decoder_fnc *)(x))
 
-extern pthread_t decoder_tid; // decoder thread ID
-extern int (*decoders[128])(char *, int, nms_output *); // defined in decoder.c
+extern pthread_t decoder_tid;	// decoder thread ID
+extern int (*decoders[128]) (char *, int, nms_output *);	// defined in decoder.c
 
 void *decoder(void *);
 

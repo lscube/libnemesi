@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <stdarg.h>
 
-int stop_cmd(rtsp_thread *rtsp_th, ...)
+int stop_cmd(rtsp_thread * rtsp_th, ...)
 {
 	va_list ap;
 	char *args;
@@ -52,9 +52,9 @@ int stop_cmd(rtsp_thread *rtsp_th, ...)
 	// get_curr_sess(GCS_UNINIT); // useless
 	// get_curr_sess(rtsp_th, NULL, NULL);
 	get_curr_sess(GCS_INIT, rtsp_th);
-	if (send_pause_request(rtsp_th, args)){
-			va_end(ap);
-			return 1;
+	if (send_pause_request(rtsp_th, args)) {
+		va_end(ap);
+		return 1;
 	}
 
 	va_end(ap);

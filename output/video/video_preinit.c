@@ -43,7 +43,7 @@ nms_video *video_preinit(char *drv_hint, uint32 sysbuff_ms)
 {
 	nms_video *vc;
 
-	if ((vc=malloc(sizeof(nms_video))) == NULL) {
+	if ((vc = malloc(sizeof(nms_video))) == NULL) {
 		nms_printf(NMSML_FATAL, "Could not alloc video structure\n");
 		return NULL;
 	}
@@ -54,22 +54,21 @@ nms_video *video_preinit(char *drv_hint, uint32 sysbuff_ms)
 
 	// Video Output Driver selection
 #if 0
-	vc->functions = &nms_video_sdl; // XXX: very very temporanea
+	vc->functions = &nms_video_sdl;	// XXX: very very temporanea
 	funcs = vc->functions;
 
 	// TODO: parse drv_hint for subdriver
 
 	// video init
-	if (funcs->preinit(NULL)) // TODO: send subdriver hint
+	if (funcs->preinit(NULL))	// TODO: send subdriver hint
 		return NULL;
 #endif
-	if ( !(vc->functions = init_best_video_out(drv_hint, sysbuff_ms)) ) {
+	if (!(vc->functions = init_best_video_out(drv_hint, sysbuff_ms))) {
 		free(vc);
 		return NULL;
 	}
-	
+
 	nms_printf(NMSML_NORM, "Video driver: %s\n", vc->functions->info->name);
 
 	return vc;
 }
-

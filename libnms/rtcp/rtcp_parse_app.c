@@ -29,7 +29,7 @@
 #include <nemesi/rtcp.h>
 #include <nemesi/comm.h>
 
-int rtcp_parse_app(rtcp_pkt *pkt)
+int rtcp_parse_app(rtcp_pkt * pkt)
 {
 	// TODO: handle app packet
 	nms_printf(NMSML_DBG1, "Received APP from SSRC: %u\n", pkt->r.app.src);

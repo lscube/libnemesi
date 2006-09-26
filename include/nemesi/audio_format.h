@@ -30,13 +30,13 @@
 
 /* Defines that AFMT_ stuff */
 
-#include <config.h> /* for native endianness */
+#include <config.h>		/* for native endianness */
 
 #ifdef	HAVE_SYS_SOUNDCARD_H
 #include <sys/soundcard.h>	/* For AFMT_* on linux */
-#else 
+#else
 #ifdef HAVE_SOUNDCARD_H
-#include <soundcard.h> /* OpenBSD have this instead of <sys/soundcard> */
+#include <soundcard.h>		/* OpenBSD have this instead of <sys/soundcard> */
 #endif
 #endif
 
@@ -46,7 +46,7 @@
 #	define AFMT_A_LAW		0x00000002
 #	define AFMT_IMA_ADPCM		0x00000004
 #	define AFMT_U8			0x00000008
-#	define AFMT_S16_LE		0x00000010	/* Little endian signed 16*/
+#	define AFMT_S16_LE		0x00000010	/* Little endian signed 16 */
 #	define AFMT_S16_BE		0x00000020	/* Big endian signed 16 */
 #	define AFMT_S8			0x00000040
 #	define AFMT_U16_LE		0x00000080	/* Little endian U16 */
@@ -85,4 +85,3 @@
 
 char *audio_format_name(int format);
 int audio_format_bits(int format);
-

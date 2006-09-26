@@ -41,30 +41,31 @@ GNMSurl *gnmsurl_init(void)
 	GtkListStore *list_store;
 	GtkTreeIter iter;
 
-	if (!(new=malloc(sizeof(GNMSurl)))) {
+	if (!(new = malloc(sizeof(GNMSurl)))) {
 		nms_printf(NMSML_FATAL, "Could not alloc memory for completion struct\n");
 		return NULL;
 	}
 
-	list_store = gtk_list_store_new (1, G_TYPE_STRING);
-	gtk_list_store_append (list_store, &iter);
+	list_store = gtk_list_store_new(1, G_TYPE_STRING);
+	gtk_list_store_append(list_store, &iter);
 	gtk_list_store_set(list_store, &iter, 0, "rtsp://", -1);
 
 	new->model = GTK_TREE_MODEL(list_store);
 	new->txt_col = 0;
-		
+
 	return new;
 }
 
-gboolean gnmscompletion_machfunc(GtkEntryCompletion *completion, const gchar *key, GtkTreeIter *iter, gpointer user_data)
+gboolean gnmscompletion_machfunc(GtkEntryCompletion * completion, const gchar * key, GtkTreeIter * iter,
+				 gpointer user_data)
 {
-	GNMSurl *gnmsurl = (GNMSurl *)user_data;
+	GNMSurl *gnmsurl = (GNMSurl *) user_data;
 	gchar *str_data;
 	gboolean match;
-	
+
 	nms_printf(NMSML_DBG3, "key to comp %s\n", key);
-	
-	gtk_tree_model_get (gnmsurl->model, iter, 0, &str_data, -1);
+
+	gtk_tree_model_get(gnmsurl->model, iter, 0, &str_data, -1);
 	if (!str_data) {
 		nms_printf(NMSML_DBG3, "no string to match\n");
 		return FALSE;
@@ -81,8 +82,7 @@ gboolean gnmscompletion_machfunc(GtkEntryCompletion *completion, const gchar *ke
 
 void gnmsurl_destroy(gpointer data)
 {
-	GNMSurl *gnmsurl = (GNMSurl *)data;
+	GNMSurl *gnmsurl = (GNMSurl *) data;
 
 	free(gnmsurl);
 }
-

@@ -25,15 +25,14 @@ extern "C" {
 
 #include "common.h"
 
-BOOL InitMP3(PMPSTR mp);
-int	 decodeMP3(PMPSTR mp,unsigned char *inmemory,int inmemsize,char *outmemory,int outmemsize,int *done);
-void ExitMP3(PMPSTR mp);
+	BOOL InitMP3(PMPSTR mp);
+	int decodeMP3(PMPSTR mp, unsigned char *inmemory, int inmemsize, char *outmemory, int outmemsize, int *done);
+	void ExitMP3(PMPSTR mp);
 
 /* added remove_buf to support mpglib seeking */
-void remove_buf(PMPSTR mp);
+	void remove_buf(PMPSTR mp);
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

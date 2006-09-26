@@ -28,28 +28,27 @@
 
 #include <nemesi/rtcp.h>
 
-int rtcp_send_rr(rtp_session *rtp_sess)
+int rtcp_send_rr(rtp_session * rtp_sess)
 {
 	rtcp_pkt *pkt;
 	int len;
 	uint32 rr_buff[MAX_PKT_SIZE];
 	rtp_ssrc *stm_src;
 
-	memset(rr_buff, 0, MAX_PKT_SIZE*sizeof(uint32));
-	pkt=(rtcp_pkt *)rr_buff;
+	memset(rr_buff, 0, MAX_PKT_SIZE * sizeof(uint32));
+	pkt = (rtcp_pkt *) rr_buff;
 
-	len = rtcp_build_rr(rtp_sess, pkt); /* in 32 bit words */
-	pkt=(rtcp_pkt *)(rr_buff+len);
-	len += rtcp_build_sdes(rtp_sess, pkt, (MAX_PKT_SIZE >> 2) - len); /* in 32 bit words */
+	len = rtcp_build_rr(rtp_sess, pkt);	/* in 32 bit words */
+	pkt = (rtcp_pkt *) (rr_buff + len);
+	len += rtcp_build_sdes(rtp_sess, pkt, (MAX_PKT_SIZE >> 2) - len);	/* in 32 bit words */
 
-	for(stm_src=rtp_sess->ssrc_queue; stm_src; stm_src=stm_src->next)
+	for (stm_src = rtp_sess->ssrc_queue; stm_src; stm_src = stm_src->next)
 		if (stm_src->rtcptofd > 0) {
-			if( write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0 )
+			if (write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0)
 				nms_printf(NMSML_WARN, "WARNING! Error while sending RTCP pkt\n");
 			else
 				nms_printf(NMSML_DBG1, "RTCP RR packet sent\n");
 		}
-	
-	return len;	
-}
 
+	return len;
+}

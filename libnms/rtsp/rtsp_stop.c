@@ -28,14 +28,14 @@
 
 #include <nemesi/rtsp.h>
 
-int rtsp_stop(rtsp_ctrl *rtsp_ctl)
+int rtsp_stop(rtsp_ctrl * rtsp_ctl)
 {
 
 	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-		rtsp_ctl->comm->opcode= STOP;
-		write(rtsp_ctl->pipefd[1], "s", 1);
-		*(rtsp_ctl->comm->arg)='\0';
-		rtsp_ctl->busy=1;
+	rtsp_ctl->comm->opcode = STOP;
+	write(rtsp_ctl->pipefd[1], "s", 1);
+	*(rtsp_ctl->comm->arg) = '\0';
+	rtsp_ctl->busy = 1;
 	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
 	return 0;

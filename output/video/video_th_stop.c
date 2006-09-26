@@ -31,7 +31,7 @@
 #include <nemesi/video.h>
 #include <nemesi/comm.h>
 
-int video_th_stop(nms_video *vc)
+int video_th_stop(nms_video * vc)
 {
 	void *ret;
 
@@ -40,12 +40,11 @@ int video_th_stop(nms_video *vc)
 		if (pthread_cancel(vc->tid) != 0)
 			nms_printf(NMSML_DBG2, "Error while sending cancelation to Video Thread.\n");
 		else
-			pthread_join(vc->tid, (void **)&ret);
-		if ( ret != PTHREAD_CANCELED )
+			pthread_join(vc->tid, (void **) &ret);
+		if (ret != PTHREAD_CANCELED)
 			nms_printf(NMSML_DBG2, "Warning! Video Thread joined, but  not canceled!\n");
 		vc->tid = 0;
 	}
 
 	return 0;
 }
-

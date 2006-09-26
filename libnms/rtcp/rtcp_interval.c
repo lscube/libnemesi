@@ -31,23 +31,23 @@
 double rtcp_interval(int members, int senders, double rtcp_bw, int we_sent, double avg_rtcp_size, int initial)
 {
 	double t;
-	double rtcp_min_time=RTCP_MIN_TIME;
+	double rtcp_min_time = RTCP_MIN_TIME;
 	int n;
 
 	if (initial)
 		rtcp_min_time /= 2;
 
 	n = members;
-	if ( senders > 0 && senders < members*RTCP_SENDER_BW_FRACTION){
-		if (we_sent){
+	if (senders > 0 && senders < members * RTCP_SENDER_BW_FRACTION) {
+		if (we_sent) {
 			rtcp_bw *= RTCP_SENDER_BW_FRACTION;
-			n=senders;
+			n = senders;
 		} else {
 			rtcp_bw *= RTCP_RCVR_BW_FRACTION;
 			n -= senders;
 		}
 	}
-	if ( (t = avg_rtcp_size * n / rtcp_bw) < rtcp_min_time )
+	if ((t = avg_rtcp_size * n / rtcp_bw) < rtcp_min_time)
 		t = rtcp_min_time;
 	t = (t * (drand48() + 0.5)) / COMPENSATION;
 	return t;

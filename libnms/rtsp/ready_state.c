@@ -29,9 +29,9 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int ready_state(rtsp_thread *rtsp_th, short event)
+int ready_state(rtsp_thread * rtsp_th, short event)
 {
-	switch(event) {
+	switch (event) {
 	case RTSP_PLAY_RESPONSE:
 		if (handle_play_response(rtsp_th))
 			return 1;
@@ -73,7 +73,7 @@ int ready_state(rtsp_thread *rtsp_th, short event)
 		nms_printf(NMSML_ERR, "Could not handle method in READY state\n");
 		return 1;
 		break;
-	
+
 	}
 	return 0;
 }

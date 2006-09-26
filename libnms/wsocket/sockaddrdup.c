@@ -28,14 +28,13 @@
 
 #include <nemesi/wsocket.h>
 
-int sockaddrdup(nms_sockaddr *dst, nms_sockaddr *src)
+int sockaddrdup(nms_sockaddr * dst, nms_sockaddr * src)
 {
 
-	if( !(dst->addr=malloc(src->addr_len)) )
+	if (!(dst->addr = malloc(src->addr_len)))
 		return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 	memcpy(dst->addr, src->addr, src->addr_len);
 	dst->addr_len = src->addr_len;
-	
+
 	return 0;
 }
-

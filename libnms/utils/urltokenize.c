@@ -69,7 +69,7 @@ int urltokenize(char *urlname, char **host, char **port, char **path)
 	token += strlen(token);
 	*(token) = '/';
 	if (path != NULL) {
-			*path = strdup(token);
+		*path = strdup(token);
 	}
 
 	free(tokenda);

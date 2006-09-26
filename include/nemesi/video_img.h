@@ -50,5 +50,4 @@ typedef struct {
 } NMSRect;
 */
 
-#endif // __VIDEO_IMG_H
-
+#endif				// __VIDEO_IMG_H

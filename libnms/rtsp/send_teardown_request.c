@@ -29,7 +29,7 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int send_teardown_request(rtsp_thread *rtsp_th)
+int send_teardown_request(rtsp_thread * rtsp_th)
 {
 
 	char b[256];
@@ -39,17 +39,17 @@ int send_teardown_request(rtsp_thread *rtsp_th)
 	memset(b, 0, 256);
 
 	// if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
-	if ( !(rtsp_sess=get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med=get_curr_sess(GCS_CUR_MED)) )
+	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
 		return 1;
 
-	if ( rtsp_sess->content_base != NULL)
-		sprintf(b, "%s %s/%s %s"RTSP_EL, CLOSE_TKN, rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
+	if (rtsp_sess->content_base != NULL)
+		sprintf(b, "%s %s/%s %s" RTSP_EL, CLOSE_TKN, rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
 	else
-		sprintf(b, "%s %s %s"RTSP_EL, CLOSE_TKN, rtsp_med->filename, RTSP_VER);
+		sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN, rtsp_med->filename, RTSP_VER);
 
-	sprintf(b + strlen(b), "CSeq: %d"RTSP_EL, ++(rtsp_sess->CSeq));
+	sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
 	if (rtsp_sess->Session_ID != 0)	/*must add session ID? */
-		sprintf(b + strlen(b), "Session: %llu"RTSP_EL, rtsp_sess->Session_ID);
+		sprintf(b + strlen(b), "Session: %llu" RTSP_EL, rtsp_sess->Session_ID);
 	strcat(b, RTSP_EL);
 
 	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
@@ -61,4 +61,3 @@ int send_teardown_request(rtsp_thread *rtsp_th)
 
 	return 0;
 }
-

@@ -36,43 +36,43 @@
  * \param status_line the status line in the reply
  * \return reply status code or -1 on error
  */
-int check_status(char *status_line, rtsp_thread *rtsp_th)
+int check_status(char *status_line, rtsp_thread * rtsp_th)
 {
 	char ver[32];
 	unsigned short res_state;
 	char *reason_phrase;
-	char *location=NULL;
+	char *location = NULL;
 	// string tokenizers
 	char *tkn, *prev_tkn;
 
-	if ( sscanf(status_line, "%s %hu ", ver, &res_state) < 2) {
+	if (sscanf(status_line, "%s %hu ", ver, &res_state) < 2) {
 		nms_printf(NMSML_ERR, "invalid Status-Line in DESCRIBE Response\n");
 		return -1;
 	}
-	reason_phrase=strchr(strchr(status_line, ' ')+1, ' ')+1;
+	reason_phrase = strchr(strchr(status_line, ' ') + 1, ' ') + 1;
 
 	if (RTSP_IS_SUCCESS(res_state))
 		return res_state;
 	// if ( (res_state>=300) && (res_state<400) ) {
-	if ( RTSP_IS_REDIRECT(res_state) ) {
+	if (RTSP_IS_REDIRECT(res_state)) {
 		nms_printf(NMSML_NORM, "WARNING: Redirection. reply was: %hu %s\n", res_state, reason_phrase);
 		switch (res_state) {
 		case RTSP_FOUND:
-			if ( (prev_tkn=strtok((rtsp_th->in_buffer).data + strlen(status_line) + 1,"\n"))==NULL ) {
+			if ((prev_tkn = strtok((rtsp_th->in_buffer).data + strlen(status_line) + 1, "\n")) == NULL) {
 				nms_printf(NMSML_ERR, "Could not find \"Location\" so... were I'll redirect you?\n");
 				return -1;
 			}
-			while ( ((tkn=strtok(NULL, "\n")) != NULL) && ((tkn-prev_tkn)>1) ) {
-				if ( ((tkn-prev_tkn)==2) && (*prev_tkn=='\r') )
+			while (((tkn = strtok(NULL, "\n")) != NULL) && ((tkn - prev_tkn) > 1)) {
+				if (((tkn - prev_tkn) == 2) && (*prev_tkn == '\r'))
 					break;
-				if ( !strncmpcase(prev_tkn, "Location", 8) ) {
-					prev_tkn+=8;
-					while ( (*(prev_tkn)==' ') || (*(prev_tkn)==':') )
+				if (!strncmpcase(prev_tkn, "Location", 8)) {
+					prev_tkn += 8;
+					while ((*(prev_tkn) == ' ') || (*(prev_tkn) == ':'))
 						prev_tkn++;
 					location = strdup(prev_tkn);
 					// sscanf(prev_tkn,"%d",&location);
 				}
-				prev_tkn=tkn;
+				prev_tkn = tkn;
 			}
 			if (location) {
 				nms_printf(NMSML_NORM, "Redirecting to %s\n", location);
@@ -89,10 +89,10 @@ int check_status(char *status_line, rtsp_thread *rtsp_th)
 		}
 	}
 	// if ( (res_state>=400) && (res_state<500))
-	if ( RTSP_IS_CLIENT_ERROR(res_state) )
+	if (RTSP_IS_CLIENT_ERROR(res_state))
 		nms_printf(NMSML_ERR, "Client error. Reply was: %hu %s\n", res_state, reason_phrase);
 	// if ( res_state>=500 )
-	if ( RTSP_IS_SERVER_ERROR(res_state) )
+	if (RTSP_IS_SERVER_ERROR(res_state))
 		nms_printf(NMSML_ERR, "Server error. Reply was: %hu %s\n", res_state, reason_phrase);
 	return -1;
 }

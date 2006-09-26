@@ -25,8 +25,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
  * */
- 
- #include <nemesi/decoder.h>
+
+#include <nemesi/decoder.h>
 
 int dec_destroy(pthread_t tid)
 {
@@ -37,8 +37,8 @@ int dec_destroy(pthread_t tid)
 		if (pthread_cancel(tid) != 0)
 			nms_printf(NMSML_DBG2, "Error while sending cancelation to Decoder Thread.\n");
 		else
-			pthread_join(tid, (void **)&ret);
-		if ( ret != PTHREAD_CANCELED )
+			pthread_join(tid, (void **) &ret);
+		if (ret != PTHREAD_CANCELED)
 			nms_printf(NMSML_DBG2, "Warning! Decoder Thread joined, but not canceled!\n");
 	}
 

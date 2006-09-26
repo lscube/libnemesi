@@ -30,29 +30,32 @@
 #include <nemesi/methods.h>
 #include <nemesi/wsocket.h>
 
-int send_pause_request(rtsp_thread *rtsp_th, char *range)
+int send_pause_request(rtsp_thread * rtsp_th, char *range)
 {
 	char b[256];
 	rtsp_session *rtsp_sess;
 
 	// get_curr_sess(NULL, &rtsp_sess, NULL);
-	rtsp_sess=get_curr_sess(GCS_CUR_SESS);
-	
-	if ( rtsp_sess->content_base != NULL)
+	rtsp_sess = get_curr_sess(GCS_CUR_SESS);
+
+	if (rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)
-			sprintf(b, "%s %s/%s %s"RTSP_EL"CSeq: %d"RTSP_EL, PAUSE_TKN, rtsp_sess->content_base, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+			sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN, rtsp_sess->content_base,
+				rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 		else
-			sprintf(b, "%s %s %s"RTSP_EL"CSeq: %d"RTSP_EL, PAUSE_TKN, rtsp_sess->content_base, RTSP_VER, ++(rtsp_sess->CSeq));
+			sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
+				++(rtsp_sess->CSeq));
 	else
-		sprintf(b, "%s %s %s"RTSP_EL"CSeq: %d"RTSP_EL, PAUSE_TKN, rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
-		
+		sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN, rtsp_sess->pathname, RTSP_VER,
+			++(rtsp_sess->CSeq));
+
 	if (rtsp_sess->Session_ID != 0)	/* must add session ID? */
-		sprintf(b + strlen(b), "Session: %llu"RTSP_EL, rtsp_sess->Session_ID);
+		sprintf(b + strlen(b), "Session: %llu" RTSP_EL, rtsp_sess->Session_ID);
 	if (range && *range)
-		sprintf(b + strlen(b), "Range: %s"RTSP_EL, range);
+		sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
 	else
-		sprintf(b + strlen(b), "Range: time=0-"RTSP_EL);
-	
+		sprintf(b + strlen(b), "Range: time=0-" RTSP_EL);
+
 	strcat(b, RTSP_EL);
 
 	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {

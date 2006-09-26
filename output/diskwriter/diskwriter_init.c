@@ -38,7 +38,7 @@ nms_diskwriter *diskwriter_init(const char *basename)
 	// struct disk_buff *disk_buffer;
 
 	// use of calloc in order to initialize strings also
-	if ((dc=calloc(1, sizeof(nms_diskwriter))) == NULL) {
+	if ((dc = calloc(1, sizeof(nms_diskwriter))) == NULL) {
 		nms_printf(NMSML_FATAL, "Could not alloc disk writer structure\n");
 		return NULL;
 	}
@@ -50,29 +50,28 @@ nms_diskwriter *diskwriter_init(const char *basename)
 
 
 	// See if we can open file in chosen directory
-	if ( (fd=open( dc->basename, O_EXCL)) > 0 ) {
+	if ((fd = open(dc->basename, O_EXCL)) > 0) {
 		close(fd);
-	} else if ( (fd=creat( dc->basename, 00644)) > 0 ) {
+	} else if ((fd = creat(dc->basename, 00644)) > 0) {
 		close(fd);
-		unlink( dc->basename );
+		unlink(dc->basename);
 	} else {
 		fprintf(stderr, "\nError initializzing Disk Writer Module: you have not write permission\n");
 		free(dc);
 		return NULL;
 	}
 
-	for(fd=0;fd<=MAX_PT;fd++)
-		dc->fd[fd]=-1;
-	
-	/*
-	if ( (disk_buffer=db_init()) == NULL ) {
-		fprintf(stderr, "\nFailed while initializing Disk Writer Buffer\n");
-		return 1;
-	}
+	for (fd = 0; fd <= MAX_PT; fd++)
+		dc->fd[fd] = -1;
 
-	global_disk_buffer=disk_buffer;
-	*/
-	
+	/*
+	   if ( (disk_buffer=db_init()) == NULL ) {
+	   fprintf(stderr, "\nFailed while initializing Disk Writer Buffer\n");
+	   return 1;
+	   }
+
+	   global_disk_buffer=disk_buffer;
+	 */
+
 	return dc;
 }
-

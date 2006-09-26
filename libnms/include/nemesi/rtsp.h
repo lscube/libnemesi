@@ -113,11 +113,11 @@ struct command {
 typedef struct rtsp_medium_s {
 	sdp_medium_info *medium_info;	/*!< Medium informations. */
 	rtp_session *rtp_sess;	/*!< RTP session whom
-					  the medium belongs */
+				   the medium belongs */
 	struct rtsp_medium_s *next;	/*!< Next medium. */
-	char *filename;			/*!< Medium identifier. Used for the
-					  ``per medium'' methods
-					  (SETUP, TEARDOWN). */
+	char *filename;		/*!< Medium identifier. Used for the
+				   ``per medium'' methods
+				   (SETUP, TEARDOWN). */
 } rtsp_medium;
 
 /*!
@@ -141,27 +141,27 @@ typedef struct rtsp_medium_s {
 typedef struct rtsp_session_s {
 	uint64 Session_ID;	/*!< RTSP identifier. */
 	int CSeq;		/*!< Last sent RTSP packet 
-				  sequence number */
+				   sequence number */
 	char *pathname;		/*!< RTSP session identifier.
-				  Used for the ``per session''
-				  methods (PLAY, PAUSE, RECORD) */
+				   Used for the ``per session''
+				   methods (PLAY, PAUSE, RECORD) */
 	char *content_base;	/*!< Not \c NULL if a Content-Base field
-				  is found in the response to the DESCRIBE 
-				  method. In this case the field
-				  <tt>\ref pathname</tt> and all the
-				  <tt>\ref rtsp_medium</tt> of the session
-				  are relative to \c content_base path. */
+				   is found in the response to the DESCRIBE 
+				   method. In this case the field
+				   <tt>\ref pathname</tt> and all the
+				   <tt>\ref rtsp_medium</tt> of the session
+				   are relative to \c content_base path. */
 	sdp_session_info *info;	/*!< Session informations */
-	
-	rtsp_medium *media_queue; /*!< Media queue */
+
+	rtsp_medium *media_queue;	/*!< Media queue */
 	struct rtsp_session_s *next;	/*!< Next session */
 	/********************************************/
 	/* Do NOT USE IT! JUST FOR INTERNAL USAGE!  */
 	/********************************************/
 	char *body;		/*!< Contains the raw describe response.
-				  It should be NEVER accessed directly.
-				  All the data is available through
-				  <tt>\ref rtsp_session_info</tt>. */
+				   It should be NEVER accessed directly.
+				   All the data is available through
+				   <tt>\ref rtsp_session_info</tt>. */
 } rtsp_session;
 
 /*!
@@ -195,7 +195,7 @@ struct rtsp_buffer {
 			pthread_t rtsp_tid; \
 			char descr_fmt; /* Description format inside RTSP body */ \
 			rtsp_session *rtsp_queue;/*!< List of active sessions. */ \
-			cc_perm_mask accepted_CC; /* accepted CC licenses */
+			cc_perm_mask accepted_CC;	/* accepted CC licenses */
 
 /*!
  * \brief Main structure for the RTSP module.
@@ -210,17 +210,16 @@ struct rtsp_buffer {
  * \see buffer
  * */
 typedef struct {
-	RTSP_COMMON_IF
-	nms_rtsp_hints *hints;
+	RTSP_COMMON_IF nms_rtsp_hints *hints;
 	uint16 force_rtp_port;
 	pthread_cond_t cond_busy;
 	nms_transport transport;
 	// int fd; /*!< file descriptor for reading the data coming from the server */
-		/*! \enum types enum possible kind of stream. */
+	/*! \enum types enum possible kind of stream. */
 	enum types { M_ON_DEMAND, CONTAINER } type;	/*!< Kind of active
-							  media stream:
-							  Media On Demand or
-							  Container. */
+							   media stream:
+							   Media On Demand or
+							   Container. */
 	char waiting_for[64];	/*!< Expected response from server. */
 	char *server_port;	/*!< Server listening port.
 				 */
@@ -231,8 +230,7 @@ typedef struct {
 } rtsp_thread;
 
 typedef struct {
-	RTSP_COMMON_IF
-} rtsp_ctrl;
+RTSP_COMMON_IF} rtsp_ctrl;
 
 //******** interface functions ********************
 
@@ -253,8 +251,8 @@ int rtsp_uninit(rtsp_ctrl *);
 // enum states rtsp_status(rtsp_ctrl *);
 #define rtsp_status(ctrl) ctrl->status
 void rtsp_info_print(rtsp_ctrl *);
-inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl *rtsp_ctl);
-inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl *rtsp_ctl);
+inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl);
+inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl);
 //
 //***** ENDOF interface functions ******************
 

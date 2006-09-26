@@ -31,17 +31,16 @@
 #include <nemesi/diskwriter.h>
 #include <nemesi/comm.h>
 
-int diskwriter(nms_diskwriter *dc, int pt, char *data, int len)
+int diskwriter(nms_diskwriter * dc, int pt, char *data, int len)
 {
 	int fd;
 	int written;
 
-	if ( (fd=get_file_fd(dc, pt)) < 0 )
+	if ((fd = get_file_fd(dc, pt)) < 0)
 		return nms_printf(NMSML_ERR, "Error in diskwriter(), file not open\n");
 
-	if ( (written=write(fd, data, len)) < len )
+	if ((written = write(fd, data, len)) < len)
 		nms_printf(NMSML_DBG1, "WARNING: only %d bytes of %d written\n", written, len);
-	
+
 	return 0;
 }
-

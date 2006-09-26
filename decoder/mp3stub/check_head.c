@@ -31,21 +31,32 @@
 #include <nemesi/types.h>
 
 uint16 mp3_bitrates[][] = {
-/* V1, L1 */	{0, 32000, 64000, 96000, 128000, 160000, 192000, 224000, 256000, 288000, 320000, 352000, 385000, 416000, 448000, 0},
-/* V1, L2 */	{0, 32000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000, 320000, 384000, 0},
-/* V1, L3 */	{0, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000, 320000, 0},
-/* V2, L1 */	{0, 32000, 48000. 56000, 64000, 80000, 96000, 112000, 128000, 144000, 160000, 176000, 192000, 224000, 256000, 0},
-/* V2, L2 L3 */	{0, 8000, 16000, 24000, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 144000, 160000, 0}
+/* V1, L1 */ {0, 32000, 64000, 96000, 128000, 160000, 192000, 224000, 256000, 288000, 320000, 352000, 385000,
+	      416000, 448000, 0}
+	,
+/* V1, L2 */ {0, 32000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000, 256000,
+	      320000, 384000, 0}
+	,
+/* V1, L3 */ {0, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 160000, 192000, 224000,
+	      256000, 320000, 0}
+	,
+/* V2, L1 */ {0, 32000, 48000. 56000, 64000, 80000, 96000, 112000, 128000, 144000, 160000, 176000, 192000,
+	      224000, 256000, 0}
+	,
+/* V2, L2 L3 */ {0, 8000, 16000, 24000, 32000, 40000, 48000, 56000, 64000, 80000, 96000, 112000, 128000, 144000,
+		 160000, 0}
 };
 uint16 mp3_samplefreqs[][] = {
-/* V1 */	{44100, 48000, 32000},
-/* V2 */	{22050, 24000, 16000},
-/* V2.5 */	{11025, 12000, 8000}
+/* V1 */ {44100, 48000, 32000}
+	,
+/* V2 */ {22050, 24000, 16000}
+	,
+/* V2.5 */ {11025, 12000, 8000}
 };
 
-int check_head(uint8 *data, int len)
+int check_head(uint8 * data, int len)
 {
-	struct MPEG_Head{
+	struct MPEG_Head {
 		uint32 sync_1:8;
 #ifdef WORDS_BIGENDIAN
 		uint32 sync_2:3;
@@ -82,39 +93,42 @@ int check_head(uint8 *data, int len)
 		uint32 modex:2;
 		uint32 chmod:2;
 #endif
-	} *head = (struct MPEG_Head *)(data+4);
+	} *head = (struct MPEG_Head *) (data + 4);
 	static uint8 frag_frame[1441];
 	static uint16 frag_len, frame_len;
 
-	if ( ((uint16 *)data)[1] == 0 ){
+	if (((uint16 *) data)[1] == 0) {
 		switch (head->ver) {
-			case 0: /* V 2.5 */
+		case 0:	/* V 2.5 */
+			break;
+		case 2:	/* V2 */
+			break;
+		case 3:	/* V1 */
+			switch (head->lay) {
+			case 1:	/* L3 */
+				frag_len =
+				    144 * mp3_bitrates[head->bri][2] / mp3_samplefreqs[head->srfi][0] + head->pad;
 				break;
-			case 2: /* V2 */
+			case 2:	/* L2 */
+				frag_len =
+				    144 * mp3_bitrates[head->bri][1] / mp3_samplefreqs[head->srfi][0] + head->pad;
 				break;
-			case 3: /* V1 */
-				switch (head->lay){
-					case 1: /* L3 */
-						frag_len=144*mp3_bitrates[head->bri][2]/mp3_samplefreqs[head->srfi][0]+head->pad;
-						break;
-					case 2: /* L2 */
-						frag_len=144*mp3_bitrates[head->bri][1]/mp3_samplefreqs[head->srfi][0]+head->pad;
-						break;
-					case 3: /* L1 */
-						frag_len=144*mp3_bitrates[head->bri][0]/mp3_samplefreqs[head->srfi][0]+head->pad;
-						break;
-					default:
-						break;
-				}
-			
+			case 3:	/* L1 */
+				frag_len =
+				    144 * mp3_bitrates[head->bri][0] / mp3_samplefreqs[head->srfi][0] + head->pad;
 				break;
 			default:
 				break;
+			}
+
+			break;
+		default:
+			break;
 		}
-	
-		if (frag_len > (len - 4)) /* frame incompleto */
-			memcpy(frag_frame, data+4, len-4);
+
+		if (frag_len > (len - 4))	/* frame incompleto */
+			memcpy(frag_frame, data + 4, len - 4);
 	} else {
-	
+
 	}
 }

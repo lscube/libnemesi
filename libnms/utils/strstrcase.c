@@ -34,10 +34,10 @@ char *strstrcase(char *haystack, const char *needle)
 	char *ret;
 	unsigned int i;
 
-	if ((str1=strdup(haystack)) == NULL)
+	if ((str1 = strdup(haystack)) == NULL)
 		return NULL;
 
-	if ((str2=strdup(needle)) == NULL)
+	if ((str2 = strdup(needle)) == NULL)
 		return NULL;
 
 	for (i = 0; i < strlen(str1); i++)

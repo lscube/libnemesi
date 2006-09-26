@@ -29,10 +29,10 @@
 #include <nemesi/rtsp.h>
 #include <stdarg.h>
 
-int close_cmd(rtsp_thread *rtsp_th, ...)
+int close_cmd(rtsp_thread * rtsp_th, ...)
 {
 
-	if(rtsp_th->status == INIT){
+	if (rtsp_th->status == INIT) {
 		nms_printf(NMSML_NORM, BLANK_LINE);
 		nms_printf(NMSML_NORM, "No Connection to close\n");
 		return 1;

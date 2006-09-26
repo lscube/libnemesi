@@ -44,5 +44,4 @@ typedef struct {
 
 FFMpegDec *init_ffmpeg(void);
 
-#endif // __FFMPEG_H
-
+#endif				// __FFMPEG_H

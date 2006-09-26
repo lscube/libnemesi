@@ -35,12 +35,11 @@
 typedef struct {
 	GtkImage *rest;
 	GtkImage **anim;
-	int32 shown; //!< index of currently shown anim image. -1 for rest.
+	int32 shown;		//!< index of currently shown anim image. -1 for rest.
 	uint32 num_anim;
 } GNMSThrobber;
 
-int create_throbber(GtkWidget *box);
+int create_throbber(GtkWidget * box);
 void gui_throbber(void *);
 
-#endif // __GUI_THROBBER_H
-
+#endif				// __GUI_THROBBER_H

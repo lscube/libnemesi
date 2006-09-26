@@ -35,48 +35,46 @@
 #include <nemesi/plugin.h>
 
 plugin_init("L16", 106)
-
 #define CHANNELS 2
 #define FACTOR_OVERSAMPLE 5
 #define ELEVEN 11
-
-static int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output * outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 	int i, j, c;
 	/*
-	char outbuff[len*ELEVEN+len/40];
-	char *p=outbuff;
-	*/
+	   char outbuff[len*ELEVEN+len/40];
+	   char *p=outbuff;
+	 */
 	uint8 *outbuff, *p;
 	uint32 req_len;
-	uint8 adjust=0, adjust40=0;
+	uint8 adjust = 0, adjust40 = 0;
 
-	req_len=len*ELEVEN+len/40;
-	if ( (outbuff=p=funcs->get_buff(req_len)) == NULL )
+	req_len = len * ELEVEN + len / 40;
+	if ((outbuff = p = funcs->get_buff(req_len)) == NULL)
 		return 1;
 
 	/* Endianess, Oversample to 44100Hz -- very very quick, raw and dirt */
-	for(i=0; i < len; i+=2){
-		for(j=0; j < FACTOR_OVERSAMPLE+adjust; j++){
+	for (i = 0; i < len; i += 2) {
+		for (j = 0; j < FACTOR_OVERSAMPLE + adjust; j++) {
 #ifndef WORDS_BIGENDIAN
-			for(c=0; c < CHANNELS; c++) {
-				*(p++)=data[i+1];
-				*(p++)=data[i];
+			for (c = 0; c < CHANNELS; c++) {
+				*(p++) = data[i + 1];
+				*(p++) = data[i];
 			}
 #else
-			for(c=0; c < CHANNELS; c++) {
-				*(p++)=data[i];
-				*(p++)=data[i+1];
+			for (c = 0; c < CHANNELS; c++) {
+				*(p++) = data[i];
+				*(p++) = data[i + 1];
 			}
 #endif
 		}
-		if ( !(i%40) )
-			adjust40=1;
-		adjust=!adjust;
-		if (adjust40 && !adjust){
-			adjust=1;
-			adjust40=0;
+		if (!(i % 40))
+			adjust40 = 1;
+		adjust = !adjust;
+		if (adjust40 && !adjust) {
+			adjust = 1;
+			adjust40 = 0;
 		}
 	}
 	funcs->play_buff(outbuff, req_len, outc->elapsed);
@@ -85,7 +83,7 @@ static int decode(char *data, int len, nms_output *outc)
 		fprintf(stderr,"\n\n\nCould not write on Audio Board\n\n\n");
 		return 1;
 	}
-*/	
+*/
 	return 0;
 }
 

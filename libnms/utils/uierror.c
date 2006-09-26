@@ -44,12 +44,12 @@ int uierror(const char *fmt, ...)
 	va_list ap;
 	int fd;
 	FILE *uistderr;
-	
-	if( (fd=dup(UIERROR_FILENO)) < 0 ){
+
+	if ((fd = dup(UIERROR_FILENO)) < 0) {
 		fprintf(stderr, "\nfailed duplicating UIERROR_FILENO\n");
 		return -1;
 	}
-	if( !(uistderr=fdopen(fd, "a")) ){
+	if (!(uistderr = fdopen(fd, "a"))) {
 		fprintf(stderr, "\nfailed opening uistderr stream.\n");
 		return -1;
 	}
@@ -66,4 +66,4 @@ int uierror(const char *fmt, ...)
 
 	return 1;
 }
-#endif // USE_UIPRINTF
+#endif				// USE_UIPRINTF

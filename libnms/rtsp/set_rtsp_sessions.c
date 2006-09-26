@@ -29,49 +29,49 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/methods.h>
 
-int set_rtsp_sessions(rtsp_thread *rtsp_th, int content_length, char *content_base, char *body)
+int set_rtsp_sessions(rtsp_thread * rtsp_th, int content_length, char *content_base, char *body)
 {
 	sdp_attr *sdp_a;
 	char *tkn;
-	
+
 	switch (rtsp_th->descr_fmt) {
-		case DESCRIPTION_SDP_FORMAT :
-			if ( !(rtsp_th->rtsp_queue=rtsp_sess_create(rtsp_th->urlname, content_base)) )
-				return 1;
-
-			if ( !(rtsp_th->rtsp_queue->body=(char *)malloc(content_length+1)) )
-				return nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
-			memcpy(rtsp_th->rtsp_queue->body, body, content_length);
-			rtsp_th->rtsp_queue->body[content_length]='\0';
-                            
-			rtsp_th->type=M_ON_DEMAND;
-
-			if (!(rtsp_th->rtsp_queue->info=sdp_session_setup(rtsp_th->rtsp_queue->body, content_length)))
-				return nms_printf(NMSML_ERR, "SDP parse error\n");
-
-			// we look for particular attributes of session
-			for(sdp_a=rtsp_th->rtsp_queue->info->attr_list; sdp_a; sdp_a=sdp_a->next) {
-				if ( !strncmpcase(sdp_a->a, "control", 7) ) {
-					tkn = sdp_a->a + 7; // 7 == strlen("control")
-					while ( (*tkn==' ') || (*tkn==':') ) // skip spaces and colon
-						tkn++;
-					rtsp_th->rtsp_queue->pathname=tkn;
-					rtsp_th->type=CONTAINER;
-				}
-			}
-
-			// media setup
-			if (set_rtsp_media(rtsp_th))
-				return 1;
-
-			break;
-		case DESCRIPTION_MH_FORMAT :
-			/* not yet implemented */
-			// break;
-		default :
-			nms_printf(NMSML_ERR, "Unknown decription format.\n");
+	case DESCRIPTION_SDP_FORMAT:
+		if (!(rtsp_th->rtsp_queue = rtsp_sess_create(rtsp_th->urlname, content_base)))
 			return 1;
-			break;
+
+		if (!(rtsp_th->rtsp_queue->body = (char *) malloc(content_length + 1)))
+			return nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
+		memcpy(rtsp_th->rtsp_queue->body, body, content_length);
+		rtsp_th->rtsp_queue->body[content_length] = '\0';
+
+		rtsp_th->type = M_ON_DEMAND;
+
+		if (!(rtsp_th->rtsp_queue->info = sdp_session_setup(rtsp_th->rtsp_queue->body, content_length)))
+			return nms_printf(NMSML_ERR, "SDP parse error\n");
+
+		// we look for particular attributes of session
+		for (sdp_a = rtsp_th->rtsp_queue->info->attr_list; sdp_a; sdp_a = sdp_a->next) {
+			if (!strncmpcase(sdp_a->a, "control", 7)) {
+				tkn = sdp_a->a + 7;	// 7 == strlen("control")
+				while ((*tkn == ' ') || (*tkn == ':'))	// skip spaces and colon
+					tkn++;
+				rtsp_th->rtsp_queue->pathname = tkn;
+				rtsp_th->type = CONTAINER;
+			}
+		}
+
+		// media setup
+		if (set_rtsp_media(rtsp_th))
+			return 1;
+
+		break;
+	case DESCRIPTION_MH_FORMAT:
+		/* not yet implemented */
+		// break;
+	default:
+		nms_printf(NMSML_ERR, "Unknown decription format.\n");
+		return 1;
+		break;
 	}
 
 	return 0;

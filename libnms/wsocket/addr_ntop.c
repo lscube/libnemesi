@@ -28,48 +28,46 @@
 
 #include <nemesi/wsocket.h>
 
-char *addr_ntop(const nms_addr *addr, char *str, size_t len)
+char *addr_ntop(const nms_addr * addr, char *str, size_t len)
 {
 	switch (addr->family) {
-		case AF_INET:
-			if (inet_ntop(AF_INET, &addr->addr.in, str, len) == NULL)
-				return(NULL);
-			return(str);
-			break;
+	case AF_INET:
+		if (inet_ntop(AF_INET, &addr->addr.in, str, len) == NULL)
+			return (NULL);
+		return (str);
+		break;
 #ifdef	IPV6
-		case AF_INET6:
-			if (inet_ntop(AF_INET6, &addr->addr.in6, str, len) == NULL)
-				return(NULL);
-			return(str);
-			break;
+	case AF_INET6:
+		if (inet_ntop(AF_INET6, &addr->addr.in6, str, len) == NULL)
+			return (NULL);
+		return (str);
+		break;
 #endif
-			
-#if 0 // not yet supported by nms_addr
+
+#if 0				// not yet supported by nms_addr
 #ifdef	AF_UNIX
-		case AF_UNIX:
-			/* OK to have no pathname bound to the socket: happens on
-			 * every connect() unless client calls bind() first. */
-			if (addr->addr.un_path[0] == 0)
-				strcpy(str, "(no pathname bound)");
-			else
-				snprintf(str, len, "%s", addr->addr.un_path);
-			return(str);
+	case AF_UNIX:
+		/* OK to have no pathname bound to the socket: happens on
+		 * every connect() unless client calls bind() first. */
+		if (addr->addr.un_path[0] == 0)
+			strcpy(str, "(no pathname bound)");
+		else
+			snprintf(str, len, "%s", addr->addr.un_path);
+		return (str);
 #endif
-			
+
 #ifdef	HAVE_SOCKADDR_DL_STRUCT
-		case AF_LINK:
-			if (addr->addr.dl_nlen > 0)
-				snprintf(str, len, "%*s",
-						addr->addr.dl_nlen, &addr->addr.dl_data[0]);
-			else
-				snprintf(str, len, "AF_LINK, index=%d", addr->addr.dl_index);
-			return(str);
+	case AF_LINK:
+		if (addr->addr.dl_nlen > 0)
+			snprintf(str, len, "%*s", addr->addr.dl_nlen, &addr->addr.dl_data[0]);
+		else
+			snprintf(str, len, "AF_LINK, index=%d", addr->addr.dl_index);
+		return (str);
 #endif
 #endif
-		default:
-			snprintf(str, len, "addr_ntop: unknown AF_xxx: %d", addr->family);
-			return(str);
+	default:
+		snprintf(str, len, "addr_ntop: unknown AF_xxx: %d", addr->family);
+		return (str);
 	}
 	return (NULL);
 }
-

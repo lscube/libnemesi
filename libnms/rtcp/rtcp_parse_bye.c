@@ -29,7 +29,7 @@
 #include <nemesi/rtcp.h>
 #include <nemesi/comm.h>
 
-int rtcp_parse_bye(rtcp_pkt *pkt)
+int rtcp_parse_bye(rtcp_pkt * pkt)
 {
 	// TODO: handle bye packet
 	nms_printf(NMSML_DBG1, "Received BYE from SSRC: %u\n", pkt->r.bye.src);

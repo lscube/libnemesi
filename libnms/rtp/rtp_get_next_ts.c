@@ -29,12 +29,13 @@
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 
-double rtp_get_next_ts(rtp_ssrc *stm_src)
-{ // TODO: calculate time using RTCP infos
+double rtp_get_next_ts(rtp_ssrc * stm_src)
+{				// TODO: calculate time using RTCP infos
 	rtp_pkt *pkt;
 
-	if ( !(pkt=rtp_get_pkt(stm_src, NULL)) )
-			return -1;
-			
-	return ((double)(RTP_PKT_TS(pkt) - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
+	if (!(pkt = rtp_get_pkt(stm_src, NULL)))
+		return -1;
+
+	return ((double) (RTP_PKT_TS(pkt) - stm_src->ssrc_stats.firstts)) /
+	    (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
 }

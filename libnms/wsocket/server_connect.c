@@ -54,22 +54,22 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 #endif
 
 	switch (sock_type) {
-		case SCTP:
+	case SCTP:
 #ifndef HAVE_SCTP
-			return nms_printf(NMSML_ERR, "%s: SCTP protocol not compiled in\n", PROG_NAME);
-			break;
-#endif // else go down to TCP case (SCTP and TCP are both SOCK_STREAM type)
-		case TCP:
-			hints.ai_socktype = SOCK_STREAM;
-			break;
-		case UDP:
-			hints.ai_socktype = SOCK_DGRAM;
-			break;
-		default:
-			return nms_printf(NMSML_ERR, "%s: Unknown socket type specified\n", PROG_NAME);
-			break;
+		return nms_printf(NMSML_ERR, "%s: SCTP protocol not compiled in\n", PROG_NAME);
+		break;
+#endif				// else go down to TCP case (SCTP and TCP are both SOCK_STREAM type)
+	case TCP:
+		hints.ai_socktype = SOCK_STREAM;
+		break;
+	case UDP:
+		hints.ai_socktype = SOCK_DGRAM;
+		break;
+	default:
+		return nms_printf(NMSML_ERR, "%s: Unknown socket type specified\n", PROG_NAME);
+		break;
 	}
-	
+
 	if ((n = gethostinfo(&res, host, port, &hints)) != 0)
 		return nms_printf(NMSML_ERR, "%s: %s\n", PROG_NAME, gai_strerror(n));
 
@@ -89,7 +89,7 @@ int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
 
 	freeaddrinfo(ressave);
 
-	if ( !res )
+	if (!res)
 		return nms_printf(NMSML_ERR, "Server connect error for \"%s:%s\"", host, port);
 
 	return 0;

@@ -33,14 +33,13 @@
 cc_license *cc_newlicense(void)
 {
 	/* if we need some other initializations:
-	cc_license *new;
+	   cc_license *new;
 
-	if (!(new=(cc_license *)calloc(1, sizeof(cc_license))))
-		return NULL;
+	   if (!(new=(cc_license *)calloc(1, sizeof(cc_license))))
+	   return NULL;
 
-	return new;
-	*/ // else:
+	   return new;
+	 */// else:
 	// we use calloc for initialization tu NULL of all fields
-	return (cc_license *)calloc(1, sizeof(cc_license));
+	return (cc_license *) calloc(1, sizeof(cc_license));
 }
-

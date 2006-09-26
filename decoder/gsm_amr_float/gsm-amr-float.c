@@ -66,14 +66,11 @@ void Copyright(void)
  *    0
  */
 /*int main (int argc, char * argv[]){*/
-
 #define CHANNELS 2
 #define FACTOR_OVERSAMPLE 5
 #define ELEVEN 11
-
 #define L_FRAME 160
-
-static int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output * outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 
@@ -95,14 +92,14 @@ static int decode(char *data, int len, nms_output *outc)
 
 	req_len = L_FRAME * sizeof(uint16) * ELEVEN + L_FRAME * sizeof(uint16) / 40;
 	// outbuff=(uint8 *)p=funcs->get_buff(req_len);
-	outbuff=funcs->get_buff(req_len);
-	p=(uint16 *)outbuff;
+	outbuff = funcs->get_buff(req_len);
+	p = (uint16 *) outbuff;
 
 	/* init decoder */
 	if (!destate)
 		destate = Decoder_Interface_init();
 
-#if 0	
+#if 0
 #ifndef WORDS_BIGENDIAN
 	for (i = 0; i < len; i += 2) {
 		sample = data[i + 1];
@@ -156,10 +153,10 @@ static int decode(char *data, int len, nms_output *outc)
 		Decoder_Interface_Decode(destate, analysis, synth, 0);
 		analysis += read_size + 1;
 		len -= read_size + 1;
-		
+
 
 		/* Oversample to 44100Hz -- very very quick, raw and dirt */
-		for (i = 0; i < L_FRAME ; i++) {
+		for (i = 0; i < L_FRAME; i++) {
 			for (j = 0; j < FACTOR_OVERSAMPLE + adjust; j++) {
 				for (c = 0; c < CHANNELS; c++)
 					*(p++) = synth[i];

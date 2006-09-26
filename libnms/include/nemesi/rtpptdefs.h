@@ -61,34 +61,26 @@ typedef struct {
                                         (N)ot(/)(A)pplicable */ \
         uint32 rate; /* Clock Rate - in Hertz*/ \
         rtp_pt_attrs attrs; /* attribute strings from sdp description */ \
-        void *priv; /* private data for rtp playload type*/
-    
+        void *priv;		/* private data for rtp playload type */
+
 /* XXX audio and video fields must have different names, 
  * because they are used together in rtp_audio_video
  */
-#define RTP_AUDIO_FIELDS	uint8 channels; /* Channels */
+#define RTP_AUDIO_FIELDS	uint8 channels;	/* Channels */
 
 #define RTP_VIDEO_FIELDS
 
 typedef struct {
-	RTP_PT_COMMON_FIELDS
-	RTP_AUDIO_FIELDS
-} rtp_audio;
+RTP_PT_COMMON_FIELDS RTP_AUDIO_FIELDS} rtp_audio;
 
 typedef struct {
-	RTP_PT_COMMON_FIELDS
-	RTP_VIDEO_FIELDS
-} rtp_video;
+RTP_PT_COMMON_FIELDS RTP_VIDEO_FIELDS} rtp_video;
 
 typedef struct {
-	RTP_PT_COMMON_FIELDS
-	RTP_AUDIO_FIELDS
-	RTP_VIDEO_FIELDS
-} rtp_audio_video;
+RTP_PT_COMMON_FIELDS RTP_AUDIO_FIELDS RTP_VIDEO_FIELDS} rtp_audio_video;
 
 typedef struct rtp_pt_def {
-	RTP_PT_COMMON_FIELDS
-} rtp_pt;
+RTP_PT_COMMON_FIELDS} rtp_pt;
 
 #define RTP_FMTS_ARRAY_DEF_SIZE 3
 typedef struct _rtp_fmts_list {
@@ -106,11 +98,11 @@ typedef struct _rtp_fmts_list {
 //rtp_pt **rtpptdefs_new(void);
 void rtpptdefs_new(rtp_pt *[]);
 rtp_pt *rtp_pt_new(rtp_media_type mtype);
-int rtp_dynpt_set(rtp_pt *defs[], rtp_pt *pt, uint8 value);
-int rtp_dynpt_encname(rtp_pt *defs[], uint8 value, char *enc_name);
+int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8 value);
+int rtp_dynpt_encname(rtp_pt * defs[], uint8 value, char *enc_name);
 
 //rtp_pt_attrs specific functions
 //void rtp_pt_attrs_init(rtp_pt_attrs *);
-int rtp_pt_attr_add(rtp_pt *defs[], uint8 value, char *);
+int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *);
 
 #endif

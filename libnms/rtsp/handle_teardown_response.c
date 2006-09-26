@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-int handle_teardown_response(rtsp_thread *rtsp_th)
+int handle_teardown_response(rtsp_thread * rtsp_th)
 {
 	char *prev_tkn;
 
@@ -36,14 +36,13 @@ int handle_teardown_response(rtsp_thread *rtsp_th)
 		nms_printf(NMSML_ERR, "Invalid RTSP-TEARDOWN response\n");
 		return 1;
 	}
-	if ( check_status(prev_tkn, rtsp_th) < 0 ){
+	if (check_status(prev_tkn, rtsp_th) < 0) {
 		remove_pkt(rtsp_th);
 		return 1;
 	}
-	
+
 	remove_pkt(rtsp_th);
 	memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
 
 	return 0;
 }
-

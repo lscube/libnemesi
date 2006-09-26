@@ -48,9 +48,9 @@
 #define ui_usage()	nms_printf(NMSML_NORM, "   --gui              Use Graphical User Interface\n"); \
 			nms_printf(NMSML_NORM, "   --tui              Use Textual User Interface (e-tui)\n"); \
 			nms_printf(NMSML_NORM, "   -i                 User interface will be interactive\n");
-#else	// HAVE_GUI
+#else				// HAVE_GUI
 #define ui_usage()
-#endif	// HAVE_GUI
+#endif				// HAVE_GUI
 #define usage()	{ \
 			nms_printf(NMSML_NORM, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
 			nms_printf(NMSML_NORM, "\n"); \
@@ -77,7 +77,7 @@
 			nms_printf(NMSML_ALWAYS, "              - marco.penno@polito.it\n\n"); \
 		  }
 
-#define CL_MAIN_OPTIONS	"hiv::Vp:"		/* help, interactive, verbosity, version, first-port */
+#define CL_MAIN_OPTIONS	"hiv::Vp:"	/* help, interactive, verbosity, version, first-port */
 #define CL_MAIN_LONG_OPTIONS	{"version", 0, NULL, 'V'}, \
 				{"help", 0, NULL, 'h'}, \
 				{"verbose", 2, NULL, 'v'}, \

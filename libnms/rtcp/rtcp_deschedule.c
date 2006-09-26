@@ -30,9 +30,9 @@
 
 struct rtcp_event *rtcp_deschedule(struct rtcp_event *head)
 {
-	struct rtcp_event *phead=head;
-	
-	head=head->next;
+	struct rtcp_event *phead = head;
+
+	head = head->next;
 	free(phead);
 
 	return head;

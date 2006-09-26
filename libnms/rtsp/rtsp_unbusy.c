@@ -28,7 +28,7 @@
 
 #include <nemesi/rtsp.h>
 
-void rtsp_unbusy(rtsp_thread *rtsp_th)
+void rtsp_unbusy(rtsp_thread * rtsp_th)
 {
 	pthread_mutex_lock(&(rtsp_th->comm_mutex));
 
@@ -37,4 +37,3 @@ void rtsp_unbusy(rtsp_thread *rtsp_th)
 
 	pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 }
-

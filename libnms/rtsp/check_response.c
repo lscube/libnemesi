@@ -30,7 +30,7 @@
 #include <nemesi/methods.h>
 #include <nemesi/utils.h>
 
-int check_response(rtsp_thread *rtsp_th)
+int check_response(rtsp_thread * rtsp_th)
 {
 	int wait_res;
 	uint64 wait_s_id;
@@ -46,35 +46,35 @@ int check_response(rtsp_thread *rtsp_th)
 		nms_printf(NMSML_ERR, "ERROR: CANNOT find CSeq number in server response.\n");
 		return 1;
 	}
-	str_pos+=5;
-	while ( (*(str_pos)==' ') || (*(str_pos)==':') )
+	str_pos += 5;
+	while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
 		str_pos++;
 	sscanf(str_pos, "%d", &CSeq);
 	switch (wait_res) {
-		case RTSP_GET_RESPONSE:
-			if (CSeq == 1) /* aspettavo la risposta alla DESCRIBE */
-				opcode = RTSP_GET_RESPONSE;
-			break;
-		case RTSP_SETUP_RESPONSE:
-			sscanf(rtsp_th->waiting_for, "%*d.%d", &wait_cseq);
-			if ( CSeq == wait_cseq )
-				opcode = RTSP_SETUP_RESPONSE;
-			break;
-		case RTSP_CLOSE_RESPONSE:
-			sscanf(rtsp_th->waiting_for, "%*d.%d", &wait_cseq);
-			if ( CSeq == wait_cseq )
-				opcode = RTSP_CLOSE_RESPONSE;
-			break;
-		default:
-			sscanf(rtsp_th->waiting_for, "%*d:%llu.%d", &wait_s_id, &wait_cseq);
-			if ((str_pos = strstrcase((rtsp_th->in_buffer).data, "Session")) != NULL){
-				str_pos+=8;
-				while ( (*(str_pos)==' ') || (*(str_pos)==':') )
-					str_pos++;
-				sscanf(str_pos, "%llu", &Session_ID);
-			}
-			if ((Session_ID == wait_s_id) && (CSeq == wait_cseq))
-				opcode = wait_res;
+	case RTSP_GET_RESPONSE:
+		if (CSeq == 1)	/* aspettavo la risposta alla DESCRIBE */
+			opcode = RTSP_GET_RESPONSE;
+		break;
+	case RTSP_SETUP_RESPONSE:
+		sscanf(rtsp_th->waiting_for, "%*d.%d", &wait_cseq);
+		if (CSeq == wait_cseq)
+			opcode = RTSP_SETUP_RESPONSE;
+		break;
+	case RTSP_CLOSE_RESPONSE:
+		sscanf(rtsp_th->waiting_for, "%*d.%d", &wait_cseq);
+		if (CSeq == wait_cseq)
+			opcode = RTSP_CLOSE_RESPONSE;
+		break;
+	default:
+		sscanf(rtsp_th->waiting_for, "%*d:%llu.%d", &wait_s_id, &wait_cseq);
+		if ((str_pos = strstrcase((rtsp_th->in_buffer).data, "Session")) != NULL) {
+			str_pos += 8;
+			while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
+				str_pos++;
+			sscanf(str_pos, "%llu", &Session_ID);
+		}
+		if ((Session_ID == wait_s_id) && (CSeq == wait_cseq))
+			opcode = wait_res;
 	}
 
 	return opcode;

@@ -60,5 +60,4 @@ nms_video *video_preinit(char *, uint32);
 // int video_th_stop(nms_video *);
 // void *video_th(void *);
 
-#endif // __VIDEO_H
-
+#endif				// __VIDEO_H

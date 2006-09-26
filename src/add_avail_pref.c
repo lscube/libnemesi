@@ -31,25 +31,26 @@
 int add_avail_pref(const char *argstr)
 {
 	char *name, *available, tmp_argstr[PREF_MAX_NAME_LEN + PREF_MAX_AVAIL_LEN];
-	int i=0;
-	
+	int i = 0;
+
 	strcpy(tmp_argstr, argstr);
-	if ( (name = strtok(tmp_argstr, " ")) == NULL ) {
+	if ((name = strtok(tmp_argstr, " ")) == NULL) {
 		fprintf(stderr, "\nError, preference name not valid\n");
 		return 1;
 	}
 	/* Cerchiamo il nome del parametro da modificare */
-	while(strcmp((char*)&preferences[i], PREFS_TABLE_END) && strcmp(preferences[i].name, name))
+	while (strcmp((char *) &preferences[i], PREFS_TABLE_END) && strcmp(preferences[i].name, name))
 		i++;
-	if ( !strcmp((char*)&preferences[i], PREFS_TABLE_END) ) { /* Il nome non esiste */
+	if (!strcmp((char *) &preferences[i], PREFS_TABLE_END)) {	/* Il nome non esiste */
 		fprintf(stderr, "\nError, preference \"%s\" not available, ignoring add_avail command\n", name);
 		return 1;
 	}
-	if ( (available = strtok(NULL, " ")) == NULL ) { /* non e stato inserito un valore */
-		fprintf(stderr, "\nError, preference available value for \"%s\" missing, ignoring add_avail command\n", name);
+	if ((available = strtok(NULL, " ")) == NULL) {	/* non e stato inserito un valore */
+		fprintf(stderr, "\nError, preference available value for \"%s\" missing, ignoring add_avail command\n",
+			name);
 		return 1;
 	}
-	if ( (strlen(available) + strlen(preferences[i].available)) > PREF_MAX_AVAIL_LEN ) {
+	if ((strlen(available) + strlen(preferences[i].available)) > PREF_MAX_AVAIL_LEN) {
 		fprintf(stderr, "\nError, the string non fit\n");
 		return 1;
 	}
@@ -60,4 +61,3 @@ int add_avail_pref(const char *argstr)
 
 	return 0;
 }
-

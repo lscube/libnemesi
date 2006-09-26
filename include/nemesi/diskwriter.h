@@ -39,16 +39,15 @@
 
 typedef struct {
 	char *basename;
-	cc_tag *tag[MAX_PT+1];
-	char *ext[MAX_PT+1];
-	int fd[MAX_PT+1];
+	cc_tag *tag[MAX_PT + 1];
+	char *ext[MAX_PT + 1];
+	int fd[MAX_PT + 1];
 } nms_diskwriter;
 
 nms_diskwriter *diskwriter_init(const char *);
 int get_file_fd(nms_diskwriter *, int);
 int diskwriter(nms_diskwriter *, int, char *, int);
-void close_files(int []);
+void close_files(int[]);
 int diskwriter_close(nms_diskwriter *);
 
-#endif /* __DISKWRITER_H */
-
+#endif				/* __DISKWRITER_H */

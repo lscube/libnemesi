@@ -29,7 +29,7 @@
 #include <nemesi/rtcp.h>
 #include <nemesi/comm.h>
 
-int rtcp_parse_rr(rtcp_pkt *pkt)
+int rtcp_parse_rr(rtcp_pkt * pkt)
 {
 	// TODO: handle rr packet
 	nms_printf(NMSML_DBG1, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);

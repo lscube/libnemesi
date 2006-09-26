@@ -34,9 +34,9 @@
 
 #ifndef GLOBAL_PREFERENCES
 #define PREFS_EXTERN extern
-#else /* GLOBAL_PREFERENCES */
+#else				/* GLOBAL_PREFERENCES */
 #define PREFS_EXTERN
-#endif /* GLOBAL_PREFERENCES */
+#endif				/* GLOBAL_PREFERENCES */
 
 #define PREF_MAX_NAME_LEN 16
 #define PREF_MAX_VALUE_LEN 64
@@ -54,18 +54,18 @@ struct Preference {
 
 PREFS_EXTERN struct Preference preferences[]
 #ifdef GLOBAL_PREFERENCES
-= {
-	/* output */ { "output", "card", "card/disk", "Select where the stream will be written."},
-	/* Accept all */ {"acceptAll","yes" ,"no/yes","Accept all kind of streaming."},
-	/* Attribution */ {"Attribution","no" ,"no/yes","Accept licence attribution."},
-	/* No Commercial */  {"NonCommercial", "no" ,"no/yes","Accept licence No Commercial."},
-	/* No Derivs */  {"NoDerivative", "no" ,"no/yes","Accept licence No Derivative."},
-	/* Share Alike */  {"ShareAlike", "no" ,"no/yes","Accept licence Share Alike."},
-	/* Public Domain */  {"PublicDomain", "no" ,"no/yes","Accept licence Public Domain."},
+    = {
+	/* output */ {"output", "card", "card/disk", "Select where the stream will be written."},
+	/* Accept all */ {"acceptAll", "yes", "no/yes", "Accept all kind of streaming."},
+	/* Attribution */ {"Attribution", "no", "no/yes", "Accept licence attribution."},
+	/* No Commercial */ {"NonCommercial", "no", "no/yes", "Accept licence No Commercial."},
+	/* No Derivs */ {"NoDerivative", "no", "no/yes", "Accept licence No Derivative."},
+	/* Share Alike */ {"ShareAlike", "no", "no/yes", "Accept licence Share Alike."},
+	/* Public Domain */ {"PublicDomain", "no", "no/yes", "Accept licence Public Domain."},
 
-	{ PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END }
+	{PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END, PREFS_TABLE_END}
 }
-#endif /* GLOBAL_PREFERENCES */
+#endif				/* GLOBAL_PREFERENCES */
 ;
 
 int edit_pref(const char *);
@@ -78,5 +78,4 @@ char *get_pref(const char *);
 #undef GLOBAL_PREFERENCES
 #undef PREFS_EXTERN
 
-#endif /* __PREFERENCES_H */
-
+#endif				/* __PREFERENCES_H */

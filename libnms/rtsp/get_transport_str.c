@@ -28,44 +28,45 @@
 
 #include <nemesi/rtsp.h>
 
-int get_transport_str(rtp_session *rtp_sess, char *buff)
+int get_transport_str(rtp_session * rtp_sess, char *buff)
 {
 	char *tkna, *tknb;
 	char str[256];
-	// char addr[128];		/* Unix domain is largest */
-	
+	// char addr[128];              /* Unix domain is largest */
+
 	memset(str, 0, sizeof(str));
-	
-	for(tknb=strtok(buff,";"); (*tknb == ' ') || (*tknb == ':'); tknb++);
-	
+
+	for (tknb = strtok(buff, ";"); (*tknb == ' ') || (*tknb == ':'); tknb++);
+
 	do {
-		if ((tkna=strstrcase(tknb, "server_port")) || ((tkna=strstrcase(tknb, "port")) && !strncmp(tknb, "port", 4))){
+		if ((tkna = strstrcase(tknb, "server_port"))
+		    || ((tkna = strstrcase(tknb, "port")) && !strncmp(tknb, "port", 4))) {
 			in_port_t port;
 
-			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
-			for(tknb=tkna++; (*tknb == ' ') || (*tknb != '-'); tknb++);
+			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
+			for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-'); tknb++);
 
-			strncpy(str, tkna, tknb-tkna);
-			str[tknb-tkna]='\0';
-			port=atoi(str);
+			strncpy(str, tkna, tknb - tkna);
+			str[tknb - tkna] = '\0';
+			port = atoi(str);
 			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP, &port);
-			
-			for(tknb++; (*tknb == ' '); tknb++);
 
-			for(tkna=tknb; (*tkna != '\0') && (*tkna != '\r') && (*tkna != '\n'); tkna++);
-			strncpy(str, tknb, tkna-tknb);
-			str[tkna++-tknb]='\0';
-			port=atoi(str);
+			for (tknb++; (*tknb == ' '); tknb++);
+
+			for (tkna = tknb; (*tkna != '\0') && (*tkna != '\r') && (*tkna != '\n'); tkna++);
+			strncpy(str, tknb, tkna - tknb);
+			str[tkna++ - tknb] = '\0';
+			port = atoi(str);
 			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP, &port);
 
 			continue;
 		}
-		if ((tkna=strstrcase(tknb, "source"))){
-			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
-			
-			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb-tkna);
-			str[tknb++-tkna]='\0';
+		if ((tkna = strstrcase(tknb, "source"))) {
+			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
+
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			strncpy(str, tkna, tknb - tkna);
+			str[tknb++ - tkna] = '\0';
 
 			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, str)) {
 				nms_printf(NMSML_ERR, "Source IP Address not valid!\n");
@@ -73,63 +74,63 @@ int get_transport_str(rtp_session *rtp_sess, char *buff)
 			}
 			continue;
 		}
-		if ((tkna=strstrcase(tknb, "destination"))){
-			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
-			
-			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb-tkna);
-			str[tknb++-tkna]='\0';
-			
+		if ((tkna = strstrcase(tknb, "destination"))) {
+			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
+
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			strncpy(str, tkna, tknb - tkna);
+			str[tknb++ - tkna] = '\0';
+
 			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, str)) {
 				nms_printf(NMSML_ERR, "Destination IP Address not valid!\n");
 				return 1;
 			}
 			continue;
 		}
-		if ((tkna=strstrcase(tknb, "ssrc"))){
+		if ((tkna = strstrcase(tknb, "ssrc"))) {
 			uint32 ssrc;
 
-			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
-			
-			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb-tkna);
-			str[tknb++-tkna]='\0';
-			
-			ssrc=strtoul(str, NULL, 10);
+			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
+
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			strncpy(str, tkna, tknb - tkna);
+			str[tknb++ - tkna] = '\0';
+
+			ssrc = strtoul(str, NULL, 10);
 			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
-			
+
 			continue;
 		}
-		if ((tkna=strstrcase(tknb, "ttl"))){
+		if ((tkna = strstrcase(tknb, "ttl"))) {
 			int ttl;
 
-			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
-			
-			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb-tkna);
-			str[tknb++-tkna]='\0';
-			
-			ttl=atoi(str);
+			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
+
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			strncpy(str, tkna, tknb - tkna);
+			str[tknb++ - tkna] = '\0';
+
+			ttl = atoi(str);
 			rtp_transport_set(rtp_sess, RTP_TRANSPORT_TTL, &ttl);
-			
+
 			continue;
 		}
-		if ((tkna=strstrcase(tknb, "layers"))){
+		if ((tkna = strstrcase(tknb, "layers"))) {
 			int layers;
-			
-			for(; (*tkna == ' ') || (*tkna != '='); tkna++);
-			
-			for(tknb=tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb-tkna);
-			str[tknb++-tkna]='\0';
-		
-			layers=atoi(str);
+
+			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
+
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			strncpy(str, tkna, tknb - tkna);
+			str[tknb++ - tkna] = '\0';
+
+			layers = atoi(str);
 			rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS, &layers);
-			
+
 			continue;
 		}
-	
-	} while ((tknb=strtok(NULL, ";")));
-		
+
+	} while ((tknb = strtok(NULL, ";")));
+
 	return 0;
 }

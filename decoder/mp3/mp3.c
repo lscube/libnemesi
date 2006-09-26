@@ -40,15 +40,13 @@
 #include <nemesi/plugin.h>
 
 plugin_init("MPA", 14)
-
-#define BUFFER 8192 
-
+#define BUFFER 8192
 int get_plugin_pt(void)
 {
 	return 14;
 }
 
-static int decode(char *data, int len, nms_output *outc)
+static int decode(char *data, int len, nms_output * outc)
 {
 	nms_au_fnc *funcs = outc->audio->functions;
 	static struct mpstr *mp = NULL;
@@ -59,20 +57,20 @@ static int decode(char *data, int len, nms_output *outc)
 	uint8 *audio_data;
 	uitn32 req_len;
 
-	if(!mp){
-		if((mp=(struct mpstr *)malloc(sizeof(struct mpstr))) == NULL){
-			fprintf(stderr,"Cannot allocate memory!\n");
+	if (!mp) {
+		if ((mp = (struct mpstr *) malloc(sizeof(struct mpstr))) == NULL) {
+			fprintf(stderr, "Cannot allocate memory!\n");
 			return 1;
 		}
 		InitMP3(mp);
 	}
 
-	ret = decodeMP3(mp, data+4, len-4, out, BUFFER, &size);
-	while(ret == MP3_OK) {
+	ret = decodeMP3(mp, data + 4, len - 4, out, BUFFER, &size);
+	while (ret == MP3_OK) {
 /*		write(audio_fd, out, size); */
-		audio_data=funcs->get_buff((uint32)size);
+		audio_data = funcs->get_buff((uint32) size);
 		memcpy(audio_data, out, size);
-		funcs->play_buff(audio_data, (uint32)size);
+		funcs->play_buff(audio_data, (uint32) size);
 		ret = decodeMP3(mp, NULL, 0, out, BUFFER, &size);
 	}
 

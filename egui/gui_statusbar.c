@@ -38,9 +38,9 @@
 
 typedef struct _gnms_stwidget {
 	GtkWidget *widget;
-	void (*updater)(void *userdata);
+	void (*updater) (void *userdata);
 	gpointer updata;
-	void (*destroyer)(GtkWidget *);
+	void (*destroyer) (GtkWidget *);
 	struct _gnms_stwidget *next;
 } GNMSstWidget;
 
@@ -53,7 +53,7 @@ typedef struct {
 
 static GNMSStatusBar nmsstatusbar;
 
-void gnms_stbar_init(GtkBox *statusbox)
+void gnms_stbar_init(GtkBox * statusbox)
 {
 	nmsstatusbar.statusbox = statusbox;
 	nmsstatusbar.statusbar = GTK_STATUSBAR(lookup_widget(GTK_WIDGET(statusbox), "statusbar"));
@@ -69,10 +69,10 @@ int gnms_stbar_setstr(const char *fmt, ...)
 	va_list args;
 
 	va_start(args, fmt);
-	ret=vsnprintf(statusstr, sizeof(statusstr), fmt, args);
+	ret = vsnprintf(statusstr, sizeof(statusstr), fmt, args);
 	va_end(args);
 
-	statusstr[sizeof(statusstr)-1]='\0';
+	statusstr[sizeof(statusstr) - 1] = '\0';
 
 	gtk_statusbar_push(nmsstatusbar.statusbar, nmsstatusbar.status_cid, statusstr);
 
@@ -83,7 +83,7 @@ static GNMSstWidget *stbar_stw_new(void)
 {
 	GNMSstWidget *newstw;
 
-	if ( !(newstw = malloc(sizeof(GNMSstWidget))) )
+	if (!(newstw = malloc(sizeof(GNMSstWidget))))
 		return NULL;
 
 	newstw->updater = NULL;
@@ -106,14 +106,14 @@ static void stbar_add_separator()
 
 	newstw->widget = gtk_hseparator_new();
 
-	gtk_box_pack_end (nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE, 0);
+	gtk_box_pack_end(nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE, 0);
 	gtk_widget_show(newstw->widget);
 
 	return;
 }
 
-int gnms_stbar_addwgt(GtkWidget *widget, void (*destroyer)(GtkWidget *), void (*updater)(void *) ,
-	       	gpointer updata, gboolean separator)
+int gnms_stbar_addwgt(GtkWidget * widget, void (*destroyer) (GtkWidget *), void (*updater) (void *),
+		      gpointer updata, gboolean separator)
 {
 	GNMSstWidget *newstw;
 
@@ -132,7 +132,7 @@ int gnms_stbar_addwgt(GtkWidget *widget, void (*destroyer)(GtkWidget *), void (*
 	newstw->destroyer = destroyer;
 
 	// packing
-	gtk_box_pack_end (nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE, 0);
+	gtk_box_pack_end(nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE, 0);
 
 	// show widgets
 	gtk_widget_show(newstw->widget);
@@ -144,7 +144,7 @@ void gnms_stbar_update(void)
 {
 	GNMSstWidget *stw;
 
-	for (stw=nmsstatusbar.widgetq; stw; stw=stw->next) {
+	for (stw = nmsstatusbar.widgetq; stw; stw = stw->next) {
 		if (stw->updater)
 			stw->updater(stw->updata);
 	}
@@ -162,7 +162,7 @@ void gnms_stbar_clear(void)
 {
 	GNMSstWidget *stw;
 
-	for (stw=nmsstatusbar.widgetq; stw; stw=stw->next) {
+	for (stw = nmsstatusbar.widgetq; stw; stw = stw->next) {
 		if (stw->destroyer)
 			stw->destroyer(stw->widget);
 		else
@@ -172,7 +172,6 @@ void gnms_stbar_clear(void)
 
 	nmsstatusbar.widgetq = NULL;
 
-	
+
 	return;
 }
-

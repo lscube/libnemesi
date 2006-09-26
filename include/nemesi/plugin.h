@@ -34,11 +34,11 @@
 typedef struct {
 	const char *encname;
 	int pt;
-	int (*decode)(char *, int, nms_output *);
+	int (*decode) (char *, int, nms_output *);
 } nms_plugin;
 
 #define plugin_init(x, y) \
 			static int decode(char *, int, nms_output *);\
 			nms_plugin plugin = { x, y, decode};
 
-#endif /*PLUGIN_H_*/
+#endif				/*PLUGIN_H_ */

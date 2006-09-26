@@ -28,7 +28,7 @@
 
 #include <nemesi/wsocket.h>
 
-inline int nmst_is_active(nms_transport *transport)
+inline int nmst_is_active(nms_transport * transport)
 {
 	return ((transport->type != SOCK_NONE) && (transport->fd >= 0));
 }

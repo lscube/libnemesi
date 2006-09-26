@@ -32,31 +32,31 @@ rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
 {
 	rtsp_session *rtsp_s;
 
-	if ( (rtsp_s=(rtsp_session *)malloc(sizeof(rtsp_session))) == NULL ) {
+	if ((rtsp_s = (rtsp_session *) malloc(sizeof(rtsp_session))) == NULL) {
 		nms_printf(NMSML_FATAL, "rtsp_sess_create: Cannot allocate memory.\n");
 		return NULL;
 	}
-	if ( content_base == NULL ){
-			rtsp_s->content_base=NULL;
-			rtsp_s->pathname=urlname;
+	if (content_base == NULL) {
+		rtsp_s->content_base = NULL;
+		rtsp_s->pathname = urlname;
 	} else {
 		/* shawill: using strdup insted
-		if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(strlen(content_base)+1))==NULL) {
-			nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
+		   if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(strlen(content_base)+1))==NULL) {
+		   nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
+		   return NULL;
+		   }
+		   strcpy(rtsp_s->content_base,content_base);
+		 */
+		if (!(rtsp_s->pathname = rtsp_s->content_base = strdup(content_base)))
 			return NULL;
-		}
-		strcpy(rtsp_s->content_base,content_base);
-		*/
-		if (!(rtsp_s->pathname=rtsp_s->content_base=strdup(content_base)))
-			return NULL;
-		rtsp_s->pathname+=strlen(content_base);
-	} 
-	rtsp_s->Session_ID=0;
-	rtsp_s->CSeq=1;
-	rtsp_s->media_queue=NULL;
-	rtsp_s->next=NULL;
+		rtsp_s->pathname += strlen(content_base);
+	}
+	rtsp_s->Session_ID = 0;
+	rtsp_s->CSeq = 1;
+	rtsp_s->media_queue = NULL;
+	rtsp_s->next = NULL;
 
-	rtsp_s->info=NULL;
+	rtsp_s->info = NULL;
 
 	return rtsp_s;
 }

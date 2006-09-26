@@ -33,11 +33,10 @@
 void close_files(int fd[])
 {
 	int i;
-	
-	for (i=0;i<=MAX_PT;i++)
-		if ( fd[i] > 0 )
+
+	for (i = 0; i <= MAX_PT; i++)
+		if (fd[i] > 0)
 			close(fd[i]);
 
 	return;
 }
-

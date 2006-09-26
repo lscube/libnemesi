@@ -428,7 +428,6 @@ int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize, int
 			copy_mp(mp, bytes, wordpointer);
 			mp->fsizeold += bytes;
 		}
-
 #endif
 		read_head(mp);
 		decode_header(&mp->fr, mp->header);

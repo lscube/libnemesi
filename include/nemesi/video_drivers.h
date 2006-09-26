@@ -39,14 +39,14 @@
 #define VCTRL_GET_SYSBUF 0
 
 typedef struct {
-        /* driver name */
-        const char *name;
-        /* short name (for config strings) (e.g.:"sdl") */
-        const char *short_name;
-        /* author ("Author name & surname <mail>") */
-        const char *author;
-        /* any additional comments */
-        const char *comment;
+	/* driver name */
+	const char *name;
+	/* short name (for config strings) (e.g.:"sdl") */
+	const char *short_name;
+	/* author ("Author name & surname <mail>") */
+	const char *author;
+	/* any additional comments */
+	const char *comment;
 } nms_drv_info;
 
 typedef struct {
@@ -56,30 +56,29 @@ typedef struct {
 	 *   arg - currently it's vo_subdevice
 	 *   returns: zero on successful initialization, non-zero on error.
 	 */
-	uint32 (*preinit)(const char *arg, uint32 buff_ms);
-        /*
-         * Initialize (means CONFIGURE) the display driver.
+	 uint32(*preinit) (const char *arg, uint32 buff_ms);
+	/*
+	 * Initialize (means CONFIGURE) the display driver.
 	 * params:
-         *   width,height: image source size
+	 *   width,height: image source size
 	 *   d_width,d_height: size of the requested window size, just a hint
 	 *   fullscreen: flag, 0=windowd 1=fullscreen, just a hint
 	 *   title: window title, if available
 	 *   format: fourcc of pixel format
-         * returns : zero on successful initialization, non-zero on error.
-         */
-        uint32 (*config)(uint32 width, uint32 height, uint32 d_width,
-			 uint32 d_height, uint32 fps, uint8 fullscreen,
-			 char *title, uint32 format);
-	uint32 (*control)(uint32 cmd, void *arg, ...);
+	 * returns : zero on successful initialization, non-zero on error.
+	 */
+	 uint32(*config) (uint32 width, uint32 height, uint32 d_width,
+			  uint32 d_height, uint32 fps, uint8 fullscreen, char *title, uint32 format);
+	 uint32(*control) (uint32 cmd, void *arg, ...);
 	/*
 	 * allocs a new picture.
 	 * params:
-	 *	w: width of requested picture
-	 *	h: height of requested picture
-	 *	pict: the pointer to a nms_picture struct that will contain data allocated.
+	 *      w: width of requested picture
+	 *      h: height of requested picture
+	 *      pict: the pointer to a nms_picture struct that will contain data allocated.
 	 * returns 1 on error, 0 otherwise
 	 */
-	uint32 (*get_picture)(int w, int h, nms_picture *pict);
+	 uint32(*get_picture) (int w, int h, nms_picture * pict);
 	/*
 	 * This function must be called by decoder after the whole picture has
 	 * been written on the allocated nms_picture, in order to unlock
@@ -88,20 +87,20 @@ typedef struct {
 	 *    pict: picture to draw. // XXX: For now we don't need it, but in future... (?)
 	 * retuns 1 on error, 0 otherwise
 	 */
-	uint32 (*draw_picture)(nms_picture *pict, double pts);
+	 uint32(*draw_picture) (nms_picture * pict, double pts);
 
-        /*
-         * Display a new RGB/BGR frame of the video to the screen.
-         */
-        uint32 (*update_screen)(double *next_pts);
+	/*
+	 * Display a new RGB/BGR frame of the video to the screen.
+	 */
+	 uint32(*update_screen) (double *next_pts);
 	/*
 	 * Closes window and reset video buffer
 	 */
-	void (*reset)(void);
-        /*
-         * Closes driver. Should restore the original state of the system.
-         */
-        void (*uninit)(void);
+	void (*reset) (void);
+	/*
+	 * Closes driver. Should restore the original state of the system.
+	 */
+	void (*uninit) (void);
 } nms_vid_fnc;
 
 #if 0
@@ -123,5 +122,4 @@ void list_video_out();
 extern vo_functions_t* video_out_drivers[];
  */
 
-#endif // __VIDEO_DRIVERS_H
-
+#endif				// __VIDEO_DRIVERS_H

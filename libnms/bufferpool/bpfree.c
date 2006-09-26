@@ -40,12 +40,12 @@
 * \see podel
 * \see bufferpool.h
 * */
-int bpfree(buffer_pool *bp, int index)
+int bpfree(buffer_pool * bp, int index)
 {
 	pthread_mutex_lock(&(bp->fl_mutex));
-		bp->freelist[index] = bp->flhead;
-		bp->flhead = index;
-		bp->flcount--;
+	bp->freelist[index] = bp->flhead;
+	bp->flhead = index;
+	bp->flcount--;
 	pthread_mutex_unlock(&(bp->fl_mutex));
 
 	return 0;

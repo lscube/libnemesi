@@ -41,13 +41,13 @@
 #include <nemesi/wsocket.h>
 
 
-#define MAX_PKT_SIZE 548 /* 576 - 20 - 8 = Minimum Reassembly Buffer Size - IP datagram header -  UDP hedaer: in octects */
-#define MAX_SDES_LEN 255 /* in octects */
+#define MAX_PKT_SIZE 548	/* 576 - 20 - 8 = Minimum Reassembly Buffer Size - IP datagram header -  UDP hedaer: in octects */
+#define MAX_SDES_LEN 255	/* in octects */
 
 #define RTCP_MIN_TIME 5.0
 #define RTCP_SENDER_BW_FRACTION 0.25
 #define RTCP_RCVR_BW_FRACTION 0.75
-#define COMPENSATION 1.21828 /* e - 1.5 */
+#define COMPENSATION 1.21828	/* e - 1.5 */
 
 typedef enum {
 	RTCP_SR = 200,
@@ -81,17 +81,17 @@ typedef struct {
 #endif
 	uint32 pt:8;
 	uint32 len:16;
-		
+
 } rtcp_common_t;
 
 #ifdef WORDS_BIGENDIAN
 
-#define RTCP_VALID_MASK ( 0xc000 | 0x2000 | 0xfe ) /* ver | pad | pt */
+#define RTCP_VALID_MASK ( 0xc000 | 0x2000 | 0xfe )	/* ver | pad | pt */
 #define RTCP_VALID_VALUE ( (RTP_VERSION << 14) | RTCP_SR )
 
 #else
 
-#define RTCP_VALID_MASK ( 0xfe00 | 0x20 | 0xc0 ) /* pad | ver | pt */
+#define RTCP_VALID_MASK ( 0xfe00 | 0x20 | 0xc0 )	/* pad | ver | pt */
 #define RTCP_VALID_VALUE ( ( RTCP_SR << 8 ) | (RTP_VERSION << 6) )
 
 #endif
@@ -133,20 +133,20 @@ typedef struct {
 			uint32 ssrc;
 			rtcp_rr_t rr[1];
 		} rr;
-		
+
 		struct rtcp_sdes {
 			uint32 src;
 			rtcp_sdes_item_t item[1];
 		} sdes;
-		
+
 		struct {
 			uint32 src[1];
 		} bye;
-		
+
 		struct {
 			uint32 src;
 			char name[4];
-			uint8 data[1]; 
+			uint8 data[1];
 		} app;
 	} r;
 } rtcp_pkt;

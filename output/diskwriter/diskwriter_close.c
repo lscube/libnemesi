@@ -30,7 +30,7 @@
 
 #include <nemesi/diskwriter.h>
 
-int diskwriter_close(nms_diskwriter *dc)
+int diskwriter_close(nms_diskwriter * dc)
 {
 	// struct disk_buff *disk_buffer=global_disk_buffer;
 
@@ -41,4 +41,3 @@ int diskwriter_close(nms_diskwriter *dc)
 
 	return 0;
 }
-

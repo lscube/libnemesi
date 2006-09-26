@@ -30,4 +30,3 @@
 #include <nemesi/cc.h>
 
 int pref2ccmask(cc_perm_mask *);
-

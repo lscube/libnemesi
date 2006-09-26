@@ -30,16 +30,16 @@
 
 #include <nemesi/sdp.h>
 
-void sdp_session_destroy(sdp_session_info *session)
+void sdp_session_destroy(sdp_session_info * session)
 {
 	sdp_attr *sdp_attr, *sdp_attr_prev;
 
 	if (session) {
 		sdp_media_destroy(session->media_info_queue);
 		// destroy session attributes
-		for(sdp_attr=session->attr_list; sdp_attr; sdp_attr_prev=sdp_attr, sdp_attr=sdp_attr->next, free(sdp_attr_prev));
+		for (sdp_attr = session->attr_list; sdp_attr;
+		     sdp_attr_prev = sdp_attr, sdp_attr = sdp_attr->next, free(sdp_attr_prev));
 
 		free(session);
 	}
 }
-

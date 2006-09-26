@@ -32,7 +32,7 @@
 #include "callbacks.h"
 #include "support.h"
 #include "gui_throbber.h"
-#include <nemesi/comm.h> // se ne va, eh?
+#include <nemesi/comm.h>	// se ne va, eh?
 
 // static GtkProgress *progress;
 
@@ -40,25 +40,25 @@ static GNMSThrobber *throbber;
 static gint progress_timeout(gpointer data);
 static void destroy_throbber(void);
 
-int create_throbber(GtkWidget *box)
+int create_throbber(GtkWidget * box)
 {
 	GNMSThrobber *new_throbber;
 	unsigned int i;
 	char filename[127];
 
-	if ((new_throbber=malloc(sizeof(GNMSThrobber))) == NULL)
+	if ((new_throbber = malloc(sizeof(GNMSThrobber))) == NULL)
 		return nms_printf(NMSML_FATAL, "Could not alloc throbber structure\n");
 
-	new_throbber->num_anim = 9; // TODO: automatizzare
-	if ((new_throbber->anim=malloc(new_throbber->num_anim * sizeof(GtkWidget *))) == NULL)
+	new_throbber->num_anim = 9;	// TODO: automatizzare
+	if ((new_throbber->anim = malloc(new_throbber->num_anim * sizeof(GtkWidget *))) == NULL)
 		return nms_printf(NMSML_FATAL, "Could not alloc throbber animation vector\n");
 
 	new_throbber->rest = GTK_IMAGE(create_pixmap(NULL, "rest.png"));
-	gtk_box_pack_end (GTK_BOX (box), GTK_WIDGET(new_throbber->rest), FALSE, FALSE, 0);
-	for (i=0;i<new_throbber->num_anim;i++) {
-		sprintf(filename, "%03d.png", i+1);
+	gtk_box_pack_end(GTK_BOX(box), GTK_WIDGET(new_throbber->rest), FALSE, FALSE, 0);
+	for (i = 0; i < new_throbber->num_anim; i++) {
+		sprintf(filename, "%03d.png", i + 1);
 		new_throbber->anim[i] = GTK_IMAGE(create_pixmap(NULL, filename));
-		gtk_box_pack_end (GTK_BOX (box), GTK_WIDGET(new_throbber->anim[i]), FALSE, FALSE, 0);
+		gtk_box_pack_end(GTK_BOX(box), GTK_WIDGET(new_throbber->anim[i]), FALSE, FALSE, 0);
 	}
 
 	gtk_widget_show(GTK_WIDGET(new_throbber->rest));
@@ -71,8 +71,8 @@ int create_throbber(GtkWidget *box)
 
 void gui_throbber(void *arg)
 {
-	uint8 *busy = (uint8 *)arg;
-	static gint timer=-1;
+	uint8 *busy = (uint8 *) arg;
+	static gint timer = -1;
 
 	update_toolbar();
 	if (timer > 0)
@@ -89,9 +89,9 @@ static gint progress_timeout(gpointer data)
 			gtk_widget_hide(GTK_WIDGET(throbber->anim[throbber->shown]));
 		else
 			gtk_widget_hide(GTK_WIDGET(throbber->rest));
-		throbber->shown = (throbber->shown + 1 ) % throbber->num_anim;
+		throbber->shown = (throbber->shown + 1) % throbber->num_anim;
 		gtk_widget_show(GTK_WIDGET(throbber->anim[throbber->shown]));
-	}else {
+	} else {
 		if (throbber->shown >= 0) {
 			gtk_widget_hide(GTK_WIDGET(throbber->anim[throbber->shown]));
 			gtk_widget_show(GTK_WIDGET(throbber->rest));
@@ -109,10 +109,9 @@ static void destroy_throbber(void)
 	unsigned int i;
 
 	gtk_widget_destroy(GTK_WIDGET(throbber->rest));
-	for(i=0;i<throbber->num_anim;i++)
+	for (i = 0; i < throbber->num_anim; i++)
 		gtk_widget_destroy(GTK_WIDGET(throbber->anim[i]));
 
 	free(throbber->anim);
 	free(throbber);
 }
-

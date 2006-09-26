@@ -36,11 +36,11 @@
 // inspired by id3lib
 #define MASK(bits) ((1 << (bits)) - 1)
 
-#define ID3v2_MAJOR 0x03 // for now we use 3 for compliance with other software
+#define ID3v2_MAJOR 0x03	// for now we use 3 for compliance with other software
 #define ID3v2_REV 0x00
 
-#define ID3v2_HDRLEN 10 // basic header lenght for id3 tag
-#define ID3v2_FRAMEHDRLEN 11 // 10 for header + 1 for text encoding (redundant)
+#define ID3v2_HDRLEN 10		// basic header lenght for id3 tag
+#define ID3v2_FRAMEHDRLEN 11	// 10 for header + 1 for text encoding (redundant)
 
 #define CC_URILIC "This work is licenced under the "
 #define CC_URIMETA " verify at "
@@ -80,12 +80,12 @@ struct id3tag {
 	// uint8 size[sizeof(uint32)];
 	uint8 size[4];
 	// not using extended header
-	struct id3frm frames[1]; // the tag MUST contain at least one frame
+	struct id3frm frames[1];	// the tag MUST contain at least one frame
 };
 
-static uint8 enc_synchsafe_int(uint8 *enc_chr, uint32 num)
+static uint8 enc_synchsafe_int(uint8 * enc_chr, uint32 num)
 {
-	uint32 encoded=0;
+	uint32 encoded = 0;
 	// uint8 *enc_chr=(uint8 *)(&encoded);
 	const unsigned char bitsused = 7;
 	const uint32 maxval = MASK(bitsused * sizeof(uint32));
@@ -93,58 +93,58 @@ static uint8 enc_synchsafe_int(uint8 *enc_chr, uint32 num)
 
 	num = min(num, maxval);
 
-	for (i=sizeof(uint32) - 1; i>=0; i--) {
-		enc_chr[i] = (uint8)(num & MASK(bitsused));
+	for (i = sizeof(uint32) - 1; i >= 0; i--) {
+		enc_chr[i] = (uint8) (num & MASK(bitsused));
 		num >>= bitsused;
 	}
 
 	return encoded;
 }
 
-int cc_id3v2(cc_license *license, cc_tag *tag)
+int cc_id3v2(cc_license * license, cc_tag * tag)
 {
-	uint32 id3len=0;
+	uint32 id3len = 0;
 	struct id3tag *id3;
 	struct id3frm *frame;
 	// frama lens
-	int tit2=0, tpe1=0, tcop=0;
+	int tit2 = 0, tpe1 = 0, tcop = 0;
 	uint8 *pos;
 
 	// id3 length computation
 	// first we calculate len of each tag
-	
+
 	if (license->title) {
 		// there's the creator info => put TIT2 frame
-		tit2 = strlen(license->title) + 1; // '\0' added
+		tit2 = strlen(license->title) + 1;	// '\0' added
 		id3len += ID3v2_FRAMEHDRLEN + tit2;
 	}
 	if (license->creator) {
 		// there's the title info => put TPE1 frame
-		tpe1 = strlen(license->creator) + 1; // '\0' added
+		tpe1 = strlen(license->creator) + 1;	// '\0' added
 		id3len += ID3v2_FRAMEHDRLEN + tpe1;
 	}
 	if ((license->uriLicense) || (license->uriMetadata)) {
 		// there's CC info => put TCOP frame
 		if (license->uriLicense)
-			tcop += strlen(CC_URILIC) + strlen(license->uriLicense) + 1; // '\0' added
+			tcop += strlen(CC_URILIC) + strlen(license->uriLicense) + 1;	// '\0' added
 		if (license->uriMetadata)
-			tcop += strlen(CC_URIMETA) + strlen(license->uriMetadata) + 1; // '\0' added
+			tcop += strlen(CC_URIMETA) + strlen(license->uriMetadata) + 1;	// '\0' added
 		id3len += ID3v2_FRAMEHDRLEN + tcop;
 	}
 
-	if (!id3len) // no frame to put in => error
+	if (!id3len)		// no frame to put in => error
 		return 1;
 
 	// add id3 header len to total dimension of buffer
 	id3len += ID3v2_HDRLEN;
 
 	// alloc buffer for tag
-	if ( !( id3 = malloc(id3len * sizeof(uint8)) ) )
+	if (!(id3 = malloc(id3len * sizeof(uint8))))
 		return 1;
 
 	// ID3v2 header creation
 	// string "ID3"
-	strncpy((char *)id3->id, "ID3", 3);
+	strncpy((char *) id3->id, "ID3", 3);
 	// ID3v2 version
 	id3->major = ID3v2_MAJOR;
 	id3->rev = ID3v2_REV;
@@ -158,42 +158,44 @@ int cc_id3v2(cc_license *license, cc_tag *tag)
 	// put frames
 	if (license->title) {
 		// there's the creator info => put TIT2 frame
-		strncpy((char *)frame->id, "TIT2", 4);
-		/*frame->size = */enc_synchsafe_int(frame->size, tit2 + 1); // char enc byte added
+		strncpy((char *) frame->id, "TIT2", 4);
+		/*frame->size = */ enc_synchsafe_int(frame->size, tit2 + 1);
+		// char enc byte added
 		frame->flags = 0;
-		frame->charenc = 0; // ISO-8858-1
-		strcpy((char *)frame->data, license->title);
-		frame = (struct id3frm *)(frame->data + tit2);
+		frame->charenc = 0;	// ISO-8858-1
+		strcpy((char *) frame->data, license->title);
+		frame = (struct id3frm *) (frame->data + tit2);
 	}
 	if (license->creator) {
 		// there's the title info => put TPE1 frame
-		strncpy((char *)frame->id, "TPE1", 4);
-		/*frame->size = */enc_synchsafe_int(frame->size, tpe1 + 1); // char enc byte added
+		strncpy((char *) frame->id, "TPE1", 4);
+		/*frame->size = */ enc_synchsafe_int(frame->size, tpe1 + 1);
+		// char enc byte added
 		frame->flags = 0;
-		frame->charenc = 0; // ISO-8858-1
-		strcpy((char *)frame->data, license->creator);
-		frame = (struct id3frm *)(frame->data + tpe1);
+		frame->charenc = 0;	// ISO-8858-1
+		strcpy((char *) frame->data, license->creator);
+		frame = (struct id3frm *) (frame->data + tpe1);
 	}
 	if ((license->uriLicense) || (license->uriMetadata)) {
 		// there's CC info => put TCOP frame
-		strncpy((char *)frame->id, "TCOP", 4);
-		/*frame->size = */enc_synchsafe_int(frame->size, tcop + 1); // char enc byte added
+		strncpy((char *) frame->id, "TCOP", 4);
+		/*frame->size = */ enc_synchsafe_int(frame->size, tcop + 1);
+		// char enc byte added
 		frame->flags = 0;
-		frame->charenc = 0; // ISO-8858-1
+		frame->charenc = 0;	// ISO-8858-1
 		pos = frame->data;
 		if (license->uriLicense) {
-			sprintf((char *)pos, "%s%s", CC_URILIC, license->uriLicense);
-			pos += strlen((char *)pos);
+			sprintf((char *) pos, "%s%s", CC_URILIC, license->uriLicense);
+			pos += strlen((char *) pos);
 		}
 		if (license->uriMetadata) {
-			sprintf((char *)pos, "%s%s", CC_URIMETA, license->uriMetadata);
+			sprintf((char *) pos, "%s%s", CC_URIMETA, license->uriMetadata);
 		}
-		frame = (struct id3frm *)(frame->data + tcop);
+		frame = (struct id3frm *) (frame->data + tcop);
 	}
 
-	tag->header = (int8 *)id3;
+	tag->header = (int8 *) id3;
 	tag->hdim = id3len;
 
 	return 0;
 }
-

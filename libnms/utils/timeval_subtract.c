@@ -31,8 +31,8 @@
 int timeval_subtract(struct timeval *res, const struct timeval *x, const struct timeval *y)
 {
 	int nsec;
-	struct timeval z=*y;
-	
+	struct timeval z = *y;
+
 	/* Perform the carry for the later subtraction by updating Y. */
 	if (x->tv_usec < z.tv_usec) {
 		nsec = (z.tv_usec - x->tv_usec) / 1000000 + 1;
@@ -47,7 +47,7 @@ int timeval_subtract(struct timeval *res, const struct timeval *x, const struct 
 
 	/* Compute the time remaining to wait.
 	 * `tv_usec' is certainly positive. */
-	if ( res != NULL){
+	if (res != NULL) {
 		res->tv_sec = x->tv_sec - z.tv_sec;
 		res->tv_usec = x->tv_usec - z.tv_usec;
 	}

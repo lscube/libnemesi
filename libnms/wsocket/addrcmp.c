@@ -28,27 +28,26 @@
 
 #include <nemesi/wsocket.h>
 
-int addrcmp(const nms_addr *addr1, const nms_addr *addr2)
+int addrcmp(const nms_addr * addr1, const nms_addr * addr2)
 {
-	if ( addr1->family != addr2->family )
+	if (addr1->family != addr2->family)
 		return WSOCK_ERRFAMILY;
 	switch (addr1->family) {
-		case AF_INET:
-			if (!memcmp(&addr1->addr.in, &addr2->addr.in, sizeof(struct in_addr)))
-				return 0;
-			else
-				return WSOCK_ERRADDR;
-			break;
-		case AF_INET6:
-			if (!memcmp(&addr1->addr.in6, &addr2->addr.in6, sizeof(struct in6_addr)))
-				return 0;
-			else
-				return WSOCK_ERRADDR;
-			break;
-		default:
-			return WSOCK_ERRFAMILYUNKNOWN;
+	case AF_INET:
+		if (!memcmp(&addr1->addr.in, &addr2->addr.in, sizeof(struct in_addr)))
+			return 0;
+		else
+			return WSOCK_ERRADDR;
+		break;
+	case AF_INET6:
+		if (!memcmp(&addr1->addr.in6, &addr2->addr.in6, sizeof(struct in6_addr)))
+			return 0;
+		else
+			return WSOCK_ERRADDR;
+		break;
+	default:
+		return WSOCK_ERRFAMILYUNKNOWN;
 	}
-	
+
 	return 0;
 }
-

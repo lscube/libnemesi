@@ -76,4 +76,3 @@ char *audio_format_name(int format)
 	}
 	return ("Unknown");
 }
-

@@ -28,16 +28,18 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_fill_buffer(rtp_ssrc *stm_src, rtp_frame *fr, rtp_buff *config)
+int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
 	rtp_pkt *pkt;
-	
-	if ( !(pkt=rtp_get_pkt(stm_src, NULL)) )
+
+	if (!(pkt = rtp_get_pkt(stm_src, NULL)))
 		return RTP_BUFF_EMPTY;
-		
+
 	fr->pt = RTP_PKT_PT(pkt);
 	fr->timestamp = RTP_PKT_TS(pkt);
-	fr->time_sec = ((double)(fr->timestamp - stm_src->ssrc_stats.firstts))/(double)stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
-	
-	return stm_src->rtp_sess->parsers[fr->pt](stm_src, fr, config);
+	fr->time_sec =
+	    ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
+	    (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
+
+	return stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config);
 }

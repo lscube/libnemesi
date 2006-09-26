@@ -34,7 +34,7 @@
 * Si occupa di inizializzare la sessione e di mettere il thread nello stato READY.
 * @param rtap_t il puntatore che conterra la nuova struttura rtsp_thread.
 * */
-int open_cmd(rtsp_thread *rtsp_th, ...)
+int open_cmd(rtsp_thread * rtsp_th, ...)
 {
 	char *server;
 
@@ -42,7 +42,7 @@ int open_cmd(rtsp_thread *rtsp_th, ...)
 		nms_printf(NMSML_WARN, "Client already connected!\n");
 		return 1;
 	}
-	if ( !*rtsp_th->comm->arg ) {
+	if (!*rtsp_th->comm->arg) {
 		nms_printf(NMSML_ERR, "No address given\n");
 		return 1;
 	}

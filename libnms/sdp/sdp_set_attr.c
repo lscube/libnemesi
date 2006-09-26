@@ -31,20 +31,18 @@
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>
 
-int sdp_set_attr(sdp_attr **attr_list, char *a)
+int sdp_set_attr(sdp_attr ** attr_list, char *a)
 {
 	sdp_attr *new, **i;
 
 	// we use calloc, so it's all already initialized to NULL
-	if (!(new=(sdp_attr *)calloc(1, sizeof(sdp_attr))))
+	if (!(new = (sdp_attr *) calloc(1, sizeof(sdp_attr))))
 		return nms_printf(NMSML_FATAL, "Could not allocate memory\n");
 
 	new->a = a;
 
-	for(i=attr_list; *i ; i=&((*i)->next)); // serch for the tail of queue
+	for (i = attr_list; *i; i = &((*i)->next));	// serch for the tail of queue
 	*i = new;
 
 	return 0;
 }
-
-
