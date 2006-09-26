@@ -40,8 +40,8 @@ void *rtcp(void *args)
 	fd_set readset;
 	
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-/* 	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
+	// pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
 	pthread_cleanup_push(rtcp_clean, (void *)&rtp_sess_head);
 	pthread_cleanup_push(rtcp_clean_events, (void *)&head);
 
@@ -64,9 +64,9 @@ void *rtcp(void *args)
 	}
 
 	while(1){
-		/*
+		
 		pthread_testcancel();
-		*/
+		
 		FD_ZERO(&readset);
 
 		for (rtp_sess=rtp_sess_head; rtp_sess; rtp_sess=rtp_sess->next){
