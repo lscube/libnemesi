@@ -61,8 +61,8 @@ svndist: dist
 
 indent:
 	@echo -n "indenting code with Kernighan & Ritchie coding style... "; \
-	VERSION_CONTROL=simple \
-	SIMPLE_BACKUP_SUFFIX=.ibak \
+	export VERSION_CONTROL=simple; \
+	export SIMPLE_BACKUP_SUFFIX=.ibak; \
 	mkdir -p indent-backup && \
 	for file in `find -name \*.c -or -name \*.h` ; do \
 		indent -kr -i8 -l120 $${file}; \

@@ -937,7 +937,6 @@ int PutVbrTag(lame_global_flags * gfp, FILE * fpStream, int nVbrScale)
 		/* (jo) error_protection: add crc16 information to header */
 		CRC_writeheader(gfc, pbtStreamBuffer);
 	}
-
 	//work out CRC so far: initially crc = 0
 	for (i = 0; i < nStreamIndex; i++)
 		crc = CRC_update_lookup(pbtStreamBuffer[i], crc);

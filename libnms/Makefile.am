@@ -55,7 +55,7 @@ EXTRA_DIST = 	config \
 		debian
 
 
-MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log
+MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log libnms.pc
 MAINTAINER_DIRS = config
 
 maintainer-clean-local:
@@ -71,3 +71,15 @@ svnclean: maintainer-clean
 	@SVNREV_DEFINE=`grep -sE '#define +SVNREV +\" *\\\$$ *Rev.* *\\\$$ *\"' svnrev.h`; \
 	test -z "$$SVNREV_DEFINE" && SVNREV_DEFINE="#define SVNREV \"\$$Rev\$$\"" || :; \
 	echo -e "/* This header is just for keeping track of current SVN revision.\n * If this file is present in the sources tree then this is a development SVN\n * version.\n * `date`\n * */\n\n#ifndef __SVNREV_H\n#define __SVNREV_H\n\n$$SVNREV_DEFINE\n\n#endif // __SVNREV_H\n" > svnrev.h
+
+indent:
+	@echo -n "indenting code with Kernighan & Ritchie coding style... "; \
+	export VERSION_CONTROL=simple; \
+	export SIMPLE_BACKUP_SUFFIX=.ibak; \
+	mkdir -p indent-backup && \
+	for file in `find -name \*.c -or -name \*.h` ; do \
+		indent -kr -i8 -l120 $${file}; \
+		cp --parents $${file}$${SIMPLE_BACKUP_SUFFIX} indent-backup && \
+		rm $${file}$${SIMPLE_BACKUP_SUFFIX}; \
+	done; \
+	echo "done."
