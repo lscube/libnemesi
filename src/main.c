@@ -25,6 +25,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *  
  * */
+ 
+ #include <signal.h>
 
 #include <nemesi/comm.h>
 
@@ -35,6 +37,8 @@
 
 #define GLOBAL_PREFERENCES
 #include <nemesi/preferences.h>
+
+static void sig_usr(int);
 
 int main(int argc, char *argv[])
 {
@@ -50,6 +54,9 @@ int main(int argc, char *argv[])
 
 	// nms_printf(0, "\nWelcome! This is %s - %s -- version %s (%s)\n\n", PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 	nms_header();
+		
+	if ( signal(SIGINT, sig_usr) == SIG_ERR)
+		nms_printf(NMSML_ERR, "Can't catch SIGINT");
 
 	// command line parsing
 	if ((n = parse_cl(argc, argv, &cl_opt)))
@@ -113,4 +120,19 @@ int main(int argc, char *argv[])
 	nms_printf(NMSML_NORM, "\nBye bye!\n\n");
 
 	exit(0);
+}
+
+static void sig_usr(int signo)
+{
+	
+	switch (signo) {
+		case SIGINT:
+			nms_printf(NMSML_WARN, "*** received SIGINT signal\n");
+			exit(1);
+			break;
+		default:
+			nms_printf(NMSML_WARN, "*** received signal: %d\n", signo);
+			exit(1);
+			break;
+	}
 }

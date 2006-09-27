@@ -38,9 +38,13 @@ int nms_open(rtsp_ctrl * rtsp_ctl, char *urlname,
 		throbber_func(targ);
 	else
 		rtsp_wait(rtsp_ctl);
+	
+	if (rtsp_status(rtsp_ctl) != READY)
+		return 1;
 
 	if (!(decoder_tid = dec_create(rtsp_ctl)))
-		exit(nms_printf(NMSML_FATAL, "Cannot initialize decoder\n"));
+		return nms_printf(NMSML_FATAL, "Cannot initialize decoder\n");
+		// exit(nms_printf(NMSML_FATAL, "Cannot initialize decoder\n"));
 
 	return 0;
 }

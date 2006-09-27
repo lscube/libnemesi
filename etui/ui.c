@@ -67,8 +67,10 @@ int ui(rtsp_ctrl * rtsp_ctl, nms_ui_hints * ui_hints, int argc, char **argv)
 	if (urlname != NULL) {
 		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"",
 			   urlname);
-		nms_open(rtsp_ctl, urlname, throbber, rtsp_ctl);
-		if (!ui_hints->interactive)
+		if ( nms_open(rtsp_ctl, urlname, throbber, rtsp_ctl) ) {
+			if (!ui_hints->interactive)
+				return 1;
+		} else if (!ui_hints->interactive)
 			nms_play(rtsp_ctl, -1, -1);
 	} else
 		nms_printf(NMSML_NORM,

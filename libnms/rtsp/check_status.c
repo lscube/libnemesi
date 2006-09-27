@@ -54,8 +54,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
 
 	if (RTSP_IS_SUCCESS(res_state))
 		return res_state;
-	// if ( (res_state>=300) && (res_state<400) ) {
-	if (RTSP_IS_REDIRECT(res_state)) {
+	else if (RTSP_IS_REDIRECT(res_state)) { // (res_state>=300) && (res_state<400)
 		nms_printf(NMSML_NORM,
 			   "WARNING: Redirection. reply was: %hu %s\n",
 			   res_state, reason_phrase);
@@ -99,13 +98,10 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
 						   "No location string\n");
 			// rtsp_th->status=INIT;
 		}
-	}
-	// if ( (res_state>=400) && (res_state<500))
-	if (RTSP_IS_CLIENT_ERROR(res_state))
+	} else if (RTSP_IS_CLIENT_ERROR(res_state)) // (res_state>=400) && (res_state<500)
 		nms_printf(NMSML_ERR, "Client error. Reply was: %hu %s\n",
 			   res_state, reason_phrase);
-	// if ( res_state>=500 )
-	if (RTSP_IS_SERVER_ERROR(res_state))
+	else if (RTSP_IS_SERVER_ERROR(res_state)) // res_state>=500
 		nms_printf(NMSML_ERR, "Server error. Reply was: %hu %s\n",
 			   res_state, reason_phrase);
 	return -1;

@@ -38,11 +38,13 @@ int dec_destroy(pthread_t tid)
 		if (pthread_cancel(tid) != 0)
 			nms_printf(NMSML_DBG2,
 				   "Error while sending cancelation to Decoder Thread.\n");
-		else
-			pthread_join(tid, (void **) &ret);
-		if (ret != PTHREAD_CANCELED)
-			nms_printf(NMSML_DBG2,
+		else {
+			if ( pthread_join(tid, (void **) &ret) )
+				nms_printf(NMSML_ERR, "Could not join Decoder Thread!\n");
+			else if (ret != PTHREAD_CANCELED)
+				nms_printf(NMSML_DBG2,
 				   "Warning! Decoder Thread joined, but not canceled!\n");
+		}
 	}
 
 	return 0;

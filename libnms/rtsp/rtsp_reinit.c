@@ -28,14 +28,18 @@
 
 #include <nemesi/rtsp.h>
 
+static void clean_rtsp_th(rtsp_thread *);
+
 int rtsp_reinit(rtsp_thread * rtsp_th)
 {
 	rtsp_medium *med, *pmed;
 	rtsp_session *sess, *psess;
 	void *ret;
 
-	if (!(sess = psess = rtsp_th->rtsp_queue))
+	if (!(sess = psess = rtsp_th->rtsp_queue)) {
+		clean_rtsp_th(rtsp_th);
 		return 0;
+	}
 #if 1				// TODO: fix last teardown response wait
 	// check for active rtp/rtcp session
 	if (sess->media_queue && sess->media_queue->rtp_sess) {
@@ -43,15 +47,17 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 			nms_printf(NMSML_DBG1,
 				   "Sending cancel signal to RTCP Thread (ID: %lu)\n",
 				   rtsp_th->rtp_th->rtcp_tid);
-			if (pthread_cancel(rtsp_th->rtp_th->rtcp_tid) != 0)
+			if ( pthread_cancel(rtsp_th->rtp_th->rtcp_tid) )
 				nms_printf(NMSML_DBG2,
 					   "Error while sending cancelation to RTCP Thread.\n");
-			else
-				pthread_join(rtsp_th->rtp_th->rtcp_tid,
-					     (void **) &ret);
-			if (ret != PTHREAD_CANCELED)
-				nms_printf(NMSML_DBG2,
+			else {
+				if ( pthread_join(rtsp_th->rtp_th->rtcp_tid,
+					     (void **) &ret) )
+					nms_printf(NMSML_ERR, "Could not join RTCP Thread!\n");
+				else if (ret != PTHREAD_CANCELED)
+					nms_printf(NMSML_DBG2,
 					   "Warning! RTCP Thread joined, but  not canceled!\n");
+			}
 			rtsp_th->rtp_th->rtcp_tid = 0;
 		}
 		if (rtsp_th->rtp_th->rtp_tid > 0) {
@@ -61,12 +67,14 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 			if (pthread_cancel(rtsp_th->rtp_th->rtp_tid) != 0)
 				nms_printf(NMSML_DBG2,
 					   "Error while sending cancelation to RTP Thread.\n");
-			else
-				pthread_join(rtsp_th->rtp_th->rtp_tid,
-					     (void **) &ret);
-			if (ret != PTHREAD_CANCELED)
-				nms_printf(NMSML_DBG2,
+			else {
+				if ( pthread_join(rtsp_th->rtp_th->rtp_tid,
+					     (void **) &ret) )
+					nms_printf(NMSML_ERR, "Could not join RTP Thread!\n");
+				else if (ret != PTHREAD_CANCELED)
+					nms_printf(NMSML_DBG2,
 					   "Warning! RTP Thread joined, but not canceled.\n");
+			}
 			rtsp_th->rtp_th->rtp_tid = 0;
 		}
 	}
@@ -95,6 +103,13 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 		free(psess);
 	}
 
+	clean_rtsp_th(rtsp_th);
+
+	return 0;
+}
+
+static void clean_rtsp_th(rtsp_thread *rtsp_th)
+{	
 	free(rtsp_th->server_port);
 	free(rtsp_th->urlname);
 	free((rtsp_th->in_buffer).data);
@@ -120,6 +135,4 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 			rtsp_th->force_rtp_port++;
 	} else
 		rtsp_th->force_rtp_port = 0;
-
-	return 0;
 }

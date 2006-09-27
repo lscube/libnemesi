@@ -51,5 +51,5 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 	 */
 	return state_machine[rtsp_th->status] (rtsp_th, opcode);
 
-	return 0;
+	// return 0;
 }
