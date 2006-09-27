@@ -248,7 +248,8 @@ struct rtp_conflict {
  * payload types (present in the <tt>announced_fmts</tt> list)
  * */
 typedef int (*rtp_parser_init) (struct rtp_session_s * rtp_sess, unsigned pt);
-typedef int (*rtp_parser) (rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * conf);
+typedef int (*rtp_parser) (rtp_ssrc * stm_src, rtp_frame * fr,
+			   rtp_buff * conf);
 typedef int (*rtp_parser_uninit) (rtp_ssrc * stm_src, unsigned pt);
 
 typedef struct rtp_session_s {

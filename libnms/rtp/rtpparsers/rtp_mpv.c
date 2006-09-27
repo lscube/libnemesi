@@ -111,9 +111,7 @@ static int rtp_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 	// fr->timestamp = RTP_PKT_TS(pkt);
 
 
-	nms_printf(NMSML_DBG3,
-		   "\n[MPV]: header: mbz:%u t:%u tr:%u an:%u n:%u s:%u b:%u e:%u p:%u fbv:%u bfc:%u ffv:%u ffc:%u\n",
-		   RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t, /*ntohs( */
+	nms_printf(NMSML_DBG3, "\n[MPV]: header: mbz:%u t:%u tr:%u an:%u n:%u s:%u b:%u e:%u p:%u fbv:%u bfc:%u ffv:%u ffc:%u\n", RTP_MPV_PKT(pkt)->mbz, RTP_MPV_PKT(pkt)->t,	/*ntohs( */
 		   RTP_MPV_TR(pkt) /*) */ ,
 		   RTP_MPV_PKT(pkt)->an, RTP_MPV_PKT(pkt)->n,
 		   RTP_MPV_PKT(pkt)->s, RTP_MPV_PKT(pkt)->b,

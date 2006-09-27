@@ -120,7 +120,8 @@ void *decoder(void *args)
 				     stm_src = stm_src->next) {
 #else
 			for (stm_src = rtp_active_ssrc_queue(rtp_sess_head);
-			     stm_src; stm_src = rtp_next_active_ssrc(stm_src)) {
+			     stm_src;
+			     stm_src = rtp_next_active_ssrc(stm_src)) {
 				rtp_sess = stm_src->rtp_sess;
 #endif
 
@@ -140,11 +141,13 @@ void *decoder(void *args)
 					nms_printf(NMSML_DBG3,
 						   "RTP Timestamp:%lu\n",
 						   ntohl(pkt->time));
-					 /**/ ts_elapsed =
-					    ((double)
-					     (ntohl(pkt->time) -
-					      stm_src->ssrc_stats.firstts)) /
-					    (double) rtp_sess->ptdefs[pkt->pt]->
+					 /**/ ts_elapsed = ((double)
+							    (ntohl(pkt->time) -
+							     stm_src->
+							     ssrc_stats.
+							     firstts)) /
+					    (double) rtp_sess->ptdefs[pkt->
+								      pt]->
 					    rate;
 					tv_elapsed.tv_sec = (long) ts_elapsed;
 					tv_elapsed.tv_usec =
@@ -164,7 +167,8 @@ void *decoder(void *args)
 #endif				// TS_SCHEDULE
 						   timeval_subtract(NULL,
 								    &tv_elapsed,
-								    &tvstart)) {
+								    &tvstart))
+					{
 
 						/* istruzione con bug
 						   len= (stm_src->po.pobuff[stm_src->po.potail]).pktlen -\
@@ -177,10 +181,10 @@ void *decoder(void *args)
 									data) -
 							     (uint8 *) pkt) -
 							    pkt->cc -
-							    ((*
-							      (((uint8 *) pkt) +
-							       len -
-							       1)) * pkt->pad);
+							    ((*(((uint8 *) pkt)
+								+ len -
+								1)) *
+							     pkt->pad);
 						}
 						strcpy(output_pref,
 						       get_pref("output"));
@@ -211,8 +215,8 @@ void *decoder(void *args)
 							     "card")) {
 								nms_outc->
 								    elapsed =
-								    ts_elapsed *
-								    1000;
+								    ts_elapsed
+								    * 1000;
 								decoders[pkt->
 									 pt] (((char *) pkt->data + pkt->cc), len, nms_outc);
 								if (nms_outc->

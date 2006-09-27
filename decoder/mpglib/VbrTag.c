@@ -235,7 +235,8 @@ void AddVbrFrame(lame_global_flags * gfp)
 			gfc->VBR_seek_table.size = 400;
 		} else {
 			gfc->VBR_seek_table.size = 0;
-			ERRORF(gfc, "Error: can't allocate VbrFrames buffer\n");
+			ERRORF(gfc,
+			       "Error: can't allocate VbrFrames buffer\n");
 			return;
 		}
 	}

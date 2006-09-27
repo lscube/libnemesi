@@ -66,7 +66,8 @@ void *video_th(void *outc)
 
 	if (videoc->fps) {
 		fps = videoc->fps;
-		nms_printf(NMSML_VERB, "Video Thread Started: fps = %f\n", fps);
+		nms_printf(NMSML_VERB, "Video Thread Started: fps = %f\n",
+			   fps);
 	} else {
 		nms_printf(NMSML_VERB,
 			   "Video Thread Started: using default fps = %f\n",
@@ -91,7 +92,8 @@ void *video_th(void *outc)
 			nms_printf(NMSML_DBG3, "didn't sleep\n");
 		vfuncs->update_screen(&next_pts);
 		nms_printf(NMSML_DBG2,
-			   "next presentation timestamp is: %3.2f\n", next_pts);
+			   "next presentation timestamp is: %3.2f\n",
+			   next_pts);
 		// gettimeofday(&tvstop, NULL);
 		if (!next_pts)
 			next_pts = last_pts + 1000 / fps;
@@ -117,8 +119,8 @@ void *video_th(void *outc)
 			}
 		} else {
 #endif				// AV_SYNC
-			nms_statusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms",
-					 last_pts);
+			nms_statusprintf(ELAPSED_STATUS,
+					 "Elapsed: V: %3.2lfms", last_pts);
 			tvsleep.tv_sec = (next_pts - last_pts) / 1000;
 			tvsleep.tv_usec =
 			    (next_pts - last_pts -

@@ -67,8 +67,7 @@ nms_au_fnc *init_best_audio_out(char *drv, uint32 * rate, uint8 * channels,
 	if (drv && *drv) {
 		device = strtok(drv, ",");
 		while (device && *device && strcmp(device, "...")) {
-			for (i = 0;
-			     audio_out_drivers[i]
+			for (i = 0; audio_out_drivers[i]
 			     && strcmp(device,
 				       audio_out_drivers[i]->info->short_name);
 			     i++);

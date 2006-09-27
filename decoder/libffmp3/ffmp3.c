@@ -119,7 +119,8 @@ static int decode(char *data, int len, nms_output * outc)
 					    audio_resample_init(channels,
 								c->channels,
 								rate,
-								c->sample_rate);
+								c->
+								sample_rate);
 					if (!resample_c) {
 						fprintf(stderr, "failed!!!\n");
 						return 1;

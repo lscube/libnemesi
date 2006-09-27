@@ -73,8 +73,8 @@ RTP_PARSER(mpa);
 
 typedef struct {
 	enum { MPA_MPEG_2_5 = 0, MPA_MPEG_RES, MPA_MPEG_2, MPA_MPEG_1 } id;
-	enum { MPA_LAYER_RES =
-		    0, MPA_LAYER_III, MPA_LAYER_II, MPA_LAYER_I } layer;
+	enum { MPA_LAYER_RES = 0, MPA_LAYER_III, MPA_LAYER_II, MPA_LAYER_I
+	} layer;
 	uint32 bit_rate;
 	float sample_rate;	/*SamplingFrequency */
 	uint32 frame_size;
@@ -326,7 +326,8 @@ static int mpa_decode_header(uint8 * buff_data, mpa_frm * mpa)
 		    ((12 * mpa->bit_rate) / mpa->sample_rate + padding) * 4;
 	} else {		// layer 2 or 3
 		mpa->frame_size = 1152;
-		mpa->frm_len = 144 * mpa->bit_rate / mpa->sample_rate + padding;
+		mpa->frm_len =
+		    144 * mpa->bit_rate / mpa->sample_rate + padding;
 	}
 
 #ifdef ENABLE_DEBUG

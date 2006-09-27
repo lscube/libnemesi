@@ -193,7 +193,8 @@ static uint32 init(uint32 * rate, uint8 * channels, uint32 * format,
 
 	if (!buff_ms) {
 		buff_size = AUDIO_BUFF_SIZE;
-		nms_printf(NMSML_DBG1, "Setting default audio system buffer\n");
+		nms_printf(NMSML_DBG1,
+			   "Setting default audio system buffer\n");
 	} else
 		buff_size =
 		    buff_ms * (*rate) * (*channels) * sdl_priv.bytes_x_sample /
@@ -270,12 +271,14 @@ static uint32 control(uint32 cmd, void *arg)
 		break;
 	case ACTRL_GET_ELAPTM:
 		if (sdl_priv.last_pts)
-			*((double *) arg) =
-			    sdl_priv.last_pts -
-			    ((double)
-			     (sdl_priv.aspec.size +
-			      sdl_priv.audio_buffer->buff_size /*len */ ) *
-			     1000.0) /
+			*((double *) arg) = sdl_priv.last_pts - ((double)
+								 (sdl_priv.
+								  aspec.size +
+								  sdl_priv.
+								  audio_buffer->
+								  buff_size
+								  /*len */ ) *
+								 1000.0) /
 			    (double) (sdl_priv.aspec.freq *
 				      sdl_priv.aspec.channels *
 				      sdl_priv.bytes_x_sample);

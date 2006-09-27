@@ -48,7 +48,8 @@ int rtcp_send_rr(rtp_session * rtp_sess)
 				nms_printf(NMSML_WARN,
 					   "WARNING! Error while sending RTCP pkt\n");
 			else
-				nms_printf(NMSML_DBG1, "RTCP RR packet sent\n");
+				nms_printf(NMSML_DBG1,
+					   "RTCP RR packet sent\n");
 		}
 
 	return len;

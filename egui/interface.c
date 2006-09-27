@@ -176,7 +176,8 @@ GtkWidget *create_nemesi(void)
 	gtk_box_pack_start(GTK_BOX(hbox2), toolbar, FALSE, FALSE, 0);
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
 	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar), FALSE);
-	tmp_toolbar_icon_size = gtk_toolbar_get_icon_size(GTK_TOOLBAR(toolbar));
+	tmp_toolbar_icon_size =
+	    gtk_toolbar_get_icon_size(GTK_TOOLBAR(toolbar));
 
 	open_cmd = (GtkWidget *) gtk_tool_button_new_from_stock("gtk-open");
 	gtk_widget_set_name(open_cmd, "open_cmd");

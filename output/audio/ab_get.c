@@ -43,7 +43,8 @@ uint8 *ab_get(uint32 len, ...)
 			       audio_buffer->buff_size)
 				pthread_cond_wait(&(audio_buffer->cond_full),
 						  &(audio_buffer->syn));
-			if ((audio_buffer->write_pos >= audio_buffer->read_pos)) {
+			if ((audio_buffer->write_pos >=
+			     audio_buffer->read_pos)) {
 				if ((audio_buffer->write_pos + len) <
 				    /*=*/
 				    audio_buffer->
@@ -56,8 +57,8 @@ uint8 *ab_get(uint32 len, ...)
 							     (audio_buffer->
 							      syn));
 					return &audio_buffer->
-					    audio_data[audio_buffer->write_pos -
-						       len];
+					    audio_data[audio_buffer->
+						       write_pos - len];
 				} else if (len < audio_buffer->read_pos) {
 					audio_buffer->write_pos = len;
 					audio_buffer->len += len;

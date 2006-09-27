@@ -518,7 +518,8 @@ static void Lsf_lsp(Word32 lsf[], Word32 lsp[])
 		    offset = lsf[i] & 0x00ff;
 		
 		    /* lsp[i] = table[ind]+ ((table[ind+1]-table[ind])*offset) / 256 */ 
-		    tmp = ((cos_table[ind + 1] - cos_table[ind]) * offset) << 1;
+		    tmp =
+		    ((cos_table[ind + 1] - cos_table[ind]) * offset) << 1;
 		lsp[i] = cos_table[ind] + (tmp >> 9);
 	}
 	return;
@@ -1042,7 +1043,8 @@ static void Log2_norm(Word32 x, Word32 exp, Word32 * exponent,
 	a = a & 0xFFFE;	/* 2a */
 	
 	    /* fraction */ 
-	    y = (log2_table[i] << 16) - a * (log2_table[i] - log2_table[i + 1]);
+	    y =
+	    (log2_table[i] << 16) - a * (log2_table[i] - log2_table[i + 1]);
 	*fraction = y >> 16;
 	*exponent = 30 - exp;
 	return;
@@ -1215,17 +1217,20 @@ static void Build_CN_param(Word16 * seed, enum Mode mode, Word16 parm[])
 		break;
 	case MR74:
 		for (i = 0; i < PRMNO_MR74; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR74[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR74[i]));
 		}
 		break;
 	case MR67:
 		for (i = 0; i < PRMNO_MR67; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR67[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR67[i]));
 		}
 		break;
 	case MR59:
 		for (i = 0; i < PRMNO_MR59; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR59[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR59[i]));
 		}
 		break;
 	case MR515:
@@ -1403,16 +1408,17 @@ static void Syn_filt_overflow(Word32 a[], Word32 x[], Word32 y[], Word32 lg,
  * Returns:
  *    void
  */ 
-static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
-		     gc_predState * pred_state,
+static void dtx_dec(dtx_decState * st, Word32 * mem_syn,
+		    D_plsfState * lsfState, gc_predState * pred_state,
 		    Cb_gain_averageState * averState,
-		    enum DTXStateType new_state, enum Mode mode, Word16 parm[],
-		    Word32 synth[], Word32 A_t[]) 
+		    enum DTXStateType new_state, enum Mode mode,
+		    Word16 parm[], Word32 synth[], Word32 A_t[]) 
 {
 	Word32 ex[L_SUBFR], acoeff[11], acoeff_variab[M + 1], lsp_int[M];
 	Word32 refl[M], lsf[M], lsf_int[M], lsf_int_variab[M],
 	    lsp_int_variab[M];
-	Word32 i, j, int_fac, log_en_int, pred_err, log_pg_e, log_pg_m, log_pg;
+	Word32 i, j, int_fac, log_en_int, pred_err, log_pg_e, log_pg_m,
+	    log_pg;
 	Word32 negative, lsf_mean, lsf_variab_index, lsf_variab_factor, ptr;
 	Word16 log_en_index, log_en_int_e, log_en_int_m, level, ma_pred_init,
 	    tmp_int_length;
@@ -2985,8 +2991,8 @@ static void ec_gain_pitch_update(ec_gain_pitchState * st, Word32 bfi,
  *    void
  */ 
 static void gc_pred(gc_predState * st, enum Mode mode, Word32 * code,
-		    Word32 * exp_gcode0, Word32 * frac_gcode0, Word32 * exp_en,
-		    Word32 * frac_en) 
+		    Word32 * exp_gcode0, Word32 * frac_gcode0,
+		    Word32 * exp_en, Word32 * frac_en) 
 {
 	Word32 exp, frac, ener_code = 0, i = 0;
 	
@@ -3471,8 +3477,8 @@ static void ec_gain_code_update(ec_gain_codeState * st, Word16 bfi,
  * Returns:
  *    void
  */ 
-static void d_gain_code(gc_predState * pred_state, enum Mode mode, Word32 index,
-			Word32 code[], Word32 * gain_code) 
+static void d_gain_code(gc_predState * pred_state, enum Mode mode,
+			Word32 index, Word32 code[], Word32 * gain_code) 
 {
 	Word32 g_code0, exp, frac, qua_ener_MR122, qua_ener;
 	Word32 exp_inn_en, frac_inn_en, tmp, tmp2, i;
@@ -3581,7 +3587,8 @@ static void Int_lsf(Word32 lsf_old[], Word32 lsf_new[], int i_subfr,
 	case 80:
 		for (i = 0; i < 10; i++) {
 			lsf_out[i] =
-			    (lsf_old[i] >> 2) - (lsf_new[i] >> 2) + lsf_new[i];
+			    (lsf_old[i] >> 2) - (lsf_new[i] >> 2) +
+			    lsf_new[i];
 		}
 		break;
 	case 120:
@@ -3705,9 +3712,8 @@ static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode,
 			    if (((((pdfi != 0) & (prev_pdf != 0)) | (bfi !=
 								     0) |
 				  (prev_bf != 0)) & ((voicedHangover >
-						       1)) & (inBackgroundNoise
-							      != 0) & (mode <
-								       MR67))) {
+						       1)) &
+				 (inBackgroundNoise != 0) & (mode < MR67))) {
 				
 				    /* bgMix = min(0.25, max(0.0, diff-0.55)) / 0.25; */ 
 				    tmp_diff = diff - 4506;	/* 0.55 in Q13 */
@@ -4889,8 +4895,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 			}
 			ec_gain_pitch_update(st->ec_gain_p_st, bfi,
 					      st->prev_bf, &gain_pit);
-			ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf,
-					     &gain_code);
+			ec_gain_code_update(st->ec_gain_c_st, bfi,
+					     st->prev_bf, &gain_code);
 			pit_sharp = gain_pit;
 			if (pit_sharp > SHARPMAX) {
 				pit_sharp = SHARPMAX;
@@ -4915,8 +4921,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 			}
 			ec_gain_pitch_update(st->ec_gain_p_st, bfi,
 					      st->prev_bf, &gain_pit);
-			ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf,
-					     &gain_code);
+			ec_gain_code_update(st->ec_gain_c_st, bfi,
+					     st->prev_bf, &gain_code);
 			pit_sharp = gain_pit;
 			if (pit_sharp > SHARPMAX) {
 				pit_sharp = SHARPMAX;
@@ -4945,7 +4951,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 					gain_pit = d_gain_pitch(mode, index);
 				}
 				ec_gain_pitch_update(st->ec_gain_p_st, bfi,
-						      st->prev_bf, &gain_pit );
+						      st->prev_bf,
+						      &gain_pit );
 				
 				    /* read and decode code gain */ 
 				    index = *parm++;
@@ -4956,11 +4963,12 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 				
 				else {
 					ec_gain_code(st->ec_gain_c_st,
-						      st->pred_state, st->state,
-						      &gain_code);
+						      st->pred_state,
+						      st->state, &gain_code);
 				}
 				ec_gain_code_update(st->ec_gain_c_st, bfi,
-						     st->prev_bf, &gain_code );
+						     st->prev_bf,
+						     &gain_code );
 				pit_sharp = gain_pit;
 				if (pit_sharp > SHARPMAX) {
 					pit_sharp = SHARPMAX;
@@ -4975,11 +4983,12 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 				
 				else {
 					ec_gain_code(st->ec_gain_c_st,
-						      st->pred_state, st->state,
-						      &gain_code);
+						      st->pred_state,
+						      st->state, &gain_code);
 				}
 				ec_gain_code_update(st->ec_gain_c_st, bfi,
-						     st->prev_bf, &gain_code );
+						     st->prev_bf,
+						     &gain_code );
 				pit_sharp = gain_pit;
 			}
 		}
@@ -5050,7 +5059,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 		    /*
 		     * Calculate CB mixed gain
 		     */ 
-		    Int_lsf(prev_lsf, st->lsfState->past_lsf_q, i_subfr, lsf_i);
+		    Int_lsf(prev_lsf, st->lsfState->past_lsf_q, i_subfr,
+			    lsf_i);
 		gain_code_mix =
 		    Cb_gain_average(st->Cb_gain_averState, mode, gain_code,
 				    lsf_i, st->lsp_avg_st->lsp_meanSave, bfi,
@@ -5092,14 +5102,13 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 			temp2 = (temp << tmp_shift);
 			if (((temp2 >> 1) ^ temp2) & 0x40000000) {
 				if ((temp ^ temp2) & 0x80000000) {
-					temp2 =
-					    (temp & 0x80000000) ? (-1073741824L)
+					temp2 = (temp & 0x80000000)
+					    ? (-1073741824L)
 					    : 1073725439;
 				}
 				
 				else {
-					temp2 =
-					    (temp2 & 0x80000000)
+					temp2 = (temp2 & 0x80000000)
 					    ? (-1073741824L) : 1073725439;
 				}
 			}
@@ -5153,11 +5162,12 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 					     5) & (st->inBackgroundNoise !=
 						   0) & (st->state <
 							 4) & (((pdfi != 0) &
-								(st->prev_pdf !=
+								(st->
+								 prev_pdf !=
 								 0))
 							       || bfi != 0
-							       || st->prev_bf !=
-							       0)) {
+							       || st->
+							       prev_bf != 0)) {
 			carefulFlag = 0;
 			if ((pdfi != 0) & (bfi == 0)) {
 				carefulFlag = 1;
@@ -5198,8 +5208,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
 		
 		else {
 			overflow =
-			    Syn_filt(Az, exc_enhanced, &synth[i_subfr], L_SUBFR,
-				     st->mem_syn, 0);
+			    Syn_filt(Az, exc_enhanced, &synth[i_subfr],
+				     L_SUBFR, st->mem_syn, 0);
 		}
 		if (overflow) {
 			for (i = 0; i < PIT_MAX + L_INTERPOL + L_SUBFR; i++) {
@@ -5417,7 +5427,8 @@ static void agc(agcState * st, Word32 * sig_in, Word32 * sig_out,
 		gain = gain + g0;
 		sig_out[i] = (sig_out[i] * gain) >> 12;
 		if (labs(sig_out[i]) > 32767)
-			sig_out[i] = (sig_out[i] & 0x8000000) ? -32768 : 32767;
+			sig_out[i] =
+			    (sig_out[i] & 0x8000000) ? -32768 : 32767;
 	}
 	st->past_gain = gain;
 	return;
@@ -5868,8 +5879,8 @@ static int Decoder_amr_init(Decoder_amrState ** state)
 	
 	    /* Cb_gain_averageInit */ 
 	    /* allocate memory */ 
-	    if ((s->Cb_gain_averState =
-		 (Cb_gain_averageState *) malloc(sizeof(Cb_gain_averageState)))
+	    if ((s->Cb_gain_averState = (Cb_gain_averageState *)
+		 malloc(sizeof(Cb_gain_averageState)))
 		== NULL) {
 		fprintf(stderr,
 			 "Cb_gain_averageInit: can not malloc state structure\n")
@@ -6104,8 +6115,7 @@ void *Speech_Decode_Frame_init()
 	Speech_Decode_FrameState * s;
 	
 	    /* allocate memory */ 
-	    if ((s =
-		 (Speech_Decode_FrameState *)
+	    if ((s = (Speech_Decode_FrameState *)
 		 malloc(sizeof(Speech_Decode_FrameState))) == NULL) {
 		fprintf(stderr,
 			 "Speech_Decode_Frame_init: can not malloc state " 

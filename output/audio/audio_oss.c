@@ -122,7 +122,8 @@ static uint32 init(uint32 * rate, uint8 * channels, uint32 * format,
 	// Audio Buffer initialization
 	if (!buff_ms) {
 		buff_size = AUDIO_BUFF_SIZE;
-		nms_printf(NMSML_DBG1, "Setting default audio system buffer\n");
+		nms_printf(NMSML_DBG1,
+			   "Setting default audio system buffer\n");
 	} else
 		buff_size =
 		    buff_ms * (*rate) * (*channels) * oss_priv.bytes_x_sample /
@@ -220,12 +221,13 @@ static uint32 control(uint32 cmd, void *arg)
 #ifdef SNDCTL_DSP_GETODELAY
 			}
 #endif
-			*((double *) arg) =
-			    oss_priv.last_pts -
-			    ((double)
-			     (bytes +
-			      oss_priv.audio_buffer->buff_size /*len */ ) *
-			     1000.0) /
+			*((double *) arg) = oss_priv.last_pts - ((double)
+								 (bytes +
+								  oss_priv.
+								  audio_buffer->
+								  buff_size
+								  /*len */ ) *
+								 1000.0) /
 			    (double) (oss_priv.freq * oss_priv.channels *
 				      oss_priv.bytes_x_sample);
 		} else

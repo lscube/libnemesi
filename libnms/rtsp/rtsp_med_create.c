@@ -34,7 +34,8 @@ rtsp_medium *rtsp_med_create(int fd)
 	struct sockaddr_storage localaddr, peeraddr;
 	nms_sockaddr local =
 	    { (struct sockaddr *) &localaddr, sizeof(localaddr) };
-	nms_sockaddr peer = { (struct sockaddr *) &peeraddr, sizeof(peeraddr) };
+	nms_sockaddr peer =
+	    { (struct sockaddr *) &peeraddr, sizeof(peeraddr) };
 
 	getsockname(fd, (struct sockaddr *) local.addr, &local.addr_len);
 	getpeername(fd, (struct sockaddr *) peer.addr, &peer.addr_len);

@@ -126,7 +126,8 @@ void *decoder(void *args)
 							buffering_audio = 0;
 							// start playing audio
 							nms_outc->audio->
-							    functions->resume();
+							    functions->
+							    resume();
 						}
 					}
 					// VIDEO
@@ -139,18 +140,21 @@ void *decoder(void *args)
 					nms_statusprintf(BUFFERS_STATUS,
 							 "Buffers: Net: %4.1f %% - A: %4.1f %% - V: %4.1f ",
 							 (((float)
-							   ((stm_src->rtp_sess->
-							     bp).flcount) /
+							   ((stm_src->
+							     rtp_sess->bp).
+							    flcount) /
 							   (float) BP_SLOT_NUM)
 							  * 100.0),
 							 audio_sysbuff * 100.0,
-							 video_sysbuff * 100.0);
+							 video_sysbuff *
+							 100.0);
 				}
 				ts_next = rtp_get_next_ts(stm_src);
 			}
 			if (ts_next >= 0) {
 				if (ts_min_next)	/* min between stored ts and next pkt's */
-					ts_min_next = min(ts_min_next, ts_next);
+					ts_min_next =
+					    min(ts_min_next, ts_next);
 				else
 					ts_min_next = ts_next;
 			}

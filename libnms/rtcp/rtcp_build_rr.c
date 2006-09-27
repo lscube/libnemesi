@@ -70,17 +70,17 @@ int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
 				    (uint8) ((lost_interval << 8) /
 					     expected_interval);
 
-			lost =
-			    min((int32)
-				(expected - stm_src->ssrc_stats.received - 1),
-				0x7fffff);
+			lost = min((int32)
+				   (expected - stm_src->ssrc_stats.received -
+				    1), 0x7fffff);
 			lost = max(lost, -(1 << 23));
 			rr->lost = ntohl24(lost);
 
 			rr->last_seq =
 			    htonl(stm_src->ssrc_stats.cycles +
 				  stm_src->ssrc_stats.max_seq);
-			rr->jitter = htonl((uint32) stm_src->ssrc_stats.jitter);
+			rr->jitter =
+			    htonl((uint32) stm_src->ssrc_stats.jitter);
 			rr->last_sr =
 			    htonl(((stm_src->ssrc_stats.
 				    ntplastsr[0] & 0x0000ffff) << 16) |

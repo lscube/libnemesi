@@ -70,8 +70,9 @@ int parse_prompt(rtsp_ctrl * rtsp_ctl, char *optstr)
 		nms_close(rtsp_ctl, throbber, rtsp_ctl);
 		return 1;
 	case 'v':
-		nms_printf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n",
-			   PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+		nms_printf(NMSML_NORM,
+			   "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME,
+			   PROG_DESCR, VERSION, VERSION_NAME);
 		nms_printf(NMSML_NORM,
 			   "Copyleft 2001 - mancho@cclif.polito.it\n");
 		nms_printf(NMSML_NORM,

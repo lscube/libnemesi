@@ -40,7 +40,8 @@
 int output_init(nms_out_hints * hints)
 {
 	if (!(nms_outc = malloc(sizeof(nms_output))))
-		return nms_printf(NMSML_FATAL, "Could not alloc output struct");
+		return nms_printf(NMSML_FATAL,
+				  "Could not alloc output struct");
 
 	nms_outc->elapsed = 0;
 	nms_outc->sysbuff_ms = (hints

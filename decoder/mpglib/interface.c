@@ -183,7 +183,8 @@ void copy_mp(PMPSTR mp, int size, unsigned char *ptr)
 		} else {
 			nlen = blen;
 		}
-		memcpy(ptr + len, mp->tail->pnt + mp->tail->pos, (size_t) nlen);
+		memcpy(ptr + len, mp->tail->pnt + mp->tail->pos,
+		       (size_t) nlen);
 		len += nlen;
 		mp->tail->pos += nlen;
 		mp->bsize -= nlen;
@@ -558,7 +559,8 @@ int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize,
 			if (bytes < 0)
 				return iret;
 			mp->framesize = bytes + mp->ssize + mp->dsize;
-			mp->fsizeold_nopadding = mp->framesize - mp->fr.padding;
+			mp->fsizeold_nopadding =
+			    mp->framesize - mp->fr.padding;
 			/*
 			   fprintf(stderr,"freeformat bitstream:  estimated bitrate=%ikbs  \n",
 			   8*(4+mp->framesize)*freqs[mp->fr.sampling_frequency]/

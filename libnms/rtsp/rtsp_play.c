@@ -75,7 +75,8 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, char *range)
 
 			for (tkn = range;
 			     tkn && (isdigit(*tkn) || (*tkn == ':')
-				     || (*tkn == '-') || isspace(*tkn)); tkn++);
+				     || (*tkn == '-') || isspace(*tkn));
+			     tkn++);
 			if (*tkn) {
 				nms_printf(NMSML_DBG2,
 					   "Mi shfiti? A che mi shfiti? A tesht' de fero?\n");

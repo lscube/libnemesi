@@ -37,7 +37,8 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 {
 	struct rtp_conflict *stm_conf = rtp_sess->conf_queue;
 	struct sockaddr_storage sockaddr;
-	nms_sockaddr sock = { (struct sockaddr *) &sockaddr, sizeof(sockaddr) };
+	nms_sockaddr sock =
+	    { (struct sockaddr *) &sockaddr, sizeof(sockaddr) };
 	uint8 local_collision;
 
 
@@ -156,8 +157,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 					    rtp_sess->local_ssrc;
 
 					/* New entry in SSRC queue with conflicting ssrc */
-					if ((stm_conf =
-					     (struct rtp_conflict *)
+					if ((stm_conf = (struct rtp_conflict *)
 					     malloc(sizeof
 						    (struct rtp_conflict))) ==
 					    NULL)
@@ -170,8 +170,8 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 					if (rtp_ssrc_init
 					    (rtp_sess, stm_src, ssrc, recfrom,
 					     proto_type) < 0) {
-						pthread_mutex_unlock(&rtp_sess->
-								     syn);
+						pthread_mutex_unlock
+						    (&rtp_sess->syn);
 						return -nms_printf(NMSML_ERR,
 								   "Error while setting new Stream Source\n");
 					}

@@ -57,8 +57,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 			for (tknb++; (*tknb == ' '); tknb++);
 
-			for (tkna = tknb;
-			     (*tkna != '\0') && (*tkna != '\r')
+			for (tkna = tknb; (*tkna != '\0') && (*tkna != '\r')
 			     && (*tkna != '\n'); tkna++);
 			strncpy(str, tknb, tkna - tknb);
 			str[tkna++ - tknb] = '\0';
@@ -71,8 +70,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 		if ((tkna = strstrcase(tknb, "source"))) {
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++;
-			     (*tknb != '\0') && (*tknb != '\r')
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
 			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
@@ -88,8 +86,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 		if ((tkna = strstrcase(tknb, "destination"))) {
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++;
-			     (*tknb != '\0') && (*tknb != '\r')
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
 			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
@@ -107,8 +104,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++;
-			     (*tknb != '\0') && (*tknb != '\r')
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
 			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
@@ -123,8 +119,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++;
-			     (*tknb != '\0') && (*tknb != '\r')
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
 			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
@@ -139,8 +134,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++;
-			     (*tknb != '\0') && (*tknb != '\r')
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
 			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';

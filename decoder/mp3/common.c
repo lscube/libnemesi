@@ -191,9 +191,9 @@ void print_header(struct frame *fr)
 
 	fprintf(stderr,
 		"MPEG %s, Layer: %s, Freq: %ld, mode: %s, modext: %d, BPF : %d\n",
-		fr->mpeg25 ? "2.5" : (fr->lsf ? "2.0" : "1.0"), layers[fr->lay],
-		freqs[fr->sampling_frequency], modes[fr->mode], fr->mode_ext,
-		fr->framesize + 4);
+		fr->mpeg25 ? "2.5" : (fr->lsf ? "2.0" : "1.0"),
+		layers[fr->lay], freqs[fr->sampling_frequency],
+		modes[fr->mode], fr->mode_ext, fr->framesize + 4);
 	fprintf(stderr,
 		"Channels: %d, copyright: %s, original: %s, CRC: %s, emphasis: %d.\n",
 		fr->stereo, fr->copyright ? "Yes" : "No",

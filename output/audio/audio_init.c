@@ -64,7 +64,8 @@ nms_audio *audio_init(char *drv_hint, uint32 sysbuff_ms)
 	} else
 		ac->init = 1;
 
-	nms_printf(NMSML_NORM, "Audio driver: %s\n", ac->functions->info->name);
+	nms_printf(NMSML_NORM, "Audio driver: %s\n",
+		   ac->functions->info->name);
 
 	return ac;
 }

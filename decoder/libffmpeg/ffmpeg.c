@@ -81,15 +81,14 @@ static int decode(char *data, int len, nms_output * outc)
 
 		if (got_picture) {
 
-			video_data =
-			    (*(outc->video.vb_get)) ((uint8) 1 /*got_picture */
-						     );
+			video_data = (*(outc->video.vb_get)) ((uint8) 1	/*got_picture */
+			    );
 
-			memcpy(video_data.a, picture->data[0], /*got_picture */ 
+			memcpy(video_data.a, picture->data[0],	/*got_picture */
 			       (outc->video.dimframe));
-			memcpy(video_data.b, picture->data[1], /*got_picture */ 
+			memcpy(video_data.b, picture->data[1],	/*got_picture */
 			       (outc->video.dimframe) / 4);
-			memcpy(video_data.c, picture->data[2], /*got_picture */ 
+			memcpy(video_data.c, picture->data[2],	/*got_picture */
 			       (outc->video.dimframe) / 4);
 
 		}
@@ -137,8 +136,8 @@ static int decode(char *data, int len, nms_output * outc)
 				elapsed = (double) ff->frame->pts / 1000.0;
 			else if (ff->frame->display_picture_number)
 				elapsed =
-				    (double) ff->frame->display_picture_number *
-				    1000.0 / vc->fps;
+				    (double) ff->frame->
+				    display_picture_number * 1000.0 / vc->fps;
 			else if (ff->context->frame_number)
 				elapsed =
 				    (double) ff->context->frame_number *
@@ -147,8 +146,8 @@ static int decode(char *data, int len, nms_output * outc)
 				elapsed += 1000.0 / vc->fps;
 
 			if (!funcs->
-			    get_picture(ff->context->width, ff->context->height,
-					&pict)) {
+			    get_picture(ff->context->width,
+					ff->context->height, &pict)) {
 				img_convert((AVPicture *) pict_pt,
 					    PIX_FMT_YUV420P,
 					    (AVPicture *) ff->frame,

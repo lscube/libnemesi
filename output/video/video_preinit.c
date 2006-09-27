@@ -68,7 +68,8 @@ nms_video *video_preinit(char *drv_hint, uint32 sysbuff_ms)
 		return NULL;
 	}
 
-	nms_printf(NMSML_NORM, "Video driver: %s\n", vc->functions->info->name);
+	nms_printf(NMSML_NORM, "Video driver: %s\n",
+		   vc->functions->info->name);
 
 	return vc;
 }

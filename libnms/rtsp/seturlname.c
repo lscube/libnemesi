@@ -43,8 +43,8 @@ int seturlname(rtsp_thread * rtsp_th, char *urlname)
 	nms_printf(NMSML_DBG1, "server %s port %s\n", server, port);
 
 	if ((rtsp_th->urlname =
-	     (char *) malloc(strlen("rtsp://") + strlen(server) + strlen(path) +
-			     1)) == NULL)
+	     (char *) malloc(strlen("rtsp://") + strlen(server) +
+			     strlen(path) + 1)) == NULL)
 		return 1;
 	strcpy(rtsp_th->urlname, "rtsp://");
 	strcat(rtsp_th->urlname, server);

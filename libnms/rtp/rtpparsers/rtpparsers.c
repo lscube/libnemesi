@@ -127,7 +127,8 @@ void rtp_parsers_new(rtp_parser * new_parsers,
 		     rtp_parser_init * new_parsers_inits)
 {
 	memcpy(new_parsers, rtp_parsers, sizeof(rtp_parsers));
-	memcpy(new_parsers_inits, rtp_parsers_inits, sizeof(rtp_parsers_inits));
+	memcpy(new_parsers_inits, rtp_parsers_inits,
+	       sizeof(rtp_parsers_inits));
 }
 
 inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
@@ -143,7 +144,8 @@ typedef struct {
 	uint32 data_size;
 } rtp_def_parser_s;
 
-static int rtp_def_parser(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
+static int rtp_def_parser(rtp_ssrc * stm_src, rtp_frame * fr,
+			  rtp_buff * config)
 {
 	rtp_def_parser_s *priv = stm_src->privs[fr->pt];
 	rtp_pkt *pkt;

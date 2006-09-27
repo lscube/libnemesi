@@ -33,13 +33,13 @@ void init_layer2(void)
 	static const double mulmul[27] = {
 		0.0, -2.0 / 3.0, 2.0 / 3.0,
 		2.0 / 7.0, 2.0 / 15.0, 2.0 / 31.0, 2.0 / 63.0, 2.0 / 127.0,
-		    2.0 / 255.0,
+		2.0 / 255.0,
 		2.0 / 511.0, 2.0 / 1023.0, 2.0 / 2047.0, 2.0 / 4095.0,
-		    2.0 / 8191.0,
+		2.0 / 8191.0,
 		2.0 / 16383.0, 2.0 / 32767.0, 2.0 / 65535.0,
 		-4.0 / 5.0, -2.0 / 5.0, 2.0 / 5.0, 4.0 / 5.0,
 		-8.0 / 9.0, -4.0 / 9.0, -2.0 / 9.0, 2.0 / 9.0, 4.0 / 9.0,
-		    8.0 / 9.0
+		8.0 / 9.0
 	};
 	static const int base[3][9] = {
 		{1, 0, 2,},
@@ -170,8 +170,10 @@ void II_step_two(unsigned int *bit_alloc, real fraction[2][4][SBLIMIT],
 					    cm;
 				} else {
 					static int *table[] =
-					    { 0, 0, 0, grp_3tab, 0, grp_5tab, 0,
-				  0, 0, grp_9tab };
+					    { 0, 0, 0, grp_3tab, 0, grp_5tab,
+						0,
+						0, 0, grp_9tab
+					};
 					unsigned int idx, *tab, m = scale[x1];
 					idx = (unsigned int) getbits(k);
 					tab =
@@ -212,7 +214,8 @@ void II_step_two(unsigned int *bit_alloc, real fraction[2][4][SBLIMIT],
 			} else {
 				static int *table[] =
 				    { 0, 0, 0, grp_3tab, 0, grp_5tab, 0, 0, 0,
-			  grp_9tab };
+					grp_9tab
+				};
 				unsigned int idx, *tab, m1, m2;
 				m1 = scale[x1];
 				m2 = scale[x1 + 3];

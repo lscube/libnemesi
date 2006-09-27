@@ -74,7 +74,8 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 						nms_printf(NMSML_ERR,
 							   "Invalid argument to \"%s\" option\n",
 							   long_options
-							   [option_index].name);
+							   [option_index].
+							   name);
 						usage = 1;
 						ret = -1;
 					}
@@ -85,7 +86,8 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 						nms_printf(NMSML_ERR,
 							   "Invalid argument to \"%s\" option\n",
 							   long_options
-							   [option_index].name);
+							   [option_index].
+							   name);
 						usage = 1;
 						ret = -1;
 					}
@@ -114,7 +116,8 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 		case 'p':
 			// we check here the correct value for first RTP port in order not to deceive user!!!
 			// new check will be done in the correct place in RTSP lib.
-			rtsp_hints->first_rtp_port = strtol(optarg, &v_err, 10);
+			rtsp_hints->first_rtp_port =
+			    strtol(optarg, &v_err, 10);
 			if ((*v_err)) {
 				nms_printf(NMSML_ERR,
 					   "Invalid argument to \"%s\" option\n",
@@ -199,8 +202,8 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 			break;
 		case '?':
 			if (isprint(optopt))
-				nms_printf(NMSML_ERR, "Unknown option `-%c'.\n",
-					   optopt);
+				nms_printf(NMSML_ERR,
+					   "Unknown option `-%c'.\n", optopt);
 			else
 				nms_printf(NMSML_ERR,
 					   "Unknown option character `\\x%x'.\n",

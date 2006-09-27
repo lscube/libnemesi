@@ -67,8 +67,7 @@ nms_vid_fnc *init_best_video_out(char *drv, uint32 sysbuff_ms)
 	if (drv && *drv) {
 		device = strtok(drv, ",");
 		while (device && *device && strcmp(device, "...")) {
-			for (i = 0;
-			     video_out_drivers[i]
+			for (i = 0; video_out_drivers[i]
 			     && strcmp(device,
 				       video_out_drivers[i]->info->short_name);
 			     i++);

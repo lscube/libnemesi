@@ -103,7 +103,9 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
 			}
 			if (issdplicense(tkn)) {
 				if (!curr_sdp_m->cc)
-					if (!(curr_sdp_m->cc = cc_newlicense())) {
+					if (!
+					    (curr_sdp_m->cc =
+					     cc_newlicense())) {
 						nms_printf(NMSML_ERR,
 							   "Could not get new CC license struct\n");
 						error = 1;

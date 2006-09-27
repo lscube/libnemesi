@@ -249,8 +249,8 @@ static uint32 preinit(const char *arg, uint32 buff_ms)
 }
 
 static uint32 config(uint32 width, uint32 height, uint32 d_width,
-		     uint32 d_height, uint32 fps, uint8 fullscreen, char *title,
-		     uint32 format)
+		     uint32 d_height, uint32 fps, uint8 fullscreen,
+		     char *title, uint32 format)
 {
 	SDL_Surface *newsurface;
 	struct sdl_priv_s *priv = &sdl_priv;

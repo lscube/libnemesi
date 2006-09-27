@@ -52,7 +52,8 @@ char *strchr(), *strrchr();
   else if( (sum) < -32768.0) { *(samples) = -0x8000; (clip)++; } \
   else { *(samples) = ((sum)>0 ? (sum)+0.5 : (sum)-0.5) ; }
 
-int synth_1to1_mono(PMPSTR mp, real * bandPtr, unsigned char *samples, int *pnt)
+int synth_1to1_mono(PMPSTR mp, real * bandPtr, unsigned char *samples,
+		    int *pnt)
 {
 	short samples_tmp[64];
 	short *tmp1 = samples_tmp;

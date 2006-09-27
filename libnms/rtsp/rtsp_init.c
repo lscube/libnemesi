@@ -85,7 +85,8 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 	 if (pthread_condattr_init(&cond_attr) > 0)
 	 RET_ERR(NMSML_FATAL, "Could not init condition variable attributes\n");
 	 */
-	if (pthread_cond_init(&(rtsp_th->cond_busy), NULL /*&cond_attr */ ) > 0)
+	if (pthread_cond_init(&(rtsp_th->cond_busy), NULL /*&cond_attr */ ) >
+	    0)
 		RET_ERR(NMSML_FATAL, "Could not init condition variable\n");
 
 	if ((rtsp_th->comm =

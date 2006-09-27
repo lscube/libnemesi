@@ -31,7 +31,8 @@
 
 #include <nemesi/wsocket.h>
 
-void sock_set_addr(struct sockaddr *sa, /* socklen_t salen, */ const void *addr)
+void sock_set_addr(struct sockaddr *sa,	/* socklen_t salen, */
+		   const void *addr)
 {
 	switch (sa->sa_family) {
 	case AF_INET:{
@@ -45,7 +46,8 @@ void sock_set_addr(struct sockaddr *sa, /* socklen_t salen, */ const void *addr)
 	case AF_INET6:{
 			struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) sa;
 
-			memcpy(&sin6->sin6_addr, addr, sizeof(struct in6_addr));
+			memcpy(&sin6->sin6_addr, addr,
+			       sizeof(struct in6_addr));
 			return;
 		}
 #endif

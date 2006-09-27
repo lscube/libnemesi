@@ -36,7 +36,8 @@ int rtcp_set_ssrc_sdes(rtp_ssrc * stm_src, rtcp_sdes_item_t * item)
 		if (memcmp(str, item->data, item->len) != 0) {
 			free(str);
 			if ((str =
-			     (((char **) (&(stm_src->ssrc_sdes)))[item->type]) =
+			     (((char **) (&(stm_src->ssrc_sdes)))[item->
+								  type]) =
 			     (char *) malloc(item->len + 1)) == NULL)
 				return nms_printf(NMSML_FATAL,
 						  "Cannot allocate memory!\n");

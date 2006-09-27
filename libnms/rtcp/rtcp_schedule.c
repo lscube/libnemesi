@@ -37,7 +37,8 @@ struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
 	struct rtcp_event *event = head;
 
 	if ((new_event =
-	     (struct rtcp_event *) malloc(sizeof(struct rtcp_event))) == NULL) {
+	     (struct rtcp_event *) malloc(sizeof(struct rtcp_event))) ==
+	    NULL) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
 		return NULL;
 	}

@@ -41,8 +41,9 @@ int diskwriter(nms_diskwriter * dc, int pt, char *data, int len)
 				  "Error in diskwriter(), file not open\n");
 
 	if ((written = write(fd, data, len)) < len)
-		nms_printf(NMSML_DBG1, "WARNING: only %d bytes of %d written\n",
-			   written, len);
+		nms_printf(NMSML_DBG1,
+			   "WARNING: only %d bytes of %d written\n", written,
+			   len);
 
 	return 0;
 }

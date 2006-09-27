@@ -43,7 +43,8 @@ nms_audio_buffer *ab_init(uint32 buff_size)
 	// int n;
 
 	if ((buff =
-	     (struct audio_buff *) malloc(sizeof(struct audio_buff))) == NULL) {
+	     (struct audio_buff *) malloc(sizeof(struct audio_buff))) ==
+	    NULL) {
 		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
 		return NULL;
 	}

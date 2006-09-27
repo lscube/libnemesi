@@ -44,7 +44,8 @@ int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
 			break;
 		for (; rsp->type; rsp = rspn) {
 			rspn =
-			    (rtcp_sdes_item_t *) ((uint8 *) rsp + rsp->len + 2);
+			    (rtcp_sdes_item_t *) ((uint8 *) rsp + rsp->len +
+						  2);
 			if (rspn >= end) {
 				rsp = rspn;
 				break;

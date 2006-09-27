@@ -137,7 +137,8 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
 							sscanf(ch + 1, "%u/%c",
 							       &curr_rtsp_m->
 							       rtp_sess->
-							       ptdefs[pt]->rate,
+							       ptdefs[pt]->
+							       rate,
 							       &RTP_AUDIO
 							       (curr_rtsp_m->
 								rtp_sess->
@@ -162,7 +163,8 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
 						nms_printf(NMSML_WARN,
 							   "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
 					}
-				} else if (!strncmpcase(sdp_attr->a, "fmtp", 4)) {
+				} else
+				    if (!strncmpcase(sdp_attr->a, "fmtp", 4)) {
 					/* We assume the string in the format:
 					 * fmtp:PaloadType <format specific parameters> */
 					tkn = sdp_attr->a + 4;	// 4 == strlen("fmtp")
@@ -198,8 +200,9 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
 					}
 					// check if everything is correct
 					if (!
-					    (pt = strtoul(m_info.fmts, &ch, 10))
-					    && ch == m_info.fmts) {
+					    (pt =
+					     strtoul(m_info.fmts, &ch, 10))
+&& ch == m_info.fmts) {
 						nms_printf(NMSML_ERR,
 							   "Could not determine pt value in a=med: string from fenice\n");
 						return 1;

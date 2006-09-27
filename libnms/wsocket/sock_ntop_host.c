@@ -90,7 +90,8 @@ char *sock_ntop_host(const struct sockaddr *sa, socklen_t salen, char *str,
 		}
 #endif
 	default:
-		snprintf(str, len, "sock_ntop_host: unknown AF_xxx: %d, len %d",
+		snprintf(str, len,
+			 "sock_ntop_host: unknown AF_xxx: %d, len %d",
 			 sa->sa_family, salen);
 		return (str);
 	}

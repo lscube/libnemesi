@@ -38,7 +38,8 @@
  * @return 1 se la connessione e' avvenuta con successo, 0 altrimenti.
  * @see tcp_open
  */
-int server_connect(char *host, char *port, int *sock, enum sock_types sock_type)
+int server_connect(char *host, char *port, int *sock,
+		   enum sock_types sock_type)
 {
 	int n;
 	struct addrinfo *res, *ressave;

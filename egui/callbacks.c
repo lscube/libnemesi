@@ -128,7 +128,8 @@ void view_info(GtkWidget * infow)
 	gtk_window_get_size(GTK_WINDOW(nemesi), &nmsw, &nmsh);
 	gtk_window_get_size(GTK_WINDOW(info), &infowidth, NULL);
 
-	gtk_window_move(GTK_WINDOW(info), nmsx + nmsw - infowidth, nmsy + nmsh);
+	gtk_window_move(GTK_WINDOW(info), nmsx + nmsw - infowidth,
+			nmsy + nmsh);
 
 	gtk_widget_show(info);
 	// gtk_window_set_gravity(GTK_WINDOW(nemesi), nemesi_gvty);
@@ -241,10 +242,12 @@ void on_urlname_realize(GtkWidget * widget, gpointer user_data)
 	// GtkEntryCompletion
 	gtk_entry_completion_set_model(completion, gnmsurl->model);
 	gtk_entry_completion_set_text_column(completion, gnmsurl->txt_col);
-	gtk_entry_completion_set_match_func(completion, gnmscompletion_machfunc,
-					    gnmsurl, gnmsurl_destroy);
+	gtk_entry_completion_set_match_func(completion,
+					    gnmscompletion_machfunc, gnmsurl,
+					    gnmsurl_destroy);
 	// gtk_entry_completion_set_inline_completion(completioin, TRUE);
-	gtk_entry_set_completion(GTK_ENTRY(GTK_BIN(widget)->child), completion);
+	gtk_entry_set_completion(GTK_ENTRY(GTK_BIN(widget)->child),
+				 completion);
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 
@@ -281,8 +284,7 @@ void on_opendialog_response(GtkDialog * dialog, gint response_id,
 		combo_box = lookup_widget(opendialog, "urlname");
 
 		// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
-		url =
-		    (char *)
+		url = (char *)
 		    gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
 
 		txt_col =

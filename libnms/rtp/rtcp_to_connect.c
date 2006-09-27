@@ -53,7 +53,8 @@ int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t port)
 				  "RTCP: Cannot connect to port (%d)\n", port);
 
 	if (!addr_ntop(remoteaddr, addr, sizeof(addr))) {
-		nms_printf(NMSML_WARN, "RTP: Cannot get address from source\n");
+		nms_printf(NMSML_WARN,
+			   "RTP: Cannot get address from source\n");
 		stm_src->rtcptofd = -2;
 		return 1;
 	} else

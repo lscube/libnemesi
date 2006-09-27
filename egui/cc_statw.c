@@ -170,8 +170,8 @@ static void cc_button_toggled(GtkToggleButton * togglebutton,
 								  uriLicense);
 						gtk_box_pack_start(GTK_BOX
 								   (leaf), lbl,
-								   FALSE, FALSE,
-								   0);
+								   FALSE,
+								   FALSE, 0);
 						gtk_widget_show(lbl);
 					}
 					if (cc->uriMetadata) {
@@ -181,8 +181,8 @@ static void cc_button_toggled(GtkToggleButton * togglebutton,
 								  uriMetadata);
 						gtk_box_pack_start(GTK_BOX
 								   (leaf), lbl,
-								   FALSE, FALSE,
-								   0);
+								   FALSE,
+								   FALSE, 0);
 						gtk_widget_show(lbl);
 					}
 					if (cc->title) {
@@ -190,8 +190,8 @@ static void cc_button_toggled(GtkToggleButton * togglebutton,
 						lbl = gtk_label_new(cc->title);
 						gtk_box_pack_start(GTK_BOX
 								   (leaf), lbl,
-								   FALSE, FALSE,
-								   0);
+								   FALSE,
+								   FALSE, 0);
 						gtk_widget_show(lbl);
 					}
 					if (cc->creator) {
@@ -200,8 +200,8 @@ static void cc_button_toggled(GtkToggleButton * togglebutton,
 						    gtk_label_new(cc->creator);
 						gtk_box_pack_start(GTK_BOX
 								   (leaf), lbl,
-								   FALSE, FALSE,
-								   0);
+								   FALSE,
+								   FALSE, 0);
 						gtk_widget_show(lbl);
 					}
 				}
@@ -233,10 +233,12 @@ static gboolean cc_sdp_check(sdp_medium_info * sdp_mqueue)
 		if (sdp_m->cc) {
 			if (!iscc)
 				cc_parse_urilicense(sdp_m->cc->uriLicense,
-						    (cc_perm_mask *) (&msk1st));
+						    (cc_perm_mask
+						     *) (&msk1st));
 			else {
 				cc_parse_urilicense(sdp_m->cc->uriLicense,
-						    (cc_perm_mask *) (&mskcur));
+						    (cc_perm_mask
+						     *) (&mskcur));
 				if (msk1st ^ mskcur) {
 					iscc = TRUE;
 					msk = NULL;

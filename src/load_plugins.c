@@ -82,7 +82,8 @@ int load_plugins(void)
 			   strcpy(path, NEMESI_PLUGIN_DIR_DEFAULT);
 			 */
 			path = strdup(NEMESI_PLUGIN_DIR_DEFAULT);
-			nms_printf(NMSML_VERB, "NEMESI_PLUGIN_DIR: %s\n", path);
+			nms_printf(NMSML_VERB, "NEMESI_PLUGIN_DIR: %s\n",
+				   path);
 		}
 	} else
 		return 1;

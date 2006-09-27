@@ -71,7 +71,8 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
 			     str < (char **) &(med->medium_info->attr_list);
 			     str++)
 				if (*str)
-					nms_printf(NMSML_ALWAYS, "\t* %s: %s\n",
+					nms_printf(NMSML_ALWAYS,
+						   "\t* %s: %s\n",
 						   mdes[str -
 							(char **) (med->
 								   medium_info)],
