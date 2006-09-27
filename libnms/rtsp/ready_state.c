@@ -60,7 +60,8 @@ int ready_state(rtsp_thread * rtsp_th, short event)
 			rtsp_reinit(rtsp_th);
 			rtsp_unbusy(rtsp_th);
 			// rtsp_th->busy = 0;
-			nms_printf(NMSML_NORM, "----- All Connections closed -----\n");
+			nms_printf(NMSML_NORM,
+				   "----- All Connections closed -----\n");
 			/* Inizializza a NULL le variabili statiche interne */
 			// get_curr_sess(NULL, NULL, NULL);
 			get_curr_sess(GCS_UNINIT);
@@ -70,7 +71,8 @@ int ready_state(rtsp_thread * rtsp_th, short event)
 			return 1;
 		break;
 	default:
-		nms_printf(NMSML_ERR, "Could not handle method in READY state\n");
+		nms_printf(NMSML_ERR,
+			   "Could not handle method in READY state\n");
 		return 1;
 		break;
 

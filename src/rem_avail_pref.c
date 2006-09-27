@@ -30,7 +30,8 @@
 
 int rem_avail_pref(const char *argstr)
 {
-	char *name, *available, *avail_tok, tmp_argstr[PREF_MAX_NAME_LEN + PREF_MAX_AVAIL_LEN];
+	char *name, *available, *avail_tok,
+	    tmp_argstr[PREF_MAX_NAME_LEN + PREF_MAX_AVAIL_LEN];
 	char new_avail[PREF_MAX_AVAIL_LEN] = "";
 	int i = 0;
 
@@ -40,19 +41,24 @@ int rem_avail_pref(const char *argstr)
 		return 1;
 	}
 	/* Cerchiamo il nome del parametro da modificare */
-	while (strcmp((char *) &preferences[i], PREFS_TABLE_END) && strcmp(preferences[i].name, name))
+	while (strcmp((char *) &preferences[i], PREFS_TABLE_END)
+	       && strcmp(preferences[i].name, name))
 		i++;
 	if (!strcmp((char *) &preferences[i], PREFS_TABLE_END)) {	/* Il nome non esiste */
-		fprintf(stderr, "\nError, preference \"%s\" not available, ignoring rem_avail command\n", name);
-		return 1;
-	}
-	if ((available = strtok(NULL, " ")) == NULL) {	/* non e stato inserito un valore */
-		fprintf(stderr, "\nError, preference available value for \"%s\" missing, ignoring rem_avail command\n",
+		fprintf(stderr,
+			"\nError, preference \"%s\" not available, ignoring rem_avail command\n",
 			name);
 		return 1;
 	}
-	if (((avail_tok = strstr(preferences[i].available, available)) == NULL) ||
-	    ((strlen(avail_tok) != strlen(available)) && (*(avail_tok + strlen(available)) != '/'))) {
+	if ((available = strtok(NULL, " ")) == NULL) {	/* non e stato inserito un valore */
+		fprintf(stderr,
+			"\nError, preference available value for \"%s\" missing, ignoring rem_avail command\n",
+			name);
+		return 1;
+	}
+	if (((avail_tok = strstr(preferences[i].available, available)) == NULL)
+	    || ((strlen(avail_tok) != strlen(available))
+		&& (*(avail_tok + strlen(available)) != '/'))) {
 		fprintf(stderr,
 			"\nThe requested value \"%s\" for \"%s\" is not available, ignoring rem_avail command\n",
 			available, name);
@@ -71,7 +77,8 @@ int rem_avail_pref(const char *argstr)
 		} while ((avail_tok = strtok(NULL, "/")) != NULL);
 	}
 
-	fprintf(stderr, "\n\"%s\" available value for \"%s\" removed\n\n", available, name);
+	fprintf(stderr, "\n\"%s\" available value for \"%s\" removed\n\n",
+		available, name);
 	strcpy(preferences[i].available, new_avail);
 	// if the pref value was that removed then the new value is set to "null"
 	if (!strcmp(preferences[i].value, available))

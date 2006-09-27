@@ -169,7 +169,8 @@ static void Bits2Prm(enum Mode mode, Word16 bits[], Word16 prm[])
  * Returns:
  *    mode              used mode
  */ 
-enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_type, enum Mode *speech_mode) 
+enum Mode Decoder3GPP(Word16 * param, UWord8 * stream,
+		      enum RXFrameType *frame_type, enum Mode *speech_mode) 
 {
 	enum Mode mode;
 	Word32 j;
@@ -181,7 +182,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MRDTX;
 		for (j = 5; j < 40; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -211,7 +213,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR475;
 		for (j = 5; j < 100; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -226,7 +229,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR515;
 		for (j = 5; j < 108; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -241,7 +245,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR59;
 		for (j = 5; j < 123; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -256,7 +261,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR67;
 		for (j = 5; j < 139; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -271,7 +277,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR74;
 		for (j = 5; j < 153; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -286,7 +293,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR795;
 		for (j = 5; j < 164; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -301,7 +309,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR102;
 		for (j = 5; j < 209; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -316,7 +325,8 @@ enum Mode Decoder3GPP(Word16 * param, UWord8 * stream, enum RXFrameType *frame_
 		mask = order_MR122;
 		for (j = 5; j < 249; j++) {
 			if (*stream & 0x1)
-				param[*mask] = (short) (param[*mask] + *(mask + 1));
+				param[*mask] =
+				    (short) (param[*mask] + *(mask + 1));
 			mask += 2;
 			if (j % 8)
 				*stream >>= 1;
@@ -374,8 +384,12 @@ void *Decoder_Interface_init(void)
 	dec_interface_State * s;
 	
 	    /* allocate memory */ 
-	    if ((s = (dec_interface_State *) malloc(sizeof(dec_interface_State))) == NULL) {
-		fprintf(stderr, "Decoder_Interface_init: "  "can not malloc state structure\n");
+	    if ((s =
+		 (dec_interface_State *) malloc(sizeof(dec_interface_State))) ==
+		NULL) {
+		fprintf(stderr,
+			 "Decoder_Interface_init: " 
+			 "can not malloc state structure\n");
 		return NULL;
 	}
 	s->decoder_State = Speech_Decode_Frame_init();
@@ -567,7 +581,8 @@ void Decoder_Interface_Decode(void *st,
 	}
 	
 	else
-		Speech_Decode_Frame(s->decoder_State, mode, prm, frame_type, synth);
+		Speech_Decode_Frame(s->decoder_State, mode, prm, frame_type,
+				     synth);
 	if (s->reset_flag_old == 0) {
 		
 		    /* check whole frame */ 

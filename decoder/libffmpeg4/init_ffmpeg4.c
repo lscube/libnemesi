@@ -35,7 +35,8 @@ FFMpeg4Dec *init_ffmpeg4(void)
 	FFMpeg4Dec *ff;
 
 	if (!(ff = malloc(sizeof(FFMpeg4Dec)))) {
-		fprintf(stderr, "Could not alloc memory for FFMpeg data structures\n");
+		fprintf(stderr,
+			"Could not alloc memory for FFMpeg data structures\n");
 		return NULL;
 	}
 	/* must be called before using avcodec lib */
@@ -64,7 +65,8 @@ FFMpeg4Dec *init_ffmpeg4(void)
 
 	ff->got_frame = 0;
 
-	fprintf(stderr, "\nlibavcodec decoder plugin succesfully initialized\n");
+	fprintf(stderr,
+		"\nlibavcodec decoder plugin succesfully initialized\n");
 
 	return ff;
 }

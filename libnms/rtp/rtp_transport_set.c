@@ -51,19 +51,23 @@ int rtp_transport_set(rtp_session * rtp_sess, int par, void *value)
 		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_SRCADDR:
-		memcpy(&rtp_sess->transport.srcaddr, (nms_addr *) value, sizeof(nms_addr));
+		memcpy(&rtp_sess->transport.srcaddr, (nms_addr *) value,
+		       sizeof(nms_addr));
 		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_SRCADDRSTR:
-		if (!convert_addr_str((char *) value, &rtp_sess->transport.srcaddr))
+		if (!convert_addr_str
+		    ((char *) value, &rtp_sess->transport.srcaddr))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_DSTADDR:
-		memcpy(&rtp_sess->transport.dstaddr, (nms_addr *) value, sizeof(nms_addr));
+		memcpy(&rtp_sess->transport.dstaddr, (nms_addr *) value,
+		       sizeof(nms_addr));
 		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_DSTADDRSTR:
-		if (!convert_addr_str((char *) value, &rtp_sess->transport.dstaddr))
+		if (!convert_addr_str
+		    ((char *) value, &rtp_sess->transport.dstaddr))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_LAYERS:
@@ -142,12 +146,14 @@ static int convert_addr_str(const char *address, nms_addr * retaddr)
 	retaddr->family = AF_UNSPEC;
 
 	if ((res = inet_pton(AF_INET, address, &retaddr->addr.in)) > 0) {
-		nms_printf(NMSML_DBG2, "IPv4 address converted (%s->%u)\n", address, retaddr->addr.in);
+		nms_printf(NMSML_DBG2, "IPv4 address converted (%s->%u)\n",
+			   address, retaddr->addr.in);
 		retaddr->family = AF_INET;
 	}
 #ifdef IPV6
 	else if ((res = inet_pton(AF_INET6, address, &retaddr->addr.in6)) > 0) {
-		nms_printf(NMSML_DBG2, "IPv6 address converted (%s->%u)\n", address, retaddr->addr.in6);
+		nms_printf(NMSML_DBG2, "IPv6 address converted (%s->%u)\n",
+			   address, retaddr->addr.in6);
 		retaddr->family = AF_INET6;
 	}
 #endif

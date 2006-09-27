@@ -298,7 +298,8 @@ rtp_thread *rtp_init(void);
 rtp_session *rtp_session_init(nms_sockaddr *, nms_sockaddr *);
 int rtp_thread_create(rtp_thread *);	// something like rtp_run could be better?
 
-int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt, rtp_media_type media_type);
+int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt,
+		    rtp_media_type media_type);
 int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime);
 
 // wait until rtp queues are ready
@@ -381,14 +382,18 @@ inline int rtp_set_ssrc(rtp_session *, uint32);
 
 void rtp_parsers_init(void);
 int rtp_parser_reg(rtp_session *, int16, char *);
-void rtp_parsers_new(rtp_parser * new_parsers, rtp_parser_init * new_parsers_inits);
-inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt, rtp_parser_uninit parser_uninit);
+void rtp_parsers_new(rtp_parser * new_parsers,
+		     rtp_parser_init * new_parsers_inits);
+inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
+				  rtp_parser_uninit parser_uninit);
 
 // rtp basic functions
 int rtp_recv(rtp_session *);
 int rtp_hdr_val_chk(rtp_pkt *, int);
-int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *, enum rtp_protos);
-int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *, enum rtp_protos);
+int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *,
+		   enum rtp_protos);
+int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,
+		  enum rtp_protos);
 
 // rtcp connection functions
 int rtcp_to_connect(rtp_ssrc *, nms_addr *, in_port_t);

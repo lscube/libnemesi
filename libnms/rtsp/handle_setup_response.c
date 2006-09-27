@@ -39,7 +39,8 @@ int handle_setup_response(rtsp_thread * rtsp_th)
 	rtsp_medium *rtsp_med;
 
 	// if (get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
-	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
+	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
+	    || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
 		return 1;
 
 	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
@@ -61,10 +62,12 @@ int handle_setup_response(rtsp_thread * rtsp_th)
 		}
 		if (!strncmpcase(prev_tkn, "Session", 7)) {
 			prev_tkn += 7;
-			sscanf(prev_tkn, " : %llu ; ", &(rtsp_sess->Session_ID));
+			sscanf(prev_tkn, " : %llu ; ",
+			       &(rtsp_sess->Session_ID));
 		}
 	}
-	while ((tkn != NULL) && ((*tkn == '\r') || (*tkn == '\n') || (*tkn == '\0')))
+	while ((tkn != NULL)
+	       && ((*tkn == '\r') || (*tkn == '\n') || (*tkn == '\0')))
 		tkn = strtok(NULL, "\n");	/* cerco l'inizio del body o, eventualmente, del prossimo pkt */
 	if (tkn != NULL)
 		tkn[strlen(tkn)] = '\n';	/* rimetto a posto il \n modificato dalla strtok */

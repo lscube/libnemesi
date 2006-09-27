@@ -65,18 +65,21 @@ int ui(rtsp_ctrl * rtsp_ctl, nms_ui_hints * ui_hints, int argc, char **argv)
 
 	 */
 	if (urlname != NULL) {
-		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", urlname);
+		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"",
+			   urlname);
 		nms_open(rtsp_ctl, urlname, throbber, rtsp_ctl);
 		if (!ui_hints->interactive)
 			nms_play(rtsp_ctl, -1, -1);
 	} else
-		nms_printf(NMSML_NORM, "Please, enter a command or press 'h' for help\n\n");
+		nms_printf(NMSML_NORM,
+			   "Please, enter a command or press 'h' for help\n\n");
 
 	while (1) {
 		if (rtsp_is_busy(rtsp_ctl))
 			// rtsp_wait(rtsp_ctl);
 			throbber(rtsp_ctl);
-		fprintf(stderr, "\r[ %s ] => ", statustostr(rtsp_status(rtsp_ctl)));
+		fprintf(stderr, "\r[ %s ] => ",
+			statustostr(rtsp_status(rtsp_ctl)));
 
 		FD_ZERO(&rdset);
 		FD_SET(STDIN_FILENO, &rdset);
@@ -113,7 +116,8 @@ int ui(rtsp_ctrl * rtsp_ctl, nms_ui_hints * ui_hints, int argc, char **argv)
 			if (ui_hints->interactive) {
 				fgets(optstr, sizeof(optstr) - 1, stdin);
 				optstr[strlen(optstr) - 1] = '\0';
-				if (strlen(optstr) && (parse_prompt(rtsp_ctl, optstr) > 0))
+				if (strlen(optstr)
+				    && (parse_prompt(rtsp_ctl, optstr) > 0))
 					return 0;
 			} else {
 				printf("\ntui event\n");

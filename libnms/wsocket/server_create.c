@@ -45,19 +45,23 @@ int server_create(char *host, char *port, int *sock)
 	hints.ai_socktype = SOCK_DGRAM;
 
 	if ((n = gethostinfo(&res, host, port, &hints)) != 0)
-		return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME, gai_strerror(n));
+		return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
+				  gai_strerror(n));
 
 	ressave = res;
 
 	do {
-		if ((*sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
+		if ((*sock =
+		     socket(res->ai_family, res->ai_socktype,
+			    res->ai_protocol)) < 0)
 			continue;
 
 		if (bind(*sock, res->ai_addr, res->ai_addrlen) == 0)
 			break;
 
 		if (close(*sock) < 0)
-			return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME, strerror(errno));
+			return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
+					  strerror(errno));
 
 
 	} while ((res = res->ai_next) != NULL);

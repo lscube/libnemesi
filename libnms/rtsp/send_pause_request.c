@@ -40,17 +40,21 @@ int send_pause_request(rtsp_thread * rtsp_th, char *range)
 
 	if (rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)
-			sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN, rtsp_sess->content_base,
-				rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+			sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+				PAUSE_TKN, rtsp_sess->content_base,
+				rtsp_sess->pathname, RTSP_VER,
+				++(rtsp_sess->CSeq));
 		else
-			sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
+			sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+				PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
 				++(rtsp_sess->CSeq));
 	else
-		sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN, rtsp_sess->pathname, RTSP_VER,
-			++(rtsp_sess->CSeq));
+		sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
+			rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 
 	if (rtsp_sess->Session_ID != 0)	/* must add session ID? */
-		sprintf(b + strlen(b), "Session: %llu" RTSP_EL, rtsp_sess->Session_ID);
+		sprintf(b + strlen(b), "Session: %llu" RTSP_EL,
+			rtsp_sess->Session_ID);
 	if (range && *range)
 		sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
 	else
@@ -63,7 +67,8 @@ int send_pause_request(rtsp_thread * rtsp_th, char *range)
 		return 1;
 	}
 
-	sprintf(rtsp_th->waiting_for, "%d:%llu.%d", RTSP_PAUSE_RESPONSE, rtsp_sess->Session_ID, rtsp_sess->CSeq);
+	sprintf(rtsp_th->waiting_for, "%d:%llu.%d", RTSP_PAUSE_RESPONSE,
+		rtsp_sess->Session_ID, rtsp_sess->CSeq);
 
 	return 0;
 }

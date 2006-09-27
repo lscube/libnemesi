@@ -36,40 +36,51 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 	memset(str, 0, sizeof(str));
 
-	for (tknb = strtok(buff, ";"); (*tknb == ' ') || (*tknb == ':'); tknb++);
+	for (tknb = strtok(buff, ";"); (*tknb == ' ') || (*tknb == ':');
+	     tknb++);
 
 	do {
 		if ((tkna = strstrcase(tknb, "server_port"))
-		    || ((tkna = strstrcase(tknb, "port")) && !strncmp(tknb, "port", 4))) {
+		    || ((tkna = strstrcase(tknb, "port"))
+			&& !strncmp(tknb, "port", 4))) {
 			in_port_t port;
 
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
-			for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-'); tknb++);
+			for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-');
+			     tknb++);
 
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb - tkna] = '\0';
 			port = atoi(str);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP, &port);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP,
+					  &port);
 
 			for (tknb++; (*tknb == ' '); tknb++);
 
-			for (tkna = tknb; (*tkna != '\0') && (*tkna != '\r') && (*tkna != '\n'); tkna++);
+			for (tkna = tknb;
+			     (*tkna != '\0') && (*tkna != '\r')
+			     && (*tkna != '\n'); tkna++);
 			strncpy(str, tknb, tkna - tknb);
 			str[tkna++ - tknb] = '\0';
 			port = atoi(str);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP, &port);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP,
+					  &port);
 
 			continue;
 		}
 		if ((tkna = strstrcase(tknb, "source"))) {
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for (tknb = tkna++;
+			     (*tknb != '\0') && (*tknb != '\r')
+			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
 
-			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, str)) {
-				nms_printf(NMSML_ERR, "Source IP Address not valid!\n");
+			if (rtp_transport_set
+			    (rtp_sess, RTP_TRANSPORT_SRCADDRSTR, str)) {
+				nms_printf(NMSML_ERR,
+					   "Source IP Address not valid!\n");
 				return 1;
 			}
 			continue;
@@ -77,12 +88,16 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 		if ((tkna = strstrcase(tknb, "destination"))) {
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for (tknb = tkna++;
+			     (*tknb != '\0') && (*tknb != '\r')
+			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
 
-			if (rtp_transport_set(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, str)) {
-				nms_printf(NMSML_ERR, "Destination IP Address not valid!\n");
+			if (rtp_transport_set
+			    (rtp_sess, RTP_TRANSPORT_DSTADDRSTR, str)) {
+				nms_printf(NMSML_ERR,
+					   "Destination IP Address not valid!\n");
 				return 1;
 			}
 			continue;
@@ -92,7 +107,9 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for (tknb = tkna++;
+			     (*tknb != '\0') && (*tknb != '\r')
+			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
 
@@ -106,7 +123,9 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for (tknb = tkna++;
+			     (*tknb != '\0') && (*tknb != '\r')
+			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
 
@@ -120,12 +139,15 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r') && (*tknb != '\n'); tknb++);
+			for (tknb = tkna++;
+			     (*tknb != '\0') && (*tknb != '\r')
+			     && (*tknb != '\n'); tknb++);
 			strncpy(str, tkna, tknb - tkna);
 			str[tknb++ - tkna] = '\0';
 
 			layers = atoi(str);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS, &layers);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS,
+					  &layers);
 
 			continue;
 		}

@@ -54,7 +54,8 @@ void rtsp_clean(void *rtsp_thrd)
 			return;
 	if ((*(rtsp_th->waiting_for)) && nmst_is_active(&rtsp_th->transport)) {
 		if ((n = rtsp_recv(rtsp_th)) < 0)
-			nms_printf(NMSML_WARN, "No teardown response received\n");
+			nms_printf(NMSML_WARN,
+				   "No teardown response received\n");
 		else if (n > 0) {
 			if (full_msg_rcvd(rtsp_th))
 				/*if ( */

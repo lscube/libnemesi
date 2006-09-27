@@ -32,8 +32,9 @@ int recording_state(rtsp_thread * rtsp_th, short event)
 {
 	switch (event) {
 	default:
-		nms_printf(NMSML_WARN, "Event %d in RTSP state %d (RECORDING) not yet implemented!\n", event,
-			   rtsp_th->status);
+		nms_printf(NMSML_WARN,
+			   "Event %d in RTSP state %d (RECORDING) not yet implemented!\n",
+			   event, rtsp_th->status);
 		break;
 	}
 	return 0;

@@ -36,13 +36,17 @@ int video_th_stop(nms_video * vc)
 	void *ret;
 
 	if (vc && vc->tid) {
-		nms_printf(NMSML_DBG1, "Sending cancel signal to Video Thread (ID: %u)\n", vc->tid);
+		nms_printf(NMSML_DBG1,
+			   "Sending cancel signal to Video Thread (ID: %u)\n",
+			   vc->tid);
 		if (pthread_cancel(vc->tid) != 0)
-			nms_printf(NMSML_DBG2, "Error while sending cancelation to Video Thread.\n");
+			nms_printf(NMSML_DBG2,
+				   "Error while sending cancelation to Video Thread.\n");
 		else
 			pthread_join(vc->tid, (void **) &ret);
 		if (ret != PTHREAD_CANCELED)
-			nms_printf(NMSML_DBG2, "Warning! Video Thread joined, but  not canceled!\n");
+			nms_printf(NMSML_DBG2,
+				   "Warning! Video Thread joined, but  not canceled!\n");
 		vc->tid = 0;
 	}
 

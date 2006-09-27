@@ -39,7 +39,8 @@
 #endif				// ENABLE_DEBUG
 
 int (*nms_printf) (int level, const char *fmt, ...) = nms_printf_default;
-int (*nms_statusprintf) (int cmd, const char *fmt, ...) = nms_status_printf_default;
+int (*nms_statusprintf) (int cmd, const char *fmt, ...) =
+    nms_status_printf_default;
 
 static int verbosity = DEFAULT_VERBOSITY;
 
@@ -52,7 +53,8 @@ int nms_verbosity_set(int level)
 			verbosity = NMSML_ALWAYS + level;
 	} else {
 		fprintf(stderr,
-			NMSCLR_YELLOW "warning: verbosity level must be a non negative integer. Setting to 0\n"
+			NMSCLR_YELLOW
+			"warning: verbosity level must be a non negative integer. Setting to 0\n"
 			NMSCLR_DEFAULT);
 		verbosity = 0;
 	}
@@ -167,7 +169,8 @@ int nms_status_printf_default(int cmd, const char *fmt, ...)
 		break;
 	}
 
-	if ((verbosity >= BUFFERS_STATUS_VERBOSITY) && (verbosity >= ELAPSED_STATUS_VERBOSITY))
+	if ((verbosity >= BUFFERS_STATUS_VERBOSITY)
+	    && (verbosity >= ELAPSED_STATUS_VERBOSITY))
 		fprintf(stderr, "\r%s - %s   ", elapsed, buffers);
 	else if (verbosity >= BUFFERS_STATUS_VERBOSITY)
 		fprintf(stderr, "\r%s   ", buffers);

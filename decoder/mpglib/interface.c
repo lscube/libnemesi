@@ -134,7 +134,8 @@ static int read_buf_byte(PMPSTR mp)
 	while (pos >= mp->tail->size) {
 		remove_buf(mp);
 		if (!mp->tail) {
-			fprintf(stderr, "Fatal error! tried to read past mp buffer\n");
+			fprintf(stderr,
+				"Fatal error! tried to read past mp buffer\n");
 			exit(1);
 		}
 		pos = mp->tail->pos;
@@ -303,7 +304,8 @@ int sync_buffer(PMPSTR mp, int free_match)
 
 			if (h && free_match) {
 				/* just to be even more thorough, match the sample rate */
-				int mode, stereo, sampling_frequency, mpeg25, lsf;
+				int mode, stereo, sampling_frequency, mpeg25,
+				    lsf;
 
 				if (head & (1 << 20)) {
 					lsf = (head & (1 << 19)) ? 0x0 : 0x1;
@@ -317,11 +319,15 @@ int sync_buffer(PMPSTR mp, int free_match)
 				stereo = (mode == MPG_MD_MONO) ? 1 : 2;
 
 				if (mpeg25)
-					sampling_frequency = 6 + ((head >> 10) & 0x3);
+					sampling_frequency =
+					    6 + ((head >> 10) & 0x3);
 				else
-					sampling_frequency = ((head >> 10) & 0x3) + (lsf * 3);
-				h = ((stereo == fr->stereo) && (lsf == fr->lsf) && (mpeg25 == fr->mpeg25) &&
-				     (sampling_frequency == fr->sampling_frequency));
+					sampling_frequency =
+					    ((head >> 10) & 0x3) + (lsf * 3);
+				h = ((stereo == fr->stereo) && (lsf == fr->lsf)
+				     && (mpeg25 == fr->mpeg25)
+				     && (sampling_frequency ==
+					 fr->sampling_frequency));
 			}
 
 			if (h) {
@@ -336,7 +342,8 @@ int sync_buffer(PMPSTR mp, int free_match)
 
 
 
-int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize, int *done)
+int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize,
+	      int *done)
 {
 	int i, iret, bits, bytes;
 
@@ -406,11 +413,14 @@ int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize, int
 			mp->sync_bitstream = 1;
 
 			/* skip some bytes, buffer the rest */
-			size = (int) (wordpointer - (mp->bsspace[mp->bsnum] + 512));
+			size =
+			    (int) (wordpointer -
+				   (mp->bsspace[mp->bsnum] + 512));
 
 			if (size > MAXFRAMESIZE) {
 				/* wordpointer buffer is trashed.  probably cant recover, but try anyway */
-				fprintf(stderr, "mpglib: wordpointer trashed.  size=%i (%i)  bytes=%i \n",
+				fprintf(stderr,
+					"mpglib: wordpointer trashed.  size=%i (%i)  bytes=%i \n",
 					size, MAXFRAMESIZE, bytes);
 				size = 0;
 				wordpointer = mp->bsspace[mp->bsnum] + 512;
@@ -528,7 +538,8 @@ int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize, int
 			fprintf(stderr, "invalid layer %d\n", mp->fr.lay);
 		}
 
-		wordpointer = mp->bsspace[mp->bsnum] + 512 + mp->ssize + mp->dsize;
+		wordpointer =
+		    mp->bsspace[mp->bsnum] + 512 + mp->ssize + mp->dsize;
 
 		mp->data_parsed = 1;
 		iret = MP3_OK;
@@ -540,7 +551,8 @@ int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize, int
 	if (mp->free_format) {
 		if (mp->old_free_format) {
 			/* free format.  bitrate must not vary */
-			mp->framesize = mp->fsizeold_nopadding + (mp->fr.padding);
+			mp->framesize =
+			    mp->fsizeold_nopadding + (mp->fr.padding);
 		} else {
 			bytes = sync_buffer(mp, 1);
 			if (bytes < 0)
@@ -568,7 +580,8 @@ int decodeMP3(PMPSTR mp, unsigned char *in, int isize, char *out, int osize, int
 
 		size = (int) (wordpointer - (mp->bsspace[mp->bsnum] + 512));
 		if (size > MAXFRAMESIZE) {
-			fprintf(stderr, "fatal error.  MAXFRAMESIZE not large enough.\n");
+			fprintf(stderr,
+				"fatal error.  MAXFRAMESIZE not large enough.\n");
 		}
 
 	}

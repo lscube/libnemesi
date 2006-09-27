@@ -35,7 +35,8 @@
 #include <sys/un.h>
 #endif
 
-char *sock_ntop_host(const struct sockaddr *sa, socklen_t salen, char *str, size_t len)
+char *sock_ntop_host(const struct sockaddr *sa, socklen_t salen, char *str,
+		     size_t len)
 {
 	// static char str[128];            /* Unix domain is largest */
 	// size_t len = sizeof(str);
@@ -44,7 +45,8 @@ char *sock_ntop_host(const struct sockaddr *sa, socklen_t salen, char *str, size
 	case AF_INET:{
 			struct sockaddr_in *sin = (struct sockaddr_in *) sa;
 
-			if (inet_ntop(AF_INET, &sin->sin_addr, str, len) == NULL)
+			if (inet_ntop(AF_INET, &sin->sin_addr, str, len) ==
+			    NULL)
 				return (NULL);
 			return (str);
 		}
@@ -53,7 +55,8 @@ char *sock_ntop_host(const struct sockaddr *sa, socklen_t salen, char *str, size
 	case AF_INET6:{
 			struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) sa;
 
-			if (inet_ntop(AF_INET6, &sin6->sin6_addr, str, len) == NULL)
+			if (inet_ntop(AF_INET6, &sin6->sin6_addr, str, len) ==
+			    NULL)
 				return (NULL);
 			return (str);
 		}
@@ -78,14 +81,17 @@ char *sock_ntop_host(const struct sockaddr *sa, socklen_t salen, char *str, size
 			struct sockaddr_dl *sdl = (struct sockaddr_dl *) sa;
 
 			if (sdl->sdl_nlen > 0)
-				snprintf(str, len, "%*s", sdl->sdl_nlen, &sdl->sdl_data[0]);
+				snprintf(str, len, "%*s", sdl->sdl_nlen,
+					 &sdl->sdl_data[0]);
 			else
-				snprintf(str, len, "AF_LINK, index=%d", sdl->sdl_index);
+				snprintf(str, len, "AF_LINK, index=%d",
+					 sdl->sdl_index);
 			return (str);
 		}
 #endif
 	default:
-		snprintf(str, len, "sock_ntop_host: unknown AF_xxx: %d, len %d", sa->sa_family, salen);
+		snprintf(str, len, "sock_ntop_host: unknown AF_xxx: %d, len %d",
+			 sa->sa_family, salen);
 		return (str);
 	}
 	return (NULL);

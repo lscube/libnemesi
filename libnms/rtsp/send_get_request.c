@@ -36,10 +36,11 @@ int send_get_request(rtsp_thread * rtsp_th)
 	char b[256];
 
 	/* save the url string for future use in setup request. */
-	sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN, rtsp_th->urlname, RTSP_VER, 1);
+	sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
+		rtsp_th->urlname, RTSP_VER, 1);
 	strcat(b, "Accept: application/sdp;" RTSP_EL);	/* application/x-rtsp-mh"RTSP_EL); */
-	sprintf(b + strlen(b), "User-Agent: %s - %s -- Release %s (%s)" RTSP_EL, PROG_NAME, PROG_DESCR, VERSION,
-		VERSION_NAME);
+	sprintf(b + strlen(b), "User-Agent: %s - %s -- Release %s (%s)" RTSP_EL,
+		PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 	strcat(b, RTSP_EL);
 	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
 		nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");

@@ -80,7 +80,8 @@ static int decode(char *data, int len, nms_output * outc)
 	int read_size, i, j, c;
 	unsigned char adjust = 0, adjust40 = 0;
 #if 0
-	char outbuff[L_FRAME * sizeof(short) * ELEVEN + L_FRAME * sizeof(short) * ELEVEN / 40];
+	char outbuff[L_FRAME * sizeof(short) * ELEVEN +
+		     L_FRAME * sizeof(short) * ELEVEN / 40];
 	short *p = (short *) outbuff;
 #endif
 	uint8 *outbuff;
@@ -90,7 +91,8 @@ static int decode(char *data, int len, nms_output * outc)
 	unsigned char *analysis = (unsigned char *) data;
 	enum Mode dec_mode;
 
-	req_len = L_FRAME * sizeof(uint16) * ELEVEN + L_FRAME * sizeof(uint16) / 40;
+	req_len =
+	    L_FRAME * sizeof(uint16) * ELEVEN + L_FRAME * sizeof(uint16) / 40;
 	// outbuff=(uint8 *)p=funcs->get_buff(req_len);
 	outbuff = funcs->get_buff(req_len);
 	p = (uint16 *) outbuff;

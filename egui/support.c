@@ -26,13 +26,16 @@ GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name)
 		else
 			parent = widget->parent;
 		if (!parent)
-			parent = (GtkWidget *) g_object_get_data(G_OBJECT(widget), "GladeParentKey");
+			parent =
+			    (GtkWidget *) g_object_get_data(G_OBJECT(widget),
+							    "GladeParentKey");
 		if (parent == NULL)
 			break;
 		widget = parent;
 	}
 
-	found_widget = (GtkWidget *) g_object_get_data(G_OBJECT(widget), widget_name);
+	found_widget =
+	    (GtkWidget *) g_object_get_data(G_OBJECT(widget), widget_name);
 	if (!found_widget)
 		g_warning("Widget not found: %s", widget_name);
 	return found_widget;
@@ -43,7 +46,8 @@ static GList *pixmaps_directories = NULL;
 /* Use this function to set the directory containing installed pixmaps. */
 void add_pixmap_directory(const gchar * directory)
 {
-	pixmaps_directories = g_list_prepend(pixmaps_directories, g_strdup(directory));
+	pixmaps_directories =
+	    g_list_prepend(pixmaps_directories, g_strdup(directory));
 }
 
 /* This is an internally used function to find pixmap files. */
@@ -54,8 +58,9 @@ static gchar *find_pixmap_file(const gchar * filename)
 	/* We step through each of the pixmaps directory to find it. */
 	elem = pixmaps_directories;
 	while (elem) {
-		gchar *pathname = g_strdup_printf("%s%s%s", (gchar *) elem->data,
-						  G_DIR_SEPARATOR_S, filename);
+		gchar *pathname =
+		    g_strdup_printf("%s%s%s", (gchar *) elem->data,
+				    G_DIR_SEPARATOR_S, filename);
 		if (g_file_test(pathname, G_FILE_TEST_EXISTS))
 			return pathname;
 		g_free(pathname);
@@ -104,7 +109,8 @@ GdkPixbuf *create_pixbuf(const gchar * filename)
 
 	pixbuf = gdk_pixbuf_new_from_file(pathname, &error);
 	if (!pixbuf) {
-		fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", pathname, error->message);
+		fprintf(stderr, "Failed to load pixbuf file: %s: %s\n",
+			pathname, error->message);
 		g_error_free(error);
 	}
 	g_free(pathname);
@@ -112,7 +118,9 @@ GdkPixbuf *create_pixbuf(const gchar * filename)
 }
 
 /* This is used to set ATK action descriptions. */
-void glade_set_atk_action_description(AtkAction * action, const gchar * action_name, const gchar * description)
+void glade_set_atk_action_description(AtkAction * action,
+				      const gchar * action_name,
+				      const gchar * description)
 {
 	gint n_actions, i;
 

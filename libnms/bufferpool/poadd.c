@@ -53,11 +53,18 @@ int poadd(playout_buff * po, int index, uint32 cycles)
 
 	i = po->pohead;
 
-	cseq = (uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + index))->seq) + cycles;
-	while ((i != -1) && ((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) + po->cycles > cseq)) {
+	cseq =
+	    (uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + index))->seq) +
+	    cycles;
+	while ((i != -1)
+	       && ((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) +
+		   po->cycles > cseq)) {
 		i = po->pobuff[i].next;
 	}
-	if ((i != -1) && (cseq == ((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) + po->cycles))) {
+	if ((i != -1)
+	    && (cseq ==
+		((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) +
+		 po->cycles))) {
 		pthread_mutex_unlock(&(po->po_mutex));
 		return PKT_DUPLICATED;
 	}

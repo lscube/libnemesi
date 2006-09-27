@@ -43,7 +43,8 @@ int stop_cmd(rtsp_thread * rtsp_th, ...)
 		return 1;
 	}
 	if (rtsp_th->status == READY) {
-		nms_printf(NMSML_ERR, "I don't think you're yet playing or recording\n");
+		nms_printf(NMSML_ERR,
+			   "I don't think you're yet playing or recording\n");
 		va_end(ap);
 		// return 0;
 		return 1;

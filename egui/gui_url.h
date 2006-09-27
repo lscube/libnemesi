@@ -37,7 +37,8 @@ typedef struct {
 } GNMSurl;
 
 GNMSurl *gnmsurl_init(void);
-gboolean gnmscompletion_machfunc(GtkEntryCompletion * completion, const gchar * key, GtkTreeIter * iter,
+gboolean gnmscompletion_machfunc(GtkEntryCompletion * completion,
+				 const gchar * key, GtkTreeIter * iter,
 				 gpointer user_data);
 void gnmsurl_destroy(gpointer);
 

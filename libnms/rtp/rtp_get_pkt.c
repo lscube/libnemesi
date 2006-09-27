@@ -48,8 +48,12 @@ rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
 			pthread_mutex_unlock(&(stm_src->po.po_mutex));
 			return NULL;
 		}
-	} while (!stm_src->rtp_sess->ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) + stm_src->po.potail))->pt]
-		 && /* always true - XXX be careful if bufferpool API changes -> */ !rtp_rm_pkt(stm_src));
+	} while (!stm_src->rtp_sess->
+		 ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) +
+				      stm_src->po.potail))->pt]
+		 &&
+		 /* always true - XXX be careful if bufferpool API changes -> */
+		 !rtp_rm_pkt(stm_src));
 	pthread_mutex_unlock(&(stm_src->po.po_mutex));
 
 	if (len)

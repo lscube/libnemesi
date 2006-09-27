@@ -32,7 +32,8 @@ rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head)
 {
 	rtp_session *rtp_sess;
 
-	for (rtp_sess = rtp_sess_head; rtp_sess && !rtp_sess->active_ssrc_queue; rtp_sess = rtp_sess->next);
+	for (rtp_sess = rtp_sess_head; rtp_sess && !rtp_sess->active_ssrc_queue;
+	     rtp_sess = rtp_sess->next);
 
 	return rtp_sess ? rtp_sess->active_ssrc_queue : NULL;
 }

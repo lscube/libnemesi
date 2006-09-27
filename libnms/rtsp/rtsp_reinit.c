@@ -40,25 +40,33 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 	// check for active rtp/rtcp session
 	if (sess->media_queue && sess->media_queue->rtp_sess) {
 		if (rtsp_th->rtp_th->rtcp_tid > 0) {
-			nms_printf(NMSML_DBG1, "Sending cancel signal to RTCP Thread (ID: %lu)\n",
+			nms_printf(NMSML_DBG1,
+				   "Sending cancel signal to RTCP Thread (ID: %lu)\n",
 				   rtsp_th->rtp_th->rtcp_tid);
 			if (pthread_cancel(rtsp_th->rtp_th->rtcp_tid) != 0)
-				nms_printf(NMSML_DBG2, "Error while sending cancelation to RTCP Thread.\n");
+				nms_printf(NMSML_DBG2,
+					   "Error while sending cancelation to RTCP Thread.\n");
 			else
-				pthread_join(rtsp_th->rtp_th->rtcp_tid, (void **) &ret);
+				pthread_join(rtsp_th->rtp_th->rtcp_tid,
+					     (void **) &ret);
 			if (ret != PTHREAD_CANCELED)
-				nms_printf(NMSML_DBG2, "Warning! RTCP Thread joined, but  not canceled!\n");
+				nms_printf(NMSML_DBG2,
+					   "Warning! RTCP Thread joined, but  not canceled!\n");
 			rtsp_th->rtp_th->rtcp_tid = 0;
 		}
 		if (rtsp_th->rtp_th->rtp_tid > 0) {
-			nms_printf(NMSML_DBG1, "Sending cancel signal to RTP Thread (ID: %lu)\n",
+			nms_printf(NMSML_DBG1,
+				   "Sending cancel signal to RTP Thread (ID: %lu)\n",
 				   rtsp_th->rtp_th->rtp_tid);
 			if (pthread_cancel(rtsp_th->rtp_th->rtp_tid) != 0)
-				nms_printf(NMSML_DBG2, "Error while sending cancelation to RTP Thread.\n");
+				nms_printf(NMSML_DBG2,
+					   "Error while sending cancelation to RTP Thread.\n");
 			else
-				pthread_join(rtsp_th->rtp_th->rtp_tid, (void **) &ret);
+				pthread_join(rtsp_th->rtp_th->rtp_tid,
+					     (void **) &ret);
 			if (ret != PTHREAD_CANCELED)
-				nms_printf(NMSML_DBG2, "Warning! RTP Thread joined, but not canceled.\n");
+				nms_printf(NMSML_DBG2,
+					   "Warning! RTP Thread joined, but not canceled.\n");
 			rtsp_th->rtp_th->rtp_tid = 0;
 		}
 	}
@@ -72,7 +80,8 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 		// sdp_session_destroy(sess->info); //!< free sdp description info
 		free(sess->body);
 		free(sess->content_base);
-		for (med = sess->media_queue; med; pmed = med, med = med->next, free(pmed));
+		for (med = sess->media_queue; med;
+		     pmed = med, med = med->next, free(pmed));
 		/* like these
 		   med=pmed=sess->media_queue;
 		   while(med != NULL){
@@ -104,7 +113,8 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 
 	// reset first RP port
 	if (rtsp_th->hints
-	    || ((rtsp_th->hints->first_rtp_port > RTSP_MIN_RTP_PORT) && (rtsp_th->hints->first_rtp_port < 65535))) {
+	    || ((rtsp_th->hints->first_rtp_port > RTSP_MIN_RTP_PORT)
+		&& (rtsp_th->hints->first_rtp_port < 65535))) {
 		rtsp_th->force_rtp_port = rtsp_th->hints->first_rtp_port;
 		if (rtsp_th->force_rtp_port % 2)
 			rtsp_th->force_rtp_port++;

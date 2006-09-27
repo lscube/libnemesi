@@ -55,7 +55,10 @@ nms_audio *audio_init(char *drv_hint, uint32 sysbuff_ms)
 	ac->rate = FREQ;
 	ac->channels = CHANNELS;
 	ac->format = FORMAT;
-	if (!(ac->functions = init_best_audio_out(drv_hint, &ac->rate, &ac->channels, &ac->format, sysbuff_ms))) {
+	if (!
+	    (ac->functions =
+	     init_best_audio_out(drv_hint, &ac->rate, &ac->channels,
+				 &ac->format, sysbuff_ms))) {
 		free(ac);
 		return NULL;
 	} else

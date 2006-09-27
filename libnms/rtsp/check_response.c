@@ -43,7 +43,8 @@ int check_response(rtsp_thread * rtsp_th)
 	sscanf(rtsp_th->waiting_for, "%d", &wait_res);
 	/* cerco il numero di sequenza del pacchetto arrivato */
 	if ((str_pos = strstrcase((rtsp_th->in_buffer).data, "CSeq")) == NULL) {
-		nms_printf(NMSML_ERR, "ERROR: CANNOT find CSeq number in server response.\n");
+		nms_printf(NMSML_ERR,
+			   "ERROR: CANNOT find CSeq number in server response.\n");
 		return 1;
 	}
 	str_pos += 5;
@@ -66,8 +67,11 @@ int check_response(rtsp_thread * rtsp_th)
 			opcode = RTSP_CLOSE_RESPONSE;
 		break;
 	default:
-		sscanf(rtsp_th->waiting_for, "%*d:%llu.%d", &wait_s_id, &wait_cseq);
-		if ((str_pos = strstrcase((rtsp_th->in_buffer).data, "Session")) != NULL) {
+		sscanf(rtsp_th->waiting_for, "%*d:%llu.%d", &wait_s_id,
+		       &wait_cseq);
+		if ((str_pos =
+		     strstrcase((rtsp_th->in_buffer).data,
+				"Session")) != NULL) {
 			str_pos += 8;
 			while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
 				str_pos++;

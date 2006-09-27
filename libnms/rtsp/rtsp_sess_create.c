@@ -33,7 +33,8 @@ rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
 	rtsp_session *rtsp_s;
 
 	if ((rtsp_s = (rtsp_session *) malloc(sizeof(rtsp_session))) == NULL) {
-		nms_printf(NMSML_FATAL, "rtsp_sess_create: Cannot allocate memory.\n");
+		nms_printf(NMSML_FATAL,
+			   "rtsp_sess_create: Cannot allocate memory.\n");
 		return NULL;
 	}
 	if (content_base == NULL) {
@@ -47,7 +48,9 @@ rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
 		   }
 		   strcpy(rtsp_s->content_base,content_base);
 		 */
-		if (!(rtsp_s->pathname = rtsp_s->content_base = strdup(content_base)))
+		if (!
+		    (rtsp_s->pathname = rtsp_s->content_base =
+		     strdup(content_base)))
 			return NULL;
 		rtsp_s->pathname += strlen(content_base);
 	}

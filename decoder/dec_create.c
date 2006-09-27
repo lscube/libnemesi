@@ -37,14 +37,19 @@ pthread_t dec_create(rtsp_ctrl * rtsp_ctl)
 	pthread_t dec_tid;
 
 	pthread_attr_init(&dec_attr);
-	if (pthread_attr_setdetachstate(&dec_attr, PTHREAD_CREATE_JOINABLE) != 0) {
-		nms_printf(NMSML_FATAL, "Cannot set Decoder Thread attributes!\n");
+	if (pthread_attr_setdetachstate(&dec_attr, PTHREAD_CREATE_JOINABLE) !=
+	    0) {
+		nms_printf(NMSML_FATAL,
+			   "Cannot set Decoder Thread attributes!\n");
 		return 0;
 	}
 
 /*	pthread_attr_setschedpolicy(&dec_attr, SCHED_RR);*/
-	if ((n = pthread_create(&dec_tid, &dec_attr, &decoder, (void *) rtsp_ctl)) > 0) {
-		nms_printf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n", strerror(n));
+	if ((n =
+	     pthread_create(&dec_tid, &dec_attr, &decoder,
+			    (void *) rtsp_ctl)) > 0) {
+		nms_printf(NMSML_FATAL, "Cannot Create Decoder Thread: %s\n",
+			   strerror(n));
 		return 0;
 	}
 

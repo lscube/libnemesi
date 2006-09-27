@@ -56,8 +56,10 @@ static GNMSStatusBar nmsstatusbar;
 void gnms_stbar_init(GtkBox * statusbox)
 {
 	nmsstatusbar.statusbox = statusbox;
-	nmsstatusbar.statusbar = GTK_STATUSBAR(lookup_widget(GTK_WIDGET(statusbox), "statusbar"));
-	nmsstatusbar.status_cid = gtk_statusbar_get_context_id(nmsstatusbar.statusbar, "Status");
+	nmsstatusbar.statusbar =
+	    GTK_STATUSBAR(lookup_widget(GTK_WIDGET(statusbox), "statusbar"));
+	nmsstatusbar.status_cid =
+	    gtk_statusbar_get_context_id(nmsstatusbar.statusbar, "Status");
 	nmsstatusbar.widgetq = NULL;
 	return;
 }
@@ -74,7 +76,8 @@ int gnms_stbar_setstr(const char *fmt, ...)
 
 	statusstr[sizeof(statusstr) - 1] = '\0';
 
-	gtk_statusbar_push(nmsstatusbar.statusbar, nmsstatusbar.status_cid, statusstr);
+	gtk_statusbar_push(nmsstatusbar.statusbar, nmsstatusbar.status_cid,
+			   statusstr);
 
 	return ret;
 }
@@ -106,14 +109,16 @@ static void stbar_add_separator()
 
 	newstw->widget = gtk_hseparator_new();
 
-	gtk_box_pack_end(nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE, 0);
+	gtk_box_pack_end(nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE,
+			 0);
 	gtk_widget_show(newstw->widget);
 
 	return;
 }
 
-int gnms_stbar_addwgt(GtkWidget * widget, void (*destroyer) (GtkWidget *), void (*updater) (void *),
-		      gpointer updata, gboolean separator)
+int gnms_stbar_addwgt(GtkWidget * widget, void (*destroyer) (GtkWidget *),
+		      void (*updater) (void *), gpointer updata,
+		      gboolean separator)
 {
 	GNMSstWidget *newstw;
 
@@ -132,7 +137,8 @@ int gnms_stbar_addwgt(GtkWidget * widget, void (*destroyer) (GtkWidget *), void 
 	newstw->destroyer = destroyer;
 
 	// packing
-	gtk_box_pack_end(nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE, 0);
+	gtk_box_pack_end(nmsstatusbar.statusbox, newstw->widget, FALSE, FALSE,
+			 0);
 
 	// show widgets
 	gtk_widget_show(newstw->widget);

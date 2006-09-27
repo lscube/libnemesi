@@ -53,19 +53,31 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
 
 	while (sess) {
 		med = sess->media_queue;
-		nms_printf(NMSML_NORM, "---- RTSP Session Infos: %s ----\n", sess->pathname);
-		for (str = (char **) (sess->info); str < (char **) &(sess->info->attr_list); str++)
+		nms_printf(NMSML_NORM, "---- RTSP Session Infos: %s ----\n",
+			   sess->pathname);
+		for (str = (char **) (sess->info);
+		     str < (char **) &(sess->info->attr_list); str++)
 			if (*str)
-				nms_printf(NMSML_ALWAYS, "* %s: %s\n", sdes[str - (char **) (sess->info)], *str);
+				nms_printf(NMSML_ALWAYS, "* %s: %s\n",
+					   sdes[str - (char **) (sess->info)],
+					   *str);
 		for (attr = sess->info->attr_list; attr; attr = attr->next)
 			nms_printf(NMSML_ALWAYS, "%s\n", attr->a);
 		while (med) {
-			nms_printf(NMSML_NORM, "\n\t---- RTSP Medium Infos: %s ----\n", med->filename);
-			for (str = (char **) (med->medium_info); str < (char **) &(med->medium_info->attr_list); str++)
+			nms_printf(NMSML_NORM,
+				   "\n\t---- RTSP Medium Infos: %s ----\n",
+				   med->filename);
+			for (str = (char **) (med->medium_info);
+			     str < (char **) &(med->medium_info->attr_list);
+			     str++)
 				if (*str)
 					nms_printf(NMSML_ALWAYS, "\t* %s: %s\n",
-						   mdes[str - (char **) (med->medium_info)], *str);
-			for (attr = med->medium_info->attr_list; attr; attr = attr->next)
+						   mdes[str -
+							(char **) (med->
+								   medium_info)],
+						   *str);
+			for (attr = med->medium_info->attr_list; attr;
+			     attr = attr->next)
 				nms_printf(NMSML_ALWAYS, "\t* %s\n", attr->a);
 			med = med->next;
 		}

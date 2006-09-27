@@ -50,17 +50,20 @@ void *rtcp(void *args)
 				  rtp_sess->sess_stats.senders,
 				  rtp_sess->sess_stats.rtcp_bw,
 				  rtp_sess->sess_stats.we_sent,
-				  rtp_sess->sess_stats.avg_rtcp_size, rtp_sess->sess_stats.initial);
+				  rtp_sess->sess_stats.avg_rtcp_size,
+				  rtp_sess->sess_stats.initial);
 
 		tv.tv_sec = (long int) t;
 		tv.tv_usec = (long int) ((t - tv.tv_sec) * 1000000);
 		gettimeofday(&now, NULL);
 		timeval_add(&(rtp_sess->sess_stats.tn), &now, &tv);
 
-		if ((head = rtcp_schedule(head, rtp_sess, rtp_sess->sess_stats.tn, RTCP_RR)) == NULL)
+		if ((head =
+		     rtcp_schedule(head, rtp_sess, rtp_sess->sess_stats.tn,
+				   RTCP_RR)) == NULL)
 			pthread_exit(NULL);
-		nms_printf(NMSML_DBG1, "RTCP: %d.%d -> %d.%d\n", now.tv_sec, now.tv_usec, head->tv.tv_sec,
-			   head->tv.tv_usec);
+		nms_printf(NMSML_DBG1, "RTCP: %d.%d -> %d.%d\n", now.tv_sec,
+			   now.tv_usec, head->tv.tv_sec, head->tv.tv_usec);
 	}
 
 	while (1) {
@@ -69,7 +72,8 @@ void *rtcp(void *args)
 
 		FD_ZERO(&readset);
 
-		for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next) {
+		for (rtp_sess = rtp_sess_head; rtp_sess;
+		     rtp_sess = rtp_sess->next) {
 			maxfd = max(rtp_sess->rtcpfd, maxfd);
 			FD_SET(rtp_sess->rtcpfd, &readset);
 		}
@@ -79,8 +83,10 @@ void *rtcp(void *args)
 			tv.tv_sec = 0;
 			tv.tv_usec = 0;
 		}
-		nms_printf(NMSML_DBG1, "RTCP: now: %d.%d -> head:%d.%d - sleep: %d.%d\n", now.tv_sec, now.tv_usec,
-			   head->tv.tv_sec, head->tv.tv_usec, tv.tv_sec, tv.tv_usec);
+		nms_printf(NMSML_DBG1,
+			   "RTCP: now: %d.%d -> head:%d.%d - sleep: %d.%d\n",
+			   now.tv_sec, now.tv_usec, head->tv.tv_sec,
+			   head->tv.tv_usec, tv.tv_sec, tv.tv_usec);
 
 		if (select(maxfd + 1, &readset, NULL, NULL, &tv) == 0) {
 			/* timer scaduto */
@@ -88,7 +94,8 @@ void *rtcp(void *args)
 				pthread_exit(NULL);
 		}
 
-		for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
+		for (rtp_sess = rtp_sess_head; rtp_sess;
+		     rtp_sess = rtp_sess->next)
 			if (FD_ISSET(rtp_sess->rtcpfd, &readset)) {
 				if ((ret = rtcp_recv(rtp_sess)) < 0)
 					pthread_exit(NULL);

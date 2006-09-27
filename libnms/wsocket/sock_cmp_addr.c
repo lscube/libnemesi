@@ -38,7 +38,8 @@
 #include <sys/un.h>
 #endif
 
-int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2 /*, socklen_t salen */ )
+int sock_cmp_addr(const struct sockaddr *sa1,
+		  const struct sockaddr *sa2 /*, socklen_t salen */ )
 {
 	if (sa1->sa_family != sa2->sa_family)
 		return -1;
@@ -46,21 +47,25 @@ int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2 /*, soc
 	switch (sa1->sa_family) {
 	case AF_INET:
 		return (memcmp
-			(&((struct sockaddr_in *) sa1)->sin_addr, &((struct sockaddr_in *) sa2)->sin_addr,
+			(&((struct sockaddr_in *) sa1)->sin_addr,
+			 &((struct sockaddr_in *) sa2)->sin_addr,
 			 sizeof(struct in_addr)));
 		break;
 
 #ifdef	IPV6
 	case AF_INET6:
 		return (memcmp
-			(&((struct sockaddr_in6 *) sa1)->sin6_addr, &((struct sockaddr_in6 *) sa2)->sin6_addr,
+			(&((struct sockaddr_in6 *) sa1)->sin6_addr,
+			 &((struct sockaddr_in6 *) sa2)->sin6_addr,
 			 sizeof(struct in6_addr)));
 		break;
 #endif
 
 #ifdef	AF_UNIX
 	case AF_UNIX:
-		return (strcmp(((struct sockaddr_un *) sa1)->sun_path, ((struct sockaddr_un *) sa2)->sun_path));
+		return (strcmp
+			(((struct sockaddr_un *) sa1)->sun_path,
+			 ((struct sockaddr_un *) sa2)->sun_path));
 		break;
 #endif
 

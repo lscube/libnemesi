@@ -79,15 +79,21 @@ static int decode(char *data, int len, nms_output * outc)
 
 		//� l'ultima chiamata
 
-		len_tmp += avcodec_decode_video(c, picture, &got_picture, NULL, 0);
+		len_tmp +=
+		    avcodec_decode_video(c, picture, &got_picture, NULL, 0);
 
 		if (got_picture) {
 
-			video_data = (*(outc->video.vb_get)) ((uint8) 1 /*got_picture */ );
+			video_data =
+			    (*(outc->video.vb_get)) ((uint8) 1 /*got_picture */
+						     );
 
-			memcpy(video_data.a, picture->data[0], /*got_picture */ (outc->video.dimframe));
-			memcpy(video_data.b, picture->data[1], /*got_picture */ (outc->video.dimframe) / 4);
-			memcpy(video_data.c, picture->data[2], /*got_picture */ (outc->video.dimframe) / 4);
+			memcpy(video_data.a, picture->data[0], /*got_picture */ 
+			       (outc->video.dimframe));
+			memcpy(video_data.b, picture->data[1], /*got_picture */ 
+			       (outc->video.dimframe) / 4);
+			memcpy(video_data.c, picture->data[2], /*got_picture */ 
+			       (outc->video.dimframe) / 4);
 
 		}
 		return 0;
@@ -96,11 +102,14 @@ static int decode(char *data, int len, nms_output * outc)
 	while (decd_len < len) {
 
 		size =
-		    avcodec_decode_video(ff->context, ff->frame, &(ff->got_frame), (uint8_t *) (data /*+ len_tmp */ ),
+		    avcodec_decode_video(ff->context, ff->frame,
+					 &(ff->got_frame),
+					 (uint8_t *) (data /*+ len_tmp */ ),
 					 (int) (len /* - len_tmp */ ));
 
 		if (size < 0) {
-			fprintf(stderr, "Error while decoding with libavcodec\n");
+			fprintf(stderr,
+				"Error while decoding with libavcodec\n");
 			return 1;
 		} else if (ff->got_frame) {
 			// if (!vc->tid) {
@@ -110,15 +119,22 @@ static int decode(char *data, int len, nms_output * outc)
 				vc->width = ff->context->width;
 				vc->height = ff->context->height;
 #if LIBAVCODEC_BUILD >= 4754
-				if (ff->context->time_base.num && ff->context->time_base.den)
+				if (ff->context->time_base.num
+				    && ff->context->time_base.den)
 					vc->fps =
-					    (double) ff->context->time_base.den / (double) ff->context->time_base.num;
+					    (double) ff->context->time_base.
+					    den /
+					    (double) ff->context->time_base.num;
 				// fprintf(stderr, "fps: %5.2f (%d,%d)\n", vc->fps, ff->context->time_base.den, ff->context->time_base.num);
 #else
-				vc->fps = ff->context->frame_rate / ff->context->frame_rate_base;
+				vc->fps =
+				    ff->context->frame_rate /
+				    ff->context->frame_rate_base;
 #endif
-				if (funcs->config(vc->width, vc->height, vc->width, vc->height, vc->fps,
-						  0, "NeMeSI (SDL)", vc->format))
+				if (funcs->
+				    config(vc->width, vc->height, vc->width,
+					   vc->height, vc->fps, 0,
+					   "NeMeSI (SDL)", vc->format))
 					return 1;
 				vc->init = 1;
 			}
@@ -126,15 +142,25 @@ static int decode(char *data, int len, nms_output * outc)
 			if (ff->frame->pts)
 				elapsed = (double) ff->frame->pts / 1000.0;
 			else if (ff->frame->display_picture_number)
-				elapsed = (double) ff->frame->display_picture_number * 1000.0 / vc->fps;
+				elapsed =
+				    (double) ff->frame->display_picture_number *
+				    1000.0 / vc->fps;
 			else if (ff->context->frame_number)
-				elapsed = (double) ff->context->frame_number * 1000.0 / vc->fps;
+				elapsed =
+				    (double) ff->context->frame_number *
+				    1000.0 / vc->fps;
 			else
 				elapsed += 1000.0 / vc->fps;
 
-			if (!funcs->get_picture(ff->context->width, ff->context->height, &pict)) {
-				img_convert((AVPicture *) pict_pt, PIX_FMT_YUV420P, (AVPicture *) ff->frame,
-					    ff->context->pix_fmt, ff->context->width, ff->context->height);
+			if (!funcs->
+			    get_picture(ff->context->width, ff->context->height,
+					&pict)) {
+				img_convert((AVPicture *) pict_pt,
+					    PIX_FMT_YUV420P,
+					    (AVPicture *) ff->frame,
+					    ff->context->pix_fmt,
+					    ff->context->width,
+					    ff->context->height);
 				funcs->draw_picture(&pict, elapsed);
 			}
 			// funcs->update_screen();

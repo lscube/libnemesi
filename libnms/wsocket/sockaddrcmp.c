@@ -37,7 +37,8 @@
  * \return 0 if the two structires are egual, otherwise an error reflecting the
  * first difference encountered. 
  */
-int sockaddrcmp(struct sockaddr *addr1, socklen_t addr1_len, struct sockaddr *addr2, socklen_t addr2_len)
+int sockaddrcmp(struct sockaddr *addr1, socklen_t addr1_len,
+		struct sockaddr *addr2, socklen_t addr2_len)
 {
 	if (addr1_len != addr2_len)
 		return WSOCK_ERRSIZE;

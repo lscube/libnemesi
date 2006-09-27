@@ -68,24 +68,29 @@ int gnms_showmsgs()
 
 	if (*gmsg.msg) {	// there is a message
 		if ((!dialog) && !(dialog = gnms_printf_create()))
-			return nms_printf_default(NMSML_FATAL, "Could not initilize GTK dialog\n");
+			return nms_printf_default(NMSML_FATAL,
+						  "Could not initilize GTK dialog\n");
 
 		gtk_label_set_text(dialog->label, gmsg.msg);
 		switch (gmsg.level) {
 		case NMSML_FATAL:
-			gtk_window_set_title(GTK_WINDOW(dialog->window), "NeMeSI - FATAL");
+			gtk_window_set_title(GTK_WINDOW(dialog->window),
+					     "NeMeSI - FATAL");
 		case NMSML_ERR:
-			gtk_window_set_title(GTK_WINDOW(dialog->window), "NeMeSI - ERROR");
+			gtk_window_set_title(GTK_WINDOW(dialog->window),
+					     "NeMeSI - ERROR");
 			gtk_widget_hide(GTK_WIDGET(dialog->warning));
 			gtk_widget_show(GTK_WIDGET(dialog->error));
 			break;
 		case NMSML_WARN:
-			gtk_window_set_title(GTK_WINDOW(dialog->window), "NeMeSI - WARNING");
+			gtk_window_set_title(GTK_WINDOW(dialog->window),
+					     "NeMeSI - WARNING");
 			gtk_widget_hide(GTK_WIDGET(dialog->error));
 			gtk_widget_show(GTK_WIDGET(dialog->warning));
 			break;
 		default:
-			gtk_window_set_title(GTK_WINDOW(dialog->window), "NeMeSI");
+			gtk_window_set_title(GTK_WINDOW(dialog->window),
+					     "NeMeSI");
 			gtk_widget_hide(GTK_WIDGET(dialog->error));
 			gtk_widget_hide(GTK_WIDGET(dialog->warning));
 			break;
@@ -119,7 +124,8 @@ static int gnms_printf(int level, const char *fmt, ...)
 	case NMSML_WARN:
 		if (gmsg.level > NMSML_WARN)
 			gmsg.level = NMSML_WARN;
-		strncat(gmsg.msg + strlen(gmsg.msg), tmp, sizeof(gmsg.msg) - strlen(gmsg.msg));
+		strncat(gmsg.msg + strlen(gmsg.msg), tmp,
+			sizeof(gmsg.msg) - strlen(gmsg.msg));
 		gmsg.msg[sizeof(gmsg.msg) - 1] = '\0';
 		break;
 	case NMSML_ALWAYS:
@@ -157,9 +163,11 @@ static GNMSdialog *gnms_printf_create(void)
 	gnms_printf = gtk_dialog_new();
 	// gtk_widget_set_name (gnms_printf, "gnms_printf");
 	gtk_window_set_title(GTK_WINDOW(gnms_printf), "NeMeSI");
-	gtk_window_set_position(GTK_WINDOW(gnms_printf), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_window_set_position(GTK_WINDOW(gnms_printf),
+				GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_window_set_modal(GTK_WINDOW(gnms_printf), TRUE);
-	gtk_window_set_type_hint(GTK_WINDOW(gnms_printf), GDK_WINDOW_TYPE_HINT_DIALOG);
+	gtk_window_set_type_hint(GTK_WINDOW(gnms_printf),
+				 GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	dialog_vbox = GTK_DIALOG(gnms_printf)->vbox;
 	// gtk_widget_set_name (dialog_vbox, "dialog_vbox2");
@@ -169,13 +177,16 @@ static GNMSdialog *gnms_printf_create(void)
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(dialog_vbox), hbox, TRUE, TRUE, 0);
 
-	image1 = gtk_image_new_from_stock("gtk-dialog-error", GTK_ICON_SIZE_DIALOG);
+	image1 =
+	    gtk_image_new_from_stock("gtk-dialog-error", GTK_ICON_SIZE_DIALOG);
 	// image1 = gtk_image_new_from_stock ("gtk-dialog-error", GTK_ICON_SIZE_DND);
 	// image1 = gtk_image_new_from_stock ("gtk-dialog-error", GTK_ICON_SIZE_BUTTON);
 	// gtk_widget_show (image1);
 	gtk_box_pack_start(GTK_BOX(hbox), image1, TRUE, TRUE, 0);
 
-	image2 = gtk_image_new_from_stock("gtk-dialog-warning", GTK_ICON_SIZE_DIALOG);
+	image2 =
+	    gtk_image_new_from_stock("gtk-dialog-warning",
+				     GTK_ICON_SIZE_DIALOG);
 	// image2 = gtk_image_new_from_stock ("gtk-dialog-warning", GTK_ICON_SIZE_DND);
 	// image2 = gtk_image_new_from_stock ("gtk-dialog-warning", GTK_ICON_SIZE_BUTTON);
 	// gtk_widget_show (image2);
@@ -190,15 +201,18 @@ static GNMSdialog *gnms_printf_create(void)
 	dialog_action_area = GTK_DIALOG(gnms_printf)->action_area;
 	// gtk_widget_set_name (dialog_action_area, "dialog_action_area3");
 	gtk_widget_show(dialog_action_area);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(dialog_action_area), GTK_BUTTONBOX_END);
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(dialog_action_area),
+				  GTK_BUTTONBOX_END);
 
 	closegnmsprint = gtk_button_new_from_stock("gtk-close");
 	// gtk_widget_set_name (closegnmsprint, "closegnmsprint");
 	gtk_widget_show(closegnmsprint);
-	gtk_dialog_add_action_widget(GTK_DIALOG(gnms_printf), closegnmsprint, GTK_RESPONSE_CLOSE);
+	gtk_dialog_add_action_widget(GTK_DIALOG(gnms_printf), closegnmsprint,
+				     GTK_RESPONSE_CLOSE);
 	GTK_WIDGET_SET_FLAGS(closegnmsprint, GTK_CAN_DEFAULT);
 
-	g_signal_connect((gpointer) closegnmsprint, "clicked", G_CALLBACK(gnms_printf_destroy), gnms_printf);
+	g_signal_connect((gpointer) closegnmsprint, "clicked",
+			 G_CALLBACK(gnms_printf_destroy), gnms_printf);
 
 	dialog->window = gnms_printf;
 	dialog->label = GTK_LABEL(gnms_printf_l);

@@ -48,7 +48,8 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
 		else
 			tkn = strtok(NULL, "\r\n");
 		if (tkn == NULL) {
-			nms_printf(NMSML_ERR, "Invalid SDP description body... discarding\n");
+			nms_printf(NMSML_ERR,
+				   "Invalid SDP description body... discarding\n");
 			error = 1;
 			break;
 			// return NULL;
@@ -96,7 +97,8 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
 		case 'a':
 			tkn += 2;
 			if (sdp_set_attr(&(new->attr_list), tkn)) {
-				nms_printf(NMSML_ERR, "Error setting SDP session attribute\n");
+				nms_printf(NMSML_ERR,
+					   "Error setting SDP session attribute\n");
 				error = 1;
 				break;
 				// return NULL;
@@ -104,7 +106,10 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
 			break;
 		case 'm':
 			tkn[strlen(tkn)] = '\n';
-			if (!(new->media_info_queue = sdp_media_setup(&tkn, descr_len - (tkn - descr)))) {
+			if (!
+			    (new->media_info_queue =
+			     sdp_media_setup(&tkn,
+					     descr_len - (tkn - descr)))) {
 				error = 1;
 				break;
 				// return NULL;

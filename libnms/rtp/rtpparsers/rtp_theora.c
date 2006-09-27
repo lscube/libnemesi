@@ -57,7 +57,8 @@ static int cfg_fixup(rtp_theora_t * theo, rtp_frame * fr, rtp_pkt * pkt)
 	return 0;
 }
 
-static int single_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr, rtp_ssrc * ssrc, int offset)
+static int single_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr,
+			rtp_ssrc * ssrc, int offset)
 {
 
 	int len = RTP_XIPH_LEN(pkt, offset);
@@ -90,14 +91,16 @@ static int single_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr, rtp_
 	return 0;
 }
 
-static int pack_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr, rtp_ssrc * ssrc)
+static int pack_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr,
+		      rtp_ssrc * ssrc)
 {
 	single_parse(theo, pkt, ssrc, fr, theo->offset);
 	theo->offset += fr->len;
 	return 0;
 }
 
-static int frag_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr, rtp_ssrc * ssrc)
+static int frag_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr,
+		      rtp_ssrc * ssrc)
 {
 	int len;
 
@@ -129,7 +132,8 @@ static int frag_parse(rtp_theora_t * theo, rtp_pkt * pkt, rtp_frame * fr, rtp_ss
 		else {
 			theo->curr_bs = pkt_blocksize(theo, fr);
 			if (theo->prev_bs)
-				fr->timestamp += (theo->curr_bs + theo->prev_bs) / 4;
+				fr->timestamp +=
+				    (theo->curr_bs + theo->prev_bs) / 4;
 			theo->prev_bs = theo->curr_bs;
 		}
 	return 0 default:	//      

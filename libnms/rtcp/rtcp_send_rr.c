@@ -45,7 +45,8 @@ int rtcp_send_rr(rtp_session * rtp_sess)
 	for (stm_src = rtp_sess->ssrc_queue; stm_src; stm_src = stm_src->next)
 		if (stm_src->rtcptofd > 0) {
 			if (write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0)
-				nms_printf(NMSML_WARN, "WARNING! Error while sending RTCP pkt\n");
+				nms_printf(NMSML_WARN,
+					   "WARNING! Error while sending RTCP pkt\n");
 			else
 				nms_printf(NMSML_DBG1, "RTCP RR packet sent\n");
 		}

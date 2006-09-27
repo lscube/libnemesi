@@ -28,10 +28,10 @@
 
 #include <nemesi/bufferpool.h>
 
-#define RET_ERR(x) {\
-			free(bp->bufferpool); \
-			return x; \
-		}
+#define RET_ERR(x)	do {\
+				free(bp->bufferpool); \
+				return x; \
+			} while (0)
 
 /*!
 * \brief Inizializza il Buffer Pool.
@@ -50,7 +50,8 @@ int bpinit(buffer_pool * bp)
 	pthread_condattr_t cond_attr;
 	int i;
 
-	if (((bp->bufferpool) = (bp_slot *) malloc(BP_SLOT_NUM * sizeof(bp_slot))) == NULL) {
+	if (((bp->bufferpool) =
+	     (bp_slot *) malloc(BP_SLOT_NUM * sizeof(bp_slot))) == NULL) {
 		return 1;
 	}
 	memset(bp->bufferpool, 0, BP_SLOT_NUM * sizeof(bp_slot));
@@ -60,20 +61,22 @@ int bpinit(buffer_pool * bp)
 	bp->flcount = 0;
 
 	if ((i = pthread_mutexattr_init(&mutex_attr)) > 0)
-		RET_ERR(i)
+		RET_ERR(i);
 #if 0
 #ifdef	_POSIX_THREAD_PROCESS_SHARED
-		    if ((i = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
-			RET_ERR(i)
+	if ((i =
+	     pthread_mutexattr_setpshared(&mutex_attr,
+					  PTHREAD_PROCESS_SHARED)) > 0)
+		RET_ERR(i);
 #endif
 #endif
-			    if ((i = pthread_mutex_init(&(bp->fl_mutex), &mutex_attr)) > 0)
-				RET_ERR(i)
-				    // cond initialization
-				    if ((i = pthread_condattr_init(&cond_attr)) > 0)
-					RET_ERR(i)
-					    if ((i = pthread_cond_init(&(bp->cond_full), &cond_attr)) > 0)
-						RET_ERR(i)
+	if ((i = pthread_mutex_init(&(bp->fl_mutex), &mutex_attr)) > 0)
+		RET_ERR(i);
+	// cond initialization
+	if ((i = pthread_condattr_init(&cond_attr)) > 0)
+		RET_ERR(i);
+	if ((i = pthread_cond_init(&(bp->cond_full), &cond_attr)) > 0)
+		RET_ERR(i);
 
-						    return 0;
+	return 0;
 }

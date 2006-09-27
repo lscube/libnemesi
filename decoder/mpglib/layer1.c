@@ -25,7 +25,8 @@
 #include <dmalloc.h>
 #endif
 
-void I_step_one(unsigned int balloc[], unsigned int scale_index[2][SBLIMIT], struct frame *fr)
+void I_step_one(unsigned int balloc[], unsigned int scale_index[2][SBLIMIT],
+		struct frame *fr)
 {
 	unsigned int *ba = balloc;
 	unsigned int *sca = (unsigned int *) scale_index;
@@ -93,17 +94,22 @@ void I_step_two(real fraction[2][SBLIMIT], unsigned int balloc[2 * SBLIMIT],
 		ba = balloc;
 		for (sample = smpb, i = 0; i < jsbound; i++) {
 			if ((n = *ba++))
-				*f0++ = (real) (((-1) << n) + (*sample++) + 1) * muls[n + 1][*sca++];
+				*f0++ =
+				    (real) (((-1) << n) + (*sample++) +
+					    1) * muls[n + 1][*sca++];
 			else
 				*f0++ = 0.0;
 			if ((n = *ba++))
-				*f1++ = (real) (((-1) << n) + (*sample++) + 1) * muls[n + 1][*sca++];
+				*f1++ =
+				    (real) (((-1) << n) + (*sample++) +
+					    1) * muls[n + 1][*sca++];
 			else
 				*f1++ = 0.0;
 		}
 		for (i = jsbound; i < SBLIMIT; i++) {
 			if ((n = *ba++)) {
-				real samp = (real) (((-1) << n) + (*sample++) + 1);
+				real samp =
+				    (real) (((-1) << n) + (*sample++) + 1);
 				*f0++ = samp * muls[n + 1][*sca++];
 				*f1++ = samp * muls[n + 1][*sca++];
 			} else
@@ -120,7 +126,9 @@ void I_step_two(real fraction[2][SBLIMIT], unsigned int balloc[2 * SBLIMIT],
 		ba = balloc;
 		for (sample = smpb, i = 0; i < SBLIMIT; i++) {
 			if ((n = *ba++))
-				*f0++ = (real) (((-1) << n) + (*sample++) + 1) * muls[n + 1][*sca++];
+				*f0++ =
+				    (real) (((-1) << n) + (*sample++) +
+					    1) * muls[n + 1][*sca++];
 			else
 				*f0++ = 0.0;
 		}
@@ -140,7 +148,8 @@ int do_layer1(PMPSTR mp, unsigned char *pcm_sample, int *pcm_point)
 	int i, stereo = fr->stereo;
 	int single = fr->single;
 
-	fr->jsbound = (fr->mode == MPG_MD_JOINT_STEREO) ? (fr->mode_ext << 2) + 4 : 32;
+	fr->jsbound =
+	    (fr->mode == MPG_MD_JOINT_STEREO) ? (fr->mode_ext << 2) + 4 : 32;
 
 	if (stereo == 1 || single == 3)
 		single = 0;
@@ -151,11 +160,17 @@ int do_layer1(PMPSTR mp, unsigned char *pcm_sample, int *pcm_point)
 		I_step_two(fraction, balloc, scale_index, fr);
 
 		if (single >= 0) {
-			clip += synth_1to1_mono(mp, (real *) fraction[single], pcm_sample, pcm_point);
+			clip +=
+			    synth_1to1_mono(mp, (real *) fraction[single],
+					    pcm_sample, pcm_point);
 		} else {
 			int p1 = *pcm_point;
-			clip += synth_1to1(mp, (real *) fraction[0], 0, pcm_sample, &p1);
-			clip += synth_1to1(mp, (real *) fraction[1], 1, pcm_sample, pcm_point);
+			clip +=
+			    synth_1to1(mp, (real *) fraction[0], 0, pcm_sample,
+				       &p1);
+			clip +=
+			    synth_1to1(mp, (real *) fraction[1], 1, pcm_sample,
+				       pcm_point);
 		}
 	}
 

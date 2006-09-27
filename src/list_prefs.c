@@ -36,8 +36,10 @@ int list_prefs(void)
 	while (strcmp((char *) &preferences[i], PREFS_TABLE_END)) {
 		fprintf(stderr, "Name: %s\n", preferences[i].name);
 		fprintf(stderr, "Current Value: %s\n", preferences[i].value);
-		fprintf(stderr, "Availables Values: %s\n", preferences[i].available);
-		fprintf(stderr, "Description: %s\n\n", preferences[i].description);
+		fprintf(stderr, "Availables Values: %s\n",
+			preferences[i].available);
+		fprintf(stderr, "Description: %s\n\n",
+			preferences[i].description);
 		i++;
 	}
 

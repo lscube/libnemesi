@@ -62,19 +62,23 @@ int decode(char *data, int len, int audio_fd, uint8 * (*ab_get) (uint32))
 		else {		/* Child */
 			close(to_mp3[1]);
 			if (to_mp3[0] != STDIN_FILENO) {
-				if (dup2(to_mp3[0], STDIN_FILENO) != STDIN_FILENO) {
+				if (dup2(to_mp3[0], STDIN_FILENO) !=
+				    STDIN_FILENO) {
 					fprintf(stderr, "\nDup2 failed!\n");
 					return 1;
 				}
 				close(to_mp3[0]);
 			}
 			if (audio_fd != STDOUT_FILENO) {
-				if (dup2(audio_fd, STDOUT_FILENO) != STDOUT_FILENO) {
+				if (dup2(audio_fd, STDOUT_FILENO) !=
+				    STDOUT_FILENO) {
 					fprintf(stderr, "\nDup2 failed!\n");
 					return 1;
 				}
 			}
-			if (execlp("mpg123", "mpg123", "-r", "44100", "-s", "-", (char *) 0) < 0) {
+			if (execlp
+			    ("mpg123", "mpg123", "-r", "44100", "-s", "-",
+			     (char *) 0) < 0) {
 				fprintf(stderr, "\nCannot execute mpg123\n");
 				return 1;
 			}

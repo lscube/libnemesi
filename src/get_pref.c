@@ -32,10 +32,12 @@ char *get_pref(const char *name)
 {
 	int i = 0;
 
-	while (strcmp((char *) &preferences[i], PREFS_TABLE_END) && strcmp(preferences[i].name, name))
+	while (strcmp((char *) &preferences[i], PREFS_TABLE_END)
+	       && strcmp(preferences[i].name, name))
 		i++;
 	if (!strcmp((char *) &preferences[i], PREFS_TABLE_END)) {	/* Il nome non esiste */
-		fprintf(stderr, "\nError, preference \"%s\" not available\n", name);
+		fprintf(stderr, "\nError, preference \"%s\" not available\n",
+			name);
 		return NULL;
 	}
 

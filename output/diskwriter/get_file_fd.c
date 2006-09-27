@@ -39,20 +39,27 @@ int get_file_fd(nms_diskwriter * dc, int pt)
 	uint32 written;
 
 	if (pt > MAX_PT)
-		return -nms_printf(NMSML_ERR, "Payload type exeded max allowed\n");
+		return -nms_printf(NMSML_ERR,
+				   "Payload type exeded max allowed\n");
 
 	if (dc->fd[pt] < 0) {
 		cc_getag(pt, &(dc->tag[pt]), &(dc->ext[pt]));
 		if (dc->ext[pt])
-			sprintf(filename, "%s.%d.%s", dc->basename, pt, dc->ext[pt]);
+			sprintf(filename, "%s.%d.%s", dc->basename, pt,
+				dc->ext[pt]);
 		else
 			sprintf(filename, "%s.%d", dc->basename, pt);
 		if ((dc->fd[pt] = creat(filename, 00644)) < 0)
-			nms_printf(NMSML_ERR, "file %s in current directory cannot be created\n", filename);
+			nms_printf(NMSML_ERR,
+				   "file %s in current directory cannot be created\n",
+				   filename);
 		if (dc->tag[pt]->hdim)
-			if ((written = write(dc->fd[pt], dc->tag[pt]->header, dc->tag[pt]->hdim)) < dc->tag[pt]->hdim)
-				nms_printf(NMSML_DBG1, "WARNING: only %d bytes of %d written\n", written,
-					   dc->tag[pt]->hdim);
+			if ((written =
+			     write(dc->fd[pt], dc->tag[pt]->header,
+				   dc->tag[pt]->hdim)) < dc->tag[pt]->hdim)
+				nms_printf(NMSML_DBG1,
+					   "WARNING: only %d bytes of %d written\n",
+					   written, dc->tag[pt]->hdim);
 	}
 
 	return dc->fd[pt];

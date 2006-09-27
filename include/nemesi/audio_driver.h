@@ -36,7 +36,8 @@
 // static uint32 preinit(const char *arg);
 // static uint32 config(uint32 rate, uint8 channels, uint32 format, uint32 flags);
 
-static uint32 init(uint32 * rate, uint8 * channels, uint32 * format, uint32 buff_ms, uint32 flags, const char *arg);
+static uint32 init(uint32 * rate, uint8 * channels, uint32 * format,
+		   uint32 buff_ms, uint32 flags, const char *arg);
 static uint32 control(uint32 cmd, void *arg);
 static uint8 *get_buff(uint32 len);
 static uint32 play_buff(uint8 * data, uint32 len, double pts);

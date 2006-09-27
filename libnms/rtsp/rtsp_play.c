@@ -73,10 +73,12 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, char *range)
 
 		if (*range) {
 
-			for (tkn = range; tkn && (isdigit(*tkn) || (*tkn == ':') || (*tkn == '-') || isspace(*tkn));
-			     tkn++);
+			for (tkn = range;
+			     tkn && (isdigit(*tkn) || (*tkn == ':')
+				     || (*tkn == '-') || isspace(*tkn)); tkn++);
 			if (*tkn) {
-				nms_printf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A tesht' de fero?\n");
+				nms_printf(NMSML_DBG2,
+					   "Mi shfiti? A che mi shfiti? A tesht' de fero?\n");
 				return 1;
 			}
 
@@ -97,10 +99,13 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, char *range)
 							return 1;
 						}
 						if (strlen(tkn + 1) < 2)
-							zz[j][i][1] = *(tkn + 1);
+							zz[j][i][1] =
+							    *(tkn + 1);
 						else {
-							zz[j][i][0] = *(tkn + 1);
-							zz[j][i][1] = *(tkn + 2);
+							zz[j][i][0] =
+							    *(tkn + 1);
+							zz[j][i][1] =
+							    *(tkn + 2);
 						}
 						*tkn = '\0';
 					} else {
@@ -113,26 +118,33 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, char *range)
 							zz[j][i][1] = *(meno);
 						else {
 							zz[j][i][0] = *(meno);
-							zz[j][i][1] = *(meno + 1);
+							zz[j][i][1] =
+							    *(meno + 1);
 						}
 						break;
 					}
 				}
-				if (*zz[j][2] > '5' || *zz[j][1] > '5' || (*zz[j][0] > '1' && *(zz[j][0] + 1) > '4')) {
-					nms_printf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A panz' de fero?\n");
+				if (*zz[j][2] > '5' || *zz[j][1] > '5'
+				    || (*zz[j][0] > '1'
+					&& *(zz[j][0] + 1) > '4')) {
+					nms_printf(NMSML_DBG2,
+						   "Mi shfiti? A che mi shfiti? A panz' de fero?\n");
 					return 1;
 				}
 				j--;
 				meno = range;
 			}
-			sprintf(start, "%c%c:%c%c:%c%c", zz[0][0][0], zz[0][0][1], zz[0][1][0], zz[0][1][1],
+			sprintf(start, "%c%c:%c%c:%c%c", zz[0][0][0],
+				zz[0][0][1], zz[0][1][0], zz[0][1][1],
 				zz[0][2][0], zz[0][2][1]);
 			if (flag) {
-				sprintf(stop, "%c%c:%c%c:%c%c", zz[1][0][0], zz[1][0][1], zz[1][1][0], zz[1][1][1],
+				sprintf(stop, "%c%c:%c%c:%c%c", zz[1][0][0],
+					zz[1][0][1], zz[1][1][0], zz[1][1][1],
 					zz[1][2][0], zz[1][2][1]);
 
 				if (strcmp(start, stop) >= 0) {
-					nms_printf(NMSML_DBG2, "Mi shfiti? A che mi shfiti? A mano de fero?\n");
+					nms_printf(NMSML_DBG2,
+						   "Mi shfiti? A che mi shfiti? A mano de fero?\n");
 					return 1;
 				}
 			}
@@ -143,7 +155,8 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, char *range)
 	if (range && *range) {
 		sprintf(rtsp_ctl->comm->arg, "%s-", start);
 		if (flag)
-			sprintf(rtsp_ctl->comm->arg + strlen(rtsp_ctl->comm->arg), "%s", stop);
+			sprintf(rtsp_ctl->comm->arg +
+				strlen(rtsp_ctl->comm->arg), "%s", stop);
 	} else
 		*(rtsp_ctl->comm->arg) = '\0';
 	write(rtsp_ctl->pipefd[1], "p", 1);

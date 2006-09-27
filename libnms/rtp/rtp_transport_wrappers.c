@@ -39,9 +39,11 @@ inline enum deliveries rtp_get_delivery(rtp_session * rtp_sess)
 	return rtp_sess->transport.delivery;
 }
 
-inline int rtp_get_srcaddrstr(rtp_session * rtp_sess, char *addrstr, uint32 strlen)
+inline int rtp_get_srcaddrstr(rtp_session * rtp_sess, char *addrstr,
+			      uint32 strlen)
 {
-	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addrstr, strlen);
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addrstr,
+				 strlen);
 }
 
 inline nms_addr *rtp_get_srcaddr(rtp_session * rtp_sess)
@@ -49,9 +51,11 @@ inline nms_addr *rtp_get_srcaddr(rtp_session * rtp_sess)
 	return &rtp_sess->transport.srcaddr;
 }
 
-inline int rtp_get_dstaddrstr(rtp_session * rtp_sess, char *addrstr, uint32 strlen)
+inline int rtp_get_dstaddrstr(rtp_session * rtp_sess, char *addrstr,
+			      uint32 strlen)
 {
-	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addrstr, strlen);
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addrstr,
+				 strlen);
 }
 
 inline nms_addr *rtp_get_dstaddr(rtp_session * rtp_sess)
@@ -91,7 +95,8 @@ inline in_port_t rtp_get_mcsrtcpport(rtp_session * rtp_sess)
 
 inline int rtp_get_mcsports(rtp_session * rtp_sess, in_port_t ports[2])
 {
-	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_MCSPORTS, ports, sizeof(ports));
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_MCSPORTS, ports,
+				 sizeof(ports));
 }
 
 inline in_port_t rtp_transport_get_srvrtpport(rtp_session * rtp_sess)
@@ -106,7 +111,8 @@ inline in_port_t rtp_get_srvrtcpport(rtp_session * rtp_sess)
 
 inline int rtp_get_srvports(rtp_session * rtp_sess, in_port_t ports[2])
 {
-	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRVPORTS, ports, sizeof(ports));
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRVPORTS, ports,
+				 sizeof(ports));
 }
 
 inline in_port_t rtp_transport_get_clirtpport(rtp_session * rtp_sess)
@@ -121,7 +127,8 @@ inline in_port_t rtp_get_clirtcpport(rtp_session * rtp_sess)
 
 inline int rtp_get_cliports(rtp_session * rtp_sess, in_port_t ports[2])
 {
-	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_CLIPORTS, ports, sizeof(ports));
+	return rtp_transport_get(rtp_sess, RTP_TRANSPORT_CLIPORTS, ports,
+				 sizeof(ports));
 }
 
 inline uint32 rtp_get_ssrc(rtp_session * rtp_sess)

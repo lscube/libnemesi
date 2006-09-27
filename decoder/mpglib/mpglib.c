@@ -83,7 +83,8 @@ static int decode(char *data, int len, nms_output * outc)
 		memcpy(audio_data, out, size);
 		funcs->play_buff(audio_data, (uint32) size);
 	} else {
-		fprintf(stderr, "\ndecoded %d bytes with %d status\n", size, ret);
+		fprintf(stderr, "\ndecoded %d bytes with %d status\n", size,
+			ret);
 	}
 #endif
 

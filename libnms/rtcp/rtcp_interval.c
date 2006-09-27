@@ -28,7 +28,8 @@
 
 #include <nemesi/rtcp.h>
 
-double rtcp_interval(int members, int senders, double rtcp_bw, int we_sent, double avg_rtcp_size, int initial)
+double rtcp_interval(int members, int senders, double rtcp_bw, int we_sent,
+		     double avg_rtcp_size, int initial)
 {
 	double t;
 	double rtcp_min_time = RTCP_MIN_TIME;

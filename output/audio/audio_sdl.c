@@ -86,12 +86,17 @@ static void SDL_mixaudio(void *userdata, Uint8 * stream, int len)
 	bytes_to_copy = min((uint32) len, audio_buffer->len);
 	while (bytes_to_copy > 0) {
 		prev_to_valid = to_valid;
-		to_valid = min(bytes_to_copy, (audio_buffer->valid_data - audio_buffer->read_pos));
-		memcpy(stream + prev_to_valid, (audio_buffer->audio_data + audio_buffer->read_pos), to_valid);
+		to_valid =
+		    min(bytes_to_copy,
+			(audio_buffer->valid_data - audio_buffer->read_pos));
+		memcpy(stream + prev_to_valid,
+		       (audio_buffer->audio_data + audio_buffer->read_pos),
+		       to_valid);
 		/*
 		   SDL_MixAudio(stream + prev_to_valid, (audio_buffer->audio_data + audio_buffer->read_pos), to_valid, SDL_MIX_MAXVOLUME);
 		 */
-		if ((audio_buffer->read_pos + to_valid) < audio_buffer->valid_data)
+		if ((audio_buffer->read_pos + to_valid) <
+		    audio_buffer->valid_data)
 			audio_buffer->read_pos += to_valid;
 		else {
 			audio_buffer->read_pos = 0;
@@ -129,11 +134,13 @@ static uint32 sdl_init(const char *arg)
 		nms_printf(NMSML_NORM, "Initializing SDL Audio output\n");
 		if (subsystem_init) {
 			if (SDL_InitSubSystem(flags))
-				return nms_printf(NMSML_ERR, "Could not initialize SDL Audio\n");
+				return nms_printf(NMSML_ERR,
+						  "Could not initialize SDL Audio\n");
 		} else {
 			flags |= SDL_INIT_NOPARACHUTE;
 			if (SDL_Init(flags))
-				return nms_printf(NMSML_ERR, "Could not initialize SDL Audio\n");
+				return nms_printf(NMSML_ERR,
+						  "Could not initialize SDL Audio\n");
 		}
 		nms_printf(NMSML_NORM, "SDL Audio initialized\n");
 	}
@@ -141,7 +148,8 @@ static uint32 sdl_init(const char *arg)
 	return 0;
 }
 
-static uint32 init(uint32 * rate, uint8 * channels, uint32 * format, uint32 buff_ms, uint32 flags, const char *arg)
+static uint32 init(uint32 * rate, uint8 * channels, uint32 * format,
+		   uint32 buff_ms, uint32 flags, const char *arg)
 {
 	SDL_AudioSpec requested_fmt;
 	uint32 buff_size;
@@ -177,8 +185,9 @@ static uint32 init(uint32 * rate, uint8 * channels, uint32 * format, uint32 buff
 		sdl_priv.bytes_x_sample = 2;
 		break;
 	default:
-		return nms_printf(NMSML_ERR, "SDL: Unsupported audio format: %s (0x%x).\n", audio_format_name(*format),
-				  *format);
+		return nms_printf(NMSML_ERR,
+				  "SDL: Unsupported audio format: %s (0x%x).\n",
+				  audio_format_name(*format), *format);
 		break;
 	}
 
@@ -186,11 +195,14 @@ static uint32 init(uint32 * rate, uint8 * channels, uint32 * format, uint32 buff
 		buff_size = AUDIO_BUFF_SIZE;
 		nms_printf(NMSML_DBG1, "Setting default audio system buffer\n");
 	} else
-		buff_size = buff_ms * (*rate) * (*channels) * sdl_priv.bytes_x_sample / 1000;
+		buff_size =
+		    buff_ms * (*rate) * (*channels) * sdl_priv.bytes_x_sample /
+		    1000;
 	if (sdl_priv.audio_buffer)
 		free(sdl_priv.audio_buffer);
 	if ((sdl_priv.audio_buffer = ab_init(buff_size)) == NULL)
-		return nms_printf(NMSML_FATAL, "Failed while initializing Audio Buffer\n");
+		return nms_printf(NMSML_FATAL,
+				  "Failed while initializing Audio Buffer\n");
 	nms_printf(NMSML_DBG1, "Audio system buffer: %u\n", buff_size);
 
 	requested_fmt.freq = *rate;
@@ -200,7 +212,8 @@ static uint32 init(uint32 * rate, uint8 * channels, uint32 * format, uint32 buff
 	requested_fmt.userdata = (void *) (sdl_priv.audio_buffer);
 
 	if (SDL_OpenAudio(&requested_fmt, &(sdl_priv.aspec)) < 0)
-		return nms_printf(NMSML_ERR, "SDL: unable to open audio: %s\n", SDL_GetError());
+		return nms_printf(NMSML_ERR, "SDL: unable to open audio: %s\n",
+				  SDL_GetError());
 
 	// set output parameters
 	*rate = sdl_priv.aspec.freq;
@@ -225,18 +238,22 @@ static uint32 init(uint32 * rate, uint8 * channels, uint32 * format, uint32 buff
 		*format = AFMT_U16_BE;
 		break;
 	default:
-		return nms_printf(NMSML_ERR, "SDL: Unsupported audio format returned: %s (0x%x).\n",
+		return nms_printf(NMSML_ERR,
+				  "SDL: Unsupported audio format returned: %s (0x%x).\n",
 				  audio_format_name(*format), *format);
 		break;
 	}
 
-	nms_printf(NMSML_NORM, "SDL Audio initialization completed successfully\n\n");
-	nms_printf(NMSML_VERB, "FREQ: requested %d -> obtained %d\n", requested_fmt.freq, sdl_priv.aspec.freq);
-	nms_printf(NMSML_VERB, "FORMAT: requested %u -> obtained %u\n", requested_fmt.format, sdl_priv.aspec.format);
-	nms_printf(NMSML_VERB, "CHANNELS: requested %hu -> obtained %hu\n", requested_fmt.channels,
-		   sdl_priv.aspec.channels);
-	nms_printf(NMSML_VERB, "SAMPLE: requested %hu -> obtained %hu\n", requested_fmt.samples,
-		   sdl_priv.aspec.samples);
+	nms_printf(NMSML_NORM,
+		   "SDL Audio initialization completed successfully\n\n");
+	nms_printf(NMSML_VERB, "FREQ: requested %d -> obtained %d\n",
+		   requested_fmt.freq, sdl_priv.aspec.freq);
+	nms_printf(NMSML_VERB, "FORMAT: requested %u -> obtained %u\n",
+		   requested_fmt.format, sdl_priv.aspec.format);
+	nms_printf(NMSML_VERB, "CHANNELS: requested %hu -> obtained %hu\n",
+		   requested_fmt.channels, sdl_priv.aspec.channels);
+	nms_printf(NMSML_VERB, "SAMPLE: requested %hu -> obtained %hu\n",
+		   requested_fmt.samples, sdl_priv.aspec.samples);
 
 
 	return 0;
@@ -246,15 +263,22 @@ static uint32 control(uint32 cmd, void *arg)
 {
 	switch (cmd) {
 	case ACTRL_GET_SYSBUF:
-		*((float *) arg) = (float) (sdl_priv.audio_buffer->len) / (float) (sdl_priv.audio_buffer->buff_size);
+		*((float *) arg) =
+		    (float) (sdl_priv.audio_buffer->len) /
+		    (float) (sdl_priv.audio_buffer->buff_size);
 		return 0;
 		break;
 	case ACTRL_GET_ELAPTM:
 		if (sdl_priv.last_pts)
 			*((double *) arg) =
 			    sdl_priv.last_pts -
-			    ((double) (sdl_priv.aspec.size + sdl_priv.audio_buffer->buff_size /*len */ ) * 1000.0) /
-			    (double) (sdl_priv.aspec.freq * sdl_priv.aspec.channels * sdl_priv.bytes_x_sample);
+			    ((double)
+			     (sdl_priv.aspec.size +
+			      sdl_priv.audio_buffer->buff_size /*len */ ) *
+			     1000.0) /
+			    (double) (sdl_priv.aspec.freq *
+				      sdl_priv.aspec.channels *
+				      sdl_priv.bytes_x_sample);
 		else
 			*((double *) arg) = 0;
 		break;

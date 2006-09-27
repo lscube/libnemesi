@@ -55,7 +55,9 @@ int rtcp_parse_pkt(rtp_ssrc * stm_src, rtcp_pkt * pkt, int len)
 			nms_printf(NMSML_WARN, "Received unknown RTCP pkt\n");
 			return 1;
 		}
-		pkt = (rtcp_pkt *) ((uint32 *) pkt + ntohs((pkt->common).len) + 1);
+		pkt =
+		    (rtcp_pkt *) ((uint32 *) pkt + ntohs((pkt->common).len) +
+				  1);
 	}
 	return 0;
 }

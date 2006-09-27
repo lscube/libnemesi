@@ -39,47 +39,71 @@ int shortLimit[9][14];
 struct bandInfoStruct bandInfo[9] = {
 
 /* MPEG 1.0 */
-	{{0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162, 196, 238, 288, 342, 418, 576},
-	 {4, 4, 4, 4, 4, 4, 6, 6, 8, 8, 10, 12, 16, 20, 24, 28, 34, 42, 50, 54, 76, 158},
-	 {0, 4 * 3, 8 * 3, 12 * 3, 16 * 3, 22 * 3, 30 * 3, 40 * 3, 52 * 3, 66 * 3, 84 * 3, 106 * 3, 136 * 3, 192 * 3},
+	{{0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 52, 62, 74, 90, 110, 134, 162,
+	  196, 238, 288, 342, 418, 576},
+	 {4, 4, 4, 4, 4, 4, 6, 6, 8, 8, 10, 12, 16, 20, 24, 28, 34, 42, 50, 54,
+	  76, 158},
+	 {0, 4 * 3, 8 * 3, 12 * 3, 16 * 3, 22 * 3, 30 * 3, 40 * 3, 52 * 3,
+	  66 * 3, 84 * 3, 106 * 3, 136 * 3, 192 * 3},
 	 {4, 4, 4, 4, 6, 8, 10, 12, 14, 18, 22, 30, 56}},
 
-	{{0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156, 190, 230, 276, 330, 384, 576},
-	 {4, 4, 4, 4, 4, 4, 6, 6, 6, 8, 10, 12, 16, 18, 22, 28, 34, 40, 46, 54, 54, 192},
-	 {0, 4 * 3, 8 * 3, 12 * 3, 16 * 3, 22 * 3, 28 * 3, 38 * 3, 50 * 3, 64 * 3, 80 * 3, 100 * 3, 126 * 3, 192 * 3},
+	{{0, 4, 8, 12, 16, 20, 24, 30, 36, 42, 50, 60, 72, 88, 106, 128, 156,
+	  190, 230, 276, 330, 384, 576},
+	 {4, 4, 4, 4, 4, 4, 6, 6, 6, 8, 10, 12, 16, 18, 22, 28, 34, 40, 46, 54,
+	  54, 192},
+	 {0, 4 * 3, 8 * 3, 12 * 3, 16 * 3, 22 * 3, 28 * 3, 38 * 3, 50 * 3,
+	  64 * 3, 80 * 3, 100 * 3, 126 * 3, 192 * 3},
 	 {4, 4, 4, 4, 6, 6, 10, 12, 14, 16, 20, 26, 66}},
 
-	{{0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194, 240, 296, 364, 448, 550, 576},
-	 {4, 4, 4, 4, 4, 4, 6, 6, 8, 10, 12, 16, 20, 24, 30, 38, 46, 56, 68, 84, 102, 26},
-	 {0, 4 * 3, 8 * 3, 12 * 3, 16 * 3, 22 * 3, 30 * 3, 42 * 3, 58 * 3, 78 * 3, 104 * 3, 138 * 3, 180 * 3, 192 * 3},
+	{{0, 4, 8, 12, 16, 20, 24, 30, 36, 44, 54, 66, 82, 102, 126, 156, 194,
+	  240, 296, 364, 448, 550, 576},
+	 {4, 4, 4, 4, 4, 4, 6, 6, 8, 10, 12, 16, 20, 24, 30, 38, 46, 56, 68, 84,
+	  102, 26},
+	 {0, 4 * 3, 8 * 3, 12 * 3, 16 * 3, 22 * 3, 30 * 3, 42 * 3, 58 * 3,
+	  78 * 3, 104 * 3, 138 * 3, 180 * 3, 192 * 3},
 	 {4, 4, 4, 4, 6, 8, 12, 16, 20, 26, 34, 42, 12}},
 
 /* MPEG 2.0 */
-	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576},
-	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60, 68, 58, 54},
-	 {0, 4 * 3, 8 * 3, 12 * 3, 18 * 3, 24 * 3, 32 * 3, 42 * 3, 56 * 3, 74 * 3, 100 * 3, 132 * 3, 174 * 3, 192 * 3},
+	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238,
+	  284, 336, 396, 464, 522, 576},
+	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60,
+	  68, 58, 54},
+	 {0, 4 * 3, 8 * 3, 12 * 3, 18 * 3, 24 * 3, 32 * 3, 42 * 3, 56 * 3,
+	  74 * 3, 100 * 3, 132 * 3, 174 * 3, 192 * 3},
 	 {4, 4, 4, 6, 6, 8, 10, 14, 18, 26, 32, 42, 18}},
 
-	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 114, 136, 162, 194, 232, 278, 330, 394, 464, 540, 576},
-	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 18, 22, 26, 32, 38, 46, 52, 64, 70, 76, 36},
-	 {0, 4 * 3, 8 * 3, 12 * 3, 18 * 3, 26 * 3, 36 * 3, 48 * 3, 62 * 3, 80 * 3, 104 * 3, 136 * 3, 180 * 3, 192 * 3},
+	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 114, 136, 162, 194, 232,
+	  278, 330, 394, 464, 540, 576},
+	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 18, 22, 26, 32, 38, 46, 52, 64,
+	  70, 76, 36},
+	 {0, 4 * 3, 8 * 3, 12 * 3, 18 * 3, 26 * 3, 36 * 3, 48 * 3, 62 * 3,
+	  80 * 3, 104 * 3, 136 * 3, 180 * 3, 192 * 3},
 	 {4, 4, 4, 6, 8, 10, 12, 14, 18, 24, 32, 44, 12}},
 
-	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576},
-	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60, 68, 58, 54},
-	 {0, 4 * 3, 8 * 3, 12 * 3, 18 * 3, 26 * 3, 36 * 3, 48 * 3, 62 * 3, 80 * 3, 104 * 3, 134 * 3, 174 * 3, 192 * 3},
+	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238,
+	  284, 336, 396, 464, 522, 576},
+	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60,
+	  68, 58, 54},
+	 {0, 4 * 3, 8 * 3, 12 * 3, 18 * 3, 26 * 3, 36 * 3, 48 * 3, 62 * 3,
+	  80 * 3, 104 * 3, 134 * 3, 174 * 3, 192 * 3},
 	 {4, 4, 4, 6, 8, 10, 12, 14, 18, 24, 30, 40, 18}},
 /* MPEG 2.5 */
-	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576},
-	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60, 68, 58, 54},
+	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238,
+	  284, 336, 396, 464, 522, 576},
+	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60,
+	  68, 58, 54},
 	 {0, 12, 24, 36, 54, 78, 108, 144, 186, 240, 312, 402, 522, 576},
 	 {4, 4, 4, 6, 8, 10, 12, 14, 18, 24, 30, 40, 18}},
-	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238, 284, 336, 396, 464, 522, 576},
-	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60, 68, 58, 54},
+	{{0, 6, 12, 18, 24, 30, 36, 44, 54, 66, 80, 96, 116, 140, 168, 200, 238,
+	  284, 336, 396, 464, 522, 576},
+	 {6, 6, 6, 6, 6, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 38, 46, 52, 60,
+	  68, 58, 54},
 	 {0, 12, 24, 36, 54, 78, 108, 144, 186, 240, 312, 402, 522, 576},
 	 {4, 4, 4, 6, 8, 10, 12, 14, 18, 24, 30, 40, 18}},
-	{{0, 12, 24, 36, 48, 60, 72, 88, 108, 132, 160, 192, 232, 280, 336, 400, 476, 566, 568, 570, 572, 574, 576},
-	 {12, 12, 12, 12, 12, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64, 76, 90, 2, 2, 2, 2, 2},
+	{{0, 12, 24, 36, 48, 60, 72, 88, 108, 132, 160, 192, 232, 280, 336, 400,
+	  476, 566, 568, 570, 572, 574, 576},
+	 {12, 12, 12, 12, 12, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64, 76, 90, 2,
+	  2, 2, 2, 2},
 	 {0, 24, 48, 72, 108, 156, 216, 288, 372, 480, 486, 492, 498, 576},
 	 {8, 8, 8, 12, 16, 20, 24, 28, 36, 2, 2, 2, 26}},
 };
@@ -104,13 +128,16 @@ void init_layer3(int down_sample_sblimit)
 	int i, j, k, l;
 
 	for (i = -256; i < 118 + 4; i++)
-		gainpow2[i + 256] = pow((double) 2.0, -0.25 * (double) (i + 210));
+		gainpow2[i + 256] =
+		    pow((double) 2.0, -0.25 * (double) (i + 210));
 
 	for (i = 0; i < 8207; i++)
 		ispow[i] = pow((double) i, (double) 4.0 / 3.0);
 
 	for (i = 0; i < 8; i++) {
-		static double Ci[8] = { -0.6, -0.535, -0.33, -0.185, -0.095, -0.041, -0.0142, -0.0037 };
+		static double Ci[8] =
+		    { -0.6, -0.535, -0.33, -0.185, -0.095, -0.041, -0.0142,
+	  -0.0037 };
 		double sq = sqrt(1.0 + Ci[i] * Ci[i]);
 		aa_cs[i] = 1.0 / sq;
 		aa_ca[i] = Ci[i] / sq;
@@ -118,20 +145,34 @@ void init_layer3(int down_sample_sblimit)
 
 	for (i = 0; i < 18; i++) {
 		win[0][i] = win[1][i] =
-		    0.5 * sin(M_PI / 72.0 * (double) (2 * (i + 0) + 1)) / cos(M_PI * (double) (2 * (i + 0) + 19) /
-									      72.0);
+		    0.5 * sin(M_PI / 72.0 * (double) (2 * (i + 0) + 1)) /
+		    cos(M_PI * (double) (2 * (i + 0) + 19) / 72.0);
 		win[0][i + 18] = win[3][i + 18] =
-		    0.5 * sin(M_PI / 72.0 * (double) (2 * (i + 18) + 1)) / cos(M_PI * (double) (2 * (i + 18) + 19) /
-									       72.0);
+		    0.5 * sin(M_PI / 72.0 * (double) (2 * (i + 18) + 1)) /
+		    cos(M_PI * (double) (2 * (i + 18) + 19) / 72.0);
 	}
 	for (i = 0; i < 6; i++) {
-		win[1][i + 18] = 0.5 / cos(M_PI * (double) (2 * (i + 18) + 19) / 72.0);
-		win[3][i + 12] = 0.5 / cos(M_PI * (double) (2 * (i + 12) + 19) / 72.0);
+		win[1][i + 18] =
+		    0.5 / cos(M_PI * (double) (2 * (i + 18) + 19) / 72.0);
+		win[3][i + 12] =
+		    0.5 / cos(M_PI * (double) (2 * (i + 12) + 19) / 72.0);
 		win[1][i + 24] =
-		    0.5 * sin(M_PI / 24.0 * (double) (2 * i + 13)) / cos(M_PI * (double) (2 * (i + 24) + 19) / 72.0);
+		    0.5 * sin(M_PI / 24.0 * (double) (2 * i + 13)) / cos(M_PI *
+									 (double)
+									 (2 *
+									  (i +
+									   24) +
+									  19) /
+									 72.0);
 		win[1][i + 30] = win[3][i] = 0.0;
 		win[3][i + 6] =
-		    0.5 * sin(M_PI / 24.0 * (double) (2 * i + 1)) / cos(M_PI * (double) (2 * (i + 6) + 19) / 72.0);
+		    0.5 * sin(M_PI / 24.0 * (double) (2 * i + 1)) / cos(M_PI *
+									(double)
+									(2 *
+									 (i +
+									  6) +
+									 19) /
+									72.0);
 	}
 
 	for (i = 0; i < 9; i++)
@@ -146,9 +187,16 @@ void init_layer3(int down_sample_sblimit)
 	COS6_2 = cos(M_PI / 6.0 * (double) 2);
 
 	for (i = 0; i < 12; i++) {
-		win[2][i] = 0.5 * sin(M_PI / 24.0 * (double) (2 * i + 1)) / cos(M_PI * (double) (2 * i + 7) / 24.0);
+		win[2][i] =
+		    0.5 * sin(M_PI / 24.0 * (double) (2 * i + 1)) / cos(M_PI *
+									(double)
+									(2 * i +
+									 7) /
+									24.0);
 		for (j = 0; j < 6; j++)
-			COS1[i][j] = cos(M_PI / 24.0 * (double) ((2 * i + 7) * (2 * j + 1)));
+			COS1[i][j] =
+			    cos(M_PI / 24.0 *
+				(double) ((2 * i + 7) * (2 * j + 1)));
 	}
 
 	for (j = 0; j < 4; j++) {
@@ -235,12 +283,14 @@ void init_layer3(int down_sample_sblimit)
 
 	for (j = 0; j < 9; j++) {
 		for (i = 0; i < 23; i++) {
-			longLimit[j][i] = (bandInfo[j].longIdx[i] - 1 + 8) / 18 + 1;
+			longLimit[j][i] =
+			    (bandInfo[j].longIdx[i] - 1 + 8) / 18 + 1;
 			if (longLimit[j][i] > (down_sample_sblimit))
 				longLimit[j][i] = down_sample_sblimit;
 		}
 		for (i = 0; i < 14; i++) {
-			shortLimit[j][i] = (bandInfo[j].shortIdx[i] - 1) / 18 + 1;
+			shortLimit[j][i] =
+			    (bandInfo[j].shortIdx[i] - 1) / 18 + 1;
 			if (shortLimit[j][i] > (down_sample_sblimit))
 				shortLimit[j][i] = down_sample_sblimit;
 		}
@@ -250,7 +300,8 @@ void init_layer3(int down_sample_sblimit)
 		for (j = 0; j < 6; j++) {
 			for (k = 0; k < 6; k++) {
 				int n = k + j * 6 + i * 36;
-				i_slen2[n] = i | (j << 3) | (k << 6) | (3 << 12);
+				i_slen2[n] =
+				    i | (j << 3) | (k << 6) | (3 << 12);
 			}
 		}
 	}
@@ -258,7 +309,8 @@ void init_layer3(int down_sample_sblimit)
 		for (j = 0; j < 4; j++) {
 			for (k = 0; k < 4; k++) {
 				int n = k + j * 4 + i * 16;
-				i_slen2[n + 180] = i | (j << 3) | (k << 6) | (4 << 12);
+				i_slen2[n + 180] =
+				    i | (j << 3) | (k << 6) | (4 << 12);
 			}
 		}
 	}
@@ -275,7 +327,9 @@ void init_layer3(int down_sample_sblimit)
 			for (k = 0; k < 4; k++) {
 				for (l = 0; l < 4; l++) {
 					int n = l + k * 4 + j * 16 + i * 80;
-					n_slen2[n] = i | (j << 3) | (k << 6) | (l << 9) | (0 << 12);
+					n_slen2[n] =
+					    i | (j << 3) | (k << 6) | (l << 9) |
+					    (0 << 12);
 				}
 			}
 		}
@@ -284,7 +338,8 @@ void init_layer3(int down_sample_sblimit)
 		for (j = 0; j < 5; j++) {
 			for (k = 0; k < 4; k++) {
 				int n = k + j * 4 + i * 20;
-				n_slen2[n + 400] = i | (j << 3) | (k << 6) | (1 << 12);
+				n_slen2[n + 400] =
+				    i | (j << 3) | (k << 6) | (1 << 12);
 			}
 		}
 	}
@@ -294,7 +349,8 @@ void init_layer3(int down_sample_sblimit)
  * read additional side information
  */
 #ifdef MPEG1
-static void III_get_side_info_1(struct III_sideinfo *si, int stereo, int ms_stereo, long sfreq, int single)
+static void III_get_side_info_1(struct III_sideinfo *si, int stereo,
+				int ms_stereo, long sfreq, int single)
 {
 	int ch, gr;
 	int powdiff = (single == 3) ? 4 : 0;
@@ -312,7 +368,8 @@ static void III_get_side_info_1(struct III_sideinfo *si, int stereo, int ms_ster
 
 	for (gr = 0; gr < 2; gr++) {
 		for (ch = 0; ch < stereo; ch++) {
-			register struct gr_info_s *gr_info = &(si->ch[ch].gr[gr]);
+			register struct gr_info_s *gr_info =
+			    &(si->ch[ch].gr[gr]);
 
 			gr_info->part2_3_length = getbits(12);
 			gr_info->big_values = getbits_fast(9);
@@ -320,7 +377,8 @@ static void III_get_side_info_1(struct III_sideinfo *si, int stereo, int ms_ster
 				fprintf(stderr, "big_values too large!\n");
 				gr_info->big_values = 288;
 			}
-			gr_info->pow2gain = gainpow2 + 256 - getbits_fast(8) + powdiff;
+			gr_info->pow2gain =
+			    gainpow2 + 256 - getbits_fast(8) + powdiff;
 			if (ms_stereo)
 				gr_info->pow2gain += 2;
 			gr_info->scalefac_compress = getbits_fast(4);
@@ -337,10 +395,13 @@ static void III_get_side_info_1(struct III_sideinfo *si, int stereo, int ms_ster
 				 */
 				gr_info->table_select[2] = 0;
 				for (i = 0; i < 3; i++)
-					gr_info->full_gain[i] = gr_info->pow2gain + (getbits_fast(3) << 3);
+					gr_info->full_gain[i] =
+					    gr_info->pow2gain +
+					    (getbits_fast(3) << 3);
 
 				if (gr_info->block_type == 0) {
-					fprintf(stderr, "Blocktype == 0 and window-switching == 1 not allowed.\n");
+					fprintf(stderr,
+						"Blocktype == 0 and window-switching == 1 not allowed.\n");
 					exit(1);
 				}
 				/* region_count/start parameters are implicit in this case. */
@@ -349,11 +410,15 @@ static void III_get_side_info_1(struct III_sideinfo *si, int stereo, int ms_ster
 			} else {
 				int i, r0c, r1c;
 				for (i = 0; i < 3; i++)
-					gr_info->table_select[i] = getbits_fast(5);
+					gr_info->table_select[i] =
+					    getbits_fast(5);
 				r0c = getbits_fast(4);
 				r1c = getbits_fast(3);
-				gr_info->region1start = bandInfo[sfreq].longIdx[r0c + 1] >> 1;
-				gr_info->region2start = bandInfo[sfreq].longIdx[r0c + 1 + r1c + 1] >> 1;
+				gr_info->region1start =
+				    bandInfo[sfreq].longIdx[r0c + 1] >> 1;
+				gr_info->region2start =
+				    bandInfo[sfreq].longIdx[r0c + 1 + r1c +
+							    1] >> 1;
 				gr_info->block_type = 0;
 				gr_info->mixed_block_flag = 0;
 			}
@@ -368,7 +433,8 @@ static void III_get_side_info_1(struct III_sideinfo *si, int stereo, int ms_ster
 /*
  * Side Info for MPEG 2.0 / LSF
  */
-static void III_get_side_info_2(struct III_sideinfo *si, int stereo, int ms_stereo, long sfreq, int single)
+static void III_get_side_info_2(struct III_sideinfo *si, int stereo,
+				int ms_stereo, long sfreq, int single)
 {
 	int ch;
 	int powdiff = (single == 3) ? 4 : 0;
@@ -405,10 +471,12 @@ static void III_get_side_info_2(struct III_sideinfo *si, int stereo, int ms_ster
 			 */
 			gr_info->table_select[2] = 0;
 			for (i = 0; i < 3; i++)
-				gr_info->full_gain[i] = gr_info->pow2gain + (getbits_fast(3) << 3);
+				gr_info->full_gain[i] =
+				    gr_info->pow2gain + (getbits_fast(3) << 3);
 
 			if (gr_info->block_type == 0) {
-				fprintf(stderr, "Blocktype == 0 and window-switching == 1 not allowed.\n");
+				fprintf(stderr,
+					"Blocktype == 0 and window-switching == 1 not allowed.\n");
 				exit(1);
 			}
 			/* region_count/start parameters are implicit in this case. */
@@ -427,8 +495,10 @@ static void III_get_side_info_2(struct III_sideinfo *si, int stereo, int ms_ster
 				gr_info->table_select[i] = getbits_fast(5);
 			r0c = getbits_fast(4);
 			r1c = getbits_fast(3);
-			gr_info->region1start = bandInfo[sfreq].longIdx[r0c + 1] >> 1;
-			gr_info->region2start = bandInfo[sfreq].longIdx[r0c + 1 + r1c + 1] >> 1;
+			gr_info->region1start =
+			    bandInfo[sfreq].longIdx[r0c + 1] >> 1;
+			gr_info->region2start =
+			    bandInfo[sfreq].longIdx[r0c + 1 + r1c + 1] >> 1;
 			gr_info->block_type = 0;
 			gr_info->mixed_block_flag = 0;
 		}
@@ -537,7 +607,8 @@ static int III_get_scale_factors_1(int *scf, struct gr_info_s *gr_info)
 }
 #endif
 
-static int III_get_scale_factors_2(int *scf, struct gr_info_s *gr_info, int i_stereo)
+static int III_get_scale_factors_2(int *scf, struct gr_info_s *gr_info,
+				   int i_stereo)
 {
 	unsigned char *pnt;
 	int i, j;
@@ -590,14 +661,17 @@ static int III_get_scale_factors_2(int *scf, struct gr_info_s *gr_info, int i_st
 	return numbits;
 }
 
-static int pretab1[22] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 0 };
-static int pretab2[22] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static int pretab1[22] =
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 2, 0 };
+static int pretab2[22] =
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 /*
  * don't forget to apply the same changes to III_dequantize_sample_ms() !!! 
  */
 static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
-				 struct gr_info_s *gr_info, int sfreq, int part2bits)
+				 struct gr_info_s *gr_info, int sfreq,
+				 int part2bits)
 {
 	int shift = 1 + gr_info->scalefac_scale;
 	real *xrpnt = (real *) xr;
@@ -664,10 +738,13 @@ static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
 					lwin = *m++;
 					cb = *m++;
 					if (lwin == 3) {
-						v = gr_info->pow2gain[(*scf++) << shift];
+						v = gr_info->
+						    pow2gain[(*scf++) << shift];
 						step = 1;
 					} else {
-						v = gr_info->full_gain[lwin][(*scf++) << shift];
+						v = gr_info->
+						    full_gain[lwin][(*scf++) <<
+								    shift];
 						step = 3;
 					}
 				}
@@ -742,10 +819,13 @@ static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
 						lwin = *m++;
 						cb = *m++;
 						if (lwin == 3) {
-							v = gr_info->pow2gain[(*scf++) << shift];
+							v = gr_info->
+							    pow2gain[(*scf++) <<
+								     shift];
 							step = 1;
 						} else {
-							v = gr_info->full_gain[lwin][(*scf++) << shift];
+							v = gr_info->
+							    full_gain[lwin][(*scf++) << shift];
 							step = 3;
 						}
 					}
@@ -798,7 +878,9 @@ static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
 		{
 			int rmax = max[0] > max[1] ? max[0] : max[1];
 			rmax = (rmax > max[2] ? rmax : max[2]) + 1;
-			gr_info->maxb = rmax ? shortLimit[sfreq][rmax] : longLimit[sfreq][max[3] + 1];
+			gr_info->maxb =
+			    rmax ? shortLimit[sfreq][rmax] :
+			    longLimit[sfreq][max[3] + 1];
 		}
 
 	} else {
@@ -827,7 +909,9 @@ static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
 
 				if (!mc) {
 					mc = *m++;
-					v = gr_info->pow2gain[((*scf++) + (*pretab++)) << shift];
+					v = gr_info->
+					    pow2gain[((*scf++) +
+						      (*pretab++)) << shift];
 					cb = *m++;
 				}
 				{
@@ -901,7 +985,10 @@ static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
 					if (!mc) {
 						mc = *m++;
 						cb = *m++;
-						v = gr_info->pow2gain[((*scf++) + (*pretab++)) << shift];
+						v = gr_info->
+						    pow2gain[((*scf++) +
+							      (*pretab++)) <<
+							     shift];
 					}
 					mc--;
 				}
@@ -940,7 +1027,8 @@ static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
 	if (part2remain > 0)
 		getbits(part2remain);
 	else if (part2remain < 0) {
-		fprintf(stderr, "mpg123: Can't rewind stream by %d bits!\n", -part2remain);
+		fprintf(stderr, "mpg123: Can't rewind stream by %d bits!\n",
+			-part2remain);
 		return 1;	/* -> error */
 	}
 	return 0;
@@ -948,7 +1036,8 @@ static int III_dequantize_sample(real xr[SBLIMIT][SSLIMIT], int *scf,
 
 #if 0
 static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
-				    struct gr_info_s *gr_info, int sfreq, int part2bits)
+				    struct gr_info_s *gr_info, int sfreq,
+				    int part2bits)
 {
 	int shift = 1 + gr_info->scalefac_scale;
 	real *xrpnt = (real *) xr[1];
@@ -1014,10 +1103,13 @@ static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
 					lwin = *m++;
 					cb = *m++;
 					if (lwin == 3) {
-						v = gr_info->pow2gain[(*scf++) << shift];
+						v = gr_info->
+						    pow2gain[(*scf++) << shift];
 						step = 1;
 					} else {
-						v = gr_info->full_gain[lwin][(*scf++) << shift];
+						v = gr_info->
+						    full_gain[lwin][(*scf++) <<
+								    shift];
 						step = 3;
 					}
 				}
@@ -1113,14 +1205,18 @@ static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
 					if (!mc) {
 						mc = *m++;
 						xrpnt = ((real *) xr[1]) + *m;
-						xr0pnt = ((real *) xr[0]) + *m++;
+						xr0pnt =
+						    ((real *) xr[0]) + *m++;
 						lwin = *m++;
 						cb = *m++;
 						if (lwin == 3) {
-							v = gr_info->pow2gain[(*scf++) << shift];
+							v = gr_info->
+							    pow2gain[(*scf++) <<
+								     shift];
 							step = 1;
 						} else {
-							v = gr_info->full_gain[lwin][(*scf++) << shift];
+							v = gr_info->
+							    full_gain[lwin][(*scf++) << shift];
 							step = 3;
 						}
 					}
@@ -1180,7 +1276,9 @@ static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
 		{
 			int rmax = max[0] > max[1] ? max[0] : max[1];
 			rmax = (rmax > max[2] ? rmax : max[2]) + 1;
-			gr_info->maxb = rmax ? shortLimit[sfreq][rmax] : longLimit[sfreq][max[3] + 1];
+			gr_info->maxb =
+			    rmax ? shortLimit[sfreq][rmax] :
+			    longLimit[sfreq][max[3] + 1];
 		}
 	} else {
 		int *pretab = gr_info->preflag ? pretab1 : pretab2;
@@ -1201,7 +1299,9 @@ static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
 				if (!mc) {
 					mc = *m++;
 					cb = *m++;
-					v = gr_info->pow2gain[((*scf++) + (*pretab++)) << shift];
+					v = gr_info->
+					    pow2gain[((*scf++) +
+						      (*pretab++)) << shift];
 				}
 				{
 					register short *val = h->table;
@@ -1291,7 +1391,10 @@ static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
 					if (!mc) {
 						mc = *m++;
 						cb = *m++;
-						v = gr_info->pow2gain[((*scf++) + (*pretab++)) << shift];
+						v = gr_info->
+						    pow2gain[((*scf++) +
+							      (*pretab++)) <<
+							     shift];
 					}
 					mc--;
 				}
@@ -1329,7 +1432,8 @@ static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
 	if (part2remain > 0)
 		getbits(part2remain);
 	else if (part2remain < 0) {
-		fprintf(stderr, "mpg123_ms: Can't rewind stream by %d bits!\n", -part2remain);
+		fprintf(stderr, "mpg123_ms: Can't rewind stream by %d bits!\n",
+			-part2remain);
 		return 1;	/* -> error */
 	}
 	return 0;
@@ -1340,7 +1444,8 @@ static int III_dequantize_sample_ms(real xr[2][SBLIMIT][SSLIMIT], int *scf,
  * III_stereo: calculate real channel values for Joint-I-Stereo-mode
  */
 static void III_i_stereo(real xr_buf[2][SBLIMIT][SSLIMIT], int *scalefac,
-			 struct gr_info_s *gr_info, int sfreq, int ms_stereo, int lsf)
+			 struct gr_info_s *gr_info, int sfreq, int ms_stereo,
+			 int lsf)
 {
 	real(*xr)[SBLIMIT * SSLIMIT] = (real(*)[SBLIMIT * SSLIMIT]) xr_buf;
 	struct bandInfoStruct *bi = &bandInfo[sfreq];
@@ -1515,7 +1620,8 @@ static void III_antialias(real xr[SBLIMIT][SSLIMIT], struct gr_info_s *gr_info)
      Pages 175-199
 */
 
-static void dct36(real * inbuf, real * o1, real * o2, real * wintab, real * tsbuf)
+static void dct36(real * inbuf, real * o1, real * o2, real * wintab,
+		  real * tsbuf)
 {
 	{
 		register real *in = inbuf;
@@ -1583,14 +1689,22 @@ static void dct36(real * inbuf, real * o1, real * o2, real * wintab, real * tsbu
 
 			{
 				real tmp1a, tmp2a, tmp1b, tmp2b;
-				tmp1a = in[2 * 1 + 0] * c[1] + ta33 + in[2 * 5 + 0] * c[5] + in[2 * 7 + 0] * c[7];
-				tmp1b = in[2 * 1 + 1] * c[1] + tb33 + in[2 * 5 + 1] * c[5] + in[2 * 7 + 1] * c[7];
+				tmp1a =
+				    in[2 * 1 + 0] * c[1] + ta33 + in[2 * 5 +
+								     0] * c[5] +
+				    in[2 * 7 + 0] * c[7];
+				tmp1b =
+				    in[2 * 1 + 1] * c[1] + tb33 + in[2 * 5 +
+								     1] * c[5] +
+				    in[2 * 7 + 1] * c[7];
 				tmp2a =
-				    in[2 * 0 + 0] + in[2 * 2 + 0] * c[2] + in[2 * 4 + 0] * c[4] + ta66 + in[2 * 8 +
-													    0] * c[8];
+				    in[2 * 0 + 0] + in[2 * 2 + 0] * c[2] +
+				    in[2 * 4 + 0] * c[4] + ta66 + in[2 * 8 +
+								     0] * c[8];
 				tmp2b =
-				    in[2 * 0 + 1] + in[2 * 2 + 1] * c[2] + in[2 * 4 + 1] * c[4] + tb66 + in[2 * 8 +
-													    1] * c[8];
+				    in[2 * 0 + 1] + in[2 * 2 + 1] * c[2] +
+				    in[2 * 4 + 1] * c[4] + tb66 + in[2 * 8 +
+								     1] * c[8];
 
 				MACRO1(0);
 				MACRO2(8);
@@ -1598,14 +1712,20 @@ static void dct36(real * inbuf, real * o1, real * o2, real * wintab, real * tsbu
 
 			{
 				real tmp1a, tmp2a, tmp1b, tmp2b;
-				tmp1a = (in[2 * 1 + 0] - in[2 * 5 + 0] - in[2 * 7 + 0]) * c[3];
-				tmp1b = (in[2 * 1 + 1] - in[2 * 5 + 1] - in[2 * 7 + 1]) * c[3];
+				tmp1a =
+				    (in[2 * 1 + 0] - in[2 * 5 + 0] -
+				     in[2 * 7 + 0]) * c[3];
+				tmp1b =
+				    (in[2 * 1 + 1] - in[2 * 5 + 1] -
+				     in[2 * 7 + 1]) * c[3];
 				tmp2a =
-				    (in[2 * 2 + 0] - in[2 * 4 + 0] - in[2 * 8 + 0]) * c[6] - in[2 * 6 + 0] + in[2 * 0 +
-														0];
+				    (in[2 * 2 + 0] - in[2 * 4 + 0] -
+				     in[2 * 8 + 0]) * c[6] - in[2 * 6 + 0] +
+				    in[2 * 0 + 0];
 				tmp2b =
-				    (in[2 * 2 + 1] - in[2 * 4 + 1] - in[2 * 8 + 1]) * c[6] - in[2 * 6 + 1] + in[2 * 0 +
-														1];
+				    (in[2 * 2 + 1] - in[2 * 4 + 1] -
+				     in[2 * 8 + 1]) * c[6] - in[2 * 6 + 1] +
+				    in[2 * 0 + 1];
 
 				MACRO1(1);
 				MACRO2(7);
@@ -1613,14 +1733,22 @@ static void dct36(real * inbuf, real * o1, real * o2, real * wintab, real * tsbu
 
 			{
 				real tmp1a, tmp2a, tmp1b, tmp2b;
-				tmp1a = in[2 * 1 + 0] * c[5] - ta33 - in[2 * 5 + 0] * c[7] + in[2 * 7 + 0] * c[1];
-				tmp1b = in[2 * 1 + 1] * c[5] - tb33 - in[2 * 5 + 1] * c[7] + in[2 * 7 + 1] * c[1];
+				tmp1a =
+				    in[2 * 1 + 0] * c[5] - ta33 - in[2 * 5 +
+								     0] * c[7] +
+				    in[2 * 7 + 0] * c[1];
+				tmp1b =
+				    in[2 * 1 + 1] * c[5] - tb33 - in[2 * 5 +
+								     1] * c[7] +
+				    in[2 * 7 + 1] * c[1];
 				tmp2a =
-				    in[2 * 0 + 0] - in[2 * 2 + 0] * c[8] - in[2 * 4 + 0] * c[2] + ta66 + in[2 * 8 +
-													    0] * c[4];
+				    in[2 * 0 + 0] - in[2 * 2 + 0] * c[8] -
+				    in[2 * 4 + 0] * c[2] + ta66 + in[2 * 8 +
+								     0] * c[4];
 				tmp2b =
-				    in[2 * 0 + 1] - in[2 * 2 + 1] * c[8] - in[2 * 4 + 1] * c[2] + tb66 + in[2 * 8 +
-													    1] * c[4];
+				    in[2 * 0 + 1] - in[2 * 2 + 1] * c[8] -
+				    in[2 * 4 + 1] * c[2] + tb66 + in[2 * 8 +
+								     1] * c[4];
 
 				MACRO1(2);
 				MACRO2(6);
@@ -1628,14 +1756,22 @@ static void dct36(real * inbuf, real * o1, real * o2, real * wintab, real * tsbu
 
 			{
 				real tmp1a, tmp2a, tmp1b, tmp2b;
-				tmp1a = in[2 * 1 + 0] * c[7] - ta33 + in[2 * 5 + 0] * c[1] - in[2 * 7 + 0] * c[5];
-				tmp1b = in[2 * 1 + 1] * c[7] - tb33 + in[2 * 5 + 1] * c[1] - in[2 * 7 + 1] * c[5];
+				tmp1a =
+				    in[2 * 1 + 0] * c[7] - ta33 + in[2 * 5 +
+								     0] * c[1] -
+				    in[2 * 7 + 0] * c[5];
+				tmp1b =
+				    in[2 * 1 + 1] * c[7] - tb33 + in[2 * 5 +
+								     1] * c[1] -
+				    in[2 * 7 + 1] * c[5];
 				tmp2a =
-				    in[2 * 0 + 0] - in[2 * 2 + 0] * c[4] + in[2 * 4 + 0] * c[8] + ta66 - in[2 * 8 +
-													    0] * c[2];
+				    in[2 * 0 + 0] - in[2 * 2 + 0] * c[4] +
+				    in[2 * 4 + 0] * c[8] + ta66 - in[2 * 8 +
+								     0] * c[2];
 				tmp2b =
-				    in[2 * 0 + 1] - in[2 * 2 + 1] * c[4] + in[2 * 4 + 1] * c[8] + tb66 - in[2 * 8 +
-													    1] * c[2];
+				    in[2 * 0 + 1] - in[2 * 2 + 1] * c[4] +
+				    in[2 * 4 + 1] * c[8] + tb66 - in[2 * 8 +
+								     1] * c[2];
 
 				MACRO1(3);
 				MACRO2(5);
@@ -1643,10 +1779,15 @@ static void dct36(real * inbuf, real * o1, real * o2, real * wintab, real * tsbu
 
 			{
 				real sum0, sum1;
-				sum0 = in[2 * 0 + 0] - in[2 * 2 + 0] + in[2 * 4 + 0] - in[2 * 6 + 0] + in[2 * 8 + 0];
+				sum0 =
+				    in[2 * 0 + 0] - in[2 * 2 + 0] + in[2 * 4 +
+								       0] -
+				    in[2 * 6 + 0] + in[2 * 8 + 0];
 				sum1 =
-				    (in[2 * 0 + 1] - in[2 * 2 + 1] + in[2 * 4 + 1] - in[2 * 6 + 1] +
-				     in[2 * 8 + 1]) * tfcos36[4];
+				    (in[2 * 0 + 1] - in[2 * 2 + 1] +
+				     in[2 * 4 + 1] - in[2 * 6 + 1] + in[2 * 8 +
+									1]) *
+				    tfcos36[4];
 				MACRO0(4);
 			}
 		}
@@ -1657,7 +1798,8 @@ static void dct36(real * inbuf, real * o1, real * o2, real * wintab, real * tsbu
 /*
  * new DCT12
  */
-static void dct12(real * in, real * rawout1, real * rawout2, register real * wi, register real * ts)
+static void dct12(real * in, real * rawout1, real * rawout2, register real * wi,
+		  register real * ts)
 {
 #define DCT12_PART1 \
              in5 = in[5*3];  \
@@ -1707,13 +1849,17 @@ static void dct12(real * in, real * rawout1, real * rawout2, register real * wi,
 				tmp0 = tmp1 + tmp2;
 				tmp1 -= tmp2;
 			}
-			ts[(17 - 1) * SBLIMIT] = out1[17 - 1] + tmp0 * wi[11 - 1];
-			ts[(12 + 1) * SBLIMIT] = out1[12 + 1] + tmp0 * wi[6 + 1];
+			ts[(17 - 1) * SBLIMIT] =
+			    out1[17 - 1] + tmp0 * wi[11 - 1];
+			ts[(12 + 1) * SBLIMIT] =
+			    out1[12 + 1] + tmp0 * wi[6 + 1];
 			ts[(6 + 1) * SBLIMIT] = out1[6 + 1] + tmp1 * wi[1];
-			ts[(11 - 1) * SBLIMIT] = out1[11 - 1] + tmp1 * wi[5 - 1];
+			ts[(11 - 1) * SBLIMIT] =
+			    out1[11 - 1] + tmp1 * wi[5 - 1];
 		}
 
-		DCT12_PART2 ts[(17 - 0) * SBLIMIT] = out1[17 - 0] + in2 * wi[11 - 0];
+		DCT12_PART2 ts[(17 - 0) * SBLIMIT] =
+		    out1[17 - 0] + in2 * wi[11 - 0];
 		ts[(12 + 0) * SBLIMIT] = out1[12 + 0] + in2 * wi[6 + 0];
 		ts[(12 + 2) * SBLIMIT] = out1[12 + 2] + in3 * wi[6 + 2];
 		ts[(17 - 2) * SBLIMIT] = out1[17 - 2] + in3 * wi[11 - 2];
@@ -1759,7 +1905,8 @@ static void dct12(real * in, real * rawout1, real * rawout2, register real * wi,
 	{
 		real in0, in1, in2, in3, in4, in5;
 		register real *out2 = rawout2;
-		out2[12] = out2[13] = out2[14] = out2[15] = out2[16] = out2[17] = 0.0;
+		out2[12] = out2[13] = out2[14] = out2[15] = out2[16] =
+		    out2[17] = 0.0;
 
 		DCT12_PART1 {
 			real tmp0, tmp1 = (in0 - in4);
@@ -1789,7 +1936,9 @@ static void dct12(real * in, real * rawout1, real * rawout2, register real * wi,
 /*
  * III_hybrid
  */
-static void III_hybrid(real fsIn[SBLIMIT][SSLIMIT], real tsOut[SSLIMIT][SBLIMIT], int ch, struct gr_info_s *gr_info)
+static void III_hybrid(real fsIn[SBLIMIT][SSLIMIT],
+		       real tsOut[SSLIMIT][SBLIMIT], int ch,
+		       struct gr_info_s *gr_info)
 {
 	real *tspnt = (real *) tsOut;
 	real(*block)[2][SBLIMIT * SSLIMIT] = gmp->hybrid_block;
@@ -1818,14 +1967,18 @@ static void III_hybrid(real fsIn[SBLIMIT][SSLIMIT], real tsOut[SSLIMIT][SBLIMIT]
 
 	bt = gr_info->block_type;
 	if (bt == 2) {
-		for (; sb < gr_info->maxb; sb += 2, tspnt += 2, rawout1 += 36, rawout2 += 36) {
+		for (; sb < gr_info->maxb;
+		     sb += 2, tspnt += 2, rawout1 += 36, rawout2 += 36) {
 			dct12(fsIn[sb], rawout1, rawout2, win[2], tspnt);
-			dct12(fsIn[sb + 1], rawout1 + 18, rawout2 + 18, win1[2], tspnt + 1);
+			dct12(fsIn[sb + 1], rawout1 + 18, rawout2 + 18, win1[2],
+			      tspnt + 1);
 		}
 	} else {
-		for (; sb < gr_info->maxb; sb += 2, tspnt += 2, rawout1 += 36, rawout2 += 36) {
+		for (; sb < gr_info->maxb;
+		     sb += 2, tspnt += 2, rawout1 += 36, rawout2 += 36) {
 			dct36(fsIn[sb], rawout1, rawout2, win[bt], tspnt);
-			dct36(fsIn[sb + 1], rawout1 + 18, rawout2 + 18, win1[bt], tspnt + 1);
+			dct36(fsIn[sb + 1], rawout1 + 18, rawout2 + 18,
+			      win1[bt], tspnt + 1);
 		}
 	}
 
@@ -1868,11 +2021,13 @@ int do_layer3(struct frame *fr, unsigned char *pcm_sample, int *pcm_point)
 
 	if (fr->lsf) {
 		granules = 1;
-		III_get_side_info_2(&sideinfo, stereo, ms_stereo, sfreq, single);
+		III_get_side_info_2(&sideinfo, stereo, ms_stereo, sfreq,
+				    single);
 	} else {
 		granules = 2;
 #ifdef MPEG1
-		III_get_side_info_1(&sideinfo, stereo, ms_stereo, sfreq, single);
+		III_get_side_info_1(&sideinfo, stereo, ms_stereo, sfreq,
+				    single);
 #else
 		fprintf(stderr, "Not supported\n");
 #endif
@@ -1889,31 +2044,39 @@ int do_layer3(struct frame *fr, unsigned char *pcm_sample, int *pcm_point)
 			struct gr_info_s *gr_info = &(sideinfo.ch[0].gr[gr]);
 			long part2bits;
 			if (fr->lsf)
-				part2bits = III_get_scale_factors_2(scalefacs, gr_info, 0);
+				part2bits =
+				    III_get_scale_factors_2(scalefacs, gr_info,
+							    0);
 			else {
 #ifdef MPEG1
-				part2bits = III_get_scale_factors_1(scalefacs, gr_info);
+				part2bits =
+				    III_get_scale_factors_1(scalefacs, gr_info);
 #else
 				fprintf(stderr, "Not supported\n");
 #endif
 			}
-			if (III_dequantize_sample(hybridIn[0], scalefacs, gr_info, sfreq, part2bits))
+			if (III_dequantize_sample
+			    (hybridIn[0], scalefacs, gr_info, sfreq, part2bits))
 				return clip;
 		}
 		if (stereo == 2) {
 			struct gr_info_s *gr_info = &(sideinfo.ch[1].gr[gr]);
 			long part2bits;
 			if (fr->lsf)
-				part2bits = III_get_scale_factors_2(scalefacs, gr_info, i_stereo);
+				part2bits =
+				    III_get_scale_factors_2(scalefacs, gr_info,
+							    i_stereo);
 			else {
 #ifdef MPEG1
-				part2bits = III_get_scale_factors_1(scalefacs, gr_info);
+				part2bits =
+				    III_get_scale_factors_1(scalefacs, gr_info);
 #else
 				fprintf(stderr, "Not supported\n");
 #endif
 			}
 
-			if (III_dequantize_sample(hybridIn[1], scalefacs, gr_info, sfreq, part2bits))
+			if (III_dequantize_sample
+			    (hybridIn[1], scalefacs, gr_info, sfreq, part2bits))
 				return clip;
 
 			if (ms_stereo) {
@@ -1928,29 +2091,38 @@ int do_layer3(struct frame *fr, unsigned char *pcm_sample, int *pcm_point)
 			}
 
 			if (i_stereo)
-				III_i_stereo(hybridIn, scalefacs, gr_info, sfreq, ms_stereo, fr->lsf);
+				III_i_stereo(hybridIn, scalefacs, gr_info,
+					     sfreq, ms_stereo, fr->lsf);
 
 			if (ms_stereo || i_stereo || (single == 3)) {
 				if (gr_info->maxb > sideinfo.ch[0].gr[gr].maxb)
-					sideinfo.ch[0].gr[gr].maxb = gr_info->maxb;
+					sideinfo.ch[0].gr[gr].maxb =
+					    gr_info->maxb;
 				else
-					gr_info->maxb = sideinfo.ch[0].gr[gr].maxb;
+					gr_info->maxb =
+					    sideinfo.ch[0].gr[gr].maxb;
 			}
 
 			switch (single) {
 			case 3:
 				{
 					register unsigned int i;
-					register real *in0 = (real *) hybridIn[0], *in1 = (real *) hybridIn[1];
-					for (i = 0; i < SSLIMIT * gr_info->maxb; i++, in0++)
+					register real *in0 =
+					    (real *) hybridIn[0], *in1 =
+					    (real *) hybridIn[1];
+					for (i = 0; i < SSLIMIT * gr_info->maxb;
+					     i++, in0++)
 						*in0 = (*in0 + *in1++);	/* *0.5 done by pow-scale */
 				}
 				break;
 			case 1:
 				{
 					register unsigned int i;
-					register real *in0 = (real *) hybridIn[0], *in1 = (real *) hybridIn[1];
-					for (i = 0; i < SSLIMIT * gr_info->maxb; i++)
+					register real *in0 =
+					    (real *) hybridIn[0], *in1 =
+					    (real *) hybridIn[1];
+					for (i = 0; i < SSLIMIT * gr_info->maxb;
+					     i++)
 						*in0++ = *in1++;
 				}
 				break;
@@ -1965,11 +2137,17 @@ int do_layer3(struct frame *fr, unsigned char *pcm_sample, int *pcm_point)
 
 		for (ss = 0; ss < SSLIMIT; ss++) {
 			if (single >= 0) {
-				clip += synth_1to1_mono(hybridOut[0][ss], pcm_sample, pcm_point);
+				clip +=
+				    synth_1to1_mono(hybridOut[0][ss],
+						    pcm_sample, pcm_point);
 			} else {
 				int p1 = *pcm_point;
-				clip += synth_1to1(hybridOut[0][ss], 0, pcm_sample, &p1);
-				clip += synth_1to1(hybridOut[1][ss], 1, pcm_sample, pcm_point);
+				clip +=
+				    synth_1to1(hybridOut[0][ss], 0, pcm_sample,
+					       &p1);
+				clip +=
+				    synth_1to1(hybridOut[1][ss], 1, pcm_sample,
+					       pcm_point);
 			}
 		}
 	}

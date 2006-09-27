@@ -137,7 +137,8 @@ static GtkWidget *add_leaf(const GtkWidget * where)
 	return box;
 }
 
-static void cc_button_toggled(GtkToggleButton * togglebutton, gpointer user_data)
+static void cc_button_toggled(GtkToggleButton * togglebutton,
+			      gpointer user_data)
 {
 	rtsp_ctrl *rtsp_ctl = (rtsp_ctrl *) user_data;
 	sdp_session_info *sdp_s;
@@ -154,33 +155,53 @@ static void cc_button_toggled(GtkToggleButton * togglebutton, gpointer user_data
 			switch (rtsp_ctl->descr_fmt) {
 			case DESCRIPTION_SDP_FORMAT:
 				if ((sdp_s = rtsp_ctl->rtsp_queue->info)) {
-					gtk_expander_set_label(GTK_EXPANDER(cc_info), sdp_s->s);
+					gtk_expander_set_label(GTK_EXPANDER
+							       (cc_info),
+							       sdp_s->s);
 				}
-				for (sdp_m = sdp_s->media_info_queue; sdp_m; sdp_m = sdp_m->next) {
+				for (sdp_m = sdp_s->media_info_queue; sdp_m;
+				     sdp_m = sdp_m->next) {
 					node = add_node(root, sdp_m->m);
 					cc = sdp_m->cc;
 					if (cc->uriLicense) {
 						leaf = add_leaf(node);
-						lbl = gtk_label_new(cc->uriLicense);
-						gtk_box_pack_start(GTK_BOX(leaf), lbl, FALSE, FALSE, 0);
+						lbl =
+						    gtk_label_new(cc->
+								  uriLicense);
+						gtk_box_pack_start(GTK_BOX
+								   (leaf), lbl,
+								   FALSE, FALSE,
+								   0);
 						gtk_widget_show(lbl);
 					}
 					if (cc->uriMetadata) {
 						leaf = add_leaf(node);
-						lbl = gtk_label_new(cc->uriMetadata);
-						gtk_box_pack_start(GTK_BOX(leaf), lbl, FALSE, FALSE, 0);
+						lbl =
+						    gtk_label_new(cc->
+								  uriMetadata);
+						gtk_box_pack_start(GTK_BOX
+								   (leaf), lbl,
+								   FALSE, FALSE,
+								   0);
 						gtk_widget_show(lbl);
 					}
 					if (cc->title) {
 						leaf = add_leaf(node);
 						lbl = gtk_label_new(cc->title);
-						gtk_box_pack_start(GTK_BOX(leaf), lbl, FALSE, FALSE, 0);
+						gtk_box_pack_start(GTK_BOX
+								   (leaf), lbl,
+								   FALSE, FALSE,
+								   0);
 						gtk_widget_show(lbl);
 					}
 					if (cc->creator) {
 						leaf = add_leaf(node);
-						lbl = gtk_label_new(cc->creator);
-						gtk_box_pack_start(GTK_BOX(leaf), lbl, FALSE, FALSE, 0);
+						lbl =
+						    gtk_label_new(cc->creator);
+						gtk_box_pack_start(GTK_BOX
+								   (leaf), lbl,
+								   FALSE, FALSE,
+								   0);
 						gtk_widget_show(lbl);
 					}
 				}
@@ -211,9 +232,11 @@ static gboolean cc_sdp_check(sdp_medium_info * sdp_mqueue)
 	for (sdp_m = sdp_mqueue; sdp_m; sdp_m = sdp_m->next)
 		if (sdp_m->cc) {
 			if (!iscc)
-				cc_parse_urilicense(sdp_m->cc->uriLicense, (cc_perm_mask *) (&msk1st));
+				cc_parse_urilicense(sdp_m->cc->uriLicense,
+						    (cc_perm_mask *) (&msk1st));
 			else {
-				cc_parse_urilicense(sdp_m->cc->uriLicense, (cc_perm_mask *) (&mskcur));
+				cc_parse_urilicense(sdp_m->cc->uriLicense,
+						    (cc_perm_mask *) (&mskcur));
 				if (msk1st ^ mskcur) {
 					iscc = TRUE;
 					msk = NULL;
@@ -250,7 +273,8 @@ static void cc_stbarw_upd(void *userdata)
 	case PLAYING:
 		switch (rtsp_ctl->descr_fmt) {
 		case DESCRIPTION_SDP_FORMAT:
-			if (cc_sdp_check(rtsp_ctl->rtsp_queue->media_queue->medium_info))
+			if (cc_sdp_check
+			    (rtsp_ctl->rtsp_queue->media_queue->medium_info))
 				gtk_widget_show(cc_box);
 			break;
 		default:
@@ -293,10 +317,12 @@ int cc_stbarw_add(rtsp_ctrl * rtsp_ctl)
 	cc_logo = create_pixmap(NULL, CC_SOMERIGHTS);
 	gtk_widget_show(cc_logo);
 	gtk_container_add(GTK_CONTAINER(cc_button), cc_logo);
-	g_signal_connect((gpointer) cc_button, "toggled", G_CALLBACK(cc_button_toggled), (gpointer) rtsp_ctl);
+	g_signal_connect((gpointer) cc_button, "toggled",
+			 G_CALLBACK(cc_button_toggled), (gpointer) rtsp_ctl);
 	// gtk_widget_show (cc_button);
 
-	gnms_stbar_addwgt(cc_box, cc_stbarw_rm, cc_stbarw_upd, (gpointer) rtsp_ctl, TRUE);
+	gnms_stbar_addwgt(cc_box, cc_stbarw_rm, cc_stbarw_upd,
+			  (gpointer) rtsp_ctl, TRUE);
 
 	return 0;
 }

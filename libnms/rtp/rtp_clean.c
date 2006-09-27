@@ -75,7 +75,8 @@ void rtp_clean(void *args)
 		}
 		// announced rtp payload list
 		for (fmtlist = rtp_sess->announced_fmts; fmtlist;
-		     pfmtlist = fmtlist, fmtlist = fmtlist->next, free(pfmtlist));
+		     pfmtlist = fmtlist, fmtlist =
+		     fmtlist->next, free(pfmtlist));
 		// rtp payload types definitions attributes
 		for (i = 0; i < 128; i++)
 			if (rtp_sess->ptdefs[i])

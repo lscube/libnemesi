@@ -127,7 +127,8 @@ static void read_head(struct mpstr *mp)
 	mp->header = head;
 }
 
-int decodeMP3(struct mpstr *mp, char *in, int isize, char *out, int osize, int *done)
+int decodeMP3(struct mpstr *mp, char *in, int isize, char *out, int osize,
+	      int *done)
 {
 	int len;
 
@@ -200,7 +201,8 @@ int set_pointer(long backstep)
 	bsbufold = gmp->bsspace[gmp->bsnum] + 512;
 	wordpointer -= backstep;
 	if (backstep)
-		memcpy(wordpointer, bsbufold + gmp->fsizeold - backstep, backstep);
+		memcpy(wordpointer, bsbufold + gmp->fsizeold - backstep,
+		       backstep);
 	bitindex = 0;
 	return MP3_OK;
 }

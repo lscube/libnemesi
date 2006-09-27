@@ -45,11 +45,14 @@ int cc_set_sdplicense(cc_license * cc, char *sdp_l)
 
 	// shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
 	for (i = 0; i < sizeof(cclicenses) / sizeof(*cclicenses); i++) {
-		if (!strncmpcase(sdp_l, cclicenses[i][CC_ATTR_NAME], strlen(cclicenses[i][CC_ATTR_NAME]))) {
+		if (!strncmpcase
+		    (sdp_l, cclicenses[i][CC_ATTR_NAME],
+		     strlen(cclicenses[i][CC_ATTR_NAME]))) {
 			// XXX: we do not duplicate the string!!! Do we have to do that?
 			/* set the correct field using cc_license struct like an array of strings
 			 * skipping the sdp param and setting the pointer after the colon */
-			((char **) cc)[i] = sdp_l + strlen(cclicenses[i][CC_ATTR_NAME]) + 1;
+			((char **) cc)[i] =
+			    sdp_l + strlen(cclicenses[i][CC_ATTR_NAME]) + 1;
 			return 0;
 		}
 	}

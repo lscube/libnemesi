@@ -65,7 +65,7 @@ indent:
 	export SIMPLE_BACKUP_SUFFIX=.ibak; \
 	mkdir -p indent-backup && \
 	for file in `find -name \*.c -or -name \*.h` ; do \
-		indent -kr -i8 -l120 $${file}; \
+		indent -kr -i8 -l80 $${file}; \
 		cp --parents $${file}$${SIMPLE_BACKUP_SUFFIX} indent-backup && \
 		rm $${file}$${SIMPLE_BACKUP_SUFFIX}; \
 	done; \

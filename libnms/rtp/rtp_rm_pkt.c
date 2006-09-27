@@ -30,5 +30,6 @@
 
 inline int rtp_rm_pkt(rtp_ssrc * stm_src)
 {
-	return bprmv(&(stm_src->rtp_sess->bp), &(stm_src->po), stm_src->po.potail);
+	return bprmv(&(stm_src->rtp_sess->bp), &(stm_src->po),
+		     stm_src->po.potail);
 }

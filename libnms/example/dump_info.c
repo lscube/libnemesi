@@ -46,7 +46,9 @@ int main(int argc, char **argv)
 
 	if (argc < 2) {
 		fprintf(stderr, "\tPlease specify at least an url.\n");
-		fprintf(stderr, "\tUsage: %s [-f outputfile ] [-p rtp_port] url\n", argv[0]);
+		fprintf(stderr,
+			"\tUsage: %s [-f outputfile ] [-p rtp_port] url\n",
+			argv[0]);
 		exit(1);
 	}
 
@@ -68,7 +70,9 @@ int main(int argc, char **argv)
 			/* Unknown option  */
 		case '?':
 			fprintf(stderr, "\n  Unknown option `-%c'.\n", optopt);
-			fprintf(stderr, "\tUsage: %s [-f outputfile ] [-d] url\n\n", argv[0]);
+			fprintf(stderr,
+				"\tUsage: %s [-f outputfile ] [-d] url\n\n",
+				argv[0]);
 
 			return 1;
 		}
@@ -116,8 +120,10 @@ int main(int argc, char **argv)
 				// Just care about audio and video
 			case 'A':
 			case 'V':
-				fprintf(outfile, "\tTransport %s\n", med->medium_info->transport);
-				fprintf(outfile, "\tMedia format %s\n", med->medium_info->fmts);
+				fprintf(outfile, "\tTransport %s\n",
+					med->medium_info->transport);
+				fprintf(outfile, "\tMedia format %s\n",
+					med->medium_info->fmts);
 				break;
 			default:
 				//do nothing
@@ -125,7 +131,8 @@ int main(int argc, char **argv)
 			}
 
 			// attributes are already parsed, get them from the list
-			for (attr = med->medium_info->attr_list; attr; attr = attr->next)
+			for (attr = med->medium_info->attr_list; attr;
+			     attr = attr->next)
 				fprintf(outfile, "\t* %s\n", attr->a);
 
 			med = med->next;

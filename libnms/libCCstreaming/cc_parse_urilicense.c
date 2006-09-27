@@ -60,7 +60,8 @@ int cc_parse_urilicense(char *uri, cc_perm_mask * mask)
 	while (*tkn == '/')
 		tkn++;
 	if (!(permstr = strdup(tkn)))
-		return nms_printf(NMSML_FATAL, "memory error in cc_parse_urilicense\n");
+		return nms_printf(NMSML_FATAL,
+				  "memory error in cc_parse_urilicense\n");
 	if ((tkn = strchr(permstr, '/')))
 		*tkn = '\0';
 

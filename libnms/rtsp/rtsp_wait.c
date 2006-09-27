@@ -34,7 +34,8 @@ void rtsp_wait(rtsp_ctrl * rtsp_ctl)
 
 	pthread_mutex_lock(&(rtsp_th->comm_mutex));
 	while (rtsp_th->busy)
-		pthread_cond_wait(&(rtsp_th->cond_busy), &(rtsp_th->comm_mutex));
+		pthread_cond_wait(&(rtsp_th->cond_busy),
+				  &(rtsp_th->comm_mutex));
 
 	pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 }

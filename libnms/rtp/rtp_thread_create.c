@@ -36,16 +36,22 @@ int rtp_thread_create(rtp_thread * rtp_th)
 	rtp_fmts_list *fmt;
 
 	pthread_attr_init(&rtp_attr);
-	if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-		return nms_printf(NMSML_FATAL, "Cannot set RTP Thread attributes (detach state)\n");
+	if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) !=
+	    0)
+		return nms_printf(NMSML_FATAL,
+				  "Cannot set RTP Thread attributes (detach state)\n");
 
-	if ((n = pthread_create(&rtp_th->rtp_tid, &rtp_attr, &rtp, (void *) rtp_th)) > 0)
+	if ((n =
+	     pthread_create(&rtp_th->rtp_tid, &rtp_attr, &rtp,
+			    (void *) rtp_th)) > 0)
 		return nms_printf(NMSML_FATAL, "%s\n", strerror(n));
 
-	for (rtp_sess = rtp_th->rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next) {
+	for (rtp_sess = rtp_th->rtp_sess_head; rtp_sess;
+	     rtp_sess = rtp_sess->next) {
 		for (fmt = rtp_sess->announced_fmts; fmt; fmt = fmt->next)
 			if (rtp_sess->parsers_inits[fmt->pt])
-				rtp_sess->parsers_inits[fmt->pt] (rtp_sess, fmt->pt);
+				rtp_sess->parsers_inits[fmt->pt] (rtp_sess,
+								  fmt->pt);
 	}
 
 	return 0;

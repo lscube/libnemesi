@@ -36,12 +36,16 @@ int sock_get_addr(const struct sockaddr *sockaddr, nms_addr * retaddr)
 	retaddr->family = sockaddr->sa_family;
 	switch (sockaddr->sa_family) {
 	case AF_INET:
-		memcpy(&retaddr->addr.in, &((struct sockaddr_in *) sockaddr)->sin_addr, sizeof(struct in_addr));
+		memcpy(&retaddr->addr.in,
+		       &((struct sockaddr_in *) sockaddr)->sin_addr,
+		       sizeof(struct in_addr));
 		return 0;
 		break;
 #ifdef IPV6
 	case AF_INET6:
-		memcpy(&retaddr->addr.in6, &((struct sockaddr_in6 *) sockaddr)->sin6_addr, sizeof(struct in6_addr));
+		memcpy(&retaddr->addr.in6,
+		       &((struct sockaddr_in6 *) sockaddr)->sin6_addr,
+		       sizeof(struct in6_addr));
 		return 0;
 		break;
 #endif

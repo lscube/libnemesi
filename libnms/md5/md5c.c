@@ -133,7 +133,8 @@ unsigned int inputLen;		/* length of input block */
 	/* Transform as many times as possible.
 	 */
 	if (inputLen >= partLen) {
-		MD5_memcpy((POINTER) & context->buffer[index], (POINTER) input, partLen);
+		MD5_memcpy((POINTER) & context->buffer[index], (POINTER) input,
+			   partLen);
 		MD5Transform(context->state, context->buffer);
 
 		for (i = partLen; i + 63 < inputLen; i += 64)
@@ -144,7 +145,8 @@ unsigned int inputLen;		/* length of input block */
 		i = 0;
 
 	/* Buffer remaining input */
-	MD5_memcpy((POINTER) & context->buffer[index], (POINTER) & input[i], inputLen - i);
+	MD5_memcpy((POINTER) & context->buffer[index], (POINTER) & input[i],
+		   inputLen - i);
 }
 
 /* MD5 finalization. Ends an MD5 message-digest operation, writing the
@@ -299,7 +301,8 @@ unsigned int len;
 
 	for (i = 0, j = 0; j < len; i++, j += 4)
 		output[i] = ((UINT4) input[j]) | (((UINT4) input[j + 1]) << 8) |
-		    (((UINT4) input[j + 2]) << 16) | (((UINT4) input[j + 3]) << 24);
+		    (((UINT4) input[j + 2]) << 16) | (((UINT4) input[j + 3]) <<
+						      24);
 }
 
 /* Note: Replace "for loop" with standard memcpy if possible.

@@ -43,7 +43,8 @@ int send_setup_request(rtsp_thread * rtsp_th)
 	memset(b, 0, 256);
 
 	// if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
-	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS)) || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
+	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
+	    || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
 		return 1;
 
 	if (!rtsp_th->force_rtp_port) {
@@ -56,7 +57,8 @@ int send_setup_request(rtsp_thread * rtsp_th)
 		// RTP port number partially specified by user.
 		if (rtsp_th->force_rtp_port % 2) {
 			rtsp_th->force_rtp_port++;
-			nms_printf(NMSML_WARN, "First RTP port specified was odd number => corrected to %u\n",
+			nms_printf(NMSML_WARN,
+				   "First RTP port specified was odd number => corrected to %u\n",
 				   rtsp_th->force_rtp_port);
 		}
 		rnd = rtsp_th->force_rtp_port;
@@ -70,24 +72,31 @@ int send_setup_request(rtsp_thread * rtsp_th)
 
 	/* per sapere il numero di porta assegnato */
 	/* assigned ports */
-	getsockname(rtsp_med->rtp_sess->rtpfd, (struct sockaddr *) &rtpaddr, &rtplen);
-	getsockname(rtsp_med->rtp_sess->rtcpfd, (struct sockaddr *) &rtcpaddr, &rtcplen);
+	getsockname(rtsp_med->rtp_sess->rtpfd, (struct sockaddr *) &rtpaddr,
+		    &rtplen);
+	getsockname(rtsp_med->rtp_sess->rtcpfd, (struct sockaddr *) &rtcpaddr,
+		    &rtcplen);
 
-	rtsp_med->rtp_sess->transport.cli_ports[0] = ntohs(sock_get_port((struct sockaddr *) &rtpaddr));
-	rtsp_med->rtp_sess->transport.cli_ports[1] = ntohs(sock_get_port((struct sockaddr *) &rtcpaddr));
+	rtsp_med->rtp_sess->transport.cli_ports[0] =
+	    ntohs(sock_get_port((struct sockaddr *) &rtpaddr));
+	rtsp_med->rtp_sess->transport.cli_ports[1] =
+	    ntohs(sock_get_port((struct sockaddr *) &rtcpaddr));
 
 	if (set_transport_str(rtsp_med->rtp_sess, &options))
 		return 1;
 
 	if (rtsp_sess->content_base != NULL)
-		sprintf(b, "%s %s/%s %s" RTSP_EL, SETUP_TKN, rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
+		sprintf(b, "%s %s/%s %s" RTSP_EL, SETUP_TKN,
+			rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
 	else
-		sprintf(b, "%s %s %s" RTSP_EL, SETUP_TKN, rtsp_med->filename, RTSP_VER);
+		sprintf(b, "%s %s %s" RTSP_EL, SETUP_TKN, rtsp_med->filename,
+			RTSP_VER);
 	sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
 	sprintf(b + strlen(b), "Transport: %s" RTSP_EL, options);
 
 	if (rtsp_sess->Session_ID)	//Caso di controllo aggregato: � gi� stato definito un numero per la sessione corrente.
-		sprintf(b + strlen(b), "Session: %llu" RTSP_EL, rtsp_sess->Session_ID);
+		sprintf(b + strlen(b), "Session: %llu" RTSP_EL,
+			rtsp_sess->Session_ID);
 
 	strcat(b, RTSP_EL);
 
@@ -98,11 +107,13 @@ int send_setup_request(rtsp_thread * rtsp_th)
 	// next rtp port forces
 	if (rtsp_th->force_rtp_port) {
 		rtsp_th->force_rtp_port += 2;
-		nms_printf(NMSML_DBG2, "Next client ports will be %u-%u\n", rtsp_th->force_rtp_port,
+		nms_printf(NMSML_DBG2, "Next client ports will be %u-%u\n",
+			   rtsp_th->force_rtp_port,
 			   rtsp_th->force_rtp_port + 1);
 	}
 
-	sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE, rtsp_sess->CSeq);
+	sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE,
+		rtsp_sess->CSeq);
 
 	free(options);
 

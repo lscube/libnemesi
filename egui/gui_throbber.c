@@ -47,18 +47,25 @@ int create_throbber(GtkWidget * box)
 	char filename[127];
 
 	if ((new_throbber = malloc(sizeof(GNMSThrobber))) == NULL)
-		return nms_printf(NMSML_FATAL, "Could not alloc throbber structure\n");
+		return nms_printf(NMSML_FATAL,
+				  "Could not alloc throbber structure\n");
 
 	new_throbber->num_anim = 9;	// TODO: automatizzare
-	if ((new_throbber->anim = malloc(new_throbber->num_anim * sizeof(GtkWidget *))) == NULL)
-		return nms_printf(NMSML_FATAL, "Could not alloc throbber animation vector\n");
+	if ((new_throbber->anim =
+	     malloc(new_throbber->num_anim * sizeof(GtkWidget *))) == NULL)
+		return nms_printf(NMSML_FATAL,
+				  "Could not alloc throbber animation vector\n");
 
 	new_throbber->rest = GTK_IMAGE(create_pixmap(NULL, "rest.png"));
-	gtk_box_pack_end(GTK_BOX(box), GTK_WIDGET(new_throbber->rest), FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(box), GTK_WIDGET(new_throbber->rest), FALSE,
+			 FALSE, 0);
 	for (i = 0; i < new_throbber->num_anim; i++) {
 		sprintf(filename, "%03d.png", i + 1);
-		new_throbber->anim[i] = GTK_IMAGE(create_pixmap(NULL, filename));
-		gtk_box_pack_end(GTK_BOX(box), GTK_WIDGET(new_throbber->anim[i]), FALSE, FALSE, 0);
+		new_throbber->anim[i] =
+		    GTK_IMAGE(create_pixmap(NULL, filename));
+		gtk_box_pack_end(GTK_BOX(box),
+				 GTK_WIDGET(new_throbber->anim[i]), FALSE,
+				 FALSE, 0);
 	}
 
 	gtk_widget_show(GTK_WIDGET(new_throbber->rest));
@@ -86,14 +93,16 @@ static gint progress_timeout(gpointer data)
 
 	if (*busy) {
 		if (throbber->shown >= 0)
-			gtk_widget_hide(GTK_WIDGET(throbber->anim[throbber->shown]));
+			gtk_widget_hide(GTK_WIDGET
+					(throbber->anim[throbber->shown]));
 		else
 			gtk_widget_hide(GTK_WIDGET(throbber->rest));
 		throbber->shown = (throbber->shown + 1) % throbber->num_anim;
 		gtk_widget_show(GTK_WIDGET(throbber->anim[throbber->shown]));
 	} else {
 		if (throbber->shown >= 0) {
-			gtk_widget_hide(GTK_WIDGET(throbber->anim[throbber->shown]));
+			gtk_widget_hide(GTK_WIDGET
+					(throbber->anim[throbber->shown]));
 			gtk_widget_show(GTK_WIDGET(throbber->rest));
 			throbber->shown = -1;
 		}

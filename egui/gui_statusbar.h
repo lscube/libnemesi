@@ -35,7 +35,8 @@
 void gnms_stbar_init(GtkBox *);
 void gnms_stbar_clear(void);
 int gnms_stbar_setstr(const char *, ...);
-int gnms_stbar_addwgt(GtkWidget *, void (*)(GtkWidget *), void (*)(void *), gpointer, gboolean);
+int gnms_stbar_addwgt(GtkWidget *, void (*)(GtkWidget *), void (*)(void *),
+		      gpointer, gboolean);
 void gnms_stbar_update(void);
 
 #endif				// __GUI_STATUSBAR_H

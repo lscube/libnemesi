@@ -39,27 +39,41 @@ uint8 *ab_get(uint32 len, ...)
 	if ((len > 0) && (audio_buffer)) {
 		while (1) {
 			pthread_mutex_lock(&(audio_buffer->syn));
-			while ((audio_buffer->len + len) > audio_buffer->buff_size)
-				pthread_cond_wait(&(audio_buffer->cond_full), &(audio_buffer->syn));
+			while ((audio_buffer->len + len) >
+			       audio_buffer->buff_size)
+				pthread_cond_wait(&(audio_buffer->cond_full),
+						  &(audio_buffer->syn));
 			if ((audio_buffer->write_pos >= audio_buffer->read_pos)) {
 				if ((audio_buffer->write_pos + len) <
-				    /*=*/ audio_buffer->buff_size /*AUDIO_BUFF_SIZE */ ) {
+				    /*=*/
+				    audio_buffer->
+				    buff_size /*AUDIO_BUFF_SIZE */ ) {
 					audio_buffer->write_pos += len;
-					audio_buffer->valid_data = audio_buffer->write_pos;
+					audio_buffer->valid_data =
+					    audio_buffer->write_pos;
 					audio_buffer->len += len;
-					pthread_mutex_unlock(&(audio_buffer->syn));
-					return &audio_buffer->audio_data[audio_buffer->write_pos - len];
+					pthread_mutex_unlock(&
+							     (audio_buffer->
+							      syn));
+					return &audio_buffer->
+					    audio_data[audio_buffer->write_pos -
+						       len];
 				} else if (len < audio_buffer->read_pos) {
 					audio_buffer->write_pos = len;
 					audio_buffer->len += len;
-					pthread_mutex_unlock(&(audio_buffer->syn));
+					pthread_mutex_unlock(&
+							     (audio_buffer->
+							      syn));
 					return audio_buffer->audio_data;
 				}
-			} else if ((audio_buffer->write_pos + len) < /*=*/ audio_buffer->read_pos) {
+			} else if ((audio_buffer->write_pos + len) <
+				   /*=*/ audio_buffer->read_pos) {
 				audio_buffer->write_pos += len;
 				audio_buffer->len += len;
 				pthread_mutex_unlock(&(audio_buffer->syn));
-				return &audio_buffer->audio_data[audio_buffer->write_pos - len];
+				return &audio_buffer->audio_data[audio_buffer->
+								 write_pos -
+								 len];
 			}
 			pthread_mutex_unlock(&(audio_buffer->syn));
 		}

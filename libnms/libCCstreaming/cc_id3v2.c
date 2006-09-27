@@ -185,11 +185,13 @@ int cc_id3v2(cc_license * license, cc_tag * tag)
 		frame->charenc = 0;	// ISO-8858-1
 		pos = frame->data;
 		if (license->uriLicense) {
-			sprintf((char *) pos, "%s%s", CC_URILIC, license->uriLicense);
+			sprintf((char *) pos, "%s%s", CC_URILIC,
+				license->uriLicense);
 			pos += strlen((char *) pos);
 		}
 		if (license->uriMetadata) {
-			sprintf((char *) pos, "%s%s", CC_URIMETA, license->uriMetadata);
+			sprintf((char *) pos, "%s%s", CC_URIMETA,
+				license->uriMetadata);
 		}
 		frame = (struct id3frm *) (frame->data + tcop);
 	}

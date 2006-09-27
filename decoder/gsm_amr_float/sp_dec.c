@@ -199,7 +199,8 @@ static void Decoder_amr_reset(Decoder_amrState * state, enum Mode mode)
 	Word32 i;
 	
 	    /* Cb_gain_average_reset */ 
-	    memset(state->Cb_gain_averState->cbGainHistory, 0, L_CBGAINHIST << 2);
+	    memset(state->Cb_gain_averState->cbGainHistory, 0,
+		   L_CBGAINHIST << 2);
 	state->Cb_gain_averState->hangVar = 0;
 	state->Cb_gain_averState->hangCount = 0;
 	
@@ -275,13 +276,15 @@ static void Decoder_amr_reset(Decoder_amrState * state, enum Mode mode)
 	if (mode != MRDTX) {
 		for (i = 0; i < NPRED; i++) {
 			state->pred_state->past_qua_en[i] = MIN_ENERGY;
-			state->pred_state->past_qua_en_MR122[i] = MIN_ENERGY_MR122;
+			state->pred_state->past_qua_en_MR122[i] =
+			    MIN_ENERGY_MR122;
 		}
 	}
 	state->nodataSeed = 21845;
 	
 	    /* Static vectors to zero */ 
-	    memset(state->background_state->frameEnergyHist, 0, L_ENERGYHIST << 2);
+	    memset(state->background_state->frameEnergyHist, 0,
+		   L_ENERGYHIST << 2);
 	
 	    /* Initialize hangover handling */ 
 	    state->background_state->bgHangover = 0;
@@ -340,14 +343,16 @@ static void Decoder_amr_reset(Decoder_amrState * state, enum Mode mode)
 		state->dtxDecoderState->lsf_hist[8] = 12714;
 		state->dtxDecoderState->lsf_hist[9] = 13701;
 		for (i = 1; i < DTX_HIST_SIZE; i++) {
-			memcpy(&state->dtxDecoderState->lsf_hist[M * i], &state->dtxDecoderState->lsf_hist[0],
-				M << 2);
+			memcpy(&state->dtxDecoderState->lsf_hist[M * i],
+				&state->dtxDecoderState->lsf_hist[0], M << 2);
 		}
-		memset(state->dtxDecoderState->lsf_hist_mean, 0, M * DTX_HIST_SIZE << 2);
+		memset(state->dtxDecoderState->lsf_hist_mean, 0,
+			M * DTX_HIST_SIZE << 2);
 		
 		    /* initialize decoder log frame energy */ 
 		    for (i = 0; i < DTX_HIST_SIZE; i++) {
-			state->dtxDecoderState->log_en_hist[i] = state->dtxDecoderState->log_en ;
+			state->dtxDecoderState->log_en_hist[i] =
+			    state->dtxDecoderState->log_en ;
 		}
 		state->dtxDecoderState->log_en_adjust = 0;
 		state->dtxDecoderState->dtxHangoverCount = DTX_HANG_CONST;
@@ -382,17 +387,21 @@ static void Decoder_amr_reset(Decoder_amrState * state, enum Mode mode)
  * Returns:
  *    DTXStateType            DTX, DTX_MUTE or SPEECH
  */ 
-static enum DTXStateType rx_dtx_handler(dtx_decState * st, enum RXFrameType frame_type) 
+static enum DTXStateType rx_dtx_handler(dtx_decState * st,
+					enum RXFrameType frame_type) 
 {
 	enum DTXStateType newState;
 	enum DTXStateType encState;
 	
 	    /* DTX if SID frame or previously in DTX{_MUTE} and (NO_RX OR BAD_SPEECH) */ 
-	    if (table_SID[frame_type] | ((st->dtxGlobalState != SPEECH) & table_speech_bad[frame_type])) {
+	    if (table_SID[frame_type] |
+		((st->dtxGlobalState !=
+		  SPEECH) & table_speech_bad[frame_type])) {
 		newState = DTX;
 		
 		    /* stay in mute for these input types */ 
-		    if ((st->dtxGlobalState == DTX_MUTE) & table_mute[frame_type]) {
+		    if ((st->dtxGlobalState ==
+			 DTX_MUTE) & table_mute[frame_type]) {
 			newState = DTX_MUTE;
 		}
 		
@@ -535,7 +544,8 @@ static void Lsf_lsp(Word32 lsf[], Word32 lsp[])
  * Returns:
  *    void
  */ 
-static void D_plsf_3(D_plsfState * st, enum Mode mode, Word16 bfi, Word16 * indice, Word32 * lsp1_q) 
+static void D_plsf_3(D_plsfState * st, enum Mode mode, Word16 bfi,
+		     Word16 * indice, Word32 * lsp1_q) 
 {
 	Word32 lsf1_r[M], lsf1_q[M];
 	Word32 i, index, temp;
@@ -548,7 +558,9 @@ static void D_plsf_3(D_plsfState * st, enum Mode mode, Word16 bfi, Word16 * ind
 		    for (i = 0; i < M; i++) {
 			
 			    /* lsfi_q[i] = ALPHA*past_lsf_q[i] + ONE_ALPHA*meanLsf[i]; */ 
-			    lsf1_q[i] = ((st->past_lsf_q[i] * ALPHA) >> 15) + ((mean_lsf_3[i]  *ONE_ALPHA) >> 15);
+			    lsf1_q[i] =
+			    ((st->past_lsf_q[i] * ALPHA) >> 15) +
+			    ((mean_lsf_3[i]  *ONE_ALPHA) >> 15);
 		}
 		
 		    /* estimate past quantized residual to be used in next frame */ 
@@ -556,7 +568,9 @@ static void D_plsf_3(D_plsfState * st, enum Mode mode, Word16 bfi, Word16 * ind
 			for (i = 0; i < M; i++) {
 				
 				    /* temp  = meanLsf[i] +  pastR2_q[i] * pred_fac; */ 
-				    temp = mean_lsf_3[i] + ((st->past_r_q[i] * pred_fac[i]) >> 15);
+				    temp =
+				    mean_lsf_3[i] +
+				    ((st->past_r_q[i] * pred_fac[i]) >> 15);
 				st->past_r_q[i] = lsf1_q[i] - temp;
 			}
 		}
@@ -623,14 +637,19 @@ static void D_plsf_3(D_plsfState * st, enum Mode mode, Word16 bfi, Word16 * ind
 		    /* Compute quantized LSFs and update the past quantized residual */ 
 		    if (mode != MRDTX) {
 			for (i = 0; i < M; i++) {
-				lsf1_q[i] = lsf1_r[i] + (mean_lsf_3[i] + ((st->past_r_q[i] * pred_fac[i]) >> 15));
+				lsf1_q[i] =
+				    lsf1_r[i] + (mean_lsf_3[i] +
+						 ((st->past_r_q[i] *
+						   pred_fac[i]) >> 15));
 			}
 			memcpy(st->past_r_q, lsf1_r, M << 2);
 		}
 		
 		else {
 			for (i = 0; i < M; i++) {
-				lsf1_q[i] = lsf1_r[i] + (mean_lsf_3[i] + st->past_r_q[i]);
+				lsf1_q[i] =
+				    lsf1_r[i] + (mean_lsf_3[i] +
+						 st->past_r_q[i]);
 			}
 			memcpy(st->past_r_q, lsf1_r, M << 2);
 		}
@@ -720,7 +739,9 @@ static void Lsp_lsf(Word32 lsp[], Word32 lsf[])
 		    while (cos_table[ind] < lsp[i]) {
 			ind--;
 		}
-		lsf[i] = ((((lsp[i] - cos_table[ind]) * acos_slope[ind]) + 0x800)  >>12) + (ind << 8);
+		lsf[i] =
+		    ((((lsp[i] - cos_table[ind]) * acos_slope[ind]) +
+		      0x800)  >>12) + (ind << 8);
 	}
 	return;
 }
@@ -1002,7 +1023,8 @@ static void A_Refl(Word32 a[], Word32 refl[])
  * Returns:
  *    void
  */ 
-static void Log2_norm(Word32 x, Word32 exp, Word32 * exponent, Word32 * fraction) 
+static void Log2_norm(Word32 x, Word32 exp, Word32 * exponent,
+		      Word32 * fraction) 
 {
 	Word32 y, i, a;
 	if (x <= 0) {
@@ -1175,17 +1197,20 @@ static void Build_CN_param(Word16 * seed, enum Mode mode, Word16 parm[])
 	switch (mode) {
 	case MR122:
 		for (i = 0; i < PRMNO_MR122; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR122[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR122[i]));
 		}
 		break;
 	case MR102:
 		for (i = 0; i < PRMNO_MR102; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR102[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR102[i]));
 		}
 		break;
 	case MR795:
 		for (i = 0; i < PRMNO_MR795; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR795[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR795[i]));
 		}
 		break;
 	case MR74:
@@ -1205,12 +1230,14 @@ static void Build_CN_param(Word16 * seed, enum Mode mode, Word16 parm[])
 		break;
 	case MR515:
 		for (i = 0; i < PRMNO_MR515; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR515[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR515[i]));
 		}
 		break;
 	case MR475:
 		for (i = 0; i < PRMNO_MR475; i++) {
-			parm[i] = (Word16) (*p++ & ~(0xFFFF << bitno_MR475[i]));
+			parm[i] =
+			    (Word16) (*p++ & ~(0xFFFF << bitno_MR475[i]));
 		}
 		break;
 	default:
@@ -1237,7 +1264,8 @@ static void Build_CN_param(Word16 * seed, enum Mode mode, Word16 parm[])
  * Returns:
  *    void
  */ 
-static Word32 Syn_filt(Word32 a[], Word32 x[], Word32 y[], Word32 lg, Word32 mem[] , Word32 update) 
+static Word32 Syn_filt(Word32 a[], Word32 x[], Word32 y[], Word32 lg,
+		       Word32 mem[] , Word32 update) 
 {
 	Word32 tmp[50];	/* malloc is slow */
 	Word32 s, a0, overflow = 0;
@@ -1304,7 +1332,8 @@ static Word32 Syn_filt(Word32 a[], Word32 x[], Word32 y[], Word32 lg, Word32 mem
  * Returns:
  *    void
  */ 
-static void Syn_filt_overflow(Word32 a[], Word32 x[], Word32 y[], Word32 lg, Word32 mem[] , Word32 update) 
+static void Syn_filt_overflow(Word32 a[], Word32 x[], Word32 y[], Word32 lg,
+			      Word32 mem[] , Word32 update) 
 {
 	Word32 tmp[50];	/* malloc is slow */
 	Word32 i, j, s, a0;
@@ -1374,15 +1403,19 @@ static void Syn_filt_overflow(Word32 a[], Word32 x[], Word32 y[], Word32 lg, Wor
  * Returns:
  *    void
  */ 
-static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState, 
-		    gc_predState * pred_state, Cb_gain_averageState * averState, enum DTXStateType new_state,
-		    enum Mode mode, Word16 parm[], Word32 synth[], Word32 A_t[]) 
+static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
+		     gc_predState * pred_state,
+		    Cb_gain_averageState * averState,
+		    enum DTXStateType new_state, enum Mode mode, Word16 parm[],
+		    Word32 synth[], Word32 A_t[]) 
 {
 	Word32 ex[L_SUBFR], acoeff[11], acoeff_variab[M + 1], lsp_int[M];
-	Word32 refl[M], lsf[M], lsf_int[M], lsf_int_variab[M], lsp_int_variab[M];
+	Word32 refl[M], lsf[M], lsf_int[M], lsf_int_variab[M],
+	    lsp_int_variab[M];
 	Word32 i, j, int_fac, log_en_int, pred_err, log_pg_e, log_pg_m, log_pg;
 	Word32 negative, lsf_mean, lsf_variab_index, lsf_variab_factor, ptr;
-	Word16 log_en_index, log_en_int_e, log_en_int_m, level, ma_pred_init, tmp_int_length;
+	Word16 log_en_index, log_en_int_e, log_en_int_m, level, ma_pred_init,
+	    tmp_int_length;
 	if ((st->dtxHangoverAdded != 0) & (st->sid_frame != 0)) {
 		
 		    /*
@@ -1395,7 +1428,8 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 		if (ptr == 80) {
 			ptr = 0;
 		}
-		memcpy(&st->lsf_hist[ptr], &st->lsf_hist[st->lsf_hist_ptr], M << 2);
+		memcpy(&st->lsf_hist[ptr], &st->lsf_hist[st->lsf_hist_ptr],
+			M << 2);
 		ptr = st->log_en_hist_ptr + 1;
 		if (ptr == DTX_HIST_SIZE) {
 			ptr = 0;
@@ -1445,11 +1479,13 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 			    for (j = 0; j < 8; j++) {
 				
 				    /* subtract mean */ 
-				    st->lsf_hist_mean[i + j * M] = st->lsf_hist_mean[i + j * M] - lsf_mean;
+				    st->lsf_hist_mean[i + j * M] =
+				    st->lsf_hist_mean[i + j * M] - lsf_mean;
 				
 				    /* attenuate deviation from mean, especially for upper lsf's */ 
 				    st->lsf_hist_mean[i + j * M] =
-				    (st->lsf_hist_mean[i + j * M] * lsf_hist_mean_scale[i]) >> 15;
+				    (st->lsf_hist_mean[i + j * M] *
+				     lsf_hist_mean_scale[i]) >> 15;
 				
 				    /* limit the deviation */ 
 				    if (st->lsf_hist_mean[i + j * M] < 0) {
@@ -1459,12 +1495,15 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 				else {
 					negative = 0;
 				}
-				st->lsf_hist_mean[i + j * M] = labs(st->lsf_hist_mean[i + j * M]);
+				st->lsf_hist_mean[i + j * M] =
+				    labs(st->lsf_hist_mean[i + j * M]);
 				
 				    /* apply soft limit */ 
 				    if (st->lsf_hist_mean[i + j * M] > 655) {
-					st->lsf_hist_mean[i + j * M] = 655 + ((st->lsf_hist_mean[i + j 
-												  *M] - 655) >> 2);
+					st->lsf_hist_mean[i + j * M] =
+					    655 +
+					    ((st->lsf_hist_mean[i + j  *M] -
+					      655) >> 2);
 				}
 				
 				    /* apply hard limit */ 
@@ -1472,7 +1511,8 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 					st->lsf_hist_mean[i + j * M] = 1310;
 				}
 				if (negative != 0) {
-					st->lsf_hist_mean[i + j * M] = -st->lsf_hist_mean[i + j * M];
+					st->lsf_hist_mean[i + j * M] =
+					    -st->lsf_hist_mean[i + j * M];
 				}
 			}
 		}
@@ -1497,13 +1537,15 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 				tmp_int_length = 32;
 			}
 			if (tmp_int_length >= 2) {
-				st->true_sid_period_inv = 0x2000000 / (tmp_int_length  <<10);
+				st->true_sid_period_inv =
+				    0x2000000 / (tmp_int_length  <<10);
 			}
 			
 			else {
 				st->true_sid_period_inv = 16384;	/* 0.5 it Q15 */
 			}
-			memcpy(lsfState->past_r_q, &past_rq_init[parm[0] * M], M << 2);
+			memcpy(lsfState->past_r_q, &past_rq_init[parm[0] * M],
+				M << 2);
 			D_plsf_3(lsfState, MRDTX, 0, &parm[1], st->lsp);
 			
 			    /* reset for next speech frame */ 
@@ -1525,7 +1567,8 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 			     * no interpolation at startup after coder reset
 			     * or when SID_UPD has been received right after SPEECH
 			     */ 
-			    if ((st->data_updated == 0) || (st->dtxGlobalState == SPEECH)) {
+			    if ((st->data_updated == 0)
+				|| (st->dtxGlobalState == SPEECH)) {
 				memcpy(st->lsp_old, st->lsp, M << 2);
 				st->old_log_en = st->log_en;
 			}
@@ -1560,9 +1603,9 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 	     * st->log_en_adjust = 0.9*st->log_en_adjust +
 	     *                     0.1*dtx_log_en_adjust[mode]);
 	     */ 
-	    st->log_en_adjust = (Word16) (((st->log_en_adjust * 29491) >> 15) + ((
-										  (dtx_log_en_adjust[mode] << 5) *
-										  3277) >> 20));
+	    st->log_en_adjust =
+	    (Word16) (((st->log_en_adjust * 29491) >> 15) +
+		      (((dtx_log_en_adjust[mode] << 5) * 3277) >> 20));
 	
 	    /* Interpolate SID info */ 
 	    /* Q10 */ 
@@ -1599,7 +1642,8 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 	for (i = 0; i < M; i++) {
 		
 		    /* Q14 + (Q14 * Q15 -> Q14) -> Q14 */ 
-		    lsp_int[i] = lsp_int[i] + ((int_fac * st->lsp_old[i]) >> 15);
+		    lsp_int[i] =
+		    lsp_int[i] + ((int_fac * st->lsp_old[i]) >> 15);
 		
 		    /* Q14 -> Q15 */ 
 		    lsp_int[i] = lsp_int[i] << 1;
@@ -1634,7 +1678,9 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 	    memcpy(lsf_int_variab, lsf_int, M << 2);
 	for (i = 0; i < M; i++) {
 		lsf_int_variab[i] =
-		    lsf_int_variab[i] + ((lsf_variab_factor * st->lsf_hist_mean[i + lsf_variab_index * M]) >> 15);
+		    lsf_int_variab[i] +
+		    ((lsf_variab_factor *
+		      st->lsf_hist_mean[i + lsf_variab_index * M]) >> 15);
 	}
 	
 	    /* make sure that LSP's are ordered */ 
@@ -1670,7 +1716,8 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 	    /* 0.99997 in Q15 */ 
 	    pred_err = MAX_16;
 	for (i = 0; i < M; i++) {
-		pred_err = (pred_err * (MAX_16 - ((refl[i] * refl[i]) >> 15))) >> 15;
+		pred_err =
+		    (pred_err * (MAX_16 - ((refl[i] * refl[i]) >> 15))) >> 15;
 	}
 	
 	    /* compute logarithm of prediction gain */ 
@@ -1685,7 +1732,9 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 		log_pg = -32768;
 	}
 	log_pg = (-(log_pg + (log_pg_m >> 3))) >> 1;
-	st->log_pg_mean = (Word16) (((29491 * st->log_pg_mean) >> 15) + ((3277  *log_pg) >> 15));
+	st->log_pg_mean =
+	    (Word16) (((29491 * st->log_pg_mean) >> 15) +
+		      ((3277  *log_pg) >> 15));
 	
 	    /* Compute interpolated log energy */ 
 	    /* Q26 -> Q16 */ 
@@ -1713,7 +1762,8 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 		}
 		
 		    /* Synthesize */ 
-		    Syn_filt(acoeff_variab, ex, &synth[i * L_SUBFR], L_SUBFR, mem_syn, 1);
+		    Syn_filt(acoeff_variab, ex, &synth[i * L_SUBFR], L_SUBFR,
+			     mem_syn, 1);
 	}			/* next i */
 	
 	    /* reset codebook averaging variables */ 
@@ -1761,8 +1811,9 @@ static void dtx_dec(dtx_decState * st, Word32 * mem_syn, D_plsfState * lsfState,
 	     * reset interpolation length timer
 	     * if data has been updated.
 	     */ 
-	    if ((st->sid_frame != 0) & ((st->valid_data != 0) || ((st->valid_data 
-								   == 0) & (st->dtxHangoverAdded != 0)))) {
+	    if ((st->sid_frame != 0) & ((st->valid_data != 0)
+					|| ((st->valid_data  == 0) &
+					    (st->dtxHangoverAdded != 0)))) {
 		st->since_last_sid = 0;
 		st->data_updated = 1;
 	}
@@ -1827,7 +1878,8 @@ static void lsp_avg(lsp_avgState * st, Word32 * lsp)
  * Returns:
  *    void
  */ 
-static void Int_lpc_1and3(Word32 lsp_old[], Word32 lsp_mid[], Word32 lsp_new[], Word32 Az[]) 
+static void Int_lpc_1and3(Word32 lsp_old[], Word32 lsp_mid[], Word32 lsp_new[],
+			  Word32 Az[]) 
 {
 	Word32 lsp[M];
 	Word32 i;
@@ -1931,7 +1983,8 @@ static void Int_lpc_1to3(Word32 lsp_old[], Word32 lsp_new[], Word32 Az[])
  * Returns:
  *    void
  */ 
-static void D_plsf_5(D_plsfState * st, Word16 bfi, Word16 * indice, Word32 * lsp1_q , Word32 * lsp2_q) 
+static void D_plsf_5(D_plsfState * st, Word16 bfi, Word16 * indice,
+		     Word32 * lsp1_q , Word32 * lsp2_q) 
 {
 	Word32 lsf1_r[M], lsf2_r[M], lsf1_q[M], lsf2_q[M];
 	Word32 i, temp1, temp2, sign;
@@ -1944,10 +1997,12 @@ static void D_plsf_5(D_plsfState * st, Word16 bfi, Word16 * indice, Word32 * lsp
 		    for (i = 0; i < M; i += 2) {
 			
 			    /* lsfi_q[i] = ALPHA*st->past_lsf_q[i] + ONE_ALPHA*meanLsf[i]; */ 
-			    lsf1_q[i] = ((st->past_lsf_q[i] * ALPHA_122) >> 15) + ((mean_lsf_5[i] 
-										    *ONE_ALPHA_122) >> 15);
+			    lsf1_q[i] =
+			    ((st->past_lsf_q[i] * ALPHA_122) >> 15) +
+			    ((mean_lsf_5[i]  *ONE_ALPHA_122) >> 15);
 			lsf1_q[i + 1] =
-			    ((st->past_lsf_q[i + 1] * ALPHA_122) >> 15) + ((mean_lsf_5[i + 1] * ONE_ALPHA_122) >> 15);
+			    ((st->past_lsf_q[i + 1] * ALPHA_122) >> 15) +
+			    ((mean_lsf_5[i + 1] * ONE_ALPHA_122) >> 15);
 		}
 		memcpy(lsf2_q, lsf1_q, M << 2);
 		
@@ -1955,8 +2010,13 @@ static void D_plsf_5(D_plsfState * st, Word16 bfi, Word16 * indice, Word32 * lsp
 		    for (i = 0; i < M; i += 2) {
 			
 			    /* temp  = meanLsf[i] +  st->past_r_q[i] * LSPPpred_facMR122; */ 
-			    temp1 = mean_lsf_5[i] + ((st->past_r_q[i] * LSP_PRED_FAC_MR122) >> 15);
-			temp2 = mean_lsf_5[i + 1] + ((st->past_r_q[i + 1] * LSP_PRED_FAC_MR122 ) >> 15);
+			    temp1 =
+			    mean_lsf_5[i] +
+			    ((st->past_r_q[i] * LSP_PRED_FAC_MR122) >> 15);
+			temp2 =
+			    mean_lsf_5[i + 1] +
+			    ((st->past_r_q[i + 1] *
+			      LSP_PRED_FAC_MR122 ) >> 15);
 			st->past_r_q[i] = lsf2_q[i] - temp1;
 			st->past_r_q[i + 1] = lsf2_q[i + 1] - temp2;
 		}
@@ -2005,7 +2065,9 @@ static void D_plsf_5(D_plsfState * st, Word16 bfi, Word16 * indice, Word32 * lsp
 		
 		    /* Compute quantized LSFs and update the past quantized residual */ 
 		    for (i = 0; i < M; i++) {
-			temp1 = mean_lsf_5[i] + ((st->past_r_q[i] * LSP_PRED_FAC_MR122) >> 15);
+			temp1 =
+			    mean_lsf_5[i] +
+			    ((st->past_r_q[i] * LSP_PRED_FAC_MR122) >> 15);
 			lsf1_q[i] = lsf1_r[i] + temp1;
 			lsf2_q[i] = lsf2_r[i] + temp1;
 			st->past_r_q[i] = lsf2_r[i];
@@ -2050,7 +2112,8 @@ static void D_plsf_5(D_plsfState * st, Word16 bfi, Word16 * indice, Word32 * lsp
  * Returns:
  *    void
  */ 
-static void Dec_lag3(Word32 index, Word32 t0_min, Word32 t0_max, Word32 i_subfr , Word32 T0_prev, Word32 * T0,
+static void Dec_lag3(Word32 index, Word32 t0_min, Word32 t0_max,
+		     Word32 i_subfr , Word32 T0_prev, Word32 * T0,
 		     Word32 * T0_frac, Word32 flag4) 
 {
 	Word32 i, tmp_lag;
@@ -2146,7 +2209,8 @@ static void Dec_lag3(Word32 index, Word32 t0_min, Word32 t0_max, Word32 i_subfr 
  * Returns:
  *    void
  */ 
-static void Pred_lt_3or6_40(Word32 exc[], Word32 T0, Word32 frac, Word32 flag3) 
+static void Pred_lt_3or6_40(Word32 exc[], Word32 T0, Word32 frac,
+			    Word32 flag3) 
 {
 	Word32 s, i;
 	Word32 * x0, *x1, *x2;
@@ -2217,7 +2281,8 @@ static void Pred_lt_3or6_40(Word32 exc[], Word32 T0, Word32 frac, Word32 flag3)
  * Returns:
  *    void
  */ 
-static void Dec_lag6(Word32 index, Word32 pit_min, Word32 pit_max, Word32  i_subfr, Word32 * T0, Word32 * T0_frac) 
+static void Dec_lag6(Word32 index, Word32 pit_min, Word32 pit_max,
+		     Word32  i_subfr, Word32 * T0, Word32 * T0_frac) 
 {
 	Word32 t0_min, t0_max, i;
 	
@@ -2279,7 +2344,8 @@ static void Dec_lag6(Word32 index, Word32 pit_min, Word32 pit_max, Word32  i_su
  * Returns:
  *    void
  */ 
-static void decompress10(Word32 MSBs, Word32 LSBs, Word32 index1, Word32 index2 , Word32 index3, Word32 pos_indx[]) 
+static void decompress10(Word32 MSBs, Word32 LSBs, Word32 index1,
+			 Word32 index2 , Word32 index3, Word32 pos_indx[]) 
 {
 	Word32 divMSB;
 	if (MSBs > 124)
@@ -2293,8 +2359,10 @@ static void decompress10(Word32 MSBs, Word32 LSBs, Word32 index1, Word32 index2 
 	     * pos_indx[index3] = (MSBs/25)*2 + LSBs/4;
 	     */ 
 	    divMSB = MSBs / 25;
-	pos_indx[index1] = (((MSBs - 25 * (divMSB)) % 5) << 1) + (LSBs & 0x1 );
-	pos_indx[index2] = (((MSBs - 25 * (divMSB)) / 5) << 1) + ((LSBs & 0x2) >> 1);
+	pos_indx[index1] =
+	    (((MSBs - 25 * (divMSB)) % 5) << 1) + (LSBs & 0x1 );
+	pos_indx[index2] =
+	    (((MSBs - 25 * (divMSB)) / 5) << 1) + ((LSBs & 0x2) >> 1);
 	pos_indx[index3] = (divMSB << 1) + (LSBs >> 2);
 	return;
 }
@@ -2383,7 +2451,8 @@ static void decompress_codewords(Word16 indx[], Word32 pos_indx[])
  * Returns:
  *    void
  */ 
-static void decode_2i40_9bits(Word32 subNr, Word32 sign, Word32 index, Word32  cod[]) 
+static void decode_2i40_9bits(Word32 subNr, Word32 sign, Word32 index,
+			      Word32  cod[]) 
 {
 	Word32 pos[2];
 	Word32 i, j, k;
@@ -2781,7 +2850,8 @@ static Word32 gmed_n(Word32 ind[], Word32 n)
  * Returns:
  *    void
  */ 
-static void ec_gain_pitch(ec_gain_pitchState * st, Word16 state, Word32 * gain_pitch) 
+static void ec_gain_pitch(ec_gain_pitchState * st, Word16 state,
+			  Word32 * gain_pitch) 
 {
 	Word32 tmp;
 	
@@ -2845,7 +2915,8 @@ static Word32 d_gain_pitch(enum Mode mode, Word32 index)
  * Returns:
  *    gain
  */ 
-static void ec_gain_pitch_update(ec_gain_pitchState * st, Word32 bfi, Word32 prev_bf, Word32 * gain_pitch) 
+static void ec_gain_pitch_update(ec_gain_pitchState * st, Word32 bfi,
+				 Word32 prev_bf, Word32 * gain_pitch) 
 {
 	if (bfi == 0) {
 		if (prev_bf != 0) {
@@ -2913,8 +2984,9 @@ static void ec_gain_pitch_update(ec_gain_pitchState * st, Word32 bfi, Word32 pr
  * Returns:
  *    void
  */ 
-static void gc_pred(gc_predState * st, enum Mode mode, Word32 * code, Word32 * exp_gcode0, Word32 * frac_gcode0,
-		    Word32 * exp_en, Word32 * frac_en) 
+static void gc_pred(gc_predState * st, enum Mode mode, Word32 * code,
+		    Word32 * exp_gcode0, Word32 * frac_gcode0, Word32 * exp_en,
+		    Word32 * frac_en) 
 {
 	Word32 exp, frac, ener_code = 0, i = 0;
 	
@@ -3120,7 +3192,8 @@ static void gc_pred(gc_predState * st, enum Mode mode, Word32 * code, Word32 * 
  * Returns:
  *    void
  */ 
-static void gc_pred_update(gc_predState * st, Word32 qua_ener_MR122, Word32 qua_ener) 
+static void gc_pred_update(gc_predState * st, Word32 qua_ener_MR122,
+			   Word32 qua_ener) 
 {
 	Word32 i;
 	for (i = 3; i > 0; i--) {
@@ -3152,8 +3225,9 @@ static void gc_pred_update(gc_predState * st, Word32 qua_ener_MR122, Word32 qua
  * Returns:
  *    void
  */ 
-static void Dec_gain(gc_predState * pred_state, enum Mode mode, Word32 index, Word32 code[], Word32 evenSubfr,
-		     Word32 * gain_pit, Word32 * gain_cod) 
+static void Dec_gain(gc_predState * pred_state, enum Mode mode, Word32 index,
+		     Word32 code[], Word32 evenSubfr, Word32 * gain_pit,
+		     Word32 * gain_cod) 
 {
 	Word32 frac, gcode0, exp, qua_ener, qua_ener_MR122, g_code, tmp;
 	const Word32 *p;
@@ -3259,7 +3333,8 @@ static void Dec_gain(gc_predState * pred_state, enum Mode mode, Word32 index, W
  * Returns:
  *    void
  */ 
-static void gc_pred_average_limited(gc_predState * st, Word32 * ener_avg_MR122, Word32 * ener_avg) 
+static void gc_pred_average_limited(gc_predState * st, Word32 * ener_avg_MR122,
+				    Word32 * ener_avg) 
 {
 	Word32 av_pred_en, i;
 	
@@ -3312,7 +3387,8 @@ static void gc_pred_average_limited(gc_predState * st, Word32 * ener_avg_MR122, 
  * Returns:
  *    void
  */ 
-static void ec_gain_code(ec_gain_codeState * st, gc_predState * pred_state, Word16 state, Word32 * gain_code) 
+static void ec_gain_code(ec_gain_codeState * st, gc_predState * pred_state,
+			 Word16 state, Word32 * gain_code) 
 {
 	Word32 tmp, qua_ener_MR122, qua_ener;
 	
@@ -3353,7 +3429,8 @@ static void ec_gain_code(ec_gain_codeState * st, gc_predState * pred_state, Wor
  * Returns:
  *    void
  */ 
-static void ec_gain_code_update(ec_gain_codeState * st, Word16 bfi, Word16 prev_bf, Word32 * gain_code) 
+static void ec_gain_code_update(ec_gain_codeState * st, Word16 bfi,
+				Word16 prev_bf, Word32 * gain_code) 
 {
 	
 	    /* limit gain_code by previous good gain if previous frame was bad */ 
@@ -3394,7 +3471,8 @@ static void ec_gain_code_update(ec_gain_codeState * st, Word16 bfi, Word16 prev
  * Returns:
  *    void
  */ 
-static void d_gain_code(gc_predState * pred_state, enum Mode mode, Word32 index, Word32 code[], Word32 * gain_code) 
+static void d_gain_code(gc_predState * pred_state, enum Mode mode, Word32 index,
+			Word32 code[], Word32 * gain_code) 
 {
 	Word32 g_code0, exp, frac, qua_ener_MR122, qua_ener;
 	Word32 exp_inn_en, frac_inn_en, tmp, tmp2, i;
@@ -3403,7 +3481,8 @@ static void d_gain_code(gc_predState * pred_state, enum Mode mode, Word32 index,
 	    /*
 	     * Decode codebook gain
 	     */ 
-	    gc_pred(pred_state, mode, code, &exp, &frac, &exp_inn_en, &frac_inn_en);
+	    gc_pred(pred_state, mode, code, &exp, &frac, &exp_inn_en,
+		    &frac_inn_en);
 	p = &qua_gain_code[((index + index) + index)];
 	
 	    /* Different scalings between MR122 and the other modes */ 
@@ -3433,7 +3512,9 @@ static void d_gain_code(gc_predState * pred_state, enum Mode mode, Word32 index,
 			for (i = exp; i < 0; i++) {
 				tmp2 = tmp << 1;
 				if ((tmp ^ tmp2) & 0x80000000) {
-					tmp = (tmp & 0x80000000) ? 0x80000000 : 0x7FFFFFFF;
+					tmp =
+					    (tmp & 0x80000000) ? 0x80000000 :
+					    0x7FFFFFFF;
 					break;
 				}
 				
@@ -3481,13 +3562,15 @@ static void d_gain_code(gc_predState * pred_state, enum Mode mode, Word32 index,
  * Returns:
  *    void
  */ 
-static void Int_lsf(Word32 lsf_old[], Word32 lsf_new[], int i_subfr, Word32  lsf_out[]) 
+static void Int_lsf(Word32 lsf_old[], Word32 lsf_new[], int i_subfr,
+		    Word32  lsf_out[]) 
 {
 	Word32 i;
 	switch (i_subfr) {
 	case 0:
 		for (i = 0; i < 10; i++) {
-			lsf_out[i] = lsf_old[i] - (lsf_old[i] >> 2) + (lsf_new[i] >> 2);
+			lsf_out[i] =
+			    lsf_old[i] - (lsf_old[i] >> 2) + (lsf_new[i] >> 2);
 		}
 		break;
 	case 40:
@@ -3497,7 +3580,8 @@ static void Int_lsf(Word32 lsf_old[], Word32 lsf_new[], int i_subfr, Word32  ls
 		break;
 	case 80:
 		for (i = 0; i < 10; i++) {
-			lsf_out[i] = (lsf_old[i] >> 2) - (lsf_new[i] >> 2) + lsf_new[i];
+			lsf_out[i] =
+			    (lsf_old[i] >> 2) - (lsf_new[i] >> 2) + lsf_new[i];
 		}
 		break;
 	case 120:
@@ -3532,12 +3616,16 @@ static void Int_lsf(Word32 lsf_old[], Word32 lsf_new[], int i_subfr, Word32  ls
  * Returns:
  *    void
  */ 
-static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode, Word32 
-			      gain_code, Word32 lsp[], Word32 lspAver[], Word16 bfi, Word16 prev_bf, Word16 pdfi,
-			      Word16 prev_pdf, Word32 inBackgroundNoise, Word32  voicedHangover) 
+static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode,
+			      Word32  gain_code, Word32 lsp[],
+			      Word32 lspAver[], Word16 bfi, Word16 prev_bf,
+			      Word16 pdfi, Word16 prev_pdf,
+			      Word32 inBackgroundNoise,
+			      Word32  voicedHangover) 
 {
 	Word32 tmp[M];
-	Word32 i, cbGainMix, tmp_diff, bgMix, cbGainMean, sum, diff, tmp1, tmp2;
+	Word32 i, cbGainMix, tmp_diff, bgMix, cbGainMean, sum, diff, tmp1,
+	    tmp2;
 	int shift1, shift2, shift;
 	
 	    /* set correct cbGainMix for MR74, MR795, MR122 */ 
@@ -3584,7 +3672,9 @@ static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode, Word32
 			tmp[i] = tmp[i] << -(shift);
 		}
 	}
-	diff = *tmp + tmp[1] + tmp[2] + tmp[3] + tmp[4] + tmp[5] + tmp[6] + tmp[7] + tmp[8] + tmp[9];
+	diff =
+	    *tmp + tmp[1] + tmp[2] + tmp[3] + tmp[4] + tmp[5] + tmp[6] +
+	    tmp[7] + tmp[8] + tmp[9];
 	
 	    /* saturate */ 
 	    if (diff > 32767) {
@@ -3612,9 +3702,12 @@ static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode, Word32
 		    if ((st->hangCount >= 40) & (diff <= 5325)) {	/* 0.65 in Q13 */
 			
 			    /* if errors and presumed noise make smoothing probability stronger */ 
-			    if (((((pdfi != 0) & (prev_pdf != 0)) | (bfi != 0) | (prev_bf != 0)) & ((voicedHangover >
-												      1)) &
-				 (inBackgroundNoise != 0) & (mode < MR67))) {
+			    if (((((pdfi != 0) & (prev_pdf != 0)) | (bfi !=
+								     0) |
+				  (prev_bf != 0)) & ((voicedHangover >
+						       1)) & (inBackgroundNoise
+							      != 0) & (mode <
+								       MR67))) {
 				
 				    /* bgMix = min(0.25, max(0.0, diff-0.55)) / 0.25; */ 
 				    tmp_diff = diff - 4506;	/* 0.55 in Q13 */
@@ -3654,7 +3747,8 @@ static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode, Word32
 		     * smoothing depends on mix constant bgMix
 		     */ 
 		    sum =
-		    st->cbGainHistory[2] + st->cbGainHistory[3] + st->cbGainHistory[4] + st->cbGainHistory[5] +
+		    st->cbGainHistory[2] + st->cbGainHistory[3] +
+		    st->cbGainHistory[4] + st->cbGainHistory[5] +
 		    st->cbGainHistory[6];
 		if (sum > 163822) {
 			cbGainMean = 32767;
@@ -3665,10 +3759,15 @@ static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode, Word32
 		}
 		
 		    /* more smoothing in error and bg noise (NB no DFI used  here) */ 
-		    if (((bfi != 0) | (prev_bf != 0)) & (inBackgroundNoise != 0) & (mode < MR67)) {
+		    if (((bfi != 0) | (prev_bf != 0)) & (inBackgroundNoise !=
+							 0) & (mode < MR67)) {
 			sum =
-			    9362 * (st->cbGainHistory[0] + st->cbGainHistory[1] + st->cbGainHistory[2] +
-				    st->cbGainHistory[3] + st->cbGainHistory[4] + st->cbGainHistory[5] +
+			    9362 * (st->cbGainHistory[0] +
+				    st->cbGainHistory[1] +
+				    st->cbGainHistory[2] +
+				    st->cbGainHistory[3] +
+				    st->cbGainHistory[4] +
+				    st->cbGainHistory[5] +
 				    st->cbGainHistory[6]);
 			cbGainMean = (sum + 0x00008000L) >> 16;	/* Q1 */
 		}
@@ -3711,7 +3810,8 @@ static Word32 Cb_gain_average(Cb_gain_averageState * st, enum Mode mode, Word32
  * Returns:
  *    void
  */ 
-static void ph_disp(ph_dispState * state, enum Mode mode, Word32 x[], Word32 cbGain, Word32 ltpGain, Word32 inno[],
+static void ph_disp(ph_dispState * state, enum Mode mode, Word32 x[],
+		    Word32 cbGain, Word32 ltpGain, Word32 inno[],
 		    Word32 pitch_fac, Word32 tmp_shift) 
 {
 	Word32 inno_sav[L_SUBFR], ps_poss[L_SUBFR];
@@ -3800,7 +3900,8 @@ static void ph_disp(ph_dispState * state, enum Mode mode, Word32 x[], Word32 cb
 	     * do phase dispersion for all modes but 12.2 and 7.4;
 	     * don't modify the innovation if impNr >=2 (= no phase disp)
 	     */ 
-	    if ((mode != MR122) & (mode != MR102) & (mode != MR74) & (impNr < 2) ) {
+	    if ((mode != MR122) & (mode != MR102) & (mode != MR74) & (impNr <
+								      2) ) {
 		
 		    /*
 		     * track pulse positions, save innovation,
@@ -3837,13 +3938,15 @@ static void ph_disp(ph_dispState * state, enum Mode mode, Word32 x[], Word32 cb
 			for (i = ppos; i < L_SUBFR; i++) {
 				
 				    /* inno[i1] += inno_sav[ppos] * ph_imp[i1-ppos] */ 
-				    temp1 = (inno_sav[ppos] * ph_imp[j++]) >> 15;
+				    temp1 =
+				    (inno_sav[ppos] * ph_imp[j++]) >> 15;
 				inno[i] = inno[i] + temp1;
 			}
 			for (i = 0; i < ppos; i++) {
 				
 				    /* inno[i] += inno_sav[ppos] * ph_imp[L_SUBFR-ppos+i] */ 
-				    temp1 = (inno_sav[ppos] * ph_imp[j++]) >> 15;
+				    temp1 =
+				    (inno_sav[ppos] * ph_imp[j++]) >> 15;
 				inno[i] = inno[i] + temp1;
 			}
 		}
@@ -3949,7 +4052,8 @@ static Word32 sqrt_l_exp(Word32 x, Word32 * exp)
  *    background noise decision; 0 = no bgn, 1 = bgn
  */ 
 static Word16 Ex_ctrl(Word32 excitation[], Word32 excEnergy, Word32 
-		      exEnergyHist[], Word32 voicedHangover, Word16 prevBFI, Word16 carefulFlag ) 
+		      exEnergyHist[], Word32 voicedHangover, Word16 prevBFI,
+		      Word16 carefulFlag ) 
 {
 	Word32 i, testEnergy, scaleFactor, avgEnergy, prevEnergy, T0;
 	int exp;
@@ -4243,9 +4347,11 @@ static void agc2(Word32 * sig_in, Word32 * sig_out)
  * Returns:
  *    inbgNoise         background noise decision; 0 = no bgn, 1 = bgn
  */ 
-static Word16 Bgn_scd(Bgn_scdState * st, Word32 ltpGainHist[], Word32 speech[], Word32 * voicedHangover) 
+static Word16 Bgn_scd(Bgn_scdState * st, Word32 ltpGainHist[], Word32 speech[],
+		      Word32 * voicedHangover) 
 {
-	Word32 temp, ltpLimit, frame_energyMin, currEnergy, noiseFloor, maxEnergy, maxEnergyLastPart, s, i;
+	Word32 temp, ltpLimit, frame_energyMin, currEnergy, noiseFloor,
+	    maxEnergy, maxEnergyLastPart, s, i;
 	Word16 prevVoiced, inbgNoise;
 	
 	    /*
@@ -4293,14 +4399,11 @@ static Word16 Bgn_scd(Bgn_scdState * st, Word32 ltpGainHist[], Word32 speech[], 
 	     * Mark as noise if under current noise limit
 	     * OR if the maximum energy is below the upper limit
 	     */ 
-	    if ((maxEnergy > LOWERNOISELIMIT) & (currEnergy < FRAMEENERGYLIMIT) & (currEnergy >
-										   LOWERNOISELIMIT) & ((currEnergy <
-													noiseFloor)
-												       ||
-												       (maxEnergyLastPart
-													<
-													UPPERNOISELIMIT)))
-	{
+	    if ((maxEnergy > LOWERNOISELIMIT) & (currEnergy <
+						 FRAMEENERGYLIMIT) &
+		(currEnergy > LOWERNOISELIMIT) & ((currEnergy < noiseFloor)
+						   || (maxEnergyLastPart <
+						       UPPERNOISELIMIT))) {
 		if ((st->bgHangover + 1) > 30) {
 			st->bgHangover = 30;
 		}
@@ -4382,7 +4485,8 @@ static Word16 Bgn_scd(Bgn_scdState * st, Word32 ltpGainHist[], Word32 speech[], 
  * Returns:
  *    void
  */ 
-static void dtx_dec_activity_update(dtx_decState * st, Word32 lsf[], Word32  frame[]) 
+static void dtx_dec_activity_update(dtx_decState * st, Word32 lsf[],
+				    Word32  frame[]) 
 {
 	Word32 frame_en;
 	Word32 log_en_e, log_en_m, log_en, i;
@@ -4401,7 +4505,8 @@ static void dtx_dec_activity_update(dtx_decState * st, Word32 lsf[], Word32  fr
 		if (frame_en & 0x80000000)
 			break;
 	}
-	log_en = (frame_en & 0xC0000000) ? 0x7FFFFFFE : (Word32) frame_en << 1;
+	log_en =
+	    (frame_en & 0xC0000000) ? 0x7FFFFFFE : (Word32) frame_en << 1;
 	Log2(log_en, &log_en_e, &log_en_m);
 	
 	    /* convert exponent and mantissa to Word16 Q10 */ 
@@ -4441,8 +4546,9 @@ static void dtx_dec_activity_update(dtx_decState * st, Word32 lsf[], Word32  fr
  * Returns:
  *    void
  */ 
-static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], enum RXFrameType frame_type,
-			Word32 synth[], Word32 A_t[]) 
+static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[],
+			enum RXFrameType frame_type, Word32 synth[],
+			Word32 A_t[]) 
 {
 	
 	    /* LSPs */ 
@@ -4461,8 +4567,10 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 	Word32 exc_enhanced[L_SUBFR];
 	
 	    /* Scalars */ 
-	    Word32 i, i_subfr, overflow, T0_frac, index, temp, temp2, subfrNr, excEnergy;
-	Word32 gain_code, gain_code_mix, pit_sharp, pit_flag, pitch_fac, t0_min, t0_max;
+	    Word32 i, i_subfr, overflow, T0_frac, index, temp, temp2, subfrNr,
+	    excEnergy;
+	Word32 gain_code, gain_code_mix, pit_sharp, pit_flag, pitch_fac,
+	    t0_min, t0_max;
 	Word32 gain_pit = 0, evenSubfr = 0, T0 = 0, index_mr475 = 0;
 	Word32 * Az;		/* Pointer on A_t */
 	Word16 flag4, carefulFlag;
@@ -4478,8 +4586,9 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 	    /* DTX actions */ 
 	    if (newDTXState != SPEECH) {
 		Decoder_amr_reset(st, MRDTX);
-		dtx_dec(st->dtxDecoderState, st->mem_syn, st->lsfState, st->pred_state, st->Cb_gain_averState,
-			 newDTXState, mode, parm, synth, A_t);
+		dtx_dec(st->dtxDecoderState, st->mem_syn, st->lsfState,
+			 st->pred_state, st->Cb_gain_averState, newDTXState,
+			 mode, parm, synth, A_t);
 		
 		    /* update average lsp */ 
 		    Lsf_lsp(st->lsfState->past_lsf_q, st->lsp_old);
@@ -4599,7 +4708,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 			     * this is needed for mode MR475, MR515, MR59 and MR67
 			     */ 
 			    flag4 = 0;
-			if ((mode == MR475) || (mode == MR515) || (mode == MR59) || (mode == MR67)) {
+			if ((mode == MR475) || (mode == MR515)
+			      || (mode == MR59) || (mode == MR67)) {
 				flag4 = 1;
 			}
 			
@@ -4622,7 +4732,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 				t0_max = PIT_MAX;
 				t0_min = t0_max - delta_frc_range;
 			}
-			Dec_lag3(index, t0_min, t0_max, pit_flag, st->old_T0, &T0, &T0_frac, flag4);
+			Dec_lag3(index, t0_min, t0_max, pit_flag, st->old_T0,
+				  &T0, &T0_frac, flag4);
 			st->T0_lagBuff = T0;
 			if (bfi != 0) {
 				if (st->old_T0 < PIT_MAX) {
@@ -4632,9 +4743,11 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 				}
 				T0 = st->old_T0;
 				T0_frac = 0;
-				if ((st->inBackgroundNoise != 0) & (st->voicedHangover > 4) & ((mode == MR475)
-												 || (mode == MR515)
-												 || (mode == MR59)))
+				if ((st->inBackgroundNoise !=
+				       0) & (st->voicedHangover >
+					     4) & ((mode == MR475)
+						   || (mode == MR515)
+						   || (mode == MR59)))
 					 {
 					T0 = st->T0_lagBuff;
 					}
@@ -4643,7 +4756,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		}
 		
 		else {
-			Dec_lag6(index, PIT_MIN_MR122, PIT_MAX, pit_flag, &T0, &T0_frac);
+			Dec_lag6(index, PIT_MIN_MR122, PIT_MAX, pit_flag, &T0,
+				  &T0_frac);
 			if ((bfi != 0) || ((pit_flag != 0) & (index > 60))) {
 				st->T0_lagBuff = T0;
 				T0 = st->old_T0;
@@ -4716,13 +4830,15 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		    else {
 			index = *parm++;
 			if (bfi != 0) {
-				ec_gain_pitch(st->ec_gain_p_st, st->state, &gain_pit);
+				ec_gain_pitch(st->ec_gain_p_st, st->state,
+					       &gain_pit);
 			}
 			
 			else {
 				gain_pit = d_gain_pitch(mode, index);
 			}
-			ec_gain_pitch_update(st->ec_gain_p_st, bfi, st->prev_bf, &gain_pit);
+			ec_gain_pitch_update(st->ec_gain_p_st, bfi,
+					      st->prev_bf, &gain_pit);
 			decode_10i40_35bits(parm, code);
 			parm += 10;
 			
@@ -4760,15 +4876,21 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 				    index_mr475 = *parm++;
 			}
 			if (bfi == 0) {
-				Dec_gain(st->pred_state, mode, index_mr475, code, evenSubfr, &gain_pit, &gain_code);
+				Dec_gain(st->pred_state, mode, index_mr475,
+					  code, evenSubfr, &gain_pit,
+					  &gain_code);
 			}
 			
 			else {
-				ec_gain_pitch(st->ec_gain_p_st, st->state, &gain_pit);
-				ec_gain_code(st->ec_gain_c_st, st->pred_state, st->state, &gain_code);
+				ec_gain_pitch(st->ec_gain_p_st, st->state,
+					       &gain_pit);
+				ec_gain_code(st->ec_gain_c_st, st->pred_state,
+					      st->state, &gain_code);
 			}
-			ec_gain_pitch_update(st->ec_gain_p_st, bfi, st->prev_bf, &gain_pit);
-			ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf, &gain_code);
+			ec_gain_pitch_update(st->ec_gain_p_st, bfi,
+					      st->prev_bf, &gain_pit);
+			ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf,
+					     &gain_code);
 			pit_sharp = gain_pit;
 			if (pit_sharp > SHARPMAX) {
 				pit_sharp = SHARPMAX;
@@ -4781,15 +4903,20 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 			    /* index of gain(s) */ 
 			    index = *parm++;
 			if (bfi == 0) {
-				Dec_gain(st->pred_state, mode, index, code, evenSubfr, &gain_pit, &gain_code);
+				Dec_gain(st->pred_state, mode, index, code,
+					  evenSubfr, &gain_pit, &gain_code);
 			}
 			
 			else {
-				ec_gain_pitch(st->ec_gain_p_st, st->state, &gain_pit);
-				ec_gain_code(st->ec_gain_c_st, st->pred_state, st->state, &gain_code);
+				ec_gain_pitch(st->ec_gain_p_st, st->state,
+					       &gain_pit);
+				ec_gain_code(st->ec_gain_c_st, st->pred_state,
+					      st->state, &gain_code);
 			}
-			ec_gain_pitch_update(st->ec_gain_p_st, bfi, st->prev_bf, &gain_pit);
-			ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf, &gain_code);
+			ec_gain_pitch_update(st->ec_gain_p_st, bfi,
+					      st->prev_bf, &gain_pit);
+			ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf,
+					     &gain_code);
 			pit_sharp = gain_pit;
 			if (pit_sharp > SHARPMAX) {
 				pit_sharp = SHARPMAX;
@@ -4810,24 +4937,30 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 				
 				    /* decode pitch gain */ 
 				    if (bfi != 0) {
-					ec_gain_pitch(st->ec_gain_p_st, st->state, &gain_pit);
+					ec_gain_pitch(st->ec_gain_p_st,
+						       st->state, &gain_pit);
 				}
 				
 				else {
 					gain_pit = d_gain_pitch(mode, index);
 				}
-				ec_gain_pitch_update(st->ec_gain_p_st, bfi, st->prev_bf, &gain_pit );
+				ec_gain_pitch_update(st->ec_gain_p_st, bfi,
+						      st->prev_bf, &gain_pit );
 				
 				    /* read and decode code gain */ 
 				    index = *parm++;
 				if (bfi == 0) {
-					d_gain_code(st->pred_state, mode, index, code, &gain_code);
+					d_gain_code(st->pred_state, mode,
+						     index, code, &gain_code);
 				}
 				
 				else {
-					ec_gain_code(st->ec_gain_c_st, st->pred_state, st->state, &gain_code);
+					ec_gain_code(st->ec_gain_c_st,
+						      st->pred_state, st->state,
+						      &gain_code);
 				}
-				ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf, &gain_code );
+				ec_gain_code_update(st->ec_gain_c_st, bfi,
+						     st->prev_bf, &gain_code );
 				pit_sharp = gain_pit;
 				if (pit_sharp > SHARPMAX) {
 					pit_sharp = SHARPMAX;
@@ -4836,13 +4969,17 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 			
 			else {	/* MR122 */
 				if (bfi == 0) {
-					d_gain_code(st->pred_state, mode, index, code, &gain_code);
+					d_gain_code(st->pred_state, mode,
+						     index, code, &gain_code);
 				}
 				
 				else {
-					ec_gain_code(st->ec_gain_c_st, st->pred_state, st->state, &gain_code);
+					ec_gain_code(st->ec_gain_c_st,
+						      st->pred_state, st->state,
+						      &gain_code);
 				}
-				ec_gain_code_update(st->ec_gain_c_st, bfi, st->prev_bf, &gain_code );
+				ec_gain_code_update(st->ec_gain_c_st, bfi,
+						     st->prev_bf, &gain_code );
 				pit_sharp = gain_pit;
 			}
 		}
@@ -4881,7 +5018,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		     */ 
 		    if (bfi == 0) {
 			for (i = 0; i < 8; i++) {
-				st->ltpGainHistory[i] = st->ltpGainHistory[i + 1];
+				st->ltpGainHistory[i] =
+				    st->ltpGainHistory[i + 1];
 			}
 			st->ltpGainHistory[8] = gain_pit;
 		}
@@ -4890,15 +5028,18 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		     * Limit gain_pit if in background noise and BFI
 		     * for MR475, MR515, MR59
 		     */ 
-		    if ((st->prev_bf != 0 || bfi != 0) & (st->inBackgroundNoise != 0) & ((mode == MR475)
-											 || (mode == MR515)
-											 || (mode == MR59))) {
+		    if ((st->prev_bf != 0
+			 || bfi != 0) & (st->inBackgroundNoise !=
+					 0) & ((mode == MR475)
+					       || (mode == MR515)
+					       || (mode == MR59))) {
 			
 			    /* if (gain_pit > 0.75) in Q14 */ 
 			    if (gain_pit > 12288)
 				
 				    /* gain_pit = (gain_pit-0.75)/2.0 + 0.75; */ 
-				    gain_pit = ((gain_pit - 12288) >> 1) + 12288;
+				    gain_pit =
+				    ((gain_pit - 12288) >> 1) + 12288;
 			
 			    /* if (gain_pit > 0.90) in Q14 */ 
 			    if (gain_pit > 14745) {
@@ -4911,8 +5052,10 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		     */ 
 		    Int_lsf(prev_lsf, st->lsfState->past_lsf_q, i_subfr, lsf_i);
 		gain_code_mix =
-		    Cb_gain_average(st->Cb_gain_averState, mode, gain_code, lsf_i, st->lsp_avg_st->lsp_meanSave, bfi,
-				    st->prev_bf, pdfi, st->prev_pdf, st->inBackgroundNoise, st->voicedHangover);
+		    Cb_gain_average(st->Cb_gain_averState, mode, gain_code,
+				    lsf_i, st->lsp_avg_st->lsp_meanSave, bfi,
+				    st->prev_bf, pdfi, st->prev_pdf,
+				    st->inBackgroundNoise, st->voicedHangover);
 		
 		    /* make sure that MR74, MR795, MR122 have original codeGain */ 
 		    /* MR74, MR795, MR122 */ 
@@ -4944,15 +5087,20 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		for (i = 0; i < L_SUBFR; i++) {
 			
 			    /* st->exc[i] = gain_pit*st->exc[i] + gain_code*code[i]; */ 
-			    temp = (st->exc[i] * pitch_fac) + (code[i] * gain_code);
+			    temp =
+			    (st->exc[i] * pitch_fac) + (code[i] * gain_code);
 			temp2 = (temp << tmp_shift);
 			if (((temp2 >> 1) ^ temp2) & 0x40000000) {
 				if ((temp ^ temp2) & 0x80000000) {
-					temp2 = (temp & 0x80000000) ? (-1073741824L) : 1073725439;
+					temp2 =
+					    (temp & 0x80000000) ? (-1073741824L)
+					    : 1073725439;
 				}
 				
 				else {
-					temp2 = (temp2 & 0x80000000) ? (-1073741824L) : 1073725439;
+					temp2 =
+					    (temp2 & 0x80000000)
+					    ? (-1073741824L) : 1073725439;
 				}
 			}
 			st->exc[i] = (temp2 + 0x00004000L) >> 15;
@@ -4965,7 +5113,9 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		    /* free phase dispersion adaption */ 
 		    st->ph_disp_st->lockFull = 0;
 		if (((mode == MR475) || (mode == MR515)
-		       || (mode == MR59)) & (st ->voicedHangover > 3) & (st->inBackgroundNoise != 0) & (bfi != 0 )) {
+		       || (mode == MR59)) & (st ->voicedHangover >
+					     3) & (st->inBackgroundNoise !=
+						   0) & (bfi != 0 )) {
 			
 			    /*
 			     * Always Use full Phase Disp.
@@ -4978,7 +5128,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		     * apply phase dispersion to innovation (if enabled) and
 		     * compute total excitation for synthesis part
 		     */ 
-		    ph_disp(st->ph_disp_st, mode, exc_enhanced, gain_code_mix, gain_pit, code , pitch_fac, tmp_shift);
+		    ph_disp(st->ph_disp_st, mode, exc_enhanced, gain_code_mix,
+			    gain_pit, code , pitch_fac, tmp_shift);
 		
 		    /*
 		     * The Excitation control module are active during BFI.
@@ -4998,14 +5149,21 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 			excEnergy = temp2 >> 2;
 		}
 		if (((mode == MR475) || (mode == MR515)
-		       || (mode == MR59)) & (st ->voicedHangover > 5) & (st->inBackgroundNoise != 0) & (st->state <
-													 4) &
-		      (((pdfi != 0) & (st->prev_pdf != 0)) || bfi != 0 || st->prev_bf != 0)) {
+		       || (mode == MR59)) & (st ->voicedHangover >
+					     5) & (st->inBackgroundNoise !=
+						   0) & (st->state <
+							 4) & (((pdfi != 0) &
+								(st->prev_pdf !=
+								 0))
+							       || bfi != 0
+							       || st->prev_bf !=
+							       0)) {
 			carefulFlag = 0;
 			if ((pdfi != 0) & (bfi == 0)) {
 				carefulFlag = 1;
 			}
-			Ex_ctrl(exc_enhanced, excEnergy, st->excEnergyHist, st->voicedHangover , st->prev_bf,
+			Ex_ctrl(exc_enhanced, excEnergy, st->excEnergyHist,
+				 st->voicedHangover , st->prev_bf,
 				 carefulFlag);
 		}
 		if ((st->inBackgroundNoise != 0) & (bfi != 0 || st->prev_bf != 0) & (st->state < 4)) {;	/* do nothing! */
@@ -5015,7 +5173,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 			
 			    /* Update energy history for all modes */ 
 			    for (i = 0; i < 8; i++) {
-				st->excEnergyHist[i] = st->excEnergyHist[i + 1];
+				st->excEnergyHist[i] =
+				    st->excEnergyHist[i + 1];
 			}
 			st->excEnergyHist[8] = excEnergy;
 		}
@@ -5027,14 +5186,20 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 			for (i = 0; i < L_SUBFR; i++) {
 				excp[i] = excp[i] + exc_enhanced[i];
 				if (labs(excp[i]) > 32767)
-					excp[i] = (excp[i] & 0x80000000) ? -32768 : 32767;
+					excp[i] =
+					    (excp[i] & 0x80000000) ? -32768 :
+					    32767;
 			}
 			agc2(exc_enhanced, excp);
-			overflow = Syn_filt(Az, excp, &synth[i_subfr], L_SUBFR, st->mem_syn, 0 );
+			overflow =
+			    Syn_filt(Az, excp, &synth[i_subfr], L_SUBFR,
+				     st->mem_syn, 0 );
 		}
 		
 		else {
-			overflow = Syn_filt(Az, exc_enhanced, &synth[i_subfr], L_SUBFR, st->mem_syn, 0);
+			overflow =
+			    Syn_filt(Az, exc_enhanced, &synth[i_subfr], L_SUBFR,
+				     st->mem_syn, 0);
 		}
 		if (overflow) {
 			for (i = 0; i < PIT_MAX + L_INTERPOL + L_SUBFR; i++) {
@@ -5043,7 +5208,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 			for (i = 0; i < L_SUBFR; i++) {
 				exc_enhanced[i] = exc_enhanced[i] >> 2;
 			}
-			Syn_filt_overflow(Az, exc_enhanced, &synth[i_subfr], L_SUBFR, st->mem_syn, 1);
+			Syn_filt_overflow(Az, exc_enhanced, &synth[i_subfr],
+					   L_SUBFR, st->mem_syn, 1);
 		}
 		
 		else {
@@ -5054,7 +5220,8 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 		     * Update signal for next frame.
 		     * -> shift to the left by L_SUBFR  st->exc[]
 		     */ 
-		    memcpy(&st->old_exc[0], &st->old_exc[L_SUBFR], (PIT_MAX + L_INTERPOL) << 2);
+		    memcpy(&st->old_exc[0], &st->old_exc[L_SUBFR],
+			   (PIT_MAX + L_INTERPOL) << 2);
 		
 		    /* interpolated LPC parameters for next subframe */ 
 		    Az += MP1;
@@ -5068,8 +5235,10 @@ static void Decoder_amr(Decoder_amrState * st, enum Mode mode, Word16 parm[], e
 	     * st->inBackgroundNoise and st->voicedHangover.
 	     */ 
 	    st->inBackgroundNoise =
-	    Bgn_scd(st->background_state, &(st->ltpGainHistory[0]), &(synth[0]), &(st->voicedHangover));
-	dtx_dec_activity_update(st->dtxDecoderState, st->lsfState->past_lsf_q, synth );
+	    Bgn_scd(st->background_state, &(st->ltpGainHistory[0]),
+		    &(synth[0]), &(st->voicedHangover));
+	dtx_dec_activity_update(st->dtxDecoderState, st->lsfState->past_lsf_q,
+				 synth );
 	
 	    /* store bfi for next subframe */ 
 	    st->prev_bf = bfi;
@@ -5105,8 +5274,11 @@ static void Residu40(Word32 a[], Word32 x[], Word32 y[])
 {
 	Word32 s, i, j;
 	for (i = 0; i < 40; i++) {
-		s = a[0] * x[i] + a[1] * x[i - 1] + a[2] * x[i - 2] + a[3] * x[i - 3];
-		s += a[4] * x[i - 4] + a[5] * x[i - 5] + a[6] * x[i - 6] + a[7] * x[i - 7] ;
+		s = a[0] * x[i] + a[1] * x[i - 1] + a[2] * x[i - 2] +
+		    a[3] * x[i - 3];
+		s +=
+		    a[4] * x[i - 4] + a[5] * x[i - 5] + a[6] * x[i - 6] +
+		    a[7] * x[i - 7] ;
 		s += a[8] * x[i - 8] + a[9] * x[i - 9] + a[10] * x[i - 10];
 		y[i] = (s + 0x800) >> 12;
 		if (abs(y[i]) > 32767) {
@@ -5126,7 +5298,9 @@ static void Residu40(Word32 a[], Word32 x[], Word32 y[])
 				}
 				y[i] = (s + 0x800) >> 12;
 				if (abs(y[i]) > 32767)
-					y[i] = (y[i] & 0x80000000) ? -32768 : 32767;
+					y[i] =
+					    (y[i] & 0x80000000) ? -32768 :
+					    32767;
 			}
 			return;
 		}
@@ -5151,7 +5325,8 @@ static void Residu40(Word32 a[], Word32 x[], Word32 y[])
  * Returns:
  *    void
  */ 
-static void agc(agcState * st, Word32 * sig_in, Word32 * sig_out, Word16 agc_fac) 
+static void agc(agcState * st, Word32 * sig_in, Word32 * sig_out,
+		Word16 agc_fac) 
 {
 	Word32 s, gain_in, gain_out, g0, gain;
 	int exp, i;
@@ -5270,7 +5445,8 @@ static void agc(agcState * st, Word32 * sig_in, Word32 * sig_out, Word16 agc_fac
  * Returns:
  *    void
  */ 
-static void Post_Filter(Post_FilterState * st, enum Mode mode, Word32 * syn, Word32 * Az_4) 
+static void Post_Filter(Post_FilterState * st, enum Mode mode, Word32 * syn,
+			Word32 * Az_4) 
 {
 	Word32 h[22], Ap3[MP1], Ap4[MP1];	/* bandwidth expanded LP parameters */
 	Word32 tmp, i_subfr, i, temp1, temp2, overflow = 0;
@@ -5361,9 +5537,12 @@ static void Post_Filter(Post_FilterState * st, enum Mode mode, Word32 * syn, Wo
 		st->preemph_state_mem_pre = tmp;
 		
 		    /* filtering through  1/A(z/0.75) */ 
-		    overflow = Syn_filt(Ap4, st->res2, &syn[i_subfr], L_SUBFR, st->mem_syn_pst, 0);
+		    overflow =
+		    Syn_filt(Ap4, st->res2, &syn[i_subfr], L_SUBFR,
+			     st->mem_syn_pst, 0);
 		if (overflow) {
-			Syn_filt_overflow(Ap4, st->res2, &syn[i_subfr], L_SUBFR, st->mem_syn_pst, 1);
+			Syn_filt_overflow(Ap4, st->res2, &syn[i_subfr],
+					   L_SUBFR, st->mem_syn_pst, 1);
 			overflow = 0;
 		}
 		
@@ -5372,7 +5551,8 @@ static void Post_Filter(Post_FilterState * st, enum Mode mode, Word32 * syn, Wo
 		}
 		
 		    /* scale output to input */ 
-		    agc(st->agc_state, &syn_work[i_subfr], &syn[i_subfr], AGC_FAC);
+		    agc(st->agc_state, &syn_work[i_subfr], &syn[i_subfr],
+			AGC_FAC);
 		Az += MP1;
 	}
 	
@@ -5414,8 +5594,12 @@ static void Post_Process(Post_ProcessState * st, Word32 signal[])
 		     * y[i] = b[0]*x[i]*2 + b[1]*x[i-1]*2 + b140[2]*x[i-2]/2
 		     *                    + a[1]*y[i-1] + a[2] * y[i-2];
 		     */ 
-		    tmp = (st->y1_hi * 15836) + (((st->y1_lo * 15836) & (Word32) 0xffff8000) >> 15);
-		tmp += (st->y2_hi * -7667) + (((st->y2_lo * (-7667)) & (Word32) 0xffff8000) >> 15);
+		    tmp =
+		    (st->y1_hi * 15836) +
+		    (((st->y1_lo * 15836) & (Word32) 0xffff8000) >> 15);
+		tmp +=
+		    (st->y2_hi * -7667) +
+		    (((st->y2_lo * (-7667)) & (Word32) 0xffff8000) >> 15);
 		tmp += st->x0 * 7699;
 		tmp += st->x1 * -15398;
 		if (((tmp >> 1) ^ tmp) & mask)
@@ -5466,7 +5650,8 @@ static void Post_Process(Post_ProcessState * st, Word32 signal[])
  * Returns:
  *    void
  */ 
-void Speech_Decode_Frame(void *st, enum Mode mode, Word16 * parm, enum RXFrameType frame_type, Word16 * synth) 
+void Speech_Decode_Frame(void *st, enum Mode mode, Word16 * parm,
+			 enum RXFrameType frame_type, Word16 * synth) 
 {
 	Word32 Az_dec[AZ_SIZE];	/* Decoded Az for post-filter in 4 subframes */
 	Word32 synth_speech[L_FRAME];
@@ -5477,12 +5662,14 @@ void Speech_Decode_Frame(void *st, enum Mode mode, Word16 * parm, enum RXFrameT
 #endif				/*  */
 	    
 	    /* Synthesis */ 
-	    Decoder_amr(((Speech_Decode_FrameState *) st)->decoder_amrState, mode, parm, frame_type, synth_speech,
-			Az_dec);
-	Post_Filter(((Speech_Decode_FrameState *) st)->post_state, mode, synth_speech, Az_dec);
+	    Decoder_amr(((Speech_Decode_FrameState *) st)->decoder_amrState,
+			mode, parm, frame_type, synth_speech, Az_dec);
+	Post_Filter(((Speech_Decode_FrameState *) st)->post_state, mode,
+		     synth_speech, Az_dec);
 	
 	    /* post HP filter, and 15->16 bits */ 
-	    Post_Process(((Speech_Decode_FrameState *) st)->postHP_state, synth_speech);
+	    Post_Process(((Speech_Decode_FrameState *) st)->postHP_state,
+			 synth_speech);
 	
 #ifndef NO13BIT
 	    
@@ -5633,43 +5820,60 @@ static int Decoder_amr_init(Decoder_amrState ** state)
 	*state = NULL;
 	
 	    /* allocate memory */ 
-	    if ((s = (Decoder_amrState *) malloc(sizeof(Decoder_amrState))) == NULL) {
-		fprintf(stderr, "Decoder_amr_init: can not malloc state structure\n");
+	    if ((s =
+		 (Decoder_amrState *) malloc(sizeof(Decoder_amrState))) ==
+		NULL) {
+		fprintf(stderr,
+			 "Decoder_amr_init: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* DPlsf_init */ 
 	    /* allocate memory */ 
-	    if ((s->lsfState = (D_plsfState *) malloc(sizeof(D_plsfState))) == NULL) {
-		fprintf(stderr, "DPlsf_init: can not malloc state structure\n");
+	    if ((s->lsfState =
+		 (D_plsfState *) malloc(sizeof(D_plsfState))) == NULL) {
+		fprintf(stderr,
+			 "DPlsf_init: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* ecGainPitchInit */ 
 	    /* allocate memory */ 
-	    if ((s->ec_gain_p_st = (ec_gain_pitchState *) malloc(sizeof(ec_gain_pitchState))) == NULL) {
-		fprintf(stderr, "ecGainPitchInit: can not malloc state structure\n");
+	    if ((s->ec_gain_p_st =
+		 (ec_gain_pitchState *) malloc(sizeof(ec_gain_pitchState))) ==
+		NULL) {
+		fprintf(stderr,
+			 "ecGainPitchInit: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* ecGainCodeInit */ 
 	    /* allocate memory */ 
-	    if ((s->ec_gain_c_st = (ec_gain_codeState *) malloc(sizeof(ec_gain_codeState))) == NULL) {
-		fprintf(stderr, "ecGainCodeInit: can not malloc state structure\n");
+	    if ((s->ec_gain_c_st =
+		 (ec_gain_codeState *) malloc(sizeof(ec_gain_codeState))) ==
+		NULL) {
+		fprintf(stderr,
+			 "ecGainCodeInit: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* gcPredInit */ 
 	    /* allocate memory */ 
-	    if ((s->pred_state = (gc_predState *) malloc(sizeof(gc_predState)))  == NULL) {
-		fprintf(stderr, "gcPredInit: can not malloc state structure\n");
+	    if ((s->pred_state =
+		 (gc_predState *) malloc(sizeof(gc_predState)))  == NULL) {
+		fprintf(stderr,
+			 "gcPredInit: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* Cb_gain_averageInit */ 
 	    /* allocate memory */ 
-	    if ((s->Cb_gain_averState = (Cb_gain_averageState *) malloc(sizeof(Cb_gain_averageState))) == NULL) {
-		fprintf(stderr, "Cb_gain_averageInit: can not malloc state structure\n") ;
+	    if ((s->Cb_gain_averState =
+		 (Cb_gain_averageState *) malloc(sizeof(Cb_gain_averageState)))
+		== NULL) {
+		fprintf(stderr,
+			 "Cb_gain_averageInit: can not malloc state structure\n")
+		    ;
 		return -1;
 	}
 	memset(s->Cb_gain_averState->cbGainHistory, 0, L_CBGAINHIST << 2);
@@ -5680,29 +5884,37 @@ static int Decoder_amr_init(Decoder_amrState ** state)
 	
 	    /* lsp_avgInit */ 
 	    /* allocate memory */ 
-	    if ((s->lsp_avg_st = (lsp_avgState *) malloc(sizeof(lsp_avgState)))  == NULL) {
-		fprintf(stderr, "lsp_avgInit: can not malloc state structure\n");
+	    if ((s->lsp_avg_st =
+		 (lsp_avgState *) malloc(sizeof(lsp_avgState)))  == NULL) {
+		fprintf(stderr,
+			 "lsp_avgInit: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* Bgn_scdInit */ 
 	    /* allocate memory */ 
-	    if ((s->background_state = (Bgn_scdState *) malloc(sizeof(Bgn_scdState ))) == NULL) {
-		fprintf(stderr, "Bgn_scdInit: can not malloc state structure\n");
+	    if ((s->background_state =
+		 (Bgn_scdState *) malloc(sizeof(Bgn_scdState ))) == NULL) {
+		fprintf(stderr,
+			 "Bgn_scdInit: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* phDispInit */ 
 	    /* allocate memory */ 
-	    if ((s->ph_disp_st = (ph_dispState *) malloc(sizeof(ph_dispState)))  == NULL) {
-		fprintf(stderr, "phDispInit: can not malloc state structure\n");
+	    if ((s->ph_disp_st =
+		 (ph_dispState *) malloc(sizeof(ph_dispState)))  == NULL) {
+		fprintf(stderr,
+			 "phDispInit: can not malloc state structure\n");
 		return -1;
 	}
 	
 	    /* dtxDecInit */ 
 	    /* allocate memory */ 
-	    if ((s->dtxDecoderState = (dtx_decState *) malloc(sizeof(dtx_decState) )) == NULL) {
-		fprintf(stderr, "dtxDecInit: can not malloc state structure\n");
+	    if ((s->dtxDecoderState =
+		 (dtx_decState *) malloc(sizeof(dtx_decState) )) == NULL) {
+		fprintf(stderr,
+			 "dtxDecInit: can not malloc state structure\n");
 		return -1;
 	}
 	Decoder_amr_reset(s, 0);
@@ -5762,7 +5974,9 @@ static int Post_Filter_init(Post_FilterState ** state)
 	*state = NULL;
 	
 	    /* allocate memory */ 
-	    if ((s = (Post_FilterState *) malloc(sizeof(Post_FilterState))) == NULL) {
+	    if ((s =
+		 (Post_FilterState *) malloc(sizeof(Post_FilterState))) ==
+		NULL) {
 		fprintf(stderr, "F057:can not malloc filter structure\n");
 		return -1;
 	}
@@ -5803,8 +6017,11 @@ static int Post_Process_init(Post_ProcessState ** state)
 	*state = NULL;
 	
 	    /* allocate memory */ 
-	    if ((s = (Post_ProcessState *) malloc(sizeof(Post_ProcessState))) == NULL) {
-		fprintf(stderr, "Post_Process_init: can not malloc state structure\n");
+	    if ((s =
+		 (Post_ProcessState *) malloc(sizeof(Post_ProcessState))) ==
+		NULL) {
+		fprintf(stderr,
+			 "Post_Process_init: can not malloc state structure\n");
 		return -1;
 	}
 	Post_Process_reset(s);
@@ -5830,9 +6047,12 @@ void Speech_Decode_Frame_exit(void **st)
 {
 	if (((Speech_Decode_FrameState *) (st)) == NULL)
 		return;
-	Decoder_amr_exit(&(((Speech_Decode_FrameState *) st)->decoder_amrState ));
+	Decoder_amr_exit(&
+			  (((Speech_Decode_FrameState *) st)->
+			   decoder_amrState ));
 	Post_Filter_exit(&(((Speech_Decode_FrameState *) st)->post_state));
-	Post_Process_exit(&(((Speech_Decode_FrameState *) st)->postHP_state)) ;
+	Post_Process_exit(&(((Speech_Decode_FrameState *) st)->postHP_state))
+	    ;
 	
 	    /* deallocate memory */ 
 	    free(((Speech_Decode_FrameState *) st));
@@ -5884,14 +6104,19 @@ void *Speech_Decode_Frame_init()
 	Speech_Decode_FrameState * s;
 	
 	    /* allocate memory */ 
-	    if ((s = (Speech_Decode_FrameState *) malloc(sizeof(Speech_Decode_FrameState))) == NULL) {
-		fprintf(stderr, "Speech_Decode_Frame_init: can not malloc state "  "structure\n");
+	    if ((s =
+		 (Speech_Decode_FrameState *)
+		 malloc(sizeof(Speech_Decode_FrameState))) == NULL) {
+		fprintf(stderr,
+			 "Speech_Decode_Frame_init: can not malloc state " 
+			 "structure\n");
 		return NULL;
 	}
 	s->decoder_amrState = NULL;
 	s->post_state = NULL;
 	s->postHP_state = NULL;
-	if (Decoder_amr_init(&s->decoder_amrState) || Post_Filter_init(&s->post_state)
+	if (Decoder_amr_init(&s->decoder_amrState)
+	      || Post_Filter_init(&s->post_state)
 	      || Post_Process_init(&s->postHP_state)) {
 		void *vp;	// we nust declade a dummy var to avoid warning that strict-aliasing rules are broken
 		vp = s;

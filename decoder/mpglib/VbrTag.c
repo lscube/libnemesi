@@ -400,7 +400,8 @@ int GetVbrTag(VBRTAGDATA * pTagData, unsigned char *buf)
 		buf += 4;
 	}
 
-	pTagData->headersize = ((h_id + 1) * 72000 * h_bitrate) / pTagData->samprate;
+	pTagData->headersize =
+	    ((h_id + 1) * 72000 * h_bitrate) / pTagData->samprate;
 
 	buf += 21;
 	enc_delay = buf[0] << 4;
@@ -418,7 +419,8 @@ int GetVbrTag(VBRTAGDATA * pTagData, unsigned char *buf)
 	pTagData->enc_padding = enc_padding;
 
 #ifdef DEBUG_VBRTAG
-	fprintf(stderr, "\n\n********************* VBR TAG INFO *****************\n");
+	fprintf(stderr,
+		"\n\n********************* VBR TAG INFO *****************\n");
 	fprintf(stderr, "tag         :%s\n", VBRTag);
 	fprintf(stderr, "head_flags  :%d\n", head_flags);
 	fprintf(stderr, "bytes       :%d\n", pTagData->bytes);
@@ -434,7 +436,8 @@ int GetVbrTag(VBRTAGDATA * pTagData, unsigned char *buf)
 			fprintf(stderr, " %3d", (int) (pTagData->toc[i]));
 		}
 	}
-	fprintf(stderr, "\n***************** END OF VBR TAG INFO ***************\n");
+	fprintf(stderr,
+		"\n***************** END OF VBR TAG INFO ***************\n");
 #endif
 	return 1;		/* success */
 }
@@ -496,11 +499,14 @@ int InitVbrTag(lame_global_flags * gfp)
 		if (gfp->VBR == vbr_off)
 			bitrate = gfp->brate;
 
-		gfp->TotalFrameSize = ((gfp->version + 1) * 72000 * bitrate) / gfp->out_samplerate;
+		gfp->TotalFrameSize =
+		    ((gfp->version +
+		      1) * 72000 * bitrate) / gfp->out_samplerate;
 
 		tot = (gfc->sideinfo_len + LAMEHEADERSIZE);
 
-		if (gfp->TotalFrameSize < tot || gfp->TotalFrameSize > MAXFRAMESIZE) {
+		if (gfp->TotalFrameSize < tot
+		    || gfp->TotalFrameSize > MAXFRAMESIZE) {
 			// disable tag, it wont fit
 			gfp->bWriteVbrTag = 0;
 			return 0;
@@ -559,7 +565,8 @@ void ReportLameTagProgress(lame_global_flags * gfp, int nStart)
  *				
  ****************************************************************************
 */
-int PutLameVBR(lame_global_flags * gfp, FILE * fpStream, uint8_t * pbtStreamBuffer, uint32_t id3v2size, uint16_t crc)
+int PutLameVBR(lame_global_flags * gfp, FILE * fpStream,
+	       uint8_t * pbtStreamBuffer, uint32_t id3v2size, uint16_t crc)
 {
 	lame_internal_flags *gfc = gfp->internal_flags;
 //      FLOAT fVersion = LAME_MAJOR_VERSION + 0.01 * LAME_MINOR_VERSION;
@@ -583,7 +590,9 @@ int PutLameVBR(lame_global_flags * gfp, FILE * fpStream, uint8_t * pbtStreamBuff
 	uint8_t nRevMethod;
 	uint8_t vbr_type_translator[] = { 1, 5, 3, 2, 4, 0, 3 };	//numbering different in vbr_mode vs. Lame tag
 
-	uint8_t nLowpass = (((gfp->lowpassfreq / 100.0) + .5) > 255 ? 255 : (gfp->lowpassfreq / 100.0) + .5);
+	uint8_t nLowpass =
+	    (((gfp->lowpassfreq / 100.0) + .5) >
+	     255 ? 255 : (gfp->lowpassfreq / 100.0) + .5);
 
 	ieee754_float32_t fPeakSignalAmplitude = 0;	//TODO...
 	uint16_t nRadioReplayGain = 0;	//TODO...
@@ -599,8 +608,9 @@ int PutLameVBR(lame_global_flags * gfp, FILE * fpStream, uint8_t * pbtStreamBuff
 	uint8_t nMisc = 0;
 	uint16_t nPresetValue = 0;
 	uint32_t nMusicLength = 0;
-	int bId3v1Present = ((gfp->internal_flags->tag_spec.flags & CHANGED_FLAG)
-			     && !(gfp->internal_flags->tag_spec.flags & V2_ONLY_FLAG));
+	int bId3v1Present =
+	    ((gfp->internal_flags->tag_spec.flags & CHANGED_FLAG)
+	     && !(gfp->internal_flags->tag_spec.flags & V2_ONLY_FLAG));
 	uint16_t nMusicCRC = 0;
 
 	//psy model type: Gpsycho or NsPsytune
@@ -619,7 +629,8 @@ int PutLameVBR(lame_global_flags * gfp, FILE * fpStream, uint8_t * pbtStreamBuff
 	uint8_t nFlags = 0;
 
 	// if ABR, {store bitrate <=255} else { store "-b"}
-	int nABRBitrate = (gfp->VBR == vbr_abr) ? gfp->VBR_mean_bitrate_kbps : gfp->brate;
+	int nABRBitrate =
+	    (gfp->VBR == vbr_abr) ? gfp->VBR_mean_bitrate_kbps : gfp->brate;
 
 	//revision and vbr method
 	if (gfp->VBR >= 0 && gfp->VBR < sizeof(vbr_type_translator))
@@ -692,7 +703,8 @@ int PutLameVBR(lame_global_flags * gfp, FILE * fpStream, uint8_t * pbtStreamBuff
 
 	if (gfp->short_blocks == short_block_forced || gfp->short_blocks == short_block_dispensed || ((gfp->lowpassfreq == -1) && (gfp->highpassfreq == -1)) ||	// "-k"
 	    (gfp->scale_left != gfp->scale_right) ||
-	    gfp->disable_reservoir || gfp->noATH || gfp->ATHonly || (nAthType == 0) || gfp->in_samplerate <= 32000)
+	    gfp->disable_reservoir || gfp->noATH || gfp->ATHonly
+	    || (nAthType == 0) || gfp->in_samplerate <= 32000)
 		bNonOptimal = 1;
 
 	nMisc = nNoiseShaping + (nStereoMode << 2)
@@ -745,7 +757,8 @@ int PutLameVBR(lame_global_flags * gfp, FILE * fpStream, uint8_t * pbtStreamBuff
 	nBytesWritten++;
 
 	pbtStreamBuffer[nBytesWritten] = enc_delay >> 4;	// works for win32, does it for unix?
-	pbtStreamBuffer[nBytesWritten + 1] = (enc_delay << 4) + (enc_padding >> 8);
+	pbtStreamBuffer[nBytesWritten + 1] =
+	    (enc_delay << 4) + (enc_padding >> 8);
 	pbtStreamBuffer[nBytesWritten + 2] = enc_padding;
 
 	nBytesWritten += 3;
@@ -868,7 +881,9 @@ int PutVbrTag(lame_global_flags * gfp, FILE * fpStream, int nVbrScale)
 		if (gfp->VBR == vbr_off)
 			bitrate = gfp->brate;
 
-		bbyte = 16 * BitrateIndex(bitrate, gfp->version, gfp->out_samplerate);
+		bbyte =
+		    16 * BitrateIndex(bitrate, gfp->version,
+				      gfp->out_samplerate);
 	}
 
 	/* Use as much of the info from the real frames in the
@@ -917,7 +932,8 @@ int PutVbrTag(lame_global_flags * gfp, FILE * fpStream, int nVbrScale)
 	}
 
 	/* Put header flags */
-	CreateI4(&pbtStreamBuffer[nStreamIndex], FRAMES_FLAG + BYTES_FLAG + TOC_FLAG + VBR_SCALE_FLAG);
+	CreateI4(&pbtStreamBuffer[nStreamIndex],
+		 FRAMES_FLAG + BYTES_FLAG + TOC_FLAG + VBR_SCALE_FLAG);
 	nStreamIndex += 4;
 
 	/* Put Total Number of frames */
@@ -942,7 +958,9 @@ int PutVbrTag(lame_global_flags * gfp, FILE * fpStream, int nVbrScale)
 		crc = CRC_update_lookup(pbtStreamBuffer[i], crc);
 
 	/*Put LAME VBR info */
-	nStreamIndex += PutLameVBR(gfp, fpStream, pbtStreamBuffer + nStreamIndex, id3v2TagSize, crc);
+	nStreamIndex +=
+	    PutLameVBR(gfp, fpStream, pbtStreamBuffer + nStreamIndex,
+		       id3v2TagSize, crc);
 
 #ifdef DEBUG_VBRTAG
 	{
@@ -955,7 +973,9 @@ int PutVbrTag(lame_global_flags * gfp, FILE * fpStream, int nVbrScale)
 	fseek(fpStream, id3v2TagSize, SEEK_SET);
 
 	/* Put it all to disk again */
-	if (fwrite(pbtStreamBuffer, (unsigned int) gfp->TotalFrameSize, 1, fpStream) != 1) {
+	if (fwrite
+	    (pbtStreamBuffer, (unsigned int) gfp->TotalFrameSize, 1,
+	     fpStream) != 1) {
 		return -1;
 	}
 	/* Save to delete the frame buffer */

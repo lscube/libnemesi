@@ -77,14 +77,16 @@ void update_toolbar(void)
 		// gnms_stbar_clear();
 		break;
 	case READY:
-		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), FALSE);
+		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON
+						  (play_tog), FALSE);
 		gtk_widget_set_sensitive(open_but, FALSE);
 		gtk_widget_set_sensitive(play_tog, TRUE);
 		gtk_widget_set_sensitive(stop_but, FALSE);
 		gtk_widget_set_sensitive(close_but, TRUE);
 		break;
 	case PLAYING:
-		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(play_tog), TRUE);
+		gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON
+						  (play_tog), TRUE);
 		gtk_widget_set_sensitive(open_but, FALSE);
 		gtk_widget_set_sensitive(play_tog, TRUE);
 		gtk_widget_set_sensitive(stop_but, TRUE);
@@ -96,7 +98,8 @@ void update_toolbar(void)
 	internal_call = FALSE;
 	gtk_widget_set_sensitive(toolbar, TRUE);
 
-	gnms_stbar_setstr("NeMeSI RTSP Status: %s", statustostr(rtsp_status(rtsp_ctl)));
+	gnms_stbar_setstr("NeMeSI RTSP Status: %s",
+			  statustostr(rtsp_status(rtsp_ctl)));
 	gnms_stbar_update();
 	gnms_showmsgs();
 
@@ -166,7 +169,8 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 }
 
 
-void on_toggle_play_pause_toggled(GtkToggleToolButton * togglebutton, gpointer user_data)
+void on_toggle_play_pause_toggled(GtkToggleToolButton * togglebutton,
+				  gpointer user_data)
 {
 	char argstr[] = " ";
 
@@ -204,10 +208,14 @@ void on_open_cmd_clicked(GtkButton * button, gpointer user_data)
 }
 
 
-gboolean on_nemesi_configure_event(GtkWidget * widget, GdkEventConfigure * event, gpointer user_data)
+gboolean on_nemesi_configure_event(GtkWidget * widget,
+				   GdkEventConfigure * event,
+				   gpointer user_data)
 {
 	if (info)
-		gtk_window_move(GTK_WINDOW(info), event->x + event->width - infowidth, event->y + event->height);
+		gtk_window_move(GTK_WINDOW(info),
+				event->x + event->width - infowidth,
+				event->y + event->height);
 
 	return FALSE;
 }
@@ -227,25 +235,29 @@ void on_urlname_realize(GtkWidget * widget, gpointer user_data)
 
 	// GtkComboBox
 	gtk_combo_box_set_model(GTK_COMBO_BOX(widget), gnmsurl->model);
-	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(widget), gnmsurl->txt_col);
+	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(widget),
+					    gnmsurl->txt_col);
 
 	// GtkEntryCompletion
 	gtk_entry_completion_set_model(completion, gnmsurl->model);
 	gtk_entry_completion_set_text_column(completion, gnmsurl->txt_col);
-	gtk_entry_completion_set_match_func(completion, gnmscompletion_machfunc, gnmsurl, gnmsurl_destroy);
+	gtk_entry_completion_set_match_func(completion, gnmscompletion_machfunc,
+					    gnmsurl, gnmsurl_destroy);
 	// gtk_entry_completion_set_inline_completion(completioin, TRUE);
 	gtk_entry_set_completion(GTK_ENTRY(GTK_BIN(widget)->child), completion);
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 
 	// press ok button on "enter" button pressed
-	gtk_entry_set_activates_default(GTK_ENTRY(GTK_BIN(widget)->child), TRUE);
+	gtk_entry_set_activates_default(GTK_ENTRY(GTK_BIN(widget)->child),
+					TRUE);
 	gtk_widget_grab_focus(GTK_WIDGET(GTK_BIN(widget)->child));
 	gtk_editable_set_position(GTK_EDITABLE(GTK_BIN(widget)->child), -1);
 }
 
 
-void on_opendialog_response(GtkDialog * dialog, gint response_id, gpointer user_data)
+void on_opendialog_response(GtkDialog * dialog, gint response_id,
+			    gpointer user_data)
 {
 	GtkWidget *combo_box;
 	char *url, *true_url;
@@ -269,16 +281,21 @@ void on_opendialog_response(GtkDialog * dialog, gint response_id, gpointer user_
 		combo_box = lookup_widget(opendialog, "urlname");
 
 		// url = (char *)gtk_entry_get_text(GTK_ENTRY(lookup_widget(opendialog, "urlname")));
-		url = (char *) gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
+		url =
+		    (char *)
+		    gtk_entry_get_text(GTK_ENTRY(GTK_BIN(combo_box)->child));
 
-		txt_col = gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY(combo_box));
+		txt_col =
+		    gtk_combo_box_entry_get_text_column(GTK_COMBO_BOX_ENTRY
+							(combo_box));
 		list_store = gtk_combo_box_get_model(GTK_COMBO_BOX(combo_box));
 		valid = gtk_tree_model_get_iter_first(list_store, &iter);
 
 		nms_printf(NMSML_DBG1, "List of urls\n");
 		while (valid) {
 			gchar *str_data;
-			gtk_tree_model_get(list_store, &iter, txt_col, &str_data, -1);
+			gtk_tree_model_get(list_store, &iter, txt_col,
+					   &str_data, -1);
 			nms_printf(NMSML_DBG1, "%s\n", str_data);
 			if (!strcmp(url, str_data)) {
 				found = TRUE;
@@ -289,7 +306,8 @@ void on_opendialog_response(GtkDialog * dialog, gint response_id, gpointer user_
 		}
 		nms_printf(NMSML_DBG1, "ENDOF List of urls\n");
 		if (!found)
-			gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), url);
+			gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box),
+						  url);
 
 		true_url = strdup(url);
 		gtk_widget_destroy(opendialog);
@@ -338,9 +356,11 @@ void on_aboutdialog_realize(GtkWidget * widget, gpointer user_data)
 	nms_printf(NMSML_DBG3, "about dialog realized\n");
 	aboutimage = create_pixmap(NULL, "about-nemesi.png");
 	gtk_widget_set_name(aboutimage, "aboutimage");
-	g_object_set_data_full(G_OBJECT(aboutdialog), "aboutimage", gtk_widget_ref(aboutimage),
+	g_object_set_data_full(G_OBJECT(aboutdialog), "aboutimage",
+			       gtk_widget_ref(aboutimage),
 			       (GDestroyNotify) gtk_widget_unref);
-	gtk_box_pack_start(GTK_BOX(lookup_widget(aboutdialog, "dialogvbox")), aboutimage, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(lookup_widget(aboutdialog, "dialogvbox")),
+			   aboutimage, FALSE, FALSE, 0);
 	gtk_widget_show(aboutimage);
 	// aboutlabel
 	aboutlabel = lookup_widget(aboutdialog, "aboutlabel");
@@ -348,7 +368,8 @@ void on_aboutdialog_realize(GtkWidget * widget, gpointer user_data)
 }
 
 
-void on_aboutdialog_response(GtkDialog * dialog, gint response_id, gpointer user_data)
+void on_aboutdialog_response(GtkDialog * dialog, gint response_id,
+			     gpointer user_data)
 {
 	GtkWidget *aboutimage;
 	GtkWidget *credits;
@@ -362,8 +383,11 @@ void on_aboutdialog_response(GtkDialog * dialog, gint response_id, gpointer user
 		credits = lookup_widget(aboutdialog, "creditscroller");
 		creditsview = lookup_widget(aboutdialog, "creditsview");
 		gtk_widget_size_request(aboutimage, &requisition);
-		gtk_widget_set_size_request(credits, requisition.width, requisition.height);
-		gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(creditsview)), CREDITS, -1);
+		gtk_widget_set_size_request(credits, requisition.width,
+					    requisition.height);
+		gtk_text_buffer_set_text(gtk_text_view_get_buffer
+					 (GTK_TEXT_VIEW(creditsview)), CREDITS,
+					 -1);
 		gtk_widget_hide(aboutimage);
 		gtk_widget_show(credits);
 		// gtk_widget_hide(GTK_WIDGET(button));

@@ -9,5 +9,4 @@
 
 #define SVNREV "$Rev$"
 
-#endif // __SVNREV_H
-
+#endif				// __SVNREV_H

@@ -71,7 +71,8 @@ int load_plugins(void)
 		if (path != NULL) {
 			if (lt_dlsetsearchpath(path))
 				return 1;
-			nms_printf(NMSML_VERB, "NEMESI_PLUGIN_DIR_ENV: %s\n", path);
+			nms_printf(NMSML_VERB, "NEMESI_PLUGIN_DIR_ENV: %s\n",
+				   path);
 		} else {
 			if (lt_dlsetsearchpath(NEMESI_PLUGIN_DIR_DEFAULT))
 				return 1;
@@ -87,11 +88,15 @@ int load_plugins(void)
 		return 1;
 
 	if ((plug_dir = opendir(path)) == NULL)
-		return nms_printf(NMSML_ERR, "Plugins dir %s does not exist...\n", path);
+		return nms_printf(NMSML_ERR,
+				  "Plugins dir %s does not exist...\n", path);
 	while ((dentry = readdir(plug_dir)) != NULL) {
 		free(str);
-		if ((str = (char *) malloc(strlen(path) + strlen(dentry->d_name) + 2)) == NULL)
-			return nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
+		if ((str =
+		     (char *) malloc(strlen(path) + strlen(dentry->d_name) +
+				     2)) == NULL)
+			return nms_printf(NMSML_FATAL,
+					  "Cannot allocate memory\n");
 		strcpy(str, path);
 		strcat(str, "/");
 		strcat(str, dentry->d_name);
@@ -106,7 +111,8 @@ int load_plugins(void)
 			*ch = 0;
 
 		if (plugins == NULL) {
-			plugins = (struct plugin *) malloc(sizeof(struct plugin));
+			plugins =
+			    (struct plugin *) malloc(sizeof(struct plugin));
 			/* use strdup
 			   plugins->path=(char *)malloc(strlen(str)+1);
 			   strcpy(plugins->path,str);
@@ -115,10 +121,13 @@ int load_plugins(void)
 			plugins->next = NULL;
 		}
 
-		for (pp = plugins; (pp->next != NULL) && (strcmp(pp->path, str) != 0); pp = pp->next);
+		for (pp = plugins;
+		     (pp->next != NULL) && (strcmp(pp->path, str) != 0);
+		     pp = pp->next);
 
 		if (pp->next == NULL && strcmp(pp->path, str)) {
-			pp->next = (struct plugin *) malloc(sizeof(struct plugin));
+			pp->next =
+			    (struct plugin *) malloc(sizeof(struct plugin));
 			/* use strdup
 			   pp->next->path=(char *)malloc(strlen(str)+1);
 			   strcpy(pp->next->path,str);
@@ -133,20 +142,29 @@ int load_plugins(void)
 
 		/* Find the entry point. */
 		if (module) {
-			nms_printf(NMSML_NORM, "Loading Plugin struct %s: ", pp->path);
-			if (!(plugin = (nms_plugin *) lt_dlsym(module, "plugin"))) {
+			nms_printf(NMSML_NORM, "Loading Plugin struct %s: ",
+				   pp->path);
+			if (!
+			    (plugin =
+			     (nms_plugin *) lt_dlsym(module, "plugin"))) {
 				lt_dlclose(module);
 				module = NULL;
-				nms_printf(NMSML_NORM, "lt_dsym() failed on plugin: %s\n", lt_dlerror());
+				nms_printf(NMSML_NORM,
+					   "lt_dsym() failed on plugin: %s\n",
+					   lt_dlerror());
 				continue;
 			}
 		} else {
-			nms_printf(NMSML_NORM, "lt_dlopenext() failed on plugin %s: %s\n", pp->path, lt_dlerror());
+			nms_printf(NMSML_NORM,
+				   "lt_dlopenext() failed on plugin %s: %s\n",
+				   pp->path, lt_dlerror());
 			continue;
 		}
 		pt = plugin->pt;
 		if ((pt < 0) || (pt > 127)) {
-			nms_printf(NMSML_NORM, "Payload Type Unknown served by plugin %s\n", pp->path);
+			nms_printf(NMSML_NORM,
+				   "Payload Type Unknown served by plugin %s\n",
+				   pp->path);
 			lt_dlclose(module);
 			module = NULL;
 			continue;
@@ -155,23 +173,29 @@ int load_plugins(void)
 				lt_dlclose(module);
 				module = NULL;
 				nms_printf(NMSML_NORM,
-					   "WARNING! Plugin for RTP Payload Type %d already loaded: skipping...\n", pt);
+					   "WARNING! Plugin for RTP Payload Type %d already loaded: skipping...\n",
+					   pt);
 				continue;
 			}
 #if 1				// new interface not finished yet
 			else
 				decoders[pt] = plugin->decode;
 #else
-			if (!(decoders[pt] = (int (*)()) lt_dlsym(module, "decode"))) {
+			if (!
+			    (decoders[pt] =
+			     (int (*)()) lt_dlsym(module, "decode"))) {
 				lt_dlclose(module);
 				module = NULL;
 				decoders[pt] = NULL;
-				nms_printf(NMSML_NORM, "lt_dsym() failed loading decode function for plugin %s: %s\n",
+				nms_printf(NMSML_NORM,
+					   "lt_dsym() failed loading decode function for plugin %s: %s\n",
 					   pp->path, lt_dlerror());
 			}
 #endif
 
-			nms_printf(NMSML_NORM, "Ok! Loaded plugin for RTP Payload Type %d.\n", pt);
+			nms_printf(NMSML_NORM,
+				   "Ok! Loaded plugin for RTP Payload Type %d.\n",
+				   pt);
 		}
 	}
 	pp = plugins;

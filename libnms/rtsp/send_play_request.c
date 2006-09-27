@@ -50,11 +50,13 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
 		memcpy(&cc_mask, &rtsp_th->accepted_CC, sizeof(cc_perm_mask));
 //              pref2ccmask(&cc_mask);
 		if (cc_perm_chk(rtsp_med->medium_info->cc, &cc_mask))
-			*((CC_BITMASK_T *) & cc_conflict) |= *((CC_BITMASK_T *) & cc_mask);
+			*((CC_BITMASK_T *) & cc_conflict) |=
+			    *((CC_BITMASK_T *) & cc_mask);
 		rtsp_med = rtsp_med->next;
 	}
 	if (*((CC_BITMASK_T *) & cc_conflict)) {
-		nms_printf(NMSML_ERR, "You didn't accept some requested conditions of license:\n");
+		nms_printf(NMSML_ERR,
+			   "You didn't accept some requested conditions of license:\n");
 		cc_printmask(cc_conflict);
 		return 1;
 	}
@@ -62,17 +64,21 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
 
 	if (rtsp_sess->content_base != NULL)
 		if (*(rtsp_sess->pathname) != 0)
-			sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN, rtsp_sess->content_base,
-				rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+			sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+				PLAY_TKN, rtsp_sess->content_base,
+				rtsp_sess->pathname, RTSP_VER,
+				++(rtsp_sess->CSeq));
 		else
-			sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN, rtsp_sess->content_base, RTSP_VER,
+			sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+				PLAY_TKN, rtsp_sess->content_base, RTSP_VER,
 				++(rtsp_sess->CSeq));
 	else
-		sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN, rtsp_sess->pathname, RTSP_VER,
-			++(rtsp_sess->CSeq));
+		sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN,
+			rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 
 	if (rtsp_sess->Session_ID != 0)	/*must add session ID? */
-		sprintf(b + strlen(b), "Session: %llu" RTSP_EL, rtsp_sess->Session_ID);
+		sprintf(b + strlen(b), "Session: %llu" RTSP_EL,
+			rtsp_sess->Session_ID);
 	if (range && *range)
 		sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
 	else
@@ -85,7 +91,8 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
 		return 1;
 	}
 
-	sprintf(rtsp_th->waiting_for, "%d:%llu.%d", RTSP_PLAY_RESPONSE, rtsp_sess->Session_ID, rtsp_sess->CSeq);
+	sprintf(rtsp_th->waiting_for, "%d:%llu.%d", RTSP_PLAY_RESPONSE,
+		rtsp_sess->Session_ID, rtsp_sess->CSeq);
 
 	return 0;
 }

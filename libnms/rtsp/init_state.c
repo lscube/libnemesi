@@ -59,14 +59,17 @@ int init_state(rtsp_thread * rtsp_th, short event)
 		// if (get_curr_sess(rtsp_th, NULL, NULL)) {
 		if (!get_curr_sess(GCS_NXT_MED)) {
 			/* Nessun altra SETUP da inviare */
-			rtsp_th->rtp_th->rtp_sess_head = rtsp_th->rtsp_queue->media_queue->rtp_sess;
+			rtsp_th->rtp_th->rtp_sess_head =
+			    rtsp_th->rtsp_queue->media_queue->rtp_sess;
 			/* Esecuzione del Thread RTP: uno per ogni sessione RTSP */
 			if (rtp_thread_create(rtsp_th->rtp_th))
-				return nms_printf(NMSML_FATAL, "Cannot create RTP Thread!\n");
+				return nms_printf(NMSML_FATAL,
+						  "Cannot create RTP Thread!\n");
 
 			/* Esecuzione del Thread RTCP: uno per ogni sessione RTSP */
 			if (rtcp_thread_create(rtsp_th->rtp_th))
-				return nms_printf(NMSML_FATAL, "Cannot create RTCP Thread!\n");
+				return nms_printf(NMSML_FATAL,
+						  "Cannot create RTCP Thread!\n");
 
 			rtsp_th->status = READY;
 			rtsp_unbusy(rtsp_th);
@@ -80,7 +83,8 @@ int init_state(rtsp_thread * rtsp_th, short event)
 			return 1;
 		break;
 	default:
-		nms_printf(NMSML_ERR, "Could not handle method in INIT state\n");
+		nms_printf(NMSML_ERR,
+			   "Could not handle method in INIT state\n");
 		return 1;
 		break;
 	}

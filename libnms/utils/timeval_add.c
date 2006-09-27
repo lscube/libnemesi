@@ -28,7 +28,8 @@
 
 #include <nemesi/utils.h>
 
-int timeval_add(struct timeval *res, const struct timeval *x, const struct timeval *y)
+int timeval_add(struct timeval *res, const struct timeval *x,
+		const struct timeval *y)
 {
 	res->tv_sec = x->tv_sec + y->tv_sec;
 

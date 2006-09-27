@@ -35,7 +35,8 @@ FFMpegDec *init_ffmpeg(void)
 	FFMpegDec *ff;
 
 	if (!(ff = malloc(sizeof(FFMpegDec)))) {
-		fprintf(stderr, "Could not alloc memory for FFMpeg data structures\n");
+		fprintf(stderr,
+			"Could not alloc memory for FFMpeg data structures\n");
 		return NULL;
 	}
 	/* must be called before using avcodec lib */
@@ -63,7 +64,8 @@ FFMpegDec *init_ffmpeg(void)
 
 	ff->got_frame = 0;
 
-	fprintf(stderr, "\nlibavcodec MPEG-1 decoder plugin succesfully initialized\n");
+	fprintf(stderr,
+		"\nlibavcodec MPEG-1 decoder plugin succesfully initialized\n");
 
 	return ff;
 }

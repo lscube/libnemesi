@@ -37,7 +37,9 @@ int sdp_parse_m_descr(sdp_medium_info * m_info, char *m_descr)
 	char *tkn, *endtkn;
 
 	if (!(tkn = strchr(m_descr, ' ')))
-		return nms_printf(NMSML_ERR, "SDP Media description string not valid: (m=%s)\n", m_descr);
+		return nms_printf(NMSML_ERR,
+				  "SDP Media description string not valid: (m=%s)\n",
+				  m_descr);
 	*tkn = '\0';
 
 	// parse media type

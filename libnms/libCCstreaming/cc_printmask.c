@@ -37,7 +37,8 @@ void cc_printmask(cc_perm_mask mask)
 	if (spec_l) {
 		for (i = 0; cc_spec_licenses[i].int_code; i++) {
 			if ((cc_spec_licenses[i].int_code & spec_l))
-				nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_spec_licenses[i].name,
+				nms_printf(NMSML_ALWAYS, "%s: %s\n",
+					   cc_spec_licenses[i].name,
 					   cc_spec_licenses[i].descr);
 		}
 	}

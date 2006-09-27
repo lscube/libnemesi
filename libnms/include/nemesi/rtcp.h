@@ -179,7 +179,8 @@ int rtcp_set_ssrc_sdes(rtp_ssrc *, rtcp_sdes_item_t *);
 
 double rtcp_interval(int, int, double, int, double, int);
 
-struct rtcp_event *rtcp_schedule(struct rtcp_event *, rtp_session *, struct timeval, rtcp_type_t);
+struct rtcp_event *rtcp_schedule(struct rtcp_event *, rtp_session *,
+				 struct timeval, rtcp_type_t);
 struct rtcp_event *rtcp_deschedule(struct rtcp_event *);
 
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *);

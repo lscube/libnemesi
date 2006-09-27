@@ -49,7 +49,8 @@ int main(int argc, char **argv)
 
 	if (argc < 2) {
 		fprintf(stderr, "\tPlease specify at least an url.\n");
-		fprintf(stderr, "\tUsage: %s [-f basename ][-p port] url\n", argv[0]);
+		fprintf(stderr, "\tUsage: %s [-f basename ][-p port] url\n",
+			argv[0]);
 		exit(1);
 	}
 
@@ -67,7 +68,9 @@ int main(int argc, char **argv)
 			/* Unknown option  */
 		case '?':
 			fprintf(stderr, "\n  Unknown option `-%c'.\n", optopt);
-			fprintf(stderr, "\tUsage: %s [-f outputfile ][-p port] url\n", argv[0]);
+			fprintf(stderr,
+				"\tUsage: %s [-f outputfile ][-p port] url\n",
+				argv[0]);
 
 			return 1;
 		}
@@ -108,12 +111,15 @@ int main(int argc, char **argv)
 
 	while (!rtp_fill_buffers(rtp_th))	// Till there is something to parse
 	{			// Foreach ssrc active
-		for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl)); ssrc; ssrc = rtp_next_active_ssrc(ssrc)) {
+		for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
+		     ssrc; ssrc = rtp_next_active_ssrc(ssrc)) {
 			if (!rtp_fill_buffer(ssrc, &fr, &conf)) {	// Parse the stream
 
 				if (outfd[fr.pt] ||	// Write it to a file
-				    sprintf(out, "%s.%d", base, fr.pt) && (outfd[fr.pt] = creat(out, 00644)) > 0) {
-					if (write(outfd[fr.pt], fr.data, fr.len) < fr.len)
+				    sprintf(out, "%s.%d", base, fr.pt)
+				    && (outfd[fr.pt] = creat(out, 00644)) > 0) {
+					if (write(outfd[fr.pt], fr.data, fr.len)
+					    < fr.len)
 						return 1;
 				} else
 					return 1;

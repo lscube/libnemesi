@@ -68,7 +68,9 @@ void *video_th(void *outc)
 		fps = videoc->fps;
 		nms_printf(NMSML_VERB, "Video Thread Started: fps = %f\n", fps);
 	} else {
-		nms_printf(NMSML_VERB, "Video Thread Started: using default fps = %f\n", fps);
+		nms_printf(NMSML_VERB,
+			   "Video Thread Started: using default fps = %f\n",
+			   fps);
 	}
 
 //      tvsleep.tv_sec = 1/fps;// SLEEP_MS / 1000;
@@ -80,13 +82,16 @@ void *video_th(void *outc)
 
 	for (;;) {
 		timeval_add(&tvstart, &tvstart, &tvsleep);
-		if (!timeval_subtract(&tvstop, &tvstart, &tvstop) && ((tvstop.tv_sec > 0) || (tvstop.tv_usec > 10000))) {
-			nms_printf(NMSML_DBG3, "sleep for: %ld %ld\n", tvstop.tv_sec, tvstop.tv_usec);
+		if (!timeval_subtract(&tvstop, &tvstart, &tvstop)
+		    && ((tvstop.tv_sec > 0) || (tvstop.tv_usec > 10000))) {
+			nms_printf(NMSML_DBG3, "sleep for: %ld %ld\n",
+				   tvstop.tv_sec, tvstop.tv_usec);
 			select(0, NULL, NULL, NULL, &tvstop);
 		} else
 			nms_printf(NMSML_DBG3, "didn't sleep\n");
 		vfuncs->update_screen(&next_pts);
-		nms_printf(NMSML_DBG2, "next presentation timestamp is: %3.2f\n", next_pts);
+		nms_printf(NMSML_DBG2,
+			   "next presentation timestamp is: %3.2f\n", next_pts);
 		// gettimeofday(&tvstop, NULL);
 		if (!next_pts)
 			next_pts = last_pts + 1000 / fps;
@@ -94,22 +99,30 @@ void *video_th(void *outc)
 		if (audioc && audioc->init)
 			afuncs->control(ACTRL_GET_ELAPTM, &audio_elapsed);
 		if (audio_elapsed) {
-			nms_statusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms\tA: %3.2lfms\tsync A-V: %3.2lfms",
-					 last_pts, audio_elapsed, next_pts - audio_elapsed);
+			nms_statusprintf(ELAPSED_STATUS,
+					 "Elapsed: V: %3.2lfms\tA: %3.2lfms\tsync A-V: %3.2lfms",
+					 last_pts, audio_elapsed,
+					 next_pts - audio_elapsed);
 			if (next_pts < audio_elapsed)
 				tvsleep.tv_sec = tvsleep.tv_usec = 0;
 			else {	/*if ( next_pts - audio_elapsed > MAX_AV_THRES ) {
 				   tvsleep.tv_sec = 0;
 				   tvsleep.tv_usec = ( next_pts + MAX_AV_THRES ) * 1000;
 				   } else */
-				tvsleep.tv_sec = (next_pts - audio_elapsed) / 1000;
-				tvsleep.tv_usec = (next_pts - audio_elapsed - tvsleep.tv_sec * 1000) * 1000;
+				tvsleep.tv_sec =
+				    (next_pts - audio_elapsed) / 1000;
+				tvsleep.tv_usec =
+				    (next_pts - audio_elapsed -
+				     tvsleep.tv_sec * 1000) * 1000;
 			}
 		} else {
 #endif				// AV_SYNC
-			nms_statusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms", last_pts);
+			nms_statusprintf(ELAPSED_STATUS, "Elapsed: V: %3.2lfms",
+					 last_pts);
 			tvsleep.tv_sec = (next_pts - last_pts) / 1000;
-			tvsleep.tv_usec = (next_pts - last_pts - tvsleep.tv_sec * 1000) * 1000;
+			tvsleep.tv_usec =
+			    (next_pts - last_pts -
+			     tvsleep.tv_sec * 1000) * 1000;
 		}
 		/*
 		   else {

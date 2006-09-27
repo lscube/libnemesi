@@ -59,14 +59,17 @@ char *addr_ntop(const nms_addr * addr, char *str, size_t len)
 #ifdef	HAVE_SOCKADDR_DL_STRUCT
 	case AF_LINK:
 		if (addr->addr.dl_nlen > 0)
-			snprintf(str, len, "%*s", addr->addr.dl_nlen, &addr->addr.dl_data[0]);
+			snprintf(str, len, "%*s", addr->addr.dl_nlen,
+				 &addr->addr.dl_data[0]);
 		else
-			snprintf(str, len, "AF_LINK, index=%d", addr->addr.dl_index);
+			snprintf(str, len, "AF_LINK, index=%d",
+				 addr->addr.dl_index);
 		return (str);
 #endif
 #endif
 	default:
-		snprintf(str, len, "addr_ntop: unknown AF_xxx: %d", addr->family);
+		snprintf(str, len, "addr_ntop: unknown AF_xxx: %d",
+			 addr->family);
 		return (str);
 	}
 	return (NULL);

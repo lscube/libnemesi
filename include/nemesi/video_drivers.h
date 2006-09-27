@@ -68,7 +68,8 @@ typedef struct {
 	 * returns : zero on successful initialization, non-zero on error.
 	 */
 	 uint32(*config) (uint32 width, uint32 height, uint32 d_width,
-			  uint32 d_height, uint32 fps, uint8 fullscreen, char *title, uint32 format);
+			  uint32 d_height, uint32 fps, uint8 fullscreen,
+			  char *title, uint32 format);
 	 uint32(*control) (uint32 cmd, void *arg, ...);
 	/*
 	 * allocs a new picture.

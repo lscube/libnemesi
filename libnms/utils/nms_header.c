@@ -42,6 +42,8 @@ inline void nms_header(void)
 	if ((tkn = strchr(svnrev, '$')))
 		*tkn = '\0';
 #endif
-	nms_printf(NMSML_ALWAYS, "\n" NMSCLR_BLUE_BOLD "%s - %s -- release %s %s(%s)\n\n" NMSCLR_DEFAULT, PROG_NAME,
-		   PROG_DESCR, VERSION, svnrev, VERSION_NAME);
+	nms_printf(NMSML_ALWAYS,
+		   "\n" NMSCLR_BLUE_BOLD "%s - %s -- release %s %s(%s)\n\n"
+		   NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, svnrev,
+		   VERSION_NAME);
 }

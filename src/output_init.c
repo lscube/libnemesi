@@ -43,7 +43,9 @@ int output_init(nms_out_hints * hints)
 		return nms_printf(NMSML_FATAL, "Could not alloc output struct");
 
 	nms_outc->elapsed = 0;
-	nms_outc->sysbuff_ms = (hints && hints->sysbuff_ms) ? hints->sysbuff_ms : DEF_SYSBUFF_MS;
+	nms_outc->sysbuff_ms = (hints
+				&& hints->sysbuff_ms) ? hints->
+	    sysbuff_ms : DEF_SYSBUFF_MS;
 
 	nms_printf(NMSML_NORM, SEPARATOR);
 	// AUDIO MODULE INIT
@@ -51,7 +53,10 @@ int output_init(nms_out_hints * hints)
 	if (hints && hints->audio && !strcmp(hints->audio, "noaudio")) {
 		nms_printf(NMSML_NORM, "No Audio\n");
 		nms_outc->audio = NULL;
-	} else if ((nms_outc->audio = audio_init(hints ? hints->audio : NULL, nms_outc->sysbuff_ms)) == NULL) {
+	} else
+	    if ((nms_outc->audio =
+		 audio_init(hints ? hints->audio : NULL,
+			    nms_outc->sysbuff_ms)) == NULL) {
 		nms_printf(NMSML_ERR, "Audio module not available\n");
 		// fprintf(stderr, "Audio module not available: setting \"output\" to \"disk\"\n");
 		// rem_avail_pref("output card");
@@ -65,9 +70,12 @@ int output_init(nms_out_hints * hints)
 		nms_outc->video = NULL;
 	} else
 	    if ((nms_outc->video =
-		 video_preinit(hints ? hints->video : NULL, nms_outc->sysbuff_ms * 2 /*XXX: tmp */ )) == NULL) {
+		 video_preinit(hints ? hints->video : NULL,
+			       nms_outc->sysbuff_ms * 2 /*XXX: tmp */ )) ==
+		NULL) {
 		if (!nms_outc->audio) {
-			nms_printf(NMSML_ERR, "Video module not available: setting \"output\" to \"null\"\n");
+			nms_printf(NMSML_ERR,
+				   "Video module not available: setting \"output\" to \"null\"\n");
 			rem_avail_pref("output card");
 			// edit_pref("output disk");
 		} else
@@ -79,11 +87,14 @@ int output_init(nms_out_hints * hints)
 	if (hints && hints->diskwriter && !strcmp(hints->diskwriter, "nodisk")) {
 		nms_printf(NMSML_NORM, "No DiskWriter\n");
 		nms_outc->diskwriter = NULL;
-	} else if ((nms_outc->diskwriter = diskwriter_init(hints ? hints->diskwriter : NULL)) == NULL) {
+	} else
+	    if ((nms_outc->diskwriter =
+		 diskwriter_init(hints ? hints->diskwriter : NULL)) == NULL) {
 		nms_printf(NMSML_ERR, "Disk Writer module not available\n");
 		rem_avail_pref("output disk");
 		if (strcmp("card", get_pref("output")))
-			return nms_printf(NMSML_FATAL, "No output device available\n Cannot continue\n");
+			return nms_printf(NMSML_FATAL,
+					  "No output device available\n Cannot continue\n");
 	} else
 		nms_printf(NMSML_NORM, "Diskwriter succesfully initialized\n");
 	nms_printf(NMSML_NORM, SEPARATOR);

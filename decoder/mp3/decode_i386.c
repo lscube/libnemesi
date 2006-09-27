@@ -83,7 +83,8 @@ int synth_1to1(real * bandPtr, int channel, unsigned char *out, int *pnt)
 		register int j;
 		real *window = decwin + 16 - bo1;
 
-		for (j = 16; j; j--, b0 += 0x10, window += 0x20, samples += step) {
+		for (j = 16; j;
+		     j--, b0 += 0x10, window += 0x20, samples += step) {
 			real sum;
 			sum = window[0x0] * b0[0x0];
 			sum -= window[0x1] * b0[0x1];
@@ -120,7 +121,8 @@ int synth_1to1(real * bandPtr, int channel, unsigned char *out, int *pnt)
 		}
 		window += bo1 << 1;
 
-		for (j = 15; j; j--, b0 -= 0x10, window -= 0x20, samples += step) {
+		for (j = 15; j;
+		     j--, b0 -= 0x10, window -= 0x20, samples += step) {
 			real sum;
 			sum = -window[-0x1] * b0[0x0];
 			sum -= window[-0x2] * b0[0x1];

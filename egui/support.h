@@ -36,4 +36,6 @@ GtkWidget *create_pixmap(GtkWidget * widget, const gchar * filename);
 GdkPixbuf *create_pixbuf(const gchar * filename);
 
 /* This is used to set ATK action descriptions. */
-void glade_set_atk_action_description(AtkAction * action, const gchar * action_name, const gchar * description);
+void glade_set_atk_action_description(AtkAction * action,
+				      const gchar * action_name,
+				      const gchar * description);

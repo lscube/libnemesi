@@ -53,7 +53,9 @@ int poinit(playout_buff * po, buffer_pool * bp)
 		return i;
 #if 0
 #ifdef	_POSIX_THREAD_PROCESS_SHARED
-	if ((i = pthread_mutexattr_setpshared(&mutex_attr, PTHREAD_PROCESS_SHARED)) > 0)
+	if ((i =
+	     pthread_mutexattr_setpshared(&mutex_attr,
+					  PTHREAD_PROCESS_SHARED)) > 0)
 		return i;
 #endif
 #endif

@@ -42,7 +42,8 @@ GNMSurl *gnmsurl_init(void)
 	GtkTreeIter iter;
 
 	if (!(new = malloc(sizeof(GNMSurl)))) {
-		nms_printf(NMSML_FATAL, "Could not alloc memory for completion struct\n");
+		nms_printf(NMSML_FATAL,
+			   "Could not alloc memory for completion struct\n");
 		return NULL;
 	}
 
@@ -56,7 +57,8 @@ GNMSurl *gnmsurl_init(void)
 	return new;
 }
 
-gboolean gnmscompletion_machfunc(GtkEntryCompletion * completion, const gchar * key, GtkTreeIter * iter,
+gboolean gnmscompletion_machfunc(GtkEntryCompletion * completion,
+				 const gchar * key, GtkTreeIter * iter,
 				 gpointer user_data)
 {
 	GNMSurl *gnmsurl = (GNMSurl *) user_data;

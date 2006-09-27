@@ -37,7 +37,9 @@ int gui(rtsp_ctrl * rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
 	path = getenv(NEMESI_THROBBER_DIR_ENV);
 	if (!path) {
 		add_pixmap_directory(NEMESI_THROBBER_DIR_DEFAULT);
-		nms_printf(NMSML_DBG1, "NEMESI_THROBBER_DIR_DEFAULT: " NEMESI_THROBBER_DIR_DEFAULT "\n");
+		nms_printf(NMSML_DBG1,
+			   "NEMESI_THROBBER_DIR_DEFAULT: "
+			   NEMESI_THROBBER_DIR_DEFAULT "\n");
 	} else {
 		add_pixmap_directory(path);
 		nms_printf(NMSML_DBG1, "NEMESI_THROBBER_DIR_ENV: %s\n", path);
@@ -46,7 +48,9 @@ int gui(rtsp_ctrl * rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
 	path = getenv(NEMESI_PIXMAPS_DIR_ENV);
 	if (!path) {
 		add_pixmap_directory(NEMESI_PIXMAPS_DIR_DEFAULT);
-		nms_printf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_DEFAULT: " NEMESI_PIXMAPS_DIR_DEFAULT "\n");
+		nms_printf(NMSML_DBG1,
+			   "NEMESI_PIXMAPS_DIR_DEFAULT: "
+			   NEMESI_PIXMAPS_DIR_DEFAULT "\n");
 	} else {
 		add_pixmap_directory(path);
 		nms_printf(NMSML_DBG1, "NEMESI_PIXMAPS_DIR_ENV: %s\n", path);
@@ -69,8 +73,10 @@ int gui(rtsp_ctrl * rtsp_ctl, nms_ui_hints * ui_hints, int argc, char *argv[])
 	gtk_widget_show(nemesi);
 
 	if (ui_hints->url) {
-		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"", ui_hints->url);
-		nms_open(rtsp_ctl, ui_hints->url, gui_throbber, &rtsp_ctl->busy);
+		nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"",
+			   ui_hints->url);
+		nms_open(rtsp_ctl, ui_hints->url, gui_throbber,
+			 &rtsp_ctl->busy);
 		while (gtk_events_pending())
 			gtk_main_iteration();
 		nms_play(rtsp_ctl, -1, -1);

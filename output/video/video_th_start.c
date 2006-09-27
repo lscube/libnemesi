@@ -44,13 +44,21 @@ int video_th_start(nms_output * outc)
 	/* set Video thread attributes to make thread joinable */
 	pthread_attr_init(&vth_attr);
 
-	if ((n = pthread_attr_setdetachstate(&vth_attr, PTHREAD_CREATE_JOINABLE)) != 0) {
-		return nms_printf(NMSML_FATAL, "Cannot set Video Thread attributes!: %s\n", strerror(n));
+	if ((n =
+	     pthread_attr_setdetachstate(&vth_attr,
+					 PTHREAD_CREATE_JOINABLE)) != 0) {
+		return nms_printf(NMSML_FATAL,
+				  "Cannot set Video Thread attributes!: %s\n",
+				  strerror(n));
 	}
 
 	/* Create Video Thread */
-	if ((n = pthread_create(&(outc->video->tid), &vth_attr, &video_th, (void *) outc)) > 0) {
-		return nms_printf(NMSML_FATAL, "Cannot create Video Thread: %s\n", strerror(n));
+	if ((n =
+	     pthread_create(&(outc->video->tid), &vth_attr, &video_th,
+			    (void *) outc)) > 0) {
+		return nms_printf(NMSML_FATAL,
+				  "Cannot create Video Thread: %s\n",
+				  strerror(n));
 	}
 
 	return 0;

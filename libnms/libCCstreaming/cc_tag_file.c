@@ -44,10 +44,12 @@ static int cc_tagsinit(void)
 {
 	// if ( (!cc_headers) && (!(cc_headers=calloc(128, sizeof(char *)))))
 	if ((!cc_tags) && (!(cc_tags = calloc(128, sizeof(cc_tag)))))
-		return nms_printf(NMSML_FATAL, "cc_tag: could not alloc static tags\n");
+		return nms_printf(NMSML_FATAL,
+				  "cc_tag: could not alloc static tags\n");
 
 	if ((!cc_exts) && (!(cc_exts = calloc(128, sizeof(char *)))))
-		return nms_printf(NMSML_FATAL, "cc_tag: could not alloc static extensions\n");
+		return nms_printf(NMSML_FATAL,
+				  "cc_tag: could not alloc static extensions\n");
 
 	cc_taginit = 1;
 

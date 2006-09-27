@@ -72,7 +72,8 @@ int synth_1to1_mono(PMPSTR mp, real * bandPtr, unsigned char *samples, int *pnt)
 	return ret;
 }
 
-int synth_1to1(PMPSTR mp, real * bandPtr, int channel, unsigned char *out, int *pnt)
+int synth_1to1(PMPSTR mp, real * bandPtr, int channel, unsigned char *out,
+	       int *pnt)
 {
 	static const int step = 2;
 	int bo;
@@ -109,7 +110,8 @@ int synth_1to1(PMPSTR mp, real * bandPtr, int channel, unsigned char *out, int *
 		register int j;
 		real *window = decwin + 16 - bo1;
 
-		for (j = 16; j; j--, b0 += 0x10, window += 0x20, samples += step) {
+		for (j = 16; j;
+		     j--, b0 += 0x10, window += 0x20, samples += step) {
 			real sum;
 			sum = window[0x0] * b0[0x0];
 			sum -= window[0x1] * b0[0x1];
@@ -146,7 +148,8 @@ int synth_1to1(PMPSTR mp, real * bandPtr, int channel, unsigned char *out, int *
 		}
 		window += bo1 << 1;
 
-		for (j = 15; j; j--, b0 -= 0x10, window -= 0x20, samples += step) {
+		for (j = 15; j;
+		     j--, b0 -= 0x10, window -= 0x20, samples += step) {
 			real sum;
 			sum = -window[-0x1] * b0[0x0];
 			sum -= window[-0x2] * b0[0x1];

@@ -35,7 +35,8 @@ void rtcp_clean(void *args)
 	rtp_ssrc *stm_src;
 
 	for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
-		for (stm_src = rtp_sess->ssrc_queue; stm_src; stm_src = stm_src->next)
+		for (stm_src = rtp_sess->ssrc_queue; stm_src;
+		     stm_src = stm_src->next)
 			if (stm_src->rtcptofd > 0)
 				close(stm_src->rtcptofd);
 

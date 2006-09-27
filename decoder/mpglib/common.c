@@ -31,7 +31,8 @@
 extern const int tabsel_123[2][3][16];
 
 const int tabsel_123[2][3][16] = {
-	{{0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448,},
+	{{0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416,
+	  448,},
 	 {0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384,},
 	 {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320,}},
 
@@ -68,13 +69,17 @@ static void get_II_stuff(struct frame *fr)
 	};
 
 	int table, sblim;
-	static const struct al_table2 *tables[5] = { alloc_0, alloc_1, alloc_2, alloc_3, alloc_4 };
+	static const struct al_table2 *tables[5] =
+	    { alloc_0, alloc_1, alloc_2, alloc_3, alloc_4 };
 	static int sblims[5] = { 27, 30, 8, 12, 30 };
 
 	if (fr->lsf)
 		table = 4;
 	else
-		table = translate[fr->sampling_frequency][2 - fr->stereo][fr->bitrate_index];
+		table =
+		    translate[fr->sampling_frequency][2 -
+						      fr->stereo][fr->
+								  bitrate_index];
 	sblim = sblims[table];
 
 	fr->alloc = tables[table];
@@ -158,7 +163,8 @@ int decode_header(struct frame *fr, unsigned long newhead)
 	if (fr->mpeg25) {
 		fr->sampling_frequency = 6 + ((newhead >> 10) & 0x3);
 	} else
-		fr->sampling_frequency = ((newhead >> 10) & 0x3) + (fr->lsf * 3);
+		fr->sampling_frequency =
+		    ((newhead >> 10) & 0x3) + (fr->lsf * 3);
 
 	fr->error_protection = ((newhead >> 16) & 0x1) ^ 0x1;
 
@@ -179,7 +185,8 @@ int decode_header(struct frame *fr, unsigned long newhead)
 	switch (fr->lay) {
 #ifdef USE_LAYER_1
 	case 1:
-		fr->framesize = (long) tabsel_123[fr->lsf][0][fr->bitrate_index] * 12000;
+		fr->framesize =
+		    (long) tabsel_123[fr->lsf][0][fr->bitrate_index] * 12000;
 		fr->framesize /= freqs[fr->sampling_frequency];
 		fr->framesize = ((fr->framesize + fr->padding) << 2) - 4;
 		fr->down_sample = 0;
@@ -188,7 +195,8 @@ int decode_header(struct frame *fr, unsigned long newhead)
 #endif
 #ifdef USE_LAYER_2
 	case 2:
-		fr->framesize = (long) tabsel_123[fr->lsf][1][fr->bitrate_index] * 144000;
+		fr->framesize =
+		    (long) tabsel_123[fr->lsf][1][fr->bitrate_index] * 144000;
 		fr->framesize /= freqs[fr->sampling_frequency];
 		fr->framesize += fr->padding - 4;
 		fr->down_sample = 0;
@@ -211,8 +219,11 @@ int decode_header(struct frame *fr, unsigned long newhead)
 		if (fr->bitrate_index == 0)
 			fr->framesize = 0;
 		else {
-			fr->framesize = (long) tabsel_123[fr->lsf][2][fr->bitrate_index] * 144000;
-			fr->framesize /= freqs[fr->sampling_frequency] << (fr->lsf);
+			fr->framesize =
+			    (long) tabsel_123[fr->lsf][2][fr->bitrate_index] *
+			    144000;
+			fr->framesize /= freqs[fr->sampling_frequency] << (fr->
+									   lsf);
 			fr->framesize = fr->framesize + fr->padding - 4;
 		}
 		break;
@@ -229,28 +240,36 @@ int decode_header(struct frame *fr, unsigned long newhead)
 #if 1
 void print_header(struct frame *fr)
 {
-	static const char *modes[4] = { "Stereo", "Joint-Stereo", "Dual-Channel", "Single-Channel" };
+	static const char *modes[4] =
+	    { "Stereo", "Joint-Stereo", "Dual-Channel", "Single-Channel" };
 	static const char *layers[4] = { "Unknown", "I", "II", "III" };
 
-	fprintf(stderr, "MPEG %s, Layer: %s, Freq: %ld, mode: %s, modext: %d, BPF : %d\n",
-		fr->mpeg25 ? "2.5" : (fr->lsf ? "2.0" : "1.0"),
-		layers[fr->lay], freqs[fr->sampling_frequency], modes[fr->mode], fr->mode_ext, fr->framesize + 4);
-	fprintf(stderr, "Channels: %d, copyright: %s, original: %s, CRC: %s, emphasis: %d.\n",
+	fprintf(stderr,
+		"MPEG %s, Layer: %s, Freq: %ld, mode: %s, modext: %d, BPF : %d\n",
+		fr->mpeg25 ? "2.5" : (fr->lsf ? "2.0" : "1.0"), layers[fr->lay],
+		freqs[fr->sampling_frequency], modes[fr->mode], fr->mode_ext,
+		fr->framesize + 4);
+	fprintf(stderr,
+		"Channels: %d, copyright: %s, original: %s, CRC: %s, emphasis: %d.\n",
 		fr->stereo, fr->copyright ? "Yes" : "No",
-		fr->original ? "Yes" : "No", fr->error_protection ? "Yes" : "No", fr->emphasis);
+		fr->original ? "Yes" : "No",
+		fr->error_protection ? "Yes" : "No", fr->emphasis);
 	fprintf(stderr, "Bitrate: %d Kbits/s, Extension value: %d\n",
-		tabsel_123[fr->lsf][fr->lay - 1][fr->bitrate_index], fr->extension);
+		tabsel_123[fr->lsf][fr->lay - 1][fr->bitrate_index],
+		fr->extension);
 }
 
 void print_header_compact(struct frame *fr)
 {
-	static const char *modes[4] = { "stereo", "joint-stereo", "dual-channel", "mono" };
+	static const char *modes[4] =
+	    { "stereo", "joint-stereo", "dual-channel", "mono" };
 	static const char *layers[4] = { "Unknown", "I", "II", "III" };
 
 	fprintf(stderr, "MPEG %s layer %s, %d kbit/s, %ld Hz %s\n",
 		fr->mpeg25 ? "2.5" : (fr->lsf ? "2.0" : "1.0"),
 		layers[fr->lay],
-		tabsel_123[fr->lsf][fr->lay - 1][fr->bitrate_index], freqs[fr->sampling_frequency], modes[fr->mode]);
+		tabsel_123[fr->lsf][fr->lay - 1][fr->bitrate_index],
+		freqs[fr->sampling_frequency], modes[fr->mode]);
 }
 
 #endif
@@ -313,7 +332,8 @@ int set_pointer(PMPSTR mp, long backstep)
 	bsbufold = mp->bsspace[1 - mp->bsnum] + 512;
 	wordpointer -= backstep;
 	if (backstep)
-		memcpy(wordpointer, bsbufold + mp->fsizeold - backstep, (size_t) backstep);
+		memcpy(wordpointer, bsbufold + mp->fsizeold - backstep,
+		       (size_t) backstep);
 	bitindex = 0;
 	return MP3_OK;
 }

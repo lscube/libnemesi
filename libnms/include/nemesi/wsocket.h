@@ -99,8 +99,10 @@ int server_connect(char *, char *, int *, enum sock_types);
 int server_create(char *, char *, int *);
 int tcp_write(int, void *, size_t);
 int tcp_read(int, void *, size_t);
-int sock_cmp_addr(const struct sockaddr *, const struct sockaddr * /*, socklen_t */ );
-int sock_cmp_port(const struct sockaddr *, const struct sockaddr * /*, socklen_t */ );
+int sock_cmp_addr(const struct sockaddr *,
+		  const struct sockaddr * /*, socklen_t */ );
+int sock_cmp_port(const struct sockaddr *,
+		  const struct sockaddr * /*, socklen_t */ );
 void sock_set_port(struct sockaddr *, /* socklen_t, */ int);
 void sock_set_addr(struct sockaddr *, /* socklen_t, */ const void *addr);
 uint16 sock_get_port(const struct sockaddr * /*, socklen_t */ );

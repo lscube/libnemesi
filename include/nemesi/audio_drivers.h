@@ -59,8 +59,8 @@ typedef struct {
 	 * returns : zero on successful initialization, non-zero on error.
 	 */
 	// XXX: rate, channels and format are both input and output parameters
-	 uint32(*init) (uint32 * rate, uint8 * channels, uint32 * format, uint32 buff_ms, uint32 flags,
-			const char *arg);
+	 uint32(*init) (uint32 * rate, uint8 * channels, uint32 * format,
+			uint32 buff_ms, uint32 flags, const char *arg);
 	/*
 	 * Control interface
 	 * params:

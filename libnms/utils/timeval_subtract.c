@@ -28,7 +28,8 @@
 
 #include <nemesi/utils.h>
 
-int timeval_subtract(struct timeval *res, const struct timeval *x, const struct timeval *y)
+int timeval_subtract(struct timeval *res, const struct timeval *x,
+		     const struct timeval *y)
 {
 	int nsec;
 	struct timeval z = *y;
@@ -53,5 +54,6 @@ int timeval_subtract(struct timeval *res, const struct timeval *x, const struct 
 	}
 
 	/* Return 1 if result is negative (x < y).  */
-	return ((x->tv_sec < z.tv_sec) || ((x->tv_sec == z.tv_sec) && (x->tv_usec < z.tv_usec)));
+	return ((x->tv_sec < z.tv_sec)
+		|| ((x->tv_sec == z.tv_sec) && (x->tv_usec < z.tv_usec)));
 }

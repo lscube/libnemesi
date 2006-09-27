@@ -49,7 +49,8 @@ int open_cmd(rtsp_thread * rtsp_th, ...)
 	if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
 		return 1;
 	urltokenize(rtsp_th->urlname, &server, NULL, NULL);
-	if (server_connect(server, rtsp_th->server_port, &rtsp_th->transport.fd, TCP)) {
+	if (server_connect
+	    (server, rtsp_th->server_port, &rtsp_th->transport.fd, TCP)) {
 		rtsp_th->transport.fd = -1;
 		return nms_printf(NMSML_ERR, "Cannot connect to the server\n");
 	}

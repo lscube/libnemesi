@@ -51,13 +51,15 @@ void list_audio_out(void)
 
 	nms_printf(NMSML_NORM, "Avalilable audio out drivers are:\n");
 	for (i = 0; audio_out_drivers[i]; i++) {
-		nms_printf(NMSML_ALWAYS, "\t%s\t%s\n", audio_out_drivers[i]->info->short_name,
+		nms_printf(NMSML_ALWAYS, "\t%s\t%s\n",
+			   audio_out_drivers[i]->info->short_name,
 			   audio_out_drivers[i]->info->name);
 	}
 	nms_printf(NMSML_ALWAYS, "\n");
 }
 
-nms_au_fnc *init_best_audio_out(char *drv, uint32 * rate, uint8 * channels, uint32 * format, uint32 sysbuff_ms)
+nms_au_fnc *init_best_audio_out(char *drv, uint32 * rate, uint8 * channels,
+				uint32 * format, uint32 sysbuff_ms)
 {
 	int i;
 	char *device, *sub_device = NULL;
@@ -65,14 +67,22 @@ nms_au_fnc *init_best_audio_out(char *drv, uint32 * rate, uint8 * channels, uint
 	if (drv && *drv) {
 		device = strtok(drv, ",");
 		while (device && *device && strcmp(device, "...")) {
-			for (i = 0; audio_out_drivers[i] && strcmp(device, audio_out_drivers[i]->info->short_name);
+			for (i = 0;
+			     audio_out_drivers[i]
+			     && strcmp(device,
+				       audio_out_drivers[i]->info->short_name);
 			     i++);
 			if (!audio_out_drivers[i])
-				nms_printf(NMSML_ERR, "Could not find audio driver %s\n", device);
+				nms_printf(NMSML_ERR,
+					   "Could not find audio driver %s\n",
+					   device);
 			else {
-				nms_printf(NMSML_VERB, "Found audio output driver %s\n",
+				nms_printf(NMSML_VERB,
+					   "Found audio output driver %s\n",
 					   audio_out_drivers[i]->info->name);
-				if (!audio_out_drivers[i]->init(rate, channels, format, sysbuff_ms, 0, NULL)) {
+				if (!audio_out_drivers[i]->
+				    init(rate, channels, format, sysbuff_ms, 0,
+					 NULL)) {
 					return audio_out_drivers[i];
 				}
 			}
@@ -83,7 +93,8 @@ nms_au_fnc *init_best_audio_out(char *drv, uint32 * rate, uint8 * channels, uint
 		nms_printf(NMSML_NORM, "Falling back to drivers not hinted\n");
 	}
 	for (i = 0; audio_out_drivers[i]; i++) {
-		if (!audio_out_drivers[i]->init(rate, channels, format, sysbuff_ms, 0, NULL))
+		if (!audio_out_drivers[i]->
+		    init(rate, channels, format, sysbuff_ms, 0, NULL))
 			return audio_out_drivers[i];
 	}
 

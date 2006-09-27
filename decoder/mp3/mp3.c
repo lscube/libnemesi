@@ -58,7 +58,8 @@ static int decode(char *data, int len, nms_output * outc)
 	uitn32 req_len;
 
 	if (!mp) {
-		if ((mp = (struct mpstr *) malloc(sizeof(struct mpstr))) == NULL) {
+		if ((mp =
+		     (struct mpstr *) malloc(sizeof(struct mpstr))) == NULL) {
 			fprintf(stderr, "Cannot allocate memory!\n");
 			return 1;
 		}

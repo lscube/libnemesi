@@ -39,7 +39,8 @@ nms_diskwriter *diskwriter_init(const char *basename)
 
 	// use of calloc in order to initialize strings also
 	if ((dc = calloc(1, sizeof(nms_diskwriter))) == NULL) {
-		nms_printf(NMSML_FATAL, "Could not alloc disk writer structure\n");
+		nms_printf(NMSML_FATAL,
+			   "Could not alloc disk writer structure\n");
 		return NULL;
 	}
 
@@ -56,7 +57,8 @@ nms_diskwriter *diskwriter_init(const char *basename)
 		close(fd);
 		unlink(dc->basename);
 	} else {
-		fprintf(stderr, "\nError initializzing Disk Writer Module: you have not write permission\n");
+		fprintf(stderr,
+			"\nError initializzing Disk Writer Module: you have not write permission\n");
 		free(dc);
 		return NULL;
 	}

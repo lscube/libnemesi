@@ -107,7 +107,8 @@ void *get_curr_sess(int cmd, ...)
 * sessioni ne' media RTSP da scandire.
 * */
 
-int get_curr_sess(rtsp_thread * rtsp_th, rtsp_session ** rtsp_sess, rtsp_medium ** rtsp_med)
+int get_curr_sess(rtsp_thread * rtsp_th, rtsp_session ** rtsp_sess,
+		  rtsp_medium ** rtsp_med)
 {
 	static rtsp_session *static_sess = NULL;
 	static rtsp_medium *static_med = NULL;

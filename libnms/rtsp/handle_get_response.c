@@ -68,7 +68,9 @@ int handle_get_response(rtsp_thread * rtsp_th)
 			   description_format=DESCRIPTION_MH_FORMAT;
 			 */
 			else {
-				nms_printf(NMSML_ERR, "Content-Type %s not recognized\n", prev_tkn);
+				nms_printf(NMSML_ERR,
+					   "Content-Type %s not recognized\n",
+					   prev_tkn);
 			}
 		} else if (!strncmpcase(prev_tkn, "Content-Base", 12)) {
 			prev_tkn += 12;
@@ -81,7 +83,8 @@ int handle_get_response(rtsp_thread * rtsp_th)
 				content_base[strlen(content_base) - 1] = '\0';
 		}
 	}
-	while ((tkn != NULL) && ((*tkn == '\r') || (*tkn == '\n') || (*tkn == '\0')))
+	while ((tkn != NULL)
+	       && ((*tkn == '\r') || (*tkn == '\n') || (*tkn == '\0')))
 		tkn = strtok(NULL, "\n");	/* cerco l'inizio del body o, eventualmente del prossimo pkt */
 	if (tkn != NULL)
 		tkn[strlen(tkn)] = '\n';	/* rimetto a posto il \n modificato dalla strtok */

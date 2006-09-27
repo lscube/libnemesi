@@ -65,17 +65,23 @@ int main(int argc, char *argv[])
 #endif				// USE_UIPRINTF
 
 	if ((n = load_plugins()) > 0)
-		exit(nms_printf(NMSML_FATAL, "Cannot load plugins: %s\n", strerror(n)));
+		exit(nms_printf
+		     (NMSML_FATAL, "Cannot load plugins: %s\n", strerror(n)));
 
 	// output initialization
 	if (output_init(&output_hints))
-		exit(nms_printf(NMSML_FATAL, "Error initializing output module\n"));
+		exit(nms_printf
+		     (NMSML_FATAL, "Error initializing output module\n"));
 
 	if (!(rtsp_ctl = rtsp_init(&rtsp_hints)))
-		exit(nms_printf(NMSML_FATAL, "Cannot initialize RTSP: %s\n", strerror(errno)));
+		exit(nms_printf
+		     (NMSML_FATAL, "Cannot initialize RTSP: %s\n",
+		      strerror(errno)));
 	// UI interface function
 	if (argv[0])		// if we are called with the initial 'g' => start gui
-		if ((*argv[0] == 'g') || ((slash = strrchr(argv[0], '/')) && (*(slash + 1) == 'g'))) {
+		if ((*argv[0] == 'g')
+		    || ((slash = strrchr(argv[0], '/'))
+			&& (*(slash + 1) == 'g'))) {
 			ui_hints.gui = 1;
 			nms_statusprintf(NO_STATUS, NULL);
 		}
@@ -84,7 +90,8 @@ int main(int argc, char *argv[])
 		gui(rtsp_ctl, &ui_hints, argc, argv);
 	else
 #else				// HAVE_GUI
-		nms_printf(NMSML_ERR, "no GUI present: falling back to e-TUI\n");
+		nms_printf(NMSML_ERR,
+			   "no GUI present: falling back to e-TUI\n");
 #endif				// HAVE_GUI
 	if ((n = ui(rtsp_ctl, &ui_hints, argc, argv)) > 0)
 		exit(1);

@@ -190,7 +190,8 @@ static int cfg_parse(rtp_vorbis * vorb, rtp_frame * fr)	//FIXME checks missing!
 			break;
 		case 1:
 			{
-				int pclass[31], pdim[16], rangebits, partitions = bit_read(&opb, 5);
+				int pclass[31], pdim[16], rangebits,
+				    partitions = bit_read(&opb, 5);
 				for (i = 0; i < partitions; i++) {
 					pclass[i] = bit_read(&opb, 4);
 					if (k < pclass[i])
@@ -209,7 +210,8 @@ static int cfg_parse(rtp_vorbis * vorb, rtp_frame * fr)	//FIXME checks missing!
 				bit_read(&opb, 2);
 				rangebits = bit_read(&opb, 4);
 				for (j = 0, k = 0; j < partitions; j++) {
-					bit_read(&opb, rangebits * pdim[pclass[j]]);
+					bit_read(&opb,
+						 rangebits * pdim[pclass[j]]);
 				}
 			}
 		}
@@ -282,7 +284,8 @@ static long pkt_blocksize(rtp_vorbis * vorb, rtp_frame * fr)
 }
 
 //get standard mkv/nut/ffmpeg configuration packet from an rtp one
-static int cfg_fixup(rtp_vorbis * vorb, rtp_frame * fr, rtp_buff * config, int id)
+static int cfg_fixup(rtp_vorbis * vorb, rtp_frame * fr, rtp_buff * config,
+		     int id)
 {
 	unsigned char comment[26] =
 	    /*quite minimal comment */
@@ -308,7 +311,8 @@ static int cfg_fixup(rtp_vorbis * vorb, rtp_frame * fr, rtp_buff * config, int i
 	return 0;
 }
 
-static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr, rtp_buff * config, rtp_ssrc * ssrc)
+static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
+			rtp_buff * config, rtp_ssrc * ssrc)
 {
 
 	int len = RTP_XIPH_LEN(pkt, vorb->offset);
@@ -341,14 +345,16 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr, rtp_bu
 	return 0;
 }
 
-static int pack_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr, rtp_buff * config, rtp_ssrc * ssrc)
+static int pack_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
+		      rtp_buff * config, rtp_ssrc * ssrc)
 {
 	single_parse(vorb, pkt, fr, config, ssrc);
 	vorb->offset += fr->len + 2;
 	return 0;
 }
 
-static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr, rtp_buff * config, rtp_ssrc * ssrc)
+static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
+		      rtp_buff * config, rtp_ssrc * ssrc)
 {
 	int len, err = 0;
 
@@ -379,7 +385,8 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr, rtp_buff
 		else {
 			vorb->curr_bs = pkt_blocksize(vorb, fr);
 			if (vorb->prev_bs)
-				fr->timestamp += (vorb->curr_bs + vorb->prev_bs) / 4;
+				fr->timestamp +=
+				    (vorb->curr_bs + vorb->prev_bs) / 4;
 			vorb->prev_bs = vorb->curr_bs;
 		}
 		break;
@@ -446,7 +453,9 @@ static int rtp_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
 	if (!vorb) {
 		vorb = ssrc->privs[fr->pt] = malloc(sizeof(rtp_vorbis));
-		vorb = memcpy(vorb, ssrc->rtp_sess->ptdefs[fr->pt]->priv, sizeof(rtp_vorbis));
+		vorb =
+		    memcpy(vorb, ssrc->rtp_sess->ptdefs[fr->pt]->priv,
+			   sizeof(rtp_vorbis));
 	}
 	//if I don't have previous work
 	if (!vorb->pkts) {

@@ -42,16 +42,25 @@ int parse_prompt(rtsp_ctrl * rtsp_ctl, char *optstr)
 	case 'h':
 	case '?':
 		nms_printf(NMSML_NORM, "\nHelp:\n");
-		nms_printf(NMSML_NORM, "\t* help or ?           print this help\n");
+		nms_printf(NMSML_NORM,
+			   "\t* help or ?           print this help\n");
 		nms_printf(NMSML_NORM, "\t* quit                quit\n");
-		nms_printf(NMSML_NORM, "\t* version             print infos about NeMeSI.\n");
-		nms_printf(NMSML_NORM, "\t* open urlname        connect to urlname\n");
-		nms_printf(NMSML_NORM, "\t* info                print info about the session\n");
-		nms_printf(NMSML_NORM, "\t* play [range]        start the playback\n");
-		nms_printf(NMSML_NORM, "\t* zause               pause the playback\n");
-		nms_printf(NMSML_NORM, "\t* stop                stop the playback\n");
-		nms_printf(NMSML_NORM, "\t* close               close the connection\n");
-		nms_printf(NMSML_NORM, "\t* edit option value   change the value of specified option\n");
+		nms_printf(NMSML_NORM,
+			   "\t* version             print infos about NeMeSI.\n");
+		nms_printf(NMSML_NORM,
+			   "\t* open urlname        connect to urlname\n");
+		nms_printf(NMSML_NORM,
+			   "\t* info                print info about the session\n");
+		nms_printf(NMSML_NORM,
+			   "\t* play [range]        start the playback\n");
+		nms_printf(NMSML_NORM,
+			   "\t* zause               pause the playback\n");
+		nms_printf(NMSML_NORM,
+			   "\t* stop                stop the playback\n");
+		nms_printf(NMSML_NORM,
+			   "\t* close               close the connection\n");
+		nms_printf(NMSML_NORM,
+			   "\t* edit option value   change the value of specified option\n");
 		nms_printf(NMSML_NORM,
 			   "\t* list                show list of editable options, with assigned values and short description\n");
 		nms_printf(NMSML_NORM,
@@ -61,16 +70,21 @@ int parse_prompt(rtsp_ctrl * rtsp_ctl, char *optstr)
 		nms_close(rtsp_ctl, throbber, rtsp_ctl);
 		return 1;
 	case 'v':
-		nms_printf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n", PROG_NAME, PROG_DESCR, VERSION,
-			   VERSION_NAME);
-		nms_printf(NMSML_NORM, "Copyleft 2001 - mancho@cclif.polito.it\n");
-		nms_printf(NMSML_NORM, "              - shawill@cclinf.polito.it\n\n");
+		nms_printf(NMSML_NORM, "\nThis is %s - %s -- release %s (%s)\n",
+			   PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+		nms_printf(NMSML_NORM,
+			   "Copyleft 2001 - mancho@cclif.polito.it\n");
+		nms_printf(NMSML_NORM,
+			   "              - shawill@cclinf.polito.it\n\n");
 		break;
 	case 'o':
 		if (sscanf(optstr, "%*s %s", argstr) != 1)
-			nms_printf(NMSML_ERR, "Can't connect: no address given\n");
+			nms_printf(NMSML_ERR,
+				   "Can't connect: no address given\n");
 		else {
-			nms_printf(NMSML_NORM, "Connect: Please wait, opening \"%s\"\n", argstr);
+			nms_printf(NMSML_NORM,
+				   "Connect: Please wait, opening \"%s\"\n",
+				   argstr);
 			nms_open(rtsp_ctl, argstr, throbber, rtsp_ctl);
 		}
 		break;

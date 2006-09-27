@@ -50,7 +50,9 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 
 	opterr = 0;
 	optind = 1;
-	while (((ch = getopt_long(argc, argv, ":" CL_OPTIONS, long_options, &option_index)) != -1))
+	while (((ch =
+		 getopt_long(argc, argv, ":" CL_OPTIONS, long_options,
+			     &option_index)) != -1))
 		switch (ch) {
 		case 'h':	/* help */
 			usage = 1;
@@ -69,8 +71,10 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 				if (*optarg == 'v') {
 					for (i = 0; optarg[i] == 'v'; i++);
 					if (optarg[i] != '\0') {
-						nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n",
-							   long_options[option_index].name);
+						nms_printf(NMSML_ERR,
+							   "Invalid argument to \"%s\" option\n",
+							   long_options
+							   [option_index].name);
 						usage = 1;
 						ret = -1;
 					}
@@ -78,14 +82,18 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 				} else if ((isdigit(*optarg))) {
 					v = strtol(optarg, &v_err, 10);
 					if ((*v_err)) {
-						nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n",
-							   long_options[option_index].name);
+						nms_printf(NMSML_ERR,
+							   "Invalid argument to \"%s\" option\n",
+							   long_options
+							   [option_index].name);
 						usage = 1;
 						ret = -1;
 					}
 				} else {
-					nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n",
-						   long_options[option_index].name);
+					nms_printf(NMSML_ERR,
+						   "Invalid argument to \"%s\" option\n",
+						   long_options[option_index].
+						   name);
 					usage = 1;
 					ret = -1;
 				}
@@ -100,30 +108,37 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 				v++;
 			if (v != nms_verbosity_get())
 				nms_verbosity_set(v);
-			nms_printf(NMSML_DBG1, "Verbosity level set to %d\n", nms_verbosity_get());
+			nms_printf(NMSML_DBG1, "Verbosity level set to %d\n",
+				   nms_verbosity_get());
 			break;
 		case 'p':
 			// we check here the correct value for first RTP port in order not to deceive user!!!
 			// new check will be done in the correct place in RTSP lib.
 			rtsp_hints->first_rtp_port = strtol(optarg, &v_err, 10);
 			if ((*v_err)) {
-				nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n",
+				nms_printf(NMSML_ERR,
+					   "Invalid argument to \"%s\" option\n",
 					   long_options[option_index].name);
 				usage = 1;
 				ret = -1;
 			} else if (rtsp_hints->first_rtp_port < 0) {
-				nms_printf(NMSML_ERR, "Port number must be greater than zero!\n");
+				nms_printf(NMSML_ERR,
+					   "Port number must be greater than zero!\n");
 				ret = -1;
-			} else if (rtsp_hints->first_rtp_port < RTSP_MIN_RTP_PORT) {
+			} else if (rtsp_hints->first_rtp_port <
+				   RTSP_MIN_RTP_PORT) {
 				nms_printf(NMSML_ERR,
 					   "For security reasons RTSP Library imposes that port number should be greater than %d\n",
 					   RTSP_MIN_RTP_PORT);
 				ret = -1;
 			} else if (rtsp_hints->first_rtp_port > 65535) {
-				nms_printf(NMSML_ERR, "Port number can't be greater than 65535\n");
+				nms_printf(NMSML_ERR,
+					   "Port number can't be greater than 65535\n");
 				ret = -1;
 			} else
-				nms_printf(NMSML_DBG1, "First RTP port hint: %d\n", rtsp_hints->first_rtp_port);
+				nms_printf(NMSML_DBG1,
+					   "First RTP port hint: %d\n",
+					   rtsp_hints->first_rtp_port);
 			break;
 		case 'i':
 			ui_hints->interactive = 1;
@@ -148,8 +163,10 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 				if ((*v_err == '.') || (*v_err == ','))
 					nms_printf(NMSML_ERR,
 						   "Argument to \"%s\" option must be an integer number of milliseconds\n",
-						   long_options[option_index].name);
-				nms_printf(NMSML_ERR, "Invalid argument to \"%s\" option\n",
+						   long_options[option_index].
+						   name);
+				nms_printf(NMSML_ERR,
+					   "Invalid argument to \"%s\" option\n",
 					   long_options[option_index].name);
 				usage = 1;
 				ret = -1;
@@ -174,15 +191,20 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 			output_hints->diskwriter = strdup("nodisk");
 			break;
 		case ':':
-			nms_printf(NMSML_ERR, "Missing argument for option \"%s\"\n", argv[optind - 1]);
+			nms_printf(NMSML_ERR,
+				   "Missing argument for option \"%s\"\n",
+				   argv[optind - 1]);
 			usage = 1;
 			ret = -1;
 			break;
 		case '?':
 			if (isprint(optopt))
-				nms_printf(NMSML_ERR, "Unknown option `-%c'.\n", optopt);
+				nms_printf(NMSML_ERR, "Unknown option `-%c'.\n",
+					   optopt);
 			else
-				nms_printf(NMSML_ERR, "Unknown option character `\\x%x'.\n", optopt);
+				nms_printf(NMSML_ERR,
+					   "Unknown option character `\\x%x'.\n",
+					   optopt);
 			// ch = 'h';
 			usage = 1;
 			ret = -1;
@@ -198,9 +220,11 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 	if (optind < argc) {
 		if (argc == optind + 1) {
 			if (!(ui_hints->url = strdup(argv[optind])))
-				return nms_printf(NMSML_FATAL, "Could not store urlname given in command line\n");
+				return nms_printf(NMSML_FATAL,
+						  "Could not store urlname given in command line\n");
 		} else
-			return nms_printf(NMSML_ERR, "You can specify only one media URL\n");
+			return nms_printf(NMSML_ERR,
+					  "You can specify only one media URL\n");
 	}
 	return ret;
 }
