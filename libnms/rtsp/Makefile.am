@@ -11,6 +11,9 @@ librtsp_la_SOURCES =	body_exists.c \
 			full_msg_rcvd.c \
 			get_curr_sess.c \
 			get_transport_str.c \
+			get_transport_str_sctp.c \
+			get_transport_str_tcp.c \
+			get_transport_str_udp.c \
 			handle_get_response.c \
 			handle_pause_response.c \
 			handle_play_response.c \

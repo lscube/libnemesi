@@ -56,7 +56,7 @@ int server_connect(char *host, char *port, int *sock,
 
 	switch (sock_type) {
 	case SCTP:
-#ifndef HAVE_SCTP
+#ifndef HAVE_SCTP_NEMESI
 		return nms_printf(NMSML_ERR,
 				  "%s: SCTP protocol not compiled in\n",
 				  PROG_NAME);
@@ -82,7 +82,7 @@ int server_connect(char *host, char *port, int *sock,
 	ressave = res;
 
 	do {
-		if ((*sock =
+		if ((*sock < 0) && (*sock =
 		     socket(res->ai_family, res->ai_socktype,
 			    res->ai_protocol)) < 0)
 			continue;

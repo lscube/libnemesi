@@ -50,6 +50,10 @@ pkgconfig_DATA = libnms.pc
 #fixme use VERSION
 libnemesi_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
+if NEMESI_SCTP
+libnemesi_la_LDFLAGS += -lsctp
+endif
+
 EXTRA_DIST = 	config \
 		include \
 		debian

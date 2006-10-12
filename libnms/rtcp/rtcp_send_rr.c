@@ -43,8 +43,10 @@ int rtcp_send_rr(rtp_session * rtp_sess)
 	len += rtcp_build_sdes(rtp_sess, pkt, (MAX_PKT_SIZE >> 2) - len);	/* in 32 bit words */
 
 	for (stm_src = rtp_sess->ssrc_queue; stm_src; stm_src = stm_src->next)
-		if (stm_src->rtcptofd > 0) {
-			if (write(stm_src->rtcptofd, rr_buff, (len << 2)) < 0)
+		if ( !(stm_src->no_rtcp) && stm_src->rtp_sess->rtcpfd > 0) {
+			if (sendto(stm_src->rtp_sess->rtcpfd, rr_buff, (len << 2),
+				   0, stm_src->rtcp_from.addr,
+				   stm_src->rtcp_from.addr_len) < 0)
 				nms_printf(NMSML_WARN,
 					   "WARNING! Error while sending RTCP pkt\n");
 			else

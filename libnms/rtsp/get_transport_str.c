@@ -32,121 +32,36 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 {
 	char *tkna, *tknb;
 	char str[256];
+	int n;
 	// char addr[128];              /* Unix domain is largest */
 
 	memset(str, 0, sizeof(str));
 
+	if (strstr(buff, RTP_AVP_TCP))
+		rtp_sess->transport.type = TCP;
+	else if (strstr(buff, RTP_AVP_SCTP))
+		rtp_sess->transport.type = SCTP;
+	else if (strstr(buff, RTP_AVP_UDP))
+		rtp_sess->transport.type = UDP;
+	else
+		return 1;
+
 	for (tknb = strtok(buff, ";"); (*tknb == ' ') || (*tknb == ':');
 	     tknb++);
 
-	do {
-		if ((tkna = strstrcase(tknb, "server_port"))
-		    || ((tkna = strstrcase(tknb, "port"))
-			&& !strncmp(tknb, "port", 4))) {
-			in_port_t port;
+	switch (rtp_sess->transport.type) {
+	case UDP:
+		n = get_transport_str_udp(rtp_sess, tkna, tknb);
+		break;
+	case TCP:
+		n = get_transport_str_tcp(rtp_sess, tkna, tknb);
+		break;
+	case SCTP:
+		n = get_transport_str_sctp(rtp_sess, tkna, tknb);
+		break;
+	default:
+		break;
+	}
 
-			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
-			for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-');
-			     tknb++);
-
-			strncpy(str, tkna, tknb - tkna);
-			str[tknb - tkna] = '\0';
-			port = atoi(str);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP,
-					  &port);
-
-			for (tknb++; (*tknb == ' '); tknb++);
-
-			for (tkna = tknb; (*tkna != '\0') && (*tkna != '\r')
-			     && (*tkna != '\n'); tkna++);
-			strncpy(str, tknb, tkna - tknb);
-			str[tkna++ - tknb] = '\0';
-			port = atoi(str);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP,
-					  &port);
-
-			continue;
-		}
-		if ((tkna = strstrcase(tknb, "source"))) {
-			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
-
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
-			     && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb - tkna);
-			str[tknb++ - tkna] = '\0';
-
-			if (rtp_transport_set
-			    (rtp_sess, RTP_TRANSPORT_SRCADDRSTR, str)) {
-				nms_printf(NMSML_ERR,
-					   "Source IP Address not valid!\n");
-				return 1;
-			}
-			continue;
-		}
-		if ((tkna = strstrcase(tknb, "destination"))) {
-			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
-
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
-			     && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb - tkna);
-			str[tknb++ - tkna] = '\0';
-
-			if (rtp_transport_set
-			    (rtp_sess, RTP_TRANSPORT_DSTADDRSTR, str)) {
-				nms_printf(NMSML_ERR,
-					   "Destination IP Address not valid!\n");
-				return 1;
-			}
-			continue;
-		}
-		if ((tkna = strstrcase(tknb, "ssrc"))) {
-			uint32 ssrc;
-
-			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
-
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
-			     && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb - tkna);
-			str[tknb++ - tkna] = '\0';
-
-			ssrc = strtoul(str, NULL, 10);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
-
-			continue;
-		}
-		if ((tkna = strstrcase(tknb, "ttl"))) {
-			int ttl;
-
-			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
-
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
-			     && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb - tkna);
-			str[tknb++ - tkna] = '\0';
-
-			ttl = atoi(str);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_TTL, &ttl);
-
-			continue;
-		}
-		if ((tkna = strstrcase(tknb, "layers"))) {
-			int layers;
-
-			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
-
-			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
-			     && (*tknb != '\n'); tknb++);
-			strncpy(str, tkna, tknb - tkna);
-			str[tknb++ - tkna] = '\0';
-
-			layers = atoi(str);
-			rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS,
-					  &layers);
-
-			continue;
-		}
-
-	} while ((tknb = strtok(NULL, ";")));
-
-	return 0;
+	return n;
 }

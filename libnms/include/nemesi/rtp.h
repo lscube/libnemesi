@@ -53,8 +53,9 @@
 #define RTP_VERSION 2
 
 // #define RTP_AVP_UDP "RTP/AVP/UDP"
-#define RTP_AVP_UDP "RTP/AVP"	// Default low-trasport is UDP. See RFC2326 12.39
-#define RTP_AVP_TCP "RTP/AVP/TCP"	// interleaved TCP low transport.
+#define RTP_AVP_UDP "RTP/AVP"	/* Default low-trasport is UDP. See RFC2326 12.39 */
+#define RTP_AVP_TCP "RTP/AVP/TCP"	/* interleaved TCP low transport. */
+#define RTP_AVP_SCTP "RTP/AVP/SCTP"	/* multistream SCTP low transport. */
 #define RTP_SEQ_MOD (1<<16)
 #define MIN_SEQUENTIAL 2
 #define MAX_DROPOUT 3000
@@ -136,7 +137,13 @@ typedef struct {
 #define RTP_TRANSPORT_SRVRTP            110
 #define RTP_TRANSPORT_SRVRTCP           111
 #define RTP_TRANSPORT_SRVPORTS          112
-#define RTP_TRANSPORT_SSRC              120
+#define RTP_TRANSPORT_ILVDRTP           120
+#define RTP_TRANSPORT_ILVDRTCP          121
+#define RTP_TRANSPORT_INTERLEAVED       122
+#define RTP_TRANSPORT_STREAMRTP         130
+#define RTP_TRANSPORT_STREAMRTCP        131
+#define RTP_TRANSPORT_STREAMS           132
+#define RTP_TRANSPORT_SSRC              140
 
 #define RTP_TRANSPORT_NOTSET            -1
 #define RTP_TRANSPORT_SET                0
@@ -144,17 +151,31 @@ typedef struct {
 
 typedef struct {
 	char *spec;
-	enum deliveries { unicast, multicast } delivery;
-	nms_addr srcaddr;	//!< stored in network order
-	nms_addr dstaddr;	//!< stored in network order
-	int layers;
+	uint32 ssrc;
+	enum sock_types type;
 	enum modes { play, record } mode;
 	int append;
-	int ttl;
-	in_port_t mcs_ports[2];	//!< stored in host order
-	in_port_t cli_ports[2];	//!< stored in host order
-	in_port_t srv_ports[2];	//!< stored in host order
-	uint32 ssrc;
+	union {
+		struct {
+			enum deliveries { unicast, multicast } delivery;
+			nms_addr srcaddr;	//!< stored in network order
+			nms_addr dstaddr;	//!< stored in network order
+			int layers;
+			int ttl;
+			in_port_t mcs_ports[2];	//!< stored in host order
+			in_port_t cli_ports[2];	//!< stored in host order
+			in_port_t srv_ports[2];	//!< stored in host order
+		} udp;
+		struct {
+			uint8 RTP;
+			uint8 RTCP;
+		} tcp;
+		struct {
+			uint16 RTP;
+			uint16 RTCP;
+		} sctp;
+	} u;
+
 } rtp_transport;
 
 struct rtp_ssrc_stats {
@@ -219,7 +240,7 @@ typedef struct rtp_ssrc_s {
 	nms_sockaddr rtp_from;
 	nms_sockaddr rtcp_from;
 	nms_sockaddr rtcp_to;
-	int rtcptofd;
+	int no_rtcp;
 	struct rtp_ssrc_stats ssrc_stats;
 	struct rtp_ssrc_descr ssrc_sdes;
 	playout_buff po;
@@ -348,11 +369,20 @@ inline enum modes rtp_get_mode(rtp_session *);
 inline int rtp_get_append(rtp_session *);
 inline int rtp_get_ttl(rtp_session *);
 inline int rtp_get_mcsports(rtp_session *, in_port_t[2]);
+inline in_port_t rtp_get_mcsrtpport(rtp_session *);
 inline in_port_t rtp_get_mcsrtcpport(rtp_session *);
 inline int rtp_get_srvports(rtp_session *, in_port_t[2]);
+inline in_port_t rtp_get_srvrtpport(rtp_session *);
 inline in_port_t rtp_get_srvrtcpport(rtp_session *);
 inline int rtp_get_cliports(rtp_session *, in_port_t[2]);
+inline in_port_t rtp_get_clirtpport(rtp_session *);
 inline in_port_t rtp_get_clirtcpport(rtp_session *);
+inline int rtp_get_interleaved(rtp_session *, uint8[2]);
+inline uint8 rtp_get_ilvdrtp(rtp_session *);
+inline uint8 rtp_get_ilvdrtcp(rtp_session *);
+inline int rtp_get_streams(rtp_session *, uint16[2]);
+inline uint16 rtp_get_rtpstream(rtp_session *);
+inline uint16 rtp_get_rtcpstream(rtp_session *);
 inline uint32 rtp_get_ssrc(rtp_session *);
 
 // rtp transport wrapper functions for rtp_transport_set
@@ -367,11 +397,20 @@ inline int rtp_set_mode(rtp_session *, enum modes);
 inline int rtp_set_append(rtp_session *, int);
 inline int rtp_set_ttl(rtp_session *, int);
 inline int rtp_set_mcsports(rtp_session *, in_port_t[2]);
+inline int rtp_set_mcsrtpport(rtp_session *, in_port_t);
 inline int rtp_set_mcsrtcpport(rtp_session *, in_port_t);
 inline int rtp_set_srvports(rtp_session *, in_port_t[2]);
+inline int rtp_set_srvrtpport(rtp_session *, in_port_t);
 inline int rtp_set_srvrtcpport(rtp_session *, in_port_t);
 inline int rtp_set_cliports(rtp_session *, in_port_t[2]);
+inline int rtp_set_clirtpport(rtp_session *, in_port_t);
 inline int rtp_set_clirtcpport(rtp_session *, in_port_t);
+inline int rtp_set_interleaved(rtp_session *, uint8[2]);
+inline int rtp_set_ilvdrtp(rtp_session *, uint8);
+inline int rtp_set_ilvdrtcp(rtp_session *, uint8);
+inline int rtp_set_streams(rtp_session *, uint16[2]);
+inline int rtp_set_rtpstream(rtp_session *, uint16);
+inline int rtp_set_rtcpstream(rtp_session *, uint16);
 inline int rtp_set_ssrc(rtp_session *, uint32);
 
 // internal functions

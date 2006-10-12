@@ -30,6 +30,7 @@
 
 void rtcp_clean(void *args)
 {
+	/*
 	rtp_session *rtp_sess_head = (*(rtp_session **) args);
 	rtp_session *rtp_sess;
 	rtp_ssrc *stm_src;
@@ -39,6 +40,6 @@ void rtcp_clean(void *args)
 		     stm_src = stm_src->next)
 			if (stm_src->rtcptofd > 0)
 				close(stm_src->rtcptofd);
-
+	*/
 	nms_printf(NMSML_DBG1, "RTCP Thread R.I.P.\n");
 }

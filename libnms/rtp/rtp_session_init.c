@@ -52,7 +52,7 @@ rtp_session *rtp_session_init(nms_sockaddr * local, nms_sockaddr * peer)
 		RET_ERR(NMSML_FATAL, "Cannot init mutex!\n");
 	if (!(rtp_sess->transport.spec = strdup(RTP_AVP_UDP)))
 		RET_ERR(NMSML_FATAL, "Cannot duplicate string!\n");
-	rtp_sess->transport.delivery = unicast;
+	rtp_sess->transport.u.udp.delivery = unicast;
 	// --- remote address
 	if (sock_get_addr(peer->addr, &nms_address))
 		RET_ERR(NMSML_ERR, "remote address not valid\n");

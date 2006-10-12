@@ -299,6 +299,9 @@ int check_response(rtsp_thread *);
 int check_status(char *, rtsp_thread *);
 int set_transport_str(rtp_session *, char **);
 int get_transport_str(rtp_session *, char *);
+int get_transport_str_udp(rtp_session *, char *, char *);
+int get_transport_str_tcp(rtp_session *, char *, char *);
+int get_transport_str_sctp(rtp_session *, char *, char *);
 
 #define GCS_INIT 0
 #define GCS_NXT_SESS 1

@@ -104,7 +104,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 				// if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).srv_ports[1]) < 0 )
 				if (rtcp_to_connect
 				    (*stm_src, &nms_address,
-				     (rtp_sess->transport).srv_ports[1]) < 0)
+				     (rtp_sess->transport).u.udp.srv_ports[1]) < 0)
 					return -1;
 			}
 		}

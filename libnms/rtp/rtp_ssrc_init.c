@@ -41,7 +41,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 	rtp_sess->ssrc_queue = *stm_src;
 
 	(*stm_src)->ssrc = ssrc;
-	(*stm_src)->rtcptofd = -1;
+	(*stm_src)->no_rtcp = 0; //flag for connection errors
 	(*stm_src)->rtp_sess = rtp_sess;
 	// we do not need to reset memory area 'cause we use calloc
 	// memset(&(*stm_src)->ssrc_stats, 0, sizeof(struct rtp_ssrc_stats));
@@ -65,7 +65,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 				   "Address of received packet not valid\n");
 	if (!
 	    (addrcmp_err =
-	     addrcmp(&nms_address, &rtp_sess->transport.srcaddr))) {
+	     addrcmp(&nms_address, &rtp_sess->transport.u.udp.srcaddr))) {
 		/* IT: Nel caso in cui l'indirizzo IP da cui riceviamo i dati
 		 * sia uguale a quello annunciato in RTSP, utilizziamo le
 		 * informazioni specificate nella sessione RTSP per impostare
@@ -75,8 +75,8 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 		 * same to that announced in RTSP session, then we use RTSP
 		 * informations to set transport address for RTCP connection */
 		if (rtcp_to_connect
-		    (*stm_src, &rtp_sess->transport.srcaddr,
-		     (rtp_sess->transport).srv_ports[1]) < 0)
+		    (*stm_src, &rtp_sess->transport.u.udp.srcaddr,
+		     (rtp_sess->transport).u.udp.srv_ports[1]) < 0)
 			return -1;
 		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTSP\n");
 
@@ -89,7 +89,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 		 * specified in RTSP*/
 		if (rtcp_to_connect
 		    (*stm_src, &nms_address,
-		     (rtp_sess->transport).srv_ports[1]) < 0)
+		     (rtp_sess->transport).u.udp.srv_ports[1]) < 0)
 			return -1;
 		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
 	} else {
@@ -97,7 +97,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 		case WSOCK_ERRFAMILY:
 			nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n",
 				   nms_address.family,
-				   rtp_sess->transport.srcaddr.family);
+				   rtp_sess->transport.u.udp.srcaddr.family);
 			break;
 		case WSOCK_ERRADDR:
 			nms_printf(NMSML_DBG2, "WSOCK_ERRADDR\n");

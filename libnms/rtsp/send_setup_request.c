@@ -77,9 +77,9 @@ int send_setup_request(rtsp_thread * rtsp_th)
 	getsockname(rtsp_med->rtp_sess->rtcpfd, (struct sockaddr *) &rtcpaddr,
 		    &rtcplen);
 
-	rtsp_med->rtp_sess->transport.cli_ports[0] =
+	rtsp_med->rtp_sess->transport.u.udp.cli_ports[0] =
 	    ntohs(sock_get_port((struct sockaddr *) &rtpaddr));
-	rtsp_med->rtp_sess->transport.cli_ports[1] =
+	rtsp_med->rtp_sess->transport.u.udp.cli_ports[1] =
 	    ntohs(sock_get_port((struct sockaddr *) &rtcpaddr));
 
 	if (set_transport_str(rtsp_med->rtp_sess, &options))
