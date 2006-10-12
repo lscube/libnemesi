@@ -67,10 +67,10 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 		if (local_collision) {
 
 			if (proto_type == RTP)
-				getsockname(rtp_sess->rtpfd, sock.addr,
+				getsockname(rtp_sess->transport.RTP.fd, sock.addr,
 					    &sock.addr_len);
 			else
-				getsockname(rtp_sess->rtcpfd, sock.addr,
+				getsockname(rtp_sess->transport.RTCP.fd, sock.addr,
 					    &sock.addr_len);
 
 		} else if (proto_type == RTP) {
@@ -101,10 +101,10 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 					return -nms_printf(NMSML_ERR,
 							   "Invalid address for received packet\n");
 
-				// if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).srv_ports[1]) < 0 )
+				// if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).RTCP.remote_port) < 0 )
 				if (rtcp_to_connect
 				    (*stm_src, &nms_address,
-				     (rtp_sess->transport).u.udp.srv_ports[1]) < 0)
+				     (rtp_sess->transport).RTCP.remote_port) < 0)
 					return -1;
 			}
 		}

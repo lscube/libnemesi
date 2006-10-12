@@ -65,7 +65,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 				   "Address of received packet not valid\n");
 	if (!
 	    (addrcmp_err =
-	     addrcmp(&nms_address, &rtp_sess->transport.u.udp.srcaddr))) {
+	     addrcmp(&nms_address, &rtp_sess->transport.RTP.u.udp.srcaddr))) {
 		/* IT: Nel caso in cui l'indirizzo IP da cui riceviamo i dati
 		 * sia uguale a quello annunciato in RTSP, utilizziamo le
 		 * informazioni specificate nella sessione RTSP per impostare
@@ -75,8 +75,8 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 		 * same to that announced in RTSP session, then we use RTSP
 		 * informations to set transport address for RTCP connection */
 		if (rtcp_to_connect
-		    (*stm_src, &rtp_sess->transport.u.udp.srcaddr,
-		     (rtp_sess->transport).u.udp.srv_ports[1]) < 0)
+		    (*stm_src, &rtp_sess->transport.RTP.u.udp.srcaddr,
+		     (rtp_sess->transport).RTCP.remote_port) < 0)
 			return -1;
 		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTSP\n");
 
@@ -89,7 +89,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 		 * specified in RTSP*/
 		if (rtcp_to_connect
 		    (*stm_src, &nms_address,
-		     (rtp_sess->transport).u.udp.srv_ports[1]) < 0)
+		     (rtp_sess->transport).RTCP.remote_port) < 0)
 			return -1;
 		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
 	} else {
@@ -97,7 +97,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 		case WSOCK_ERRFAMILY:
 			nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n",
 				   nms_address.family,
-				   rtp_sess->transport.u.udp.srcaddr.family);
+				   rtp_sess->transport.RTP.u.udp.srcaddr.family);
 			break;
 		case WSOCK_ERRADDR:
 			nms_printf(NMSML_DBG2, "WSOCK_ERRADDR\n");

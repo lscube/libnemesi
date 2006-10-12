@@ -43,8 +43,8 @@ void rtp_clean(void *args)
 //      pthread_mutex_trylock(&rtp_th->syn);
 
 	while (rtp_sess != NULL) {
-		close(rtp_sess->rtpfd);
-		close(rtp_sess->rtcpfd);
+		close(rtp_sess->transport.RTP.fd);
+		close(rtp_sess->transport.RTCP.fd);
 
 		csrc = rtp_sess->ssrc_queue;
 

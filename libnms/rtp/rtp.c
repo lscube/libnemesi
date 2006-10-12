@@ -64,15 +64,15 @@ void *rtp(void *args)
 
 		for (rtp_sess = rtp_sess_head; rtp_sess;
 		     rtp_sess = rtp_sess->next) {
-			maxfd = max(rtp_sess->rtpfd, maxfd);
-			FD_SET(rtp_sess->rtpfd, &readset);
+			maxfd = max(rtp_sess->transport.RTP.fd, maxfd);
+			FD_SET(rtp_sess->transport.RTP.fd, &readset);
 		}
 
 		select(maxfd + 1, &readset, NULL, NULL, NULL);
 
 		for (rtp_sess = rtp_sess_head; rtp_sess;
 		     rtp_sess = rtp_sess->next)
-			if (FD_ISSET(rtp_sess->rtpfd, &readset)) {
+			if (FD_ISSET(rtp_sess->transport.RTP.fd, &readset)) {
 				if (buffering) {
 					if (rtp_sess->bp.flcount >
 					    BP_SLOT_NUM / 2) {

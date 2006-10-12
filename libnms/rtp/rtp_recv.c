@@ -52,7 +52,7 @@ int rtp_recv(rtp_session * rtp_sess)
 	}
 
 	if ((n =
-	     recvfrom(rtp_sess->rtpfd, &((rtp_sess->bp).bufferpool[slot]),
+	     recvfrom(rtp_sess->transport.RTP.fd, &((rtp_sess->bp).bufferpool[slot]),
 		      BP_SLOT_SIZE, 0, server.addr, &server.addr_len)) == -1) {
 		switch (errno) {
 		case EBADF:

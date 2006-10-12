@@ -36,7 +36,7 @@ inline char *rtp_get_spec(rtp_session * rtp_sess)
 
 inline enum deliveries rtp_get_delivery(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.delivery;
+	return rtp_sess->transport.delivery;
 }
 
 inline int rtp_get_srcaddrstr(rtp_session * rtp_sess, char *addrstr,
@@ -48,7 +48,7 @@ inline int rtp_get_srcaddrstr(rtp_session * rtp_sess, char *addrstr,
 
 inline nms_addr *rtp_get_srcaddr(rtp_session * rtp_sess)
 {
-	return &rtp_sess->transport.u.udp.srcaddr;
+	return &rtp_sess->transport.RTP.u.udp.srcaddr;
 }
 
 inline int rtp_get_dstaddrstr(rtp_session * rtp_sess, char *addrstr,
@@ -60,7 +60,7 @@ inline int rtp_get_dstaddrstr(rtp_session * rtp_sess, char *addrstr,
 
 inline nms_addr *rtp_get_dstaddr(rtp_session * rtp_sess)
 {
-	return &rtp_sess->transport.u.udp.dstaddr;
+	return &rtp_sess->transport.RTP.u.udp.dstaddr;
 }
 
 inline enum modes rtp_get_mode(rtp_session * rtp_sess)
@@ -70,7 +70,7 @@ inline enum modes rtp_get_mode(rtp_session * rtp_sess)
 
 inline int rtp_get_layers(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.layers;
+	return rtp_sess->transport.layers;
 }
 
 inline int rtp_get_append(rtp_session * rtp_sess)
@@ -80,17 +80,17 @@ inline int rtp_get_append(rtp_session * rtp_sess)
 
 inline int rtp_get_ttl(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.ttl;
+	return rtp_sess->transport.ttl;
 }
 
 inline in_port_t rtp_get_mcsrtpport(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.mcs_ports[0];
+	return rtp_sess->transport.RTP.multicast_port;
 }
 
 inline in_port_t rtp_get_mcsrtcpport(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.mcs_ports[1];
+	return rtp_sess->transport.RTCP.multicast_port;
 }
 
 inline int rtp_get_mcsports(rtp_session * rtp_sess, in_port_t ports[2])
@@ -101,12 +101,12 @@ inline int rtp_get_mcsports(rtp_session * rtp_sess, in_port_t ports[2])
 
 inline in_port_t rtp_get_srvrtpport(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.srv_ports[0];
+	return rtp_sess->transport.RTP.remote_port;
 }
 
 inline in_port_t rtp_get_srvrtcpport(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.srv_ports[1];
+	return rtp_sess->transport.RTCP.remote_port;
 }
 
 inline int rtp_get_srvports(rtp_session * rtp_sess, in_port_t ports[2])
@@ -117,12 +117,12 @@ inline int rtp_get_srvports(rtp_session * rtp_sess, in_port_t ports[2])
 
 inline in_port_t rtp_get_clirtpport(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.cli_ports[0];
+	return rtp_sess->transport.RTP.local_port;
 }
 
 inline in_port_t rtp_get_clirtcpport(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.udp.cli_ports[1];
+	return rtp_sess->transport.RTCP.local_port;
 }
 
 inline int rtp_get_cliports(rtp_session * rtp_sess, in_port_t ports[2])
@@ -133,12 +133,12 @@ inline int rtp_get_cliports(rtp_session * rtp_sess, in_port_t ports[2])
 
 inline uint8 rtp_get_ilvdrtp(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.tcp.RTP;
+	return rtp_sess->transport.RTP.u.tcp.ilvd;
 }
 
 inline uint8 rtp_get_ilvdrtcp(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.tcp.RTCP;
+	return rtp_sess->transport.RTCP.u.tcp.ilvd;
 }
 
 inline int rtp_get_interleaved(rtp_session * rtp_sess, uint8 ilvds[2])
@@ -149,12 +149,12 @@ inline int rtp_get_interleaved(rtp_session * rtp_sess, uint8 ilvds[2])
 
 inline uint16 rtp_get_rtpstream(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.sctp.RTP;
+	return rtp_sess->transport.RTP.u.sctp.stream;
 }
 
 inline uint16 rtp_get_rtcpstream(rtp_session * rtp_sess)
 {
-	return rtp_sess->transport.u.sctp.RTCP;
+	return rtp_sess->transport.RTCP.u.sctp.stream;
 }
 
 inline int rtp_get_streams(rtp_session * rtp_sess, uint16 streams[2])

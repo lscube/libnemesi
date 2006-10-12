@@ -155,27 +155,11 @@ typedef struct {
 	enum sock_types type;
 	enum modes { play, record } mode;
 	int append;
-	union {
-		struct {
-			enum deliveries { unicast, multicast } delivery;
-			nms_addr srcaddr;	//!< stored in network order
-			nms_addr dstaddr;	//!< stored in network order
-			int layers;
-			int ttl;
-			in_port_t mcs_ports[2];	//!< stored in host order
-			in_port_t cli_ports[2];	//!< stored in host order
-			in_port_t srv_ports[2];	//!< stored in host order
-		} udp;
-		struct {
-			uint8 RTP;
-			uint8 RTCP;
-		} tcp;
-		struct {
-			uint16 RTP;
-			uint16 RTCP;
-		} sctp;
-	} u;
-
+	int layers;
+	int ttl;
+	enum deliveries { unicast, multicast } delivery;
+	nms_transport RTP;
+	nms_transport RTCP;
 } rtp_transport;
 
 struct rtp_ssrc_stats {
@@ -275,8 +259,6 @@ typedef int (*rtp_parser_uninit) (rtp_ssrc * stm_src, unsigned pt);
 
 typedef struct rtp_session_s {
 	uint32 local_ssrc;
-	int rtpfd;
-	int rtcpfd;
 	rtp_transport transport;
 	struct rtp_session_stats sess_stats;
 	rtp_ssrc *ssrc_queue;	// queue of all known SSRCs

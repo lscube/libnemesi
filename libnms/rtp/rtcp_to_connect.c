@@ -60,13 +60,13 @@ int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t port)
 	} else
 		nms_printf(NMSML_DBG2, "RTCP to host=%s\n", addr);
 
-	/*if (server_connect(addr, port_str, &(stm_src->rtp_sess->rtcpfd), UDP)) {
+	/*if (server_connect(addr, port_str, &(stm_src->rtp_sess->transport.RTCP.fd), UDP)) {
 		nms_printf(NMSML_WARN,
 			   "Cannot connect to remote RTCP destination %s:%s\n",
 			   addr, port_str);
 		stm_src->no_rtcp = 1;
 	}*/
-	getsockname(stm_src->rtp_sess->rtcpfd, rtcp_to_addr.addr,
+	getsockname(stm_src->rtp_sess->transport.RTCP.fd, rtcp_to_addr.addr,
 		    &rtcp_to_addr.addr_len);
 	sockaddrdup(&stm_src->rtcp_to, &rtcp_to_addr);
 

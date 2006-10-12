@@ -45,7 +45,7 @@ int rtcp_recv(rtp_session * rtp_sess)
 	memset(buffer, 0, 1024);
 
 	if ((n =
-	     recvfrom(rtp_sess->rtcpfd, buffer, 1024, 0, server.addr,
+	     recvfrom(rtp_sess->transport.RTCP.fd, buffer, 1024, 0, server.addr,
 		      &server.addr_len)) == -1) {
 		switch (errno) {
 		case EBADF:

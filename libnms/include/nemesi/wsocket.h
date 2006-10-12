@@ -84,11 +84,23 @@ enum sock_types {
 
 typedef struct {
 	enum sock_types type;
-	int fd;			/*!< file descriptor for reading the data to and from the server */
-	nms_sockaddr peer;
+	int fd;		/*!< file descriptor for reading the data to and from the server */
+	union {
+		struct {
+			nms_addr srcaddr;	//!< stored in network order
+			nms_addr dstaddr; 	//!< stored in network order
+		} udp;
+		struct {
+			uint8 ilvd;		//!< stored in host order
+		} tcp;
+		struct {
+			uint16 stream;		//!< stored in host order
+		} sctp;
+	} u;
 	/*human readable datas */
-	char *remote_port;
-	char *local_port;
+	in_port_t local_port;			//!< stored in host order
+	in_port_t remote_port;			//!< stored in host order
+	in_port_t multicast_port;		//!< stored in host order
 	char *remote_host;
  /**/} nms_transport;
 

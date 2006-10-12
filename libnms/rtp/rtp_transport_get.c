@@ -45,10 +45,10 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
 		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_DELIVERY:
-		*(enum deliveries *) value = rtp_sess->transport.mode;
+		*(enum deliveries *) value = rtp_sess->transport.delivery;
 		break;
 	case RTP_TRANSPORT_SRCADDR:
-		memcpy((nms_addr *) value, &rtp_sess->transport.u.udp.srcaddr,
+		memcpy((nms_addr *) value, &rtp_sess->transport.RTP.u.udp.srcaddr,
 		       min(sizeof(nms_addr), len));
 		if (len < sizeof(nms_addr))
 			errno = ENOSPC;
@@ -56,11 +56,11 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
 		break;
 	case RTP_TRANSPORT_SRCADDRSTR:
 		if (addr_ntop
-		    (&rtp_sess->transport.u.udp.srcaddr, (char *) value, len))
+		    (&rtp_sess->transport.RTP.u.udp.srcaddr, (char *) value, len))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_DSTADDR:
-		memcpy((nms_addr *) value, &rtp_sess->transport.u.udp.dstaddr,
+		memcpy((nms_addr *) value, &rtp_sess->transport.RTP.u.udp.dstaddr,
 		       min(sizeof(nms_addr), len));
 		if (len < sizeof(nms_addr))
 			errno = ENOSPC;
@@ -68,11 +68,11 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
 		break;
 	case RTP_TRANSPORT_DSTADDRSTR:
 		if (addr_ntop
-		    (&rtp_sess->transport.u.udp.dstaddr, (char *) value, len))
+		    (&rtp_sess->transport.RTP.u.udp.dstaddr, (char *) value, len))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_LAYERS:
-		if ((*(int *) value = rtp_sess->transport.u.udp.layers))
+		if ((*(int *) value = rtp_sess->transport.layers))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_MODE:
@@ -84,79 +84,79 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_TTL:
-		if ((*(int *) value = rtp_sess->transport.u.udp.ttl))
+		if ((*(int *) value = rtp_sess->transport.ttl))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_MCSRTP:
-		if ((*(in_port_t *) value = rtp_sess->transport.u.udp.mcs_ports[0]))
+		if ((*(in_port_t *) value = rtp_sess->transport.RTP.multicast_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_MCSRTCP:
-		if ((*(in_port_t *) value = rtp_sess->transport.u.udp.mcs_ports[1]))
+		if ((*(in_port_t *) value = rtp_sess->transport.RTCP.multicast_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_MCSPORTS:
 		if ((((in_port_t *) value)[0] =
-		     rtp_sess->transport.u.udp.mcs_ports[0])
+		     rtp_sess->transport.RTP.multicast_port)
 		    && (((in_port_t *) value)[1] =
-			rtp_sess->transport.u.udp.mcs_ports[1]))
+			rtp_sess->transport.RTCP.multicast_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_CLIRTP:
-		if ((*(in_port_t *) value = rtp_sess->transport.u.udp.cli_ports[0]))
+		if ((*(in_port_t *) value = rtp_sess->transport.RTP.local_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_CLIRTCP:
-		if ((*(in_port_t *) value = rtp_sess->transport.u.udp.cli_ports[1]))
+		if ((*(in_port_t *) value = rtp_sess->transport.RTCP.local_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_CLIPORTS:
 		if ((((in_port_t *) value)[0] =
-		     rtp_sess->transport.u.udp.cli_ports[0])
+		     rtp_sess->transport.RTP.local_port)
 		    && (((in_port_t *) value)[1] =
-			rtp_sess->transport.u.udp.cli_ports[1]))
+			rtp_sess->transport.RTCP.local_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_SRVRTP:
-		if ((*(in_port_t *) value = rtp_sess->transport.u.udp.srv_ports[0]))
+		if ((*(in_port_t *) value = rtp_sess->transport.RTP.remote_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_SRVRTCP:
-		if ((*(in_port_t *) value = rtp_sess->transport.u.udp.srv_ports[1]))
+		if ((*(in_port_t *) value = rtp_sess->transport.RTCP.remote_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_SRVPORTS:
 		if ((((in_port_t *) value)[0] =
-		     rtp_sess->transport.u.udp.srv_ports[0])
+		     rtp_sess->transport.RTP.remote_port)
 		    && (((in_port_t *) value)[1] =
-			rtp_sess->transport.u.udp.srv_ports[1]))
+			rtp_sess->transport.RTCP.remote_port))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	
 	case RTP_TRANSPORT_ILVDRTP:
-		*(uint8 *) value = rtp_sess->transport.u.tcp.RTP;
+		*(uint8 *) value = rtp_sess->transport.RTP.u.tcp.ilvd;
 		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_ILVDRTCP:
-		*(uint8 *) value = rtp_sess->transport.u.tcp.RTCP;
+		*(uint8 *) value = rtp_sess->transport.RTCP.u.tcp.ilvd;
 		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_INTERLEAVED:
-		((uint8 *)value)[0] = rtp_sess->transport.u.tcp.RTP;
-		((uint8 *)value)[1] = rtp_sess->transport.u.tcp.RTCP;
+		((uint8 *)value)[0] = rtp_sess->transport.RTP.u.tcp.ilvd;
+		((uint8 *)value)[1] = rtp_sess->transport.RTCP.u.tcp.ilvd;
 		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_STREAMRTP:
-		if ((*(uint16 *) value = rtp_sess->transport.u.sctp.RTP))
+		if ((*(uint16 *) value = rtp_sess->transport.RTP.u.sctp.stream))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_STREAMRTCP:
-		if ((*(uint16 *) value = rtp_sess->transport.u.sctp.RTCP))
+		if ((*(uint16 *) value = rtp_sess->transport.RTCP.u.sctp.stream))
 			ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_STREAMS:
-		if ( ( ((uint16 *)value)[0] = rtp_sess->transport.u.sctp.RTP) &&
-		   ( ((uint16 *)value)[1] = rtp_sess->transport.u.sctp.RTCP) )
+		if ( ( ((uint16 *)value)[0] = rtp_sess->transport.RTP.u.sctp.stream) &&
+		   ( ((uint16 *)value)[1] = rtp_sess->transport.RTCP.u.sctp.stream) )
 			ret = RTP_TRANSPORT_SET;
 			break;
 	case RTP_TRANSPORT_SSRC:

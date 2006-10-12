@@ -42,7 +42,7 @@ int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
 
 	/* SDES CNAME: username@ipaddress */
 	// if ( sock_ntop_host(rtp_sess->transport.dstaddr.addr, rtp_sess->transport.dstaddr.addr_len, addr, sizeof(addr)) ) {
-	if (addr_ntop(&rtp_sess->transport.u.udp.dstaddr, addr, sizeof(addr))) {
+	if (addr_ntop(&rtp_sess->transport.RTP.u.udp.dstaddr, addr, sizeof(addr))) {
 		strcpy(str, pwitem->pw_name);
 		strcat(str, "@");
 		strcat(str, addr);

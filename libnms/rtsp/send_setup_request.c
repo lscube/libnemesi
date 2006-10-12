@@ -65,21 +65,21 @@ int send_setup_request(rtsp_thread * rtsp_th)
 	}
 
 	sprintf(b, "%d", rnd);
-	server_create(NULL, b, &(rtsp_med->rtp_sess->rtpfd));
+	server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTP.fd));
 
 	sprintf(b, "%d", rnd + 1);
-	server_create(NULL, b, &(rtsp_med->rtp_sess->rtcpfd));
+	server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTCP.fd));
 
 	/* per sapere il numero di porta assegnato */
 	/* assigned ports */
-	getsockname(rtsp_med->rtp_sess->rtpfd, (struct sockaddr *) &rtpaddr,
-		    &rtplen);
-	getsockname(rtsp_med->rtp_sess->rtcpfd, (struct sockaddr *) &rtcpaddr,
-		    &rtcplen);
+	getsockname(rtsp_med->rtp_sess->transport.RTP.fd,
+		    (struct sockaddr *) &rtpaddr, &rtplen);
+	getsockname(rtsp_med->rtp_sess->transport.RTCP.fd,
+		    (struct sockaddr *) &rtcpaddr, &rtcplen);
 
-	rtsp_med->rtp_sess->transport.u.udp.cli_ports[0] =
+	rtsp_med->rtp_sess->transport.RTP.local_port =
 	    ntohs(sock_get_port((struct sockaddr *) &rtpaddr));
-	rtsp_med->rtp_sess->transport.u.udp.cli_ports[1] =
+	rtsp_med->rtp_sess->transport.RTCP.local_port =
 	    ntohs(sock_get_port((struct sockaddr *) &rtcpaddr));
 
 	if (set_transport_str(rtsp_med->rtp_sess, &options))

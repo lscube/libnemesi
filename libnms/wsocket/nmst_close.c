@@ -30,11 +30,9 @@
 
 int nmst_close(nms_transport * transport)
 {
-	free(transport->local_port);
-	free(transport->remote_host);
-	free(transport->remote_port);
+	if (transport->remote_host)
+		free(transport->remote_host);
 
 	// TODO should we do something else?
-
 	return close(transport->fd);
 }
