@@ -64,6 +64,8 @@ int send_setup_request(rtsp_thread * rtsp_th)
 		rnd = rtsp_th->force_rtp_port;
 	}
 
+	rtsp_med->rtp_sess->transport.type = UDP;
+
 	sprintf(b, "%d", rnd);
 	server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTP.fd));
 
