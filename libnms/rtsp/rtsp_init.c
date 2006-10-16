@@ -94,6 +94,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 		RET_ERR(NMSML_FATAL, "Could not alloc memory\n");
 
 	nmst_init(&rtsp_th->transport);
+	rtsp_th->default_rtp_proto = UDP;
 	rtsp_th->status = INIT;
 #if 0				// we do not need to initilize to zero because of calloc usage
 	rtsp_th->descr_fmt = 0;
@@ -124,6 +125,45 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 			nms_printf(NMSML_WARN,
 				   "RTP ports forced by user (not randomly generated)\n");
 		}
+		//force RTSP protocol
+		switch (hints->pref_rtsp_proto) {
+		case SOCK_NONE:
+		case TCP:
+			rtsp_th->transport.type = TCP;
+			break;
+#ifdef HAVE_SCTP_NEMESI
+		case SCTP:
+			rtsp_th->transport.type = SCTP;
+			break;
+#endif
+		default:
+			RET_ERR(NMSML_ERR, "RTSP protocol not supported!\n");
+		}
+/* TODO: Implement in the code first!
+		//force RTP Protocol
+		switch (hints->pref_rtp_proto) {
+		case SOCK_NONE:
+		case UDP:
+			rtsp_th->default_rtp_proto = UDP;
+			break;
+		case TCP:
+			if (rtsp_th->transport.type == TCP)
+				rtsp_th->default_rtp_proto = TCP;
+			else
+				RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
+			break;
+#ifdef HAVE_SCTP_NEMESI
+		case SCTP:
+			if (rtsp_th->transport.type == SCTP)
+				rtsp_th->default_rtp_proto = SCTP;
+			else
+				RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
+			break;
+#endif
+		default:
+			RET_ERR(NMSML_ERR, "RTP protocol not supported!\n");
+		}
+*/
 	}
 	// hook to rtp lib
 	if (!(rtsp_th->rtp_th = rtp_init()))

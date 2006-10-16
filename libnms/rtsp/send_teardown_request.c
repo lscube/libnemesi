@@ -56,7 +56,7 @@ int send_teardown_request(rtsp_thread * rtsp_th)
 			rtsp_sess->Session_ID);
 	strcat(b, RTSP_EL);
 
-	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
+	if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
 		nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
 		return 1;
 	}

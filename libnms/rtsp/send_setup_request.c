@@ -64,7 +64,7 @@ int send_setup_request(rtsp_thread * rtsp_th)
 		rnd = rtsp_th->force_rtp_port;
 	}
 
-	rtsp_med->rtp_sess->transport.type = UDP;
+	rtsp_med->rtp_sess->transport.type = rtsp_th->default_rtp_proto;
 
 	sprintf(b, "%d", rnd);
 	server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTP.fd));
@@ -102,7 +102,7 @@ int send_setup_request(rtsp_thread * rtsp_th)
 
 	strcat(b, RTSP_EL);
 
-	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
+	if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
 		nms_printf(NMSML_ERR, "Cannot send SETUP request...\n");
 		return 1;
 	}

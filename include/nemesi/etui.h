@@ -68,6 +68,9 @@
 			nms_printf(NMSML_NORM, "   --nodisk           Do not inizialize diskwriter output\n"); \
 			nms_printf(NMSML_NORM, "\n RTP options:\n"); \
 			nms_printf(NMSML_NORM, "   -p|--first-port [n]   Force RTP/RTCP ports choise.\n"); \
+			nms_printf(NMSML_NORM, "   --rtsp-tcp            Force RTP/AVP/TCP transport.\n"); \
+			nms_printf(NMSML_NORM, "   --rtsp-sctp           Force RTP/AVP/SCTP transport.\n"); \
+			nms_printf(NMSML_NORM, "   --no-rtp-sctp         Force SCTP only for RTSP protocol.\n"); \
 			nms_printf(NMSML_NORM, "\n"); \
 		}
 
@@ -90,7 +93,10 @@
 				{"noaudio", 0, NULL, 7}, \
 				{"novideo", 0, NULL, 8}, \
 				{"nodisk", 0, NULL, 9}, \
-				{"first-port", 1, NULL, 'p'}
+				{"first-port", 1, NULL, 'p'}, \
+				{"rtsp-tcp", 0, NULL, 10}, \
+				{"rtsp-sctp", 0, NULL, 11}, \
+				{"no-rtp-sctp", 0, NULL, 12}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS

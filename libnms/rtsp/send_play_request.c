@@ -86,7 +86,7 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
 
 	strcat(b, RTSP_EL);
 
-	if (!nmst_write(&rtsp_th->transport, b, strlen(b))) {
+	if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
 		nms_printf(NMSML_ERR, "Cannot send PLAY request...\n");
 		return 1;
 	}

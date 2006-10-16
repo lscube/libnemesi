@@ -74,6 +74,8 @@
 
 typedef struct {
 	int32 first_rtp_port;
+	enum sock_types pref_rtsp_proto;
+	enum sock_types pref_rtp_proto;
 } nms_rtsp_hints;
 
 /*! \enum Definition for possible states in RTSP state-machine
@@ -214,6 +216,7 @@ typedef struct {
 	uint16 force_rtp_port;
 	pthread_cond_t cond_busy;
 	nms_transport transport;
+	enum sock_types default_rtp_proto;
 	// int fd; /*!< file descriptor for reading the data coming from the server */
 	/*! \enum types enum possible kind of stream. */
 	enum types { M_ON_DEMAND, CONTAINER } type;	/*!< Kind of active

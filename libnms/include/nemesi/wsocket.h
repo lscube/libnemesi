@@ -133,8 +133,8 @@ char *addr_ntop(const nms_addr *, char *, size_t);
 // --------------- Transport Layer Wrapper API --------------- //
 void nmst_init(nms_transport *);
 int nmst_close(nms_transport *);
-int nmst_read(nms_transport *, void *, size_t);
-int nmst_write(nms_transport *, void *, size_t);
+int nmst_read(nms_transport *, void *, size_t, void *);
+int nmst_write(nms_transport *, void *, size_t, void *);
 inline int nmst_is_active(nms_transport *);
 // ----------- End of Transport Layer Wrapper API ----------- //
 

@@ -38,7 +38,7 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 
 	memset(buffer, '\0', BUFFERSIZE);
 
-	if ((n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE)) < 0) {
+	if ((n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE, NULL)) < 0) {
 		nms_printf(NMSML_ERR, "Could not read from RTSP socket\n");
 		return n;
 	}

@@ -32,7 +32,7 @@ void nmst_init(nms_transport * transport)
 {
 	memset(transport, 0, sizeof(nms_transport));
 
-	// XXX TMP shawill: for now only TCP is implemented, so I init type to TCP.
+	// TCP is default protocol implemented for RTSP, so I init type to TCP.
 	transport->type = TCP;
 
 	transport->fd = -1;

@@ -193,6 +193,20 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 		case 9:
 			output_hints->diskwriter = strdup("nodisk");
 			break;
+		case 10:
+			if (rtsp_hints->pref_rtp_proto == SOCK_NONE)
+				rtsp_hints->pref_rtp_proto = TCP;
+			break;
+		case 11:
+			if (rtsp_hints->pref_rtp_proto == SOCK_NONE) {
+				rtsp_hints->pref_rtsp_proto = SCTP;
+				rtsp_hints->pref_rtp_proto = SCTP;
+			}
+			break;
+		case 12:
+			if (rtsp_hints->pref_rtp_proto == SCTP)
+				rtsp_hints->pref_rtp_proto = UDP;
+			break;
 		case ':':
 			nms_printf(NMSML_ERR,
 				   "Missing argument for option \"%s\"\n",
