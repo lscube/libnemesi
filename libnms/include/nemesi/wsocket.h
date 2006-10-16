@@ -44,9 +44,9 @@
 #include <nemesi/comm.h>
 #include <nemesi/types.h>
 
-#define MAX_SCTP_STREAMS 11
 #ifdef HAVE_SCTP_NEMESI
 #include <netinet/sctp.h>
+#define MAX_SCTP_STREAMS 11
 #endif
 
 #ifdef WORDS_BIGENDIAN

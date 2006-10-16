@@ -44,8 +44,13 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
 		((char *) value)[len - 1] = '\0';
 		ret = RTP_TRANSPORT_SET;
 		break;
+	case RTP_TRANSPORT_SOCKTYPE:
+		*(enum sock_types *) value = rtp_sess->transport.type;
+		ret = RTP_TRANSPORT_SET;
+		break;
 	case RTP_TRANSPORT_DELIVERY:
 		*(enum deliveries *) value = rtp_sess->transport.delivery;
+		ret = RTP_TRANSPORT_SET;
 		break;
 	case RTP_TRANSPORT_SRCADDR:
 		memcpy((nms_addr *) value, &rtp_sess->transport.RTP.u.udp.srcaddr,

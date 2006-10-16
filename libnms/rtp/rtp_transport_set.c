@@ -46,6 +46,10 @@ int rtp_transport_set(rtp_session * rtp_sess, int par, void *value)
 	case RTP_TRANSPORT_SPEC:
 		// could not set spec for outsid library for now.
 		break;
+	case RTP_TRANSPORT_SOCKTYPE:
+		rtp_sess->transport.type = *(enum sock_types *) value;
+		ret = RTP_TRANSPORT_SET;
+		break;
 	case RTP_TRANSPORT_DELIVERY:
 		rtp_sess->transport.delivery = *(enum deliveries *) value;
 		ret = RTP_TRANSPORT_SET;

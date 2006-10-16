@@ -59,7 +59,9 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 		n = get_transport_str_tcp(rtp_sess, tkna, tknb);
 		break;
 	case SCTP:
+#ifdef HAVE_SCTP_NEMESI
 		n = get_transport_str_sctp(rtp_sess, tkna, tknb);
+#endif
 		break;
 	default:
 		break;

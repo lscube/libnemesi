@@ -44,6 +44,10 @@ int server_connect(char *host, char *port, int *sock,
 	int n;
 	struct addrinfo *res, *ressave;
 	struct addrinfo hints;
+#ifdef HAVE_SCTP_NEMESI
+	struct sctp_initmsg initparams;
+	struct sctp_event_subscribe subscribe;
+#endif
 
 	memset(&hints, 0, sizeof(struct addrinfo));
 
@@ -61,7 +65,7 @@ int server_connect(char *host, char *port, int *sock,
 				  "%s: SCTP protocol not compiled in\n",
 				  PROG_NAME);
 		break;
-#endif				// else go down to TCP case (SCTP and TCP are both SOCK_STREAM type)
+#endif	// else go down to TCP case (SCTP and TCP are both SOCK_STREAM type)
 	case TCP:
 		hints.ai_socktype = SOCK_STREAM;
 		break;
@@ -82,10 +86,34 @@ int server_connect(char *host, char *port, int *sock,
 	ressave = res;
 
 	do {
+#ifdef HAVE_SCTP_NEMESI
+		if (sock_type == SCTP)
+			res->ai_protocol = IPPROTO_SCTP;
+#endif // TODO: remove this code when SCTP will be supported from getaddrinfo()
+
 		if ((*sock < 0) && (*sock =
 		     socket(res->ai_family, res->ai_socktype,
 			    res->ai_protocol)) < 0)
 			continue;
+
+#ifdef HAVE_SCTP_NEMESI
+		if (sock_type == SCTP) {
+			// Enable the propagation of packets headers
+			memset(&subscribe, 0, sizeof(subscribe));
+			subscribe.sctp_data_io_event = 1;
+			if (setsockopt(*sock, SOL_SCTP, SCTP_EVENTS, &subscribe,
+					sizeof(subscribe)) < 0)
+				return nms_printf(NMSML_ERR, "setsockopts(SCTP_EVENTS) error in sctp_open.\n");
+
+			// Setup number of streams to be used for SCTP connection
+			memset(&initparams, 0, sizeof(initparams));
+			initparams.sinit_max_instreams = MAX_SCTP_STREAMS;
+			initparams.sinit_num_ostreams = MAX_SCTP_STREAMS;
+			if (setsockopt(*sock, SOL_SCTP, SCTP_INITMSG, &initparams,
+					sizeof(initparams)) < 0)
+				return nms_printf(NMSML_ERR, "setsockopts(SCTP_INITMSG) error in sctp_open.\n");
+		}
+#endif
 
 		if (connect(*sock, res->ai_addr, res->ai_addrlen) == 0)
 			break;

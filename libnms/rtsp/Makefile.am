@@ -11,7 +11,6 @@ librtsp_la_SOURCES =	body_exists.c \
 			full_msg_rcvd.c \
 			get_curr_sess.c \
 			get_transport_str.c \
-			get_transport_str_sctp.c \
 			get_transport_str_tcp.c \
 			get_transport_str_udp.c \
 			handle_get_response.c \
@@ -57,7 +56,13 @@ librtsp_la_SOURCES =	body_exists.c \
 			set_rtsp_media.c \
 			set_rtsp_sessions.c \
 			set_transport_str.c \
+			set_transport_str_tcp.c \
+			set_transport_str_udp.c \
 			seturlname.c \
 			stop_cmd.c
+if NEMESI_SCTP
+librtsp_la_SOURCES +=	get_transport_str_sctp.c \
+			set_transport_str_sctp.c
+endif
 			
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

@@ -67,6 +67,21 @@ int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
 			continue;
 		}
+		if ((tkna = strstrcase(tknb, "ssrc"))) {
+			uint32 ssrc;
+
+			for (; (*tkna == ' ') || (*tkna != '='); tkna++);
+
+			for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
+			     && (*tknb != '\n'); tknb++);
+			strncpy(str, tkna, tknb - tkna);
+			str[tknb++ - tkna] = '\0';
+
+			ssrc = strtoul(str, NULL, 10);
+			rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
+
+			continue;
+		}
 	} while ((tknb = strtok(NULL, ";")));
 	return 0;
 }

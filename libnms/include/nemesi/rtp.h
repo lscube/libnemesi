@@ -119,6 +119,7 @@ typedef struct {
 #define RTPPT_ISDYNAMIC(pt)	(pt >= 96)
 
 #define RTP_TRANSPORT_SPEC              10
+#define RTP_TRANSPORT_SOCKTYPE          11
 #define RTP_TRANSPORT_DELIVERY          20
 #define RTP_TRANSPORT_SRCADDR           30
 #define RTP_TRANSPORT_SRCADDRSTR        31
@@ -341,6 +342,7 @@ int rtp_transport_get(rtp_session *, int, void *, uint32);
 
 // rtp transport wrapper functions for rtp_transport_get
 inline char *rtp_get_spec(rtp_session *);
+inline enum sock_types rtp_get_socktype(rtp_session *);
 inline enum deliveries rtp_get_delivery(rtp_session *);
 inline int rtp_get_srcaddrstr(rtp_session *, char *, uint32);
 inline nms_addr *rtp_get_srcaddr(rtp_session *);
@@ -370,6 +372,7 @@ inline uint32 rtp_get_ssrc(rtp_session *);
 // rtp transport wrapper functions for rtp_transport_set
 // inline char *rtp_set_spec(rtp_session *, char *); // not settable
 inline int rtp_set_delivery(rtp_session *, enum deliveries);
+inline int rtp_set_socktype(rtp_session *, enum sock_types);
 inline int rtp_set_srcaddrstr(rtp_session *, char *);
 inline int rtp_set_srcaddr(rtp_session *, nms_addr *);
 inline int rtp_set_dstaddrstr(rtp_session *, char *);

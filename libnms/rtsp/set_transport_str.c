@@ -32,42 +32,42 @@
 int set_transport_str(rtp_session * rtp_sess, char **str)
 {
 	char buff[256];
-	char addr[128];		/* Unix domain is largest */
-	in_port_t ports[2];
+	enum sock_types type;
 
 	memset(buff, 0, sizeof(buff));
 
 	rtp_transport_get(rtp_sess, RTP_TRANSPORT_SPEC, buff, sizeof(buff));
-	*(buff + strlen(buff)) = ';';
-	if (rtp_get_delivery(rtp_sess) == multicast)
-		sprintf(buff + strlen(buff), "multicast;");
-	else
-		sprintf(buff + strlen(buff), "unicast;");
-	if (rtp_transport_get
-	    (rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addr,
-	     sizeof(addr)) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "destination=%s;", addr);
-	if (rtp_transport_get
-	    (rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addr,
-	     sizeof(addr)) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "source=%s;", addr);
-	if (rtp_get_layers(rtp_sess))
-		sprintf(buff + strlen(buff), "layers=%d;",
-			rtp_get_layers(rtp_sess));
+	rtp_transport_get(rtp_sess, RTP_TRANSPORT_SOCKTYPE, &type, sizeof(type));
+
+	switch (type) {
+	case UDP:
+		*(buff + strlen(buff)) = ';';
+		set_transport_str_udp(rtp_sess, buff);
+		break;
+	case TCP:
+		sprintf(buff+strlen(buff), "/TCP;");
+		set_transport_str_tcp(rtp_sess, buff);
+		break;
+	case SCTP:
+#ifndef HAVE_SCTP_NEMESI
+		return nms_printf(NMSML_FATAL,
+			"set_transport_str: SCTP support not compiled in!\n");
+#else
+		sprintf(buff+strlen(buff), "/SCTP;");
+		set_transport_str_sctp(rtp_sess, buff);
+		break;
+#endif
+	default:
+		return nms_printf(NMSML_FATAL,
+			"set_transport_str: Unknown Transport type!\n");
+	}
+
 	if (rtp_get_mode(rtp_sess) == record)
 		sprintf(buff + strlen(buff), "mode=record;");
 	else
 		sprintf(buff + strlen(buff), "mode=play;");
 	if (rtp_get_append(rtp_sess))
 		sprintf(buff + strlen(buff), "append;");
-	if (rtp_get_ttl(rtp_sess))
-		sprintf(buff + strlen(buff), "ttl=%d;", rtp_get_ttl(rtp_sess));
-	if (rtp_get_mcsports(rtp_sess, ports) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "port=%d-%d;", (int) ports[0],
-			(int) ports[1]);
-	if (rtp_get_cliports(rtp_sess, ports) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "client_port=%d-%d;",
-			(int) ports[0], (int) ports[1]);
 	if (rtp_get_ssrc(rtp_sess))
 		sprintf(buff + strlen(buff), "ssrc=%u;",
 			rtp_get_ssrc(rtp_sess));

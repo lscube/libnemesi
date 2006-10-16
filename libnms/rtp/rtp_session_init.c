@@ -47,6 +47,7 @@ rtp_session *rtp_session_init(nms_sockaddr * local, nms_sockaddr * peer)
 
 	rtp_sess->transport.RTP.fd = -1;
 	rtp_sess->transport.RTCP.fd = -1;
+	rtp_sess->transport.type = UDP;
 	rtp_sess->local_ssrc = random32(0);
 	if (pthread_mutex_init(&rtp_sess->syn, NULL))
 		RET_ERR(NMSML_FATAL, "Cannot init mutex!\n");
