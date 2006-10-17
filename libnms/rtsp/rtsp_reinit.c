@@ -110,6 +110,8 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 
 static void clean_rtsp_th(rtsp_thread *rtsp_th)
 {	
+	nms_rtsp_interleaved *p;
+
 	free(rtsp_th->server_port);
 	free(rtsp_th->urlname);
 	free((rtsp_th->in_buffer).data);
@@ -135,4 +137,18 @@ static void clean_rtsp_th(rtsp_thread *rtsp_th)
 			rtsp_th->force_rtp_port++;
 	} else
 		rtsp_th->force_rtp_port = 0;
+
+	//destroy interleaved structure
+	p = rtsp_th->interleaved;
+	while (p) {
+		nms_rtsp_interleaved *pp = p->next;
+		if (p->rtp_fd > 0)
+			close(p->rtp_fd);
+		if (p->rtcp_fd > 0)
+			close(p->rtcp_fd);
+		free(p);
+		p = pp;
+	}
+	rtsp_th->interleaved = NULL;
+	rtsp_th->next_ilvd_ch = 0;
 }

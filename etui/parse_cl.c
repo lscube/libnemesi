@@ -194,8 +194,10 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 			output_hints->diskwriter = strdup("nodisk");
 			break;
 		case 10:
-			if (rtsp_hints->pref_rtp_proto == SOCK_NONE)
+			if (rtsp_hints->pref_rtp_proto == SOCK_NONE) {
+				rtsp_hints->pref_rtsp_proto = TCP;
 				rtsp_hints->pref_rtp_proto = TCP;
+			}
 			break;
 		case 11:
 			if (rtsp_hints->pref_rtp_proto == SOCK_NONE) {
@@ -204,8 +206,10 @@ int parse_cl(int argc, char **argv, nms_cl_opts * cl_opt)
 			}
 			break;
 		case 12:
-			if (rtsp_hints->pref_rtp_proto == SCTP)
+			if (rtsp_hints->pref_rtp_proto == SOCK_NONE) {
+				rtsp_hints->pref_rtsp_proto = SCTP;
 				rtsp_hints->pref_rtp_proto = UDP;
+			}
 			break;
 		case ':':
 			nms_printf(NMSML_ERR,

@@ -32,6 +32,28 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 {
 	char ver[32];
 	int opcode;
+	
+
+	if ((rtsp_th->in_buffer).data[0] == '$') {
+		nms_rtsp_interleaved *p;
+
+#define M ((rtsp_th->in_buffer).data[2])
+#define DATA_PTR (&((rtsp_th->in_buffer).data[4]))
+#define DATA_SIZE ((rtsp_th->in_buffer).first_pkt_size - 4)
+
+		for (p = rtsp_th->interleaved; p && ((p->proto.tcp.rtp_ch == M)
+			|| (p->proto.tcp.rtcp_ch == M)); p = p->next);
+		if (p) {
+			if (p->proto.tcp.rtp_ch == M) {
+				send(p->rtp_fd, DATA_PTR, DATA_SIZE, 0);
+			} else {
+				send(p->rtcp_fd, DATA_PTR, DATA_SIZE, 0);
+			}
+		}
+
+		remove_pkt(rtsp_th);
+		return 0;
+	}
 
 	if (sscanf((rtsp_th->in_buffer).data, "%s ", ver) < 1) {
 		printf("\nInvalid RTSP message received\n");

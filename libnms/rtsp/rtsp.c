@@ -33,6 +33,10 @@
 #include <nemesi/rtsp.h>
 #include <nemesi/version.h>
 
+#ifndef BUFFERSIZE
+#define BUFFERSIZE 163840
+#endif
+
 int (*cmd[COMMAND_NUM]) (rtsp_thread *, ...);
 int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
 
@@ -49,7 +53,13 @@ void *rtsp(void *rtsp_thrd)
 	int command_fd = rtsp_th->pipefd[0];
 	fd_set readset;
 	char ch[1];
-	int n;
+	int n, max_fd;
+	nms_rtsp_interleaved *p;
+	char buffer[BUFFERSIZE];
+	uint16 *pkt_size = (uint16 *) &buffer[2];
+#ifdef HAVE_SCTP_NEMESI
+	struct sctp_sndrcvinfo sinfo;
+#endif
 
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -59,10 +69,19 @@ void *rtsp(void *rtsp_thrd)
 		FD_ZERO(&readset);
 
 		FD_SET(command_fd, &readset);
-		if (nmst_is_active(&rtsp_th->transport))
+		max_fd = command_fd;
+		if (nmst_is_active(&rtsp_th->transport)) {
 			FD_SET(rtsp_th->transport.fd, &readset);
+			max_fd = max(rtsp_th->transport.fd, max_fd);
+			}
+		for (p = rtsp_th->interleaved; p; p = p->next) {
+			if (p->rtcp_fd >= 0) {
+				FD_SET(p->rtcp_fd, &readset);
+				max_fd = max(p->rtcp_fd, max_fd);
+			}
+		}
 		if (select
-		    (max(rtsp_th->transport.fd, command_fd) + 1, &readset,
+		    (max_fd + 1, &readset,
 		     NULL, NULL, NULL) < 0) {
 			nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME,
 				   strerror(errno));
@@ -72,20 +91,49 @@ void *rtsp(void *rtsp_thrd)
 			if (FD_ISSET(rtsp_th->transport.fd, &readset)) {
 				if ((n = rtsp_recv(rtsp_th)) < 0)
 					pthread_exit(NULL);
-				else if (n > 0) {
-					if (full_msg_rcvd(rtsp_th))
-						if (handle_rtsp_pkt(rtsp_th)) {
-							// nms_printf(NMSML_ERR, "\nError!\n");
-							rtsp_reinit(rtsp_th);
-						}
-				} else {
+				else if (n == 0) {
 					nms_printf(NMSML_ERR,
 						   "Server died prematurely!\n");
 					rtsp_reinit(rtsp_th);
 					nms_printf(NMSML_NORM,
 						   "Session closed.\n");
+				} else if (rtsp_th->in_buffer.size > 0) {
+					if (full_msg_rcvd(rtsp_th))
+						if (handle_rtsp_pkt(rtsp_th)) {
+							// nms_printf(NMSML_ERR, "\nError!\n");
+							rtsp_reinit(rtsp_th);
+						}
+				} 
+			}
+
+		for (p = rtsp_th->interleaved; p; p = p->next) {
+			if (p->rtcp_fd >= 0 && FD_ISSET(p->rtcp_fd, &readset)) {
+				switch (rtsp_th->transport.type) {
+				case TCP:
+					n = recv(p->rtcp_fd, buffer+4, BUFFERSIZE-4, 0);
+					buffer[0]='$';
+					buffer[1]= p->proto.tcp.rtcp_ch;
+					*pkt_size = htons((uint16) n);
+					nmst_write(&rtsp_th->transport, buffer, n+4, NULL);
+					break;
+#ifdef HAVE_SCTP_NEMESI
+				case SCTP:
+					n = recv(p->rtcp_fd, buffer, BUFFERSIZE, 0);
+					memset(&sinfo, 0, sizeof(sinfo));
+					sinfo.sinfo_stream = p->proto.sctp.rtcp_st;
+					sinfo.sinfo_flags = SCTP_UNORDERED;
+					nmst_write(&rtsp_th->transport, buffer, n, &sinfo);
+					break;
+#endif
+				default:
+					recv(p->rtcp_fd, buffer, BUFFERSIZE, 0);
+					nms_printf(NMSML_DBG3,
+					   "Unable to send RTCP interleaved packet.\n");
+					break;
 				}
 			}
+		}
+
 		if (FD_ISSET(command_fd, &readset)) {
 			pthread_mutex_lock(&(rtsp_th->comm_mutex));
 			read(command_fd, ch, 1);

@@ -79,12 +79,14 @@ enum sock_types {
 	SOCK_NONE = 0,
 	TCP,
 	UDP,
-	SCTP
+	SCTP,
+	LOCAL
 };
 
 typedef struct {
 	enum sock_types type;
 	int fd;		/*!< file descriptor for reading the data to and from the server */
+	char *buffer;	/*!< for storing not completely transmitted data */
 	union {
 		struct {
 			nms_addr srcaddr;	//!< stored in network order

@@ -50,5 +50,5 @@ int nmst_read(nms_transport * transport, void *buffer, size_t nbytes, void *prot
 	default:
 		break;
 	}
-
+	return -1;
 }

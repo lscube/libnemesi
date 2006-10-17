@@ -30,9 +30,9 @@
 
 int get_transport_str(rtp_session * rtp_sess, char *buff)
 {
-	char *tkna, *tknb;
 	char str[256];
-	int n;
+	char *tkna = str, *tknb = str;
+	int n = 1;
 	// char addr[128];              /* Unix domain is largest */
 
 	memset(str, 0, sizeof(str));
@@ -46,7 +46,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 	else if (strstr(buff, RTP_AVP_UDP))
 		rtp_sess->transport.type = UDP;
 	else
-		return 1;
+		return n;
 
 	for (tknb = strtok(buff, ";"); (*tknb == ' ') || (*tknb == ':');
 	     tknb++);

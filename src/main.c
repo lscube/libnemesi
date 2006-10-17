@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	rtsp_ctrl *rtsp_ctl;
 	nms_out_hints output_hints = { NULL, NULL, NULL, 0 };
 	nms_ui_hints ui_hints = { 0, 0, NULL };
-	nms_rtsp_hints rtsp_hints = { -1, 0, 0 };
+	nms_rtsp_hints rtsp_hints = { -1, SOCK_NONE, SOCK_NONE };
 	nms_cl_opts cl_opt = { &output_hints, &ui_hints, &rtsp_hints };
 	int n;
 	char *slash;

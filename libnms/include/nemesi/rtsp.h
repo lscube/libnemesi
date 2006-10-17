@@ -78,6 +78,22 @@ typedef struct {
 	enum sock_types pref_rtp_proto;
 } nms_rtsp_hints;
 
+typedef struct nms_rtsp_interleaved_s {
+	int rtp_fd; //!< output rtp local socket 
+	int rtcp_fd; //!< output rtcp local socket
+	union {
+		struct {
+			uint8 rtp_ch;
+			uint8 rtcp_ch;
+		} tcp;
+		struct {
+			uint16 rtp_st;
+			uint16 rtcp_st;
+		} sctp;
+	} proto;
+	struct nms_rtsp_interleaved_s *next;
+} nms_rtsp_interleaved;
+
 /*! \enum Definition for possible states in RTSP state-machine
  * The last ("STATES_NUM") is used to know how many states are present in the machine.
  */
@@ -176,8 +192,8 @@ typedef struct rtsp_session_s {
  *
  * */
 struct rtsp_buffer {
-	int size;		/*!< Full buffer size. */
-	int first_pkt_size;	/*!< First packet size. */
+	size_t size;		/*!< Full buffer size. */
+	size_t first_pkt_size;	/*!< First packet size. */
 	char *data;		/*!< Raw data. */
 };
 
@@ -217,6 +233,8 @@ typedef struct {
 	pthread_cond_t cond_busy;
 	nms_transport transport;
 	enum sock_types default_rtp_proto;
+	nms_rtsp_interleaved *interleaved;
+	uint16 next_ilvd_ch;
 	// int fd; /*!< file descriptor for reading the data coming from the server */
 	/*! \enum types enum possible kind of stream. */
 	enum types { M_ON_DEMAND, CONTAINER } type;	/*!< Kind of active

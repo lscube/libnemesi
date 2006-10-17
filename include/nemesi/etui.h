@@ -70,7 +70,7 @@
 			nms_printf(NMSML_NORM, "   -p|--first-port [n]   Force RTP/RTCP ports choise.\n"); \
 			nms_printf(NMSML_NORM, "   --rtsp-tcp            Force RTP/AVP/TCP transport.\n"); \
 			nms_printf(NMSML_NORM, "   --rtsp-sctp           Force RTP/AVP/SCTP transport.\n"); \
-			nms_printf(NMSML_NORM, "   --no-rtp-sctp         Force SCTP only for RTSP protocol.\n"); \
+			nms_printf(NMSML_NORM, "   --rtsp-sctp-udp       Force SCTP for RTSP protocol and RTP/AVP/UDP.\n"); \
 			nms_printf(NMSML_NORM, "\n"); \
 		}
 
@@ -96,7 +96,7 @@
 				{"first-port", 1, NULL, 'p'}, \
 				{"rtsp-tcp", 0, NULL, 10}, \
 				{"rtsp-sctp", 0, NULL, 11}, \
-				{"no-rtp-sctp", 0, NULL, 12}
+				{"rtsp-sctp-udp", 0, NULL, 12}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS

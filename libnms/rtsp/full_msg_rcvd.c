@@ -35,6 +35,20 @@ int full_msg_rcvd(rtsp_thread * rtsp_th)
 	char *head_end;		/* puntatore alla fine dell'header */
 	unsigned int body_len;
 
+	// is there an interleaved RTP/RTCP packet?
+	if (in_buffer->data[0] == '$') {
+		uint16 *intlvd_len = (uint16 *) &(in_buffer->data[2]);
+
+		if ((body_len = ntohs(*intlvd_len)) <= in_buffer->size) {
+			// fnc_log(FNC_LOG_DEBUG,"Interleaved RTP or RTCP packet arrived (len: %hu).\n", bl);
+			in_buffer->first_pkt_size = 4 + body_len;
+			return 1;
+		} else {
+			return 0;
+		}
+
+	}
+
 	if ((head_end = strchr(in_buffer->data, '\n')) == NULL)
 		return 0;
 	do {

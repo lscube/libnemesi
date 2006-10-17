@@ -138,4 +138,5 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 		}
 
 	} while ((tknb = strtok(NULL, ";"))); 
+	return 0;
 }
