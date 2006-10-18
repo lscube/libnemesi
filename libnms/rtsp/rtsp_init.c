@@ -139,7 +139,6 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 		default:
 			RET_ERR(NMSML_ERR, "RTSP protocol not supported!\n");
 		}
-/* TODO: Implement in the code first!
 		//force RTP Protocol
 		switch (hints->pref_rtp_proto) {
 		case SOCK_NONE:
@@ -163,7 +162,6 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 		default:
 			RET_ERR(NMSML_ERR, "RTP protocol not supported!\n");
 		}
-*/
 	}
 	// hook to rtp lib
 	if (!(rtsp_th->rtp_th = rtp_init()))

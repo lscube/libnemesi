@@ -34,6 +34,8 @@ int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
 {
 	uint16 streams[2];
 
+	sprintf(buff + strlen(buff), "unicast;");
+
 	if ( rtp_get_streams(rtp_sess, streams) == RTP_TRANSPORT_SET)
 		sprintf(buff+strlen(buff), "streams=%u-%u;", streams[0], streams[1]);
 

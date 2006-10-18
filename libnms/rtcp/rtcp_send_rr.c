@@ -44,14 +44,29 @@ int rtcp_send_rr(rtp_session * rtp_sess)
 
 	for (stm_src = rtp_sess->ssrc_queue; stm_src; stm_src = stm_src->next)
 		if ( !(stm_src->no_rtcp) && stm_src->rtp_sess->transport.RTCP.fd > 0) {
-			if (sendto(stm_src->rtp_sess->transport.RTCP.fd, rr_buff, (len << 2),
-				   0, stm_src->rtcp_from.addr,
-				   stm_src->rtcp_from.addr_len) < 0)
-				nms_printf(NMSML_WARN,
-					   "WARNING! Error while sending RTCP pkt\n");
-			else
-				nms_printf(NMSML_DBG1,
-					   "RTCP RR packet sent\n");
+			switch(stm_src->rtp_sess->transport.type) {
+			case UDP:
+				if (sendto(stm_src->rtp_sess->transport.RTCP.fd,
+					   rr_buff, (len << 2), 0, stm_src->rtcp_from.addr,
+					   stm_src->rtcp_from.addr_len) < 0)
+					nms_printf(NMSML_WARN,
+						   "WARNING! Error while sending RTCP pkt\n");
+				else
+					nms_printf(NMSML_DBG1,
+						   "RTCP RR packet sent\n");
+				break;
+			case SCTP:
+			case TCP:
+			case LOCAL:
+				if (send(stm_src->rtp_sess->transport.RTCP.fd,
+					   rr_buff, (len << 2), 0) < 0)
+					nms_printf(NMSML_WARN,
+						   "WARNING! Error while sending RTCP pkt\n");
+				else
+					nms_printf(NMSML_DBG1,
+						   "RTCP RR packet sent\n");
+				break;
+			}
 		}
 
 	return len;

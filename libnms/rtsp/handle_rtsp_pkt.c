@@ -36,18 +36,25 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 
 	if ((rtsp_th->in_buffer).data[0] == '$') {
 		nms_rtsp_interleaved *p;
-
-#define M ((rtsp_th->in_buffer).data[2])
+		const int m = ((rtsp_th->in_buffer).data[1]);
 #define DATA_PTR (&((rtsp_th->in_buffer).data[4]))
 #define DATA_SIZE ((rtsp_th->in_buffer).first_pkt_size - 4)
 
-		for (p = rtsp_th->interleaved; p && ((p->proto.tcp.rtp_ch == M)
-			|| (p->proto.tcp.rtcp_ch == M)); p = p->next);
+		for (p = rtsp_th->interleaved; p && !((p->proto.tcp.rtp_ch == m)
+			|| (p->proto.tcp.rtcp_ch == m)); p = p->next);
+		nms_printf(NMSML_DBG2, "Interleaved data (channel %d -> %d : %d)\n",
+			   m, p->proto.tcp.rtp_ch, p->proto.tcp.rtcp_ch);
 		if (p) {
-			if (p->proto.tcp.rtp_ch == M) {
-				send(p->rtp_fd, DATA_PTR, DATA_SIZE, 0);
-			} else {
+			if (p->proto.tcp.rtcp_ch == m) {
+				nms_printf(NMSML_DBG2,
+					   "Interleaved RTCP data (%u bytes: channel %d -> sd %d)\n",
+					   DATA_SIZE, m, p->rtcp_fd);
 				send(p->rtcp_fd, DATA_PTR, DATA_SIZE, 0);
+			} else {
+				nms_printf(NMSML_DBG2,
+					   "Interleaved RTP data (%u bytes: channel %d -> sd %d)\n",
+					   DATA_SIZE, m, p->rtp_fd);
+				send(p->rtp_fd, DATA_PTR, DATA_SIZE, 0);
 			}
 		}
 

@@ -94,6 +94,9 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 			sock.addr = (*stm_src)->rtcp_from.addr;
 			sock.addr_len = (*stm_src)->rtcp_from.addr_len;
 
+			if (rtp_sess->transport.type != UDP)
+				return local_collision;
+
 			if (!(*stm_src)->rtcp_to.addr) {
 				nms_addr nms_address;
 
@@ -109,7 +112,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 			}
 		}
 
-		if (sockaddrcmp
+		if ((rtp_sess->transport.type == UDP) && sockaddrcmp
 		    (sock.addr, sock.addr_len, recfrom->addr,
 		     recfrom->addr_len)) {
 			nms_printf(NMSML_ERR,

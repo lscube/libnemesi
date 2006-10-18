@@ -56,7 +56,6 @@ void *rtsp(void *rtsp_thrd)
 	int n, max_fd;
 	nms_rtsp_interleaved *p;
 	char buffer[BUFFERSIZE];
-	uint16 *pkt_size = (uint16 *) &buffer[2];
 #ifdef HAVE_SCTP_NEMESI
 	struct sctp_sndrcvinfo sinfo;
 #endif
@@ -113,8 +112,11 @@ void *rtsp(void *rtsp_thrd)
 					n = recv(p->rtcp_fd, buffer+4, BUFFERSIZE-4, 0);
 					buffer[0]='$';
 					buffer[1]= p->proto.tcp.rtcp_ch;
-					*pkt_size = htons((uint16) n);
+					*((uint16 *) &buffer[2]) = htons((uint16) n);
 					nmst_write(&rtsp_th->transport, buffer, n+4, NULL);
+					nms_printf(NMSML_DBG2,
+						   "Sent RTCP packet on channel %u.\n",
+						   buffer[1]);
 					break;
 #ifdef HAVE_SCTP_NEMESI
 				case SCTP:
@@ -123,11 +125,14 @@ void *rtsp(void *rtsp_thrd)
 					sinfo.sinfo_stream = p->proto.sctp.rtcp_st;
 					sinfo.sinfo_flags = SCTP_UNORDERED;
 					nmst_write(&rtsp_th->transport, buffer, n, &sinfo);
+					nms_printf(NMSML_DBG2,
+						   "Sent RTCP packet on stream %u.\n",
+						   sinfo.sinfo_stream);
 					break;
 #endif
 				default:
 					recv(p->rtcp_fd, buffer, BUFFERSIZE, 0);
-					nms_printf(NMSML_DBG3,
+					nms_printf(NMSML_DBG2,
 					   "Unable to send RTCP interleaved packet.\n");
 					break;
 				}

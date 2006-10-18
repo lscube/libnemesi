@@ -37,13 +37,13 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 	memset(str, 0, sizeof(str));
 
-	if (strstr(buff, RTP_AVP_TCP))
+	if (strstrcase(buff, RTP_AVP_TCP))
 		rtp_sess->transport.type = TCP;
 #ifdef HAVE_SCTP_NEMESI
-	else if (strstr(buff, RTP_AVP_SCTP))
+	else if (strstrcase(buff, RTP_AVP_SCTP))
 		rtp_sess->transport.type = SCTP;
 #endif
-	else if (strstr(buff, RTP_AVP_UDP))
+	else if (strstrcase(buff, RTP_AVP_UDP))
 		rtp_sess->transport.type = UDP;
 	else
 		return n;

@@ -34,6 +34,8 @@ int set_transport_str_tcp(rtp_session * rtp_sess, char *buff)
 {
 	uint8 ilvds[2];
 
+	sprintf(buff + strlen(buff), "unicast;");
+
 	if ( rtp_get_interleaved(rtp_sess, ilvds) == RTP_TRANSPORT_SET)
 		sprintf(buff+strlen(buff), "interleaved=%u-%u;", ilvds[0], ilvds[1]);
 	

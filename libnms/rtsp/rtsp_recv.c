@@ -64,11 +64,11 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 	if (rtsp_th->transport.type == TCP || (rtsp_th->transport.type == SCTP && m==0)) {
 		if (((rtsp_th->in_buffer).size) == 0) {
 			if (((rtsp_th->in_buffer).data = 
-			     (char *) malloc(n + 1)) == NULL)
+			     (char *) calloc(1, n + 1)) == NULL)
 				return nms_printf(NMSML_FATAL,
 				  "Cannot alloc memory space for received RTSP data\n");
 
-			strcpy((rtsp_th->in_buffer).data, buffer);
+			memcpy((rtsp_th->in_buffer).data, buffer, n);
 		} else {
 			if (((rtsp_th->in_buffer).data =
 			     (char *) realloc((rtsp_th->in_buffer).data,
@@ -77,13 +77,13 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 				return nms_printf(NMSML_FATAL,
 				  "Cannot alloc memory space for received RTSP data\n");
 
-			strcat((rtsp_th->in_buffer).data, buffer);
+			memcpy((rtsp_th->in_buffer).data + (rtsp_th->in_buffer).size, buffer, n);
 	}
 	(rtsp_th->in_buffer).size += n;
 	(rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size] = '\0';
 	} else /* if (rtsp_th->transport.type == SCTP && m!=0) */ {
 #ifdef HAVE_SCTP_NEMESI
-		for (p = rtsp_th->interleaved; p && ((p->proto.sctp.rtp_st == m)
+		for (p = rtsp_th->interleaved; p && !((p->proto.sctp.rtp_st == m)
 			|| (p->proto.sctp.rtcp_st == m)); p = p->next);
 		if (p) {
 			if (p->proto.sctp.rtp_st == m) {
