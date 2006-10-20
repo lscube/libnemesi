@@ -34,7 +34,7 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 	int opcode;
 	
 
-	if ((rtsp_th->in_buffer).data[0] == '$') {
+	if ((rtsp_th->transport.type == TCP && rtsp_th->interleaved) && (rtsp_th->in_buffer).data[0] == '$') {
 		nms_rtsp_interleaved *p;
 		const uint8 m = ((rtsp_th->in_buffer).data[1]);
 #define DATA_PTR (&((rtsp_th->in_buffer).data[4]))

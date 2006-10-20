@@ -50,8 +50,7 @@ int remove_pkt(rtsp_thread * rtsp_th)
 		buff = NULL;
 	free(rtsp_th->in_buffer.data);
 	rtsp_th->in_buffer.data = buff;
-	rtsp_th->in_buffer.size =
-	    rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size;
+	rtsp_th->in_buffer.size -= rtsp_th->in_buffer.first_pkt_size;
 	rtsp_th->in_buffer.first_pkt_size = 0;
 	return 0;
 }

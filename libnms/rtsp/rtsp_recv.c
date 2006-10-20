@@ -56,7 +56,9 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 	default:
 		break;
 	}
-
+	if (n == 0) {
+		return 0;
+	}
 	if (n < 0) {
 		nms_printf(NMSML_ERR, "Could not read from RTSP socket\n");
 		return n;
@@ -87,9 +89,15 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 			|| (p->proto.sctp.rtcp_st == m)); p = p->next);
 		if (p) {
 			if (p->proto.sctp.rtp_st == m) {
-				send(p->rtp_fd, buffer, n, 0);
+				nms_printf(NMSML_DBG2,
+					   "Interleaved RTP data (%u bytes: channel %d -> sd %d)\n",
+					   n, m, p->rtp_fd);
+				send(p->rtp_fd, buffer, n, MSG_EOR);
 			} else {
-				send(p->rtcp_fd, buffer, n, 0);
+				nms_printf(NMSML_DBG2,
+					   "Interleaved RTCP data (%u bytes: channel %d -> sd %d)\n",
+					   n, m, p->rtcp_fd);
+				send(p->rtcp_fd, buffer, n, MSG_EOR);
 			}
 		}
 #endif
