@@ -96,8 +96,8 @@ void *rtsp(void *rtsp_thrd)
 					rtsp_reinit(rtsp_th);
 					nms_printf(NMSML_NORM,
 						   "Session closed.\n");
-				} else if (rtsp_th->in_buffer.size > 0) {
-					if (full_msg_rcvd(rtsp_th))
+				} else {
+					while (rtsp_th->in_buffer.size > 0 && full_msg_rcvd(rtsp_th))
 						if (handle_rtsp_pkt(rtsp_th)) {
 							// nms_printf(NMSML_ERR, "\nError!\n");
 							rtsp_reinit(rtsp_th);
