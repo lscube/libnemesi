@@ -50,18 +50,17 @@ int rtcp_send_rr(rtp_session * rtp_sess)
 					   rr_buff, (len << 2), 0, stm_src->rtcp_from.addr,
 					   stm_src->rtcp_from.addr_len) < 0)
 					nms_printf(NMSML_WARN,
-						   "WARNING! Error while sending RTCP pkt\n");
+						   "WARNING! Error while sending UDP RTCP pkt\n");
 				else
 					nms_printf(NMSML_DBG1,
 						   "RTCP RR packet sent\n");
 				break;
 			case SCTP:
 			case TCP:
-			case LOCAL:
 				if (send(stm_src->rtp_sess->transport.RTCP.fd,
 					   rr_buff, (len << 2), 0) < 0)
 					nms_printf(NMSML_WARN,
-						   "WARNING! Error while sending RTCP pkt\n");
+						   "WARNING! Error while sending local RTCP pkt\n");
 				else
 					nms_printf(NMSML_DBG1,
 						   "RTCP RR packet sent\n");

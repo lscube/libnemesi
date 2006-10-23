@@ -79,8 +79,7 @@ enum sock_types {
 	SOCK_NONE = 0,
 	TCP,
 	UDP,
-	SCTP,
-	LOCAL
+	SCTP
 };
 
 typedef struct {

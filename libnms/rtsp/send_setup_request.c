@@ -146,7 +146,6 @@ int send_setup_request(rtsp_thread * rtsp_th)
 		p->next = rtsp_th->interleaved;
 		rtsp_th->interleaved = p;
 
-		rtsp_med->rtp_sess->transport.type = LOCAL;
 		break;
 	case SCTP:
 		rtsp_med->rtp_sess->transport.RTP.u.sctp.stream =
@@ -189,7 +188,6 @@ int send_setup_request(rtsp_thread * rtsp_th)
 		p->next = rtsp_th->interleaved;
 		rtsp_th->interleaved = p;
 
-		rtsp_med->rtp_sess->transport.type = LOCAL;
 		break;
 	default:
 		return 1;

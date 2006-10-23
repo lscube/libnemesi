@@ -32,14 +32,14 @@ int remove_pkt(rtsp_thread * rtsp_th)
 {
 
 	char *buff = NULL;
+	size_t new_size;
 
-	if ((rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size)) {
+	if ((new_size = rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size) > 0) {
 		if ((buff =
-		     (char *) malloc(rtsp_th->in_buffer.size -
-				     rtsp_th->in_buffer.first_pkt_size)) ==
+		     (char *) malloc(new_size)) ==
 		    NULL)
 			return nms_printf(NMSML_FATAL,
-					  "remove_pkt: Cannot allocate memory!\n");
+					  "remove_pkt: Cannot allocate memory! (%d bytes)\n", new_size);
 
 		memcpy(buff,
 		       rtsp_th->in_buffer.data +
