@@ -38,7 +38,7 @@ int full_msg_rcvd(rtsp_thread * rtsp_th)
 	// is there an interleaved RTP/RTCP packet?
 	if ((rtsp_th->transport.type == TCP && rtsp_th->interleaved) && in_buffer->size > 4 && in_buffer->data[0] == '$') {
 
-		if ((body_len = ntohs(*((uint16 *) &(in_buffer->data[2])))) <= in_buffer->size) {
+		if ((body_len = ntohs(*((uint16 *) &(in_buffer->data[2])))) + 4 <= in_buffer->size) {
 			in_buffer->first_pkt_size = 4 + body_len;
 			return 1;
 		} else {

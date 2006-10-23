@@ -34,7 +34,7 @@ int remove_pkt(rtsp_thread * rtsp_th)
 	char *buff = NULL;
 	size_t new_size;
 
-	if ((new_size = rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size) > 0) {
+	if ((new_size = rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size)) {
 		if ((buff =
 		     (char *) malloc(new_size)) ==
 		    NULL)
