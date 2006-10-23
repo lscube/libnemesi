@@ -27,33 +27,21 @@
  * */
 
 /*! \file bufferpool.h 
- * \brief Header contenente le definizioni della libreria \b bufferpool.
+ * \brief Header for \b bufferpool library.
  * */
 
-/*! \defgroup bufferpool Libreria Bufferpool
+/*! \defgroup bufferpool Bufferpool Library
  * 
- * \brief Gestione ottimizzata della memoria.
+ * \brief Memory handling.
  *
- * La liberia \b bufferpool mette a disposizione un buffer di memoria, allocato
- * staticamente e formato da slot di dimensione fissa, e le funzioni per la sua
- * gestione, tramite le quali il programma pu� richiedere e rilasciare degli
- * slot.  
+ * \b bufferpool consists in functions to manipulate statically allocated 
+ * fixed size slots of memory.
  *
- * All'interno sono contenute, inoltre, le funzioni per la gestione del buffer
- * di playout di rete. Si tratta di una serie di strutture e primitive, poste
- * idealmente ad un livello superiore rispetto al bufferpool, che mantengono
- * una lista di pacchetti RTP, ordinati secondo il numero di sequenza, che
- * permettono di gestirne il riordino e la perdita.
+ * It also contains the high level functions to manage the playout buffer and
+ * the RTP packets queue.
  *
- * Una tale architettura � utilizzata in maniera efficiente da NeMeSI che pu�
- * ricevere un pacchetto RTP in uno slot del bufferpool, di cui si era fatta
- * richiesta in precedenza, dal quale non sar� pi� spostato fino alla sua
- * rimozione dopo il suo processamento da parte del decoder.  In seguito alla
- * ricezione dalla rete, il pacchetto sar� ordinato tramite le sovrastrutture
- * di indicizzazione che implementano il buffer di playout di rete.
- *
- * In altre parole: dalla ricezione alla decodifica c'� una sola copia in
- * memoria.
+ * This is used so that between receiving and decoding an RTP packet you can 
+ * have just a single copy to memory.
  *
  * @{ */
 
@@ -69,87 +57,75 @@
 
 #include <nemesi/types.h>
 
-/*! La lunghezza, in slot, del Buffer di Playout. */
-																																										    /* #define BP_SLOT_NUM 50 *//* 1000ms / 20ms = Playout Buffer Size (in
-																																										       seconds) / Required RTP payload size (in
-																																										       seconds) */
+/*! The number of slots consisting the Playout Buffer. */			/* #define BP_SLOT_NUM 50 */
+/* 1000ms / 20ms = Playout Buffer Size (in seconds) / Required RTP payload size (in seconds) */
 #define BP_SLOT_NUM 150		// Bigger buffer. For video needs.
 
-/*! La dimensione del singolo slot del Buffer Pool.  Il valore deriva dal
- * <em>"Minimum Reassembly Buffer Size"</em> di IPv4: questa, infatti, dovrebbe
- * essere la dimensione massima dei pacchetti RTP per essere certi che non
- * vengano frammentati dai router*/
-																																											      /*#define BP_SLOT_SIZE 548 *//* 576 - 20 - 8 = Minimum Reassembly Buffer
-																																											         Size - IP datagram header -  UDP hedaer */
+/*! Slot size.  Derived from <em>"Minimum Reassembly Buffer Size"</em> IPv4: the maximal dimension of non fragmented packets */
 
+/*#define BP_SLOT_SIZE 548 *//* 576 - 20 - 8 = Minimum Reassembly Buffer Size - IP datagram header -  UDP hedaer */
 #define BP_SLOT_SIZE 2048	/* bigger slot */
 
-/*! La dimensione totale, in byte, del Buffer Pool. */
+/*! Buffer Pool size */
 #define BP_SIZE BP_SLOT_NUM*BP_SLOT_SIZE	/* 1 sec G.711 - 8kHz * 8bit
 						   per sample */
 
 
-/*! \brief Slot del Buffer di Playout di Rete.
+/*! \brief Network Playout Buffer Slots.
  *
- * Questa struttura rappresenta la definizione di uno slot della zona di
- * memoria allocata per contenere i dati del Buffer di Playout di Rete.  Ognuno
- * di essi conterr� i pacchetti RTP arrivati dalla rete.
+ * It represents the memory used to hold the RTP packet received.
  *
- * Tale struttura non sar� mai usata direttamente se non nella fase di
- * allocazione della memoria destinata al buffer.
+ * Never use it directly.
  * */
-/* Da non usare. MAI. */
 typedef struct {
-	char x[BP_SLOT_SIZE];	/*!< Zona di memoria che immagazziner� i
-				   pacchetti RTP provenienti dalla rete. MAI
-				   UTILIZZATA DIRETTAMENTE!. */
+	char x[BP_SLOT_SIZE];	/*!< Memory used to hold the packets 
+                                     received from the network, 
+                                     NEVER ACCESS IT DIRECTLY! */
 } bp_slot;
 
 /*!
-* \brief La struttura che rappresenta un elemento della lista double-linked del
-* Buffer di Playout di Rete.
+* \brief Network Playout Element
 *
-* Si tratta di un elemento del vettore che far� parte del Buffer di Playout di
-* Rete. All'interno di esso ogni elememto si riferisce all'elemento del vettore
-* del Bufferpool con lo stesso indice.
+* The elements are part of a indexed double linked list.
 *
-* La lista � doppio linkata attraverso gli indici degli elementi precedente e
-* successivo all'interno dello stesso vettore.
-*
-* \note Il valore corripondente al \c NULL, cio� al delimitatore di lista, � \c
-* -1
+* \note the list delimiter is \c -1
 * */
 typedef struct {
-	int pktlen;		/*!<  Lunghezza effettiva del pacchetto corrispondente. */
-	int prev;		/*!< Indice del precedente elemento della lista ordinata. */
-	int next;		/*!< indice del successivo elemento della lista ordinata. */
+	int pktlen; /*!< Lenght of the packet held */
+	int prev;   /*!< Index of the previous element */
+	int next;   /*!< index of the next element */
 } poitem;
 
 /*!
- * \brief La struttura che rappresenta il Buffer di Playout di Rete.
+ * \brief Network Playout Buffer.
  *
  * \see poinit
  * \see poadd
  * \see podel
  * */
 typedef struct {
-	bp_slot **bufferpool;	/*!< Pointer to memory space allocated for Bufferpool
-				   and defined elsewhere. \see bpinit */
-	poitem pobuff[BP_SLOT_NUM];	/*!< Array that will keep the sorted list of
-					   slots containing arrived packets. */
-	pthread_mutex_t po_mutex;	/*!< Mutex variable used for access control to
-					   shared structures of playout buffer. */
-	/* pthread_cond_t cond_empty; *//*!< Conditional variable used for signaling
-	   in case of playout buffer empty */
-	int pocount;		/*!< List members count. */
-	int pohead;		/*!< List head. */
-	int potail;		/*!< List tail. */
-	uint32 cycles;		/*!< Indice che tiene memoria dei cicli del campo \c
-	   timestamp di un pacchetto RTP. */// shawill: probably to be moved.
+	bp_slot **bufferpool;	    /*!< Pointer to memory space allocated for 
+                                         Bufferpool and defined elsewhere. 
+                                         \see bpinit */
+	poitem pobuff[BP_SLOT_NUM]; /*!< Array that will keep the sorted
+                                         list of slots containing arrived
+                                         packets. */
+	pthread_mutex_t po_mutex;   /*!< Mutex variable used for access control
+                                         to shared structures of playout 
+                                         buffer. */
+	/* pthread_cond_t cond_empty; *//*!< Conditional variable used for 
+                                            signaling in case of playout buffer
+                                            empty */
+	int pocount;		    /*!< List members count. */
+	int pohead;		    /*!< List head. */
+	int potail;		    /*!< List tail. */
+	uint32 cycles;		    /*!< Counts how many times the RTP 
+                                         \c timestamp rolls over */
+                                         // shawill: probably to be moved.
 } playout_buff;
 
 /*!
-* \brief La struttura per la gestione del Buffer Pool.
+* \brief Buffer Pool Management.
 *
 * \see bpinit
 * \see bpkill
@@ -158,16 +134,15 @@ typedef struct {
 * \see bprmv
 * */
 typedef struct {
-	bp_slot *bufferpool;	/*!< Puntatore alla zona di memoria allocata per
-				   il Bufferpool. \see bpinit */
-	pthread_mutex_t fl_mutex;	/*!< Variabile di mutua esclusione per il
-					   controllo di accesso alle strutture
-					   sensibili del Bufferpool. */
-	pthread_cond_t cond_full;	/*!< Variabile condizionale per le segnalazioni
-					   in caso di bufferpool pieno */
-	int freelist[BP_SLOT_NUM];	/*!< Lista degli slot liberi. */
-	int flhead;		/*!< Indice della testa della Free List. */
-	int flcount;		/*!< Contatore degli elementi presenti nella Free List. */
+	bp_slot *bufferpool;	        /*!< Pointer to the Bufferpool memory.
+                                            \see bpinit */
+	pthread_mutex_t fl_mutex;	/*!< Mutex to access the Bufferpool
+                                             internals. */
+	pthread_cond_t cond_full;	/*!< Signals if the Bufferpool is 
+                                             full */
+	int freelist[BP_SLOT_NUM];	/*!< Free slots. */
+	int flhead;		        /*!< Free List head. */
+	int flcount;		        /*!< Free List count. */
 } buffer_pool;
 
 #define PKT_DUPLICATED	1
