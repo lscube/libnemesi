@@ -47,12 +47,6 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 	// memset(&(*stm_src)->ssrc_stats, 0, sizeof(struct rtp_ssrc_stats));
 	// memset(&(*stm_src)->ssrc_sdes, 0, sizeof(struct rtp_ssrc_descr));
 
-	if (rtp_sess->transport.type != UDP) {
-		/*EN: It is not needed to check addresses because data is received
-		as interleaved or multistream from RTSP socket */	
-		return 0;
-	}
-
 	if (proto_type == RTP) {
 		sockaddrdup(&(*stm_src)->rtp_from, recfrom);
 		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTP\n");
@@ -63,6 +57,12 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
 		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTCP\n");
 		// we do not need to reset memory area 'cause we use calloc
 		// memset(&((*stm_src)->rtp_from), 0, sizeof(nms_sockaddr));
+	}
+
+	if (rtp_sess->transport.type != UDP) {
+		/*EN: It is not needed to check addresses because data is received
+		as interleaved or multistream from RTSP socket */	
+		return 0;
 	}
 
 	// we do not need to reset memory area 'cause we use calloc
