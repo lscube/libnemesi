@@ -8,4 +8,7 @@
 
 -- logo
 
+-- more server compatibility
+	Cseq / SessionID handle in handle_rtsp_packet()
+
 -- world domination

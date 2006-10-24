@@ -61,15 +61,15 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 	}
 
 	if (sscanf((rtsp_th->in_buffer).data, "%s ", ver) < 1) {
-		printf("\nInvalid RTSP message received\n");
+		nms_printf(NMSML_ERR,"Invalid RTSP message received\n");
 		return 1;
 	}
 	if (strncmp(ver, "RTSP", 4) && strncmp(ver, "rtsp", 4)) {
-		printf("\nInvalid RTSP message received\n");
+		nms_printf(NMSML_ERR,"Invalid RTSP message received\n");
 		return 1;
 	}
-	if ((opcode = check_response(rtsp_th)) == 0) {
-		printf("\nunexpected RTSP packet arrived\n");
+	if ((opcode = check_response(rtsp_th)) <= 0) {
+		nms_printf(NMSML_ERR,"unexpected RTSP packet arrived\n");
 		return 1;
 	}
 	/*

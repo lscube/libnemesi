@@ -83,11 +83,11 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 	// in all other sessions the pointer is the same and the allocated
 	// struct is one
 	sdp_session_destroy(sess->info);	//!< free sdp description info
+	free(sess->body);
+	free(sess->content_base);
 	while (sess) {
 		// MUST be done only once
 		// sdp_session_destroy(sess->info); //!< free sdp description info
-		free(sess->body);
-		free(sess->content_base);
 		for (med = sess->media_queue; med;
 		     pmed = med, med = med->next, free(pmed));
 		/* like these

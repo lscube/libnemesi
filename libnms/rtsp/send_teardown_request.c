@@ -61,8 +61,8 @@ int send_teardown_request(rtsp_thread * rtsp_th)
 		return 1;
 	}
 
-	sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_CLOSE_RESPONSE,
-		rtsp_sess->CSeq);
+	sprintf(rtsp_th->waiting_for, "%d:%llu.%d", RTSP_CLOSE_RESPONSE,
+		rtsp_sess->Session_ID, rtsp_sess->CSeq);
 
 	return 0;
 }
