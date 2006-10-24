@@ -32,7 +32,6 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 {
 	char ver[32];
 	int opcode;
-	
 
 	if ((rtsp_th->transport.type == TCP && rtsp_th->interleaved) && (rtsp_th->in_buffer).data[0] == '$') {
 		nms_rtsp_interleaved *p;
@@ -57,7 +56,7 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 		}
 
 		remove_pkt(rtsp_th);
-		return 0;
+		return 0; /* received rtp interleaved data handled correctly */
 	}
 
 	if (sscanf((rtsp_th->in_buffer).data, "%s ", ver) < 1) {
@@ -72,11 +71,6 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 		nms_printf(NMSML_ERR,"unexpected RTSP packet arrived\n");
 		return 1;
 	}
-	/*
-	   if (state_machine[rtsp_th->status] (rtsp_th, opcode))
-	   return 1;
-	 */
-	return state_machine[rtsp_th->status] (rtsp_th, opcode);
 
-	// return 0;
+	return state_machine[rtsp_th->status] (rtsp_th, opcode);
 }

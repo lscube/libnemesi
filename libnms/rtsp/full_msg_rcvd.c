@@ -31,15 +31,17 @@
 int full_msg_rcvd(rtsp_thread * rtsp_th)
 {
 	struct rtsp_buffer *in_buffer = &(rtsp_th->in_buffer);
-	char *back_n;		/* puntatore ai caratteri newline */
-	char *head_end;		/* puntatore alla fine dell'header */
-	unsigned int body_len;
+	char *back_n;		/* pointer to newline */
+	char *head_end;		/* pointer to header end */
+	size_t body_len;	
 
 	// is there an interleaved RTP/RTCP packet?
-	if ((rtsp_th->transport.type == TCP && rtsp_th->interleaved) && in_buffer->size > 4 && in_buffer->data[0] == '$') {
+	if ((rtsp_th->transport.type == TCP && rtsp_th->interleaved) && 
+	    in_buffer->size > 4 && in_buffer->data[0] == '$') {
 
-		if ((body_len = ntohs(*((uint16 *) &(in_buffer->data[2])))) + 4 <= in_buffer->size) {
-			in_buffer->first_pkt_size = 4 + body_len;
+		if ((body_len = ntohs(*((uint16 *) &(in_buffer->data[2]))) + 4)
+		    <= in_buffer->size) {
+			in_buffer->first_pkt_size = body_len;
 			return 1;
 		} else {
 			return 0;
@@ -52,21 +54,21 @@ int full_msg_rcvd(rtsp_thread * rtsp_th)
 	do {
 		back_n = head_end;
 		if ((head_end = strchr(head_end + 1, '\n')) == NULL)
-			return 0;	/* non e' arrivato un header intero */
+			return 0;	/* header is not complete */
 		if (((head_end - back_n) == 2) && (*(back_n + 1) == '\r'))
 			break;
-	} while ((head_end - back_n) > 1);	/* trovata la fine dell'header */
-	while ((*(++head_end) == '\n') || (*head_end == '\r'));	/* cerca il primo 
-								   carattere valido dopo
-								   la line vuota. */
+	} while ((head_end - back_n) > 1);	/* here is the end of header */
+	while ((*(++head_end) == '\n') || (*head_end == '\r'));	/* seek for first 
+								   valid char after
+								   the empty line */
 	if ((body_len = body_exists(in_buffer->data)) == 0) {
 		in_buffer->first_pkt_size = head_end - in_buffer->data;
-		return 1;	/* ricevuto un intero messaggio (contenente solo l'header) */
+		return 1;	/* header received (no payload) */
 	}
 
 	if (strlen(head_end) < body_len)
-		return 0;	/* non e' arrivato ancora per intero il body */
+		return 0;	/* body incomplete */
 
 	in_buffer->first_pkt_size = head_end - in_buffer->data + body_len;
-	return 1;		/* e' arrivato il messaggio per intero */
+	return 1;		/* full message received */
 }
