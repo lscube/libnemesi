@@ -41,7 +41,7 @@
 int server_connect(char *host, char *port, int *sock,
 		   enum sock_types sock_type)
 {
-	int n;
+	int n, connect_new;
 	struct addrinfo *res, *ressave;
 	struct addrinfo hints;
 #ifdef HAVE_SCTP_NEMESI
@@ -85,13 +85,15 @@ int server_connect(char *host, char *port, int *sock,
 
 	ressave = res;
 
+	connect_new = (*sock < 0);
+
 	do {
 #ifdef HAVE_SCTP_NEMESI
 		if (sock_type == SCTP)
 			res->ai_protocol = IPPROTO_SCTP;
 #endif // TODO: remove this code when SCTP will be supported from getaddrinfo()
 
-		if ((*sock < 0) && (*sock =
+		if (connect_new && (*sock =
 		     socket(res->ai_family, res->ai_socktype,
 			    res->ai_protocol)) < 0)
 			continue;
@@ -117,10 +119,13 @@ int server_connect(char *host, char *port, int *sock,
 
 		if (connect(*sock, res->ai_addr, res->ai_addrlen) == 0)
 			break;
-
-		if (close(*sock) < 0)
-			return nms_printf(NMSML_ERR, "(%s) %s", PROG_NAME,
-					  strerror(errno));
+		if (connect_new) {
+			if (close(*sock) < 0)
+				return nms_printf(NMSML_ERR, "(%s) %s", PROG_NAME,
+						  strerror(errno));
+			else
+				*sock = -1;
+		}
 
 	} while ((res = res->ai_next) != NULL);
 
