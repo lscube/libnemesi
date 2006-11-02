@@ -51,5 +51,5 @@ int nmst_write(nms_transport * transport, void *buffer, size_t nbytes, void *pro
 		break;
 	}
 
-	return 1;
+	return -1;
 }
