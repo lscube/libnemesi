@@ -1,3 +1,15 @@
+0.6.0
+	- RTP/AVP/SCTP support added.
+	- RTP/AVP/TCP support added.
+	- rtp_parser API completed
+	- rtp_parser added for MPA/MPV
+	- dynamic payload definition in sdp session description handled
+		with the new (and better) functions.
+	- Some compilation problems fixed (still some problems with MacOSX)
+        - API improvements
+	- Bug fixes.
+        - Usage examples updated
+
 0.6.0rc1
 	- libnms is born
 	- moved some directories

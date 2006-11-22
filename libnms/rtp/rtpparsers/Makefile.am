@@ -5,7 +5,8 @@ libnmsincludedir = $(libnmsdir)/include
 
 noinst_HEADERS	=	\
 			rtpparser.h \
-			rtpparsers.h
+			rtpparsers.h \
+			rtp_xiph.h
 
 noinst_LTLIBRARIES = librtpparsers.la
 

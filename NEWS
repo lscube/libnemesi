@@ -1,3 +1,9 @@
+0.6.0
+	- Start using libnemesi
+	- RTP/AVP/TCP interleaved support added.
+	- RTP/AVP/SCTP support added.
+	- Bug fixes.
+
 0.5.3
 	- Added CLI option to force RTP/RTCP UDP ports.
 	- Improved IPv6 compatibility.
