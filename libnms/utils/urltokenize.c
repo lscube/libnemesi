@@ -28,6 +28,9 @@
 
 #include <nemesi/utils.h>
 
+// XXX it should parse rtsp://hostname:port/path/to/resource
+// XXX should not use strtok!
+
 int urltokenize(char *urlname, char **host, char **port, char **path)
 {
 	char *token, *tokenda;
