@@ -35,8 +35,8 @@ int seturlname(rtsp_thread * rtsp_th, char *urlname)
 	if (urltokenize(urlname, &server, &port, &path) > 0)
 		return 1;
 	if (port == NULL) {
-		if ((port = (char *) malloc(4)))
-			sprintf(port, "%d", RTSP_DEFAULT_PORT);
+		if ((port = (char *) malloc(6)))
+			snprintf(port, 6, "%d", RTSP_DEFAULT_PORT);
 		else
 			return 1;
 	}
