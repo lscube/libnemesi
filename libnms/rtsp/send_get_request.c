@@ -33,21 +33,24 @@
 
 int send_get_request(rtsp_thread * rtsp_th)
 {
-	char b[256];
+	char *buf = malloc(strlen(rtsp_th->urlname)+256); //XXX use vla
+
+        if (buf == NULL) return 1;
 
 	/* save the url string for future use in setup request. */
-	sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
+	sprintf(buf, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
 		rtsp_th->urlname, RTSP_VER, 1);
-	strcat(b, "Accept: application/sdp;" RTSP_EL);	/* application/x-rtsp-mh"RTSP_EL); */
-	sprintf(b + strlen(b),
+	strcat(buf, "Accept: application/sdp;" RTSP_EL);	/* application/x-rtsp-mh"RTSP_EL); */
+	sprintf(buf + strlen(buf),
 		"User-Agent: %s - %s -- Release %s (%s)" RTSP_EL, PROG_NAME,
 		PROG_DESCR, VERSION, VERSION_NAME);
-	strcat(b, RTSP_EL);
-	if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
+	strcat(buf, RTSP_EL);
+	if (!nmst_write(&rtsp_th->transport, buf, strlen(buf), NULL)) {
 		nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
+                free(buf);
 		return 1;
 	}
 	sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
-
+        free(buf);
 	return 0;
 }
