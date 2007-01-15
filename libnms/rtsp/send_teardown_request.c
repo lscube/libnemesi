@@ -32,11 +32,11 @@
 int send_teardown_request(rtsp_thread * rtsp_th)
 {
 
-	char b[256];
+	char b[256 + strlen(rtsp_th->urlname)];
 	rtsp_session *rtsp_sess;
 	rtsp_medium *rtsp_med;
 
-	memset(b, 0, 256);
+	memset(b, 0, 256 + strlen(rtsp_th->urlname));
 
 	// if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
 	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))

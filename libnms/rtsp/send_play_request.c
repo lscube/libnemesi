@@ -33,7 +33,7 @@
 
 int send_play_request(rtsp_thread * rtsp_th, char *range)
 {
-	char b[256];
+	char b[256+strlen(rtsp_th->urlname)];
 	rtsp_session *rtsp_sess;
 	rtsp_medium *rtsp_med;
 	cc_perm_mask cc_mask, cc_conflict;

@@ -32,7 +32,7 @@
 
 int send_pause_request(rtsp_thread * rtsp_th, char *range)
 {
-	char b[256];
+	char b[256+strlen(rtsp_th->urlname)];
 	rtsp_session *rtsp_sess;
 
 	// get_curr_sess(NULL, &rtsp_sess, NULL);
