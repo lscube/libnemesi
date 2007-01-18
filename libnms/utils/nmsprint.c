@@ -86,7 +86,7 @@ int nms_printf_default(int level, const char *fmt, ...)
 	va_list args;
 	FILE *out_stm = (level <= NMSML_WARN) ? stderr : stdout;
 #ifdef NMS_COLOURED
-	char *colours[NMSML_MAX + 1] = { NMSML_COLOURS };
+	static const char *colours[NMSML_MAX + 1] = { NMSML_COLOURS };
 #endif				// NMS_COLOURED
 
 	/*

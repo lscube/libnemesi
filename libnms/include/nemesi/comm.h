@@ -64,7 +64,7 @@ extern int uipipe[2];
 #define NMSCLR_BLUE_BOLD	"\033[1;34m"	// "\033[1;34;40m"
 #define NMSCLR_DEFAULT		"\033[0m"
 
-#define nmscolour(stm, clr)	fprintf(stm, clr)
+#define nmscolour(stm, clr)	fprintf(stm, "%s", clr)
 
 #else				// NMS_COLOURED
 
