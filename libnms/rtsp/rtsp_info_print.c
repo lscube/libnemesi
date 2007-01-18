@@ -56,7 +56,7 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
 		nms_printf(NMSML_NORM, "---- RTSP Session Infos: %s ----\n",
 			   sess->pathname);
 		for (str = (char **) (sess->info);
-		     str < (char **) &(sess->info->attr_list); str++)
+		     (void*)str < (void*) &(sess->info->attr_list); str++)
 			if (*str)
 				nms_printf(NMSML_ALWAYS, "* %s: %s\n",
 					   sdes[str - (char **) (sess->info)],
@@ -68,7 +68,7 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
 				   "\n\t---- RTSP Medium Infos: %s ----\n",
 				   med->filename);
 			for (str = (char **) (med->medium_info);
-			     str < (char **) &(med->medium_info->attr_list);
+			     (void*)str < (void*) &(med->medium_info->attr_list);
 			     str++)
 				if (*str)
 					nms_printf(NMSML_ALWAYS,
