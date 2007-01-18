@@ -108,7 +108,7 @@ typedef struct {
 #define RTP_MPA_FRAG_OFFSET(pkt)	ntohs(RTP_MPA_PKT(pkt)->frag_offset)
 
 // private functions
-static int mpa_sync(uint8 **, uint32 * /*, mpa_frm * */ );
+static int mpa_sync(uint8 **, size_t * /*, mpa_frm * */ );
 static int mpa_decode_header(uint8 *, mpa_frm *);
 #ifdef ENABLE_DEBUG
 // debug function to diplay MPA header information
@@ -214,7 +214,7 @@ static int rtp_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 }
 
 // private functions
-static int mpa_sync(uint8 ** data, uint32 * data_len /*, mpa_frm *mpa */ )
+static int mpa_sync(uint8 ** data, size_t * data_len /*, mpa_frm *mpa */ )
 {
 #if 0				// ID3 tag check not useful
 	int ret;
