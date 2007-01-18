@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 m4_define([nemesi_major_version], [0])
 m4_define([nemesi_minor_version], [6])
-m4_define([nemesi_micro_version], [0])
+m4_define([nemesi_micro_version], [1])
 m4_define([nemesi_interface_age], [0])
 m4_define([nemesi_binary_age],
           [m4_eval(100 * nemesi_minor_version + nemesi_micro_version)])

@@ -33,15 +33,13 @@
 #include <config.h>
 #endif
 
-#ifndef VERSION
-#define VERSION "0.4.0"
-#endif
 #ifdef NEMESI_SVN
 // #define SVNREV "$Rev$"
 #include <svnrev.h>
+#define VERSION_NAME "Yet another bug fixed (svn version)"
+#else
+#define VERSION_NAME "In itinere (change it on release)"
 #endif
-#define VERSION_NAME "Kettle Shaft"
 #define PROG_NAME "NeMeSI"
 #define PROG_DESCR "NEtwork MEdia Streamer I"
-
 #endif
