@@ -52,7 +52,7 @@ int send_teardown_request(rtsp_thread * rtsp_th)
 
 	sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
 	if (rtsp_sess->Session_ID != 0)	/*must add session ID? */
-		sprintf(b + strlen(b), "Session: %llu" RTSP_EL,
+		sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
 			rtsp_sess->Session_ID);
 	strcat(b, RTSP_EL);
 
@@ -61,7 +61,7 @@ int send_teardown_request(rtsp_thread * rtsp_th)
 		return 1;
 	}
 
-	sprintf(rtsp_th->waiting_for, "%d:%llu.%d", RTSP_CLOSE_RESPONSE,
+	sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_CLOSE_RESPONSE,
 		rtsp_sess->Session_ID, rtsp_sess->CSeq);
 
 	return 0;

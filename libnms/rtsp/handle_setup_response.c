@@ -62,7 +62,7 @@ int handle_setup_response(rtsp_thread * rtsp_th)
 		}
 		if (!strncmpcase(prev_tkn, "Session", 7)) {
 			prev_tkn += 7;
-			sscanf(prev_tkn, " : %llu ; ",
+			sscanf(prev_tkn, " : %"SCNu64" ; ",
 			       &(rtsp_sess->Session_ID));
 		}
 	}

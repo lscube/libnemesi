@@ -67,7 +67,7 @@ int check_response(rtsp_thread * rtsp_th)
 			opcode = RTSP_SETUP_RESPONSE;
 		break;
 	default:
-		sscanf(rtsp_th->waiting_for, "%*d:%llu.%d", &wait_s_id,
+		sscanf(rtsp_th->waiting_for, "%*d:%"SCNu64".%d", &wait_s_id,
 		       &wait_cseq);
 		if ((str_pos =
 		     strstrcase(content,
@@ -75,7 +75,7 @@ int check_response(rtsp_thread * rtsp_th)
 			str_pos += 8;
 			while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
 				str_pos++;
-			sscanf(str_pos, "%llu", &Session_ID);
+			sscanf(str_pos, "%"SCNu64, &Session_ID);
 			if (Session_ID != wait_s_id) {
 				nms_printf(NMSML_ERR, "Unexpected SessionID\n");
 				break;

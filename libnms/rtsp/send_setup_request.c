@@ -203,7 +203,7 @@ int send_setup_request(rtsp_thread * rtsp_th)
 	sprintf(b + strlen(b), "Transport: %s" RTSP_EL, options);
 
 	if (rtsp_sess->Session_ID)	//Caso di controllo aggregato: � gi� stato definito un numero per la sessione corrente.
-		sprintf(b + strlen(b), "Session: %llu" RTSP_EL,
+		sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
 		rtsp_sess->Session_ID);
 
 	strcat(b, RTSP_EL);
