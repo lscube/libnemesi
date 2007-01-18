@@ -315,7 +315,7 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
 			rtp_buff * config, rtp_ssrc * ssrc)
 {
 
-	int len = RTP_XIPH_LEN(pkt, vorb->offset);
+	uint32 len = RTP_XIPH_LEN(pkt, vorb->offset);
 
 	if (vorb->id != RTP_XIPH_ID(pkt) ||	//not the current id
 	    //  !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)) || //XXX
@@ -447,7 +447,7 @@ int rtp_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 static int rtp_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 {
 	rtp_pkt *pkt;
-	int len;
+	size_t len;
 
 	rtp_vorbis *vorb = ssrc->privs[fr->pt];
 
@@ -472,7 +472,7 @@ static int rtp_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 		if (RTP_XIPH_F(pkt))
 			return frag_parse(vorb, pkt, fr, config, ssrc);
 		//single packet, easy case
-		if (vorb->pkts = 1)
+		if (vorb->pkts == 1)
 			return single_parse(vorb, pkt, fr, config, ssrc);
 		vorb->offset = 4;
 	}
