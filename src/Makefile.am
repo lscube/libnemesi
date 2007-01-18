@@ -1,8 +1,8 @@
 .NOTPARALLEL: nemesi
 
-libnmsdir = $(top_srcdir)/libnms
+libnmsdir = $(top_builddir)/libnms
 
-libnmsincludedir = $(libnmsdir)/include
+libnmsincludedir = $(top_srcdir)/libnms/include
 nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libplugins.la
@@ -30,34 +30,34 @@ nemesi_SOURCES =	main.c \
 			nms_play.c
 
 
-nemesi_LDADD =	$(top_srcdir)/etui/libetui.la
+nemesi_LDADD =	$(top_builddir)/etui/libetui.la
 
 if NEMESI_HAVE_GTK
-nemesi_LDADD +=	$(top_srcdir)/egui/libegui.la
+nemesi_LDADD +=	$(top_builddir)/egui/libegui.la
 endif
 
 nemesi_LDADD += \
-		$(top_srcdir)/decoder/libdecoder.la \
+		$(top_builddir)/decoder/libdecoder.la \
 		$(libnmsdir)/libnemesi.la \
-		$(top_srcdir)/src/libplugins.la \
-		$(top_srcdir)/output/audio/libaudio.la \
-		$(top_srcdir)/output/video/libvideo.la \
-		$(top_srcdir)/output/diskwriter/libdiskwriter.la
+		$(top_builddir)/src/libplugins.la \
+		$(top_builddir)/output/audio/libaudio.la \
+		$(top_builddir)/output/video/libvideo.la \
+		$(top_builddir)/output/diskwriter/libdiskwriter.la
 				
-# nemesi_LDADD +=	$(top_srcdir)/rtsp/librtsp.la \
-#		$(top_srcdir)/sdp/libsdp.la \
-#		$(top_srcdir)/libCCstreaming/libCCstreaming.la \
-#		$(top_srcdir)/rtcp/librtcp.la \
-#		$(top_srcdir)/rtp/librtp.la \
-#		$(top_srcdir)/decoder/libdecoder.la \
-#		$(top_srcdir)/bufferpool/libbuffpool.la \
-#		$(top_srcdir)/wsocket/libwsocket.la \
-#		$(top_srcdir)/src/libplugins.la \
-#		$(top_srcdir)/output/audio/libaudio.la \
-#		$(top_srcdir)/output/video/libvideo.la \
-#		$(top_srcdir)/output/diskwriter/libdiskwriter.la \
-#		$(top_srcdir)/src/libutils.la \
-#		$(top_srcdir)/md5/libmd5.la 
+# nemesi_LDADD +=	$(top_builddir)/rtsp/librtsp.la \
+#		$(top_builddir)/sdp/libsdp.la \
+#		$(top_builddir)/libCCstreaming/libCCstreaming.la \
+#		$(top_builddir)/rtcp/librtcp.la \
+#		$(top_builddir)/rtp/librtp.la \
+#		$(top_builddir)/decoder/libdecoder.la \
+#		$(top_builddir)/bufferpool/libbuffpool.la \
+#		$(top_builddir)/wsocket/libwsocket.la \
+#		$(top_builddir)/src/libplugins.la \
+#		$(top_builddir)/output/audio/libaudio.la \
+#		$(top_builddir)/output/video/libvideo.la \
+#		$(top_builddir)/output/diskwriter/libdiskwriter.la \
+#		$(top_builddir)/src/libutils.la \
+#		$(top_builddir)/md5/libmd5.la 
 
 if NEMESI_EFENCE
 nemesi_LDFLAGS = -lefence

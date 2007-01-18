@@ -3,6 +3,7 @@ LOCAL_PLUGINS_DIR = plugins
 EXTRA_DIST = $(LOCAL_PLUGINS_DIR)
 
 all:
+	mkdir -p $(LOCAL_PLUGINS_DIR)
 	@LIST_SRC_PLUGINS=`find $(top_builddir)/decoder -name \*.so`; \
 	echo -n "Copying plugins..."; \
 	for PLUGIN in $$LIST_SRC_PLUGINS; do \

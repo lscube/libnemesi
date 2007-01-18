@@ -1,5 +1,5 @@
 
-man_MANS = nemesi.1
+man_MANS = $(srcdir)/nemesi.1
 
 EXTRA_DIST = 	$(man_MANS)
 

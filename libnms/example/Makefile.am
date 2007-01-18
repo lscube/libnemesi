@@ -1,5 +1,5 @@
 
-libnmsdir = $(top_srcdir)
+libnmsdir = $(top_builddir)
 
 libnmsincludedir = $(libnmsdir)/include
 nemesiincludedir = $(top_srcdir)/include
