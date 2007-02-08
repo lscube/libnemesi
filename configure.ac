@@ -90,7 +90,6 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
 AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h sys/ioctl.h sys/soundcard.h soundcard.h)
-AC_CHECK_HEADERS(ffmpeg/common.h ffmpeg/avcodec.h)
 
 dnl Check for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -162,18 +161,12 @@ AC_SUBST(PACKAGE_LIBS)
 
 dnl Check for FFMpeg libavcodec library
 if test "x$enable_avc" = "xyes"; then
-	AC_CHECK_LIB(avcodec,avcodec_open, \
-	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/true) \
-	NEMESI_HAVE_AVC=yes, \
-	AC_MSG_WARN([libavcodec not present!]) \
-	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false) \
-	NEMESI_HAVE_AVC=no)
-else
-	AC_MSG_WARN([libavcodec disabled!])
-	AM_CONDITIONAL(NEMESI_HAVE_AVC, /bin/false)
-	NEMESI_HAVE_AVC=no
+        PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 50.5.0],
+        [have_avc=yes],[have_avc=no])
+         CFLAGS="$CFLAGS $LIBAVCODEC_CFLAGS"
+         LIBS="$LIBS $LIBAVCODEC_LIBS"
 fi
-
+AM_CONDITIONAL(NEMESI_HAVE_AVC, test "x$have_avc" = "xyes")
 
 AM_CONDITIONAL(NEMESI_EFENCE, /bin/false)
 if test "$enable_efence" = "yes"; then
@@ -320,7 +313,7 @@ AC_CONFIG_FILES([decoder/Makefile])
 AC_CONFIG_FILES([decoder/L16_8k_m/Makefile])
 AC_CONFIG_FILES([decoder/gsm_amr_float/Makefile])
 
-dnl if test x$NEMESI_HAVE_AVC = xyes; then
+dnl if test x$have_avc = xyes; then
 AC_CONFIG_FILES([decoder/libffmp3/Makefile])
 AC_CONFIG_FILES([decoder/libffmpeg/Makefile])
 AC_CONFIG_FILES([decoder/libffmpeg4/Makefile])
@@ -350,7 +343,7 @@ NeMeSI Pixmaps dir ............. : $nemesi_pixmapdir
 Byte order ..................... : this is a $BIGENDIAN machine
 
 LibSDL support enabled ......... : $NEMESI_HAVE_SDL
-LibAVCodec support enabled ..... : $NEMESI_HAVE_AVC
+LibAVCodec support enabled ..... : $have_avc
 
 GUI support enabled ............ : $NEMESI_HAVE_GTK
 NeMeSI GUI Binary path ......... : $exec_prefix/bin/$nemesi_gui
