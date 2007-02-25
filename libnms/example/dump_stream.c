@@ -137,6 +137,7 @@ int main(int argc, char **argv)
             break;
         case 3:
             fprintf(stderr, "o");
+            break;
         default:
             fprintf(stderr, "\r");
             i = 0;
