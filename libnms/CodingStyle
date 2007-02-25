@@ -1,0 +1,11 @@
+Since it isn't a kernel and code manages to get quite complex we aren't using
+Linus coding style. Do not point me his arguments about tabs and such.
+
+Rules:
+
+- no hard tabs, I'll purge any \t in the source soon
+- 4char indent
+- 79 col per line
+
+In short the code should match the FFmpeg coding style.
+
