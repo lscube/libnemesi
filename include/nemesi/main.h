@@ -45,31 +45,22 @@ typedef struct {
 	char *video;
 	char *diskwriter;
 	int32 sysbuff_ms;
-} nms_out_hints;
+} NMSOutputHints;
 
 typedef struct {
 	uint8 gui;
-	uint8 interactive;
 	char *url;
-} nms_ui_hints;
+} NMSUiHints;
 
 typedef struct {
-	nms_out_hints *output;
-	nms_ui_hints *ui;
-	nms_rtsp_hints *rtsp;
-} nms_cl_opts;
+	NMSOutputHints *output;
+	NMSUiHints *ui;
+	NMSRtspHints *rtsp;
+} NMSCLOptions;
 
-int output_init(nms_out_hints *);
+int output_init(NMSOutputHints *);
 int output_uninit(void);
 int load_plugins(void);
 void unload_plugins(void);
-
-// commands to be used from ui
-// for some of these we need only the rtsp function so it will be just a macro.
-int nms_open(rtsp_ctrl *, char *, void (*)(void *), void *);
-int nms_play(rtsp_ctrl *, double start, double stop);
-#define nms_pause(x) rtsp_pause(x)
-#define nms_stop(x) rtsp_stop(x)
-int nms_close(rtsp_ctrl *, void (*)(void *), void *);
 
 #endif

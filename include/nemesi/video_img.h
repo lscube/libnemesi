@@ -33,7 +33,7 @@
 typedef struct {
 	uint8 *data[4];
 	int linesize[4];
-} nms_picture;
+} NMSPicture;
 
 /* ViCoTrA stuff
 typedef struct {
@@ -50,4 +50,5 @@ typedef struct {
 } NMSRect;
 */
 
-#endif				// __VIDEO_IMG_H
+#endif // __VIDEO_IMG_H
+

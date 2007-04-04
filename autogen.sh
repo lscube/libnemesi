@@ -15,7 +15,7 @@ function dots ()
 }
 
 echo
-echo "Bootstrapping NeMeSI package AutoTools configuration..."
+echo "Bootstrapping libnms package AutoTools configuration..."
 
 if ! test -d config; then
 	mkdir config;
@@ -33,7 +33,7 @@ else
 fi
 if which aclocal >/dev/null 2>&1 ; then
 	echo -n "Running aclocal..."
-	aclocal -I config &
+	aclocal -I m4 &
 	dots $! 
 	echo " done."
 fi
@@ -64,9 +64,6 @@ fi
 #	cp -f config/mkinstalldirs .
 #	cp -f libltdl/acinclude.m4 .
 #echo " done."
-cd libnms
-./autogen.sh
-cd -
 
 echo "All done. Bye."
 echo

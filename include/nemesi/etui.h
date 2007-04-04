@@ -42,45 +42,41 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 
-#define header()	nms_header();
+#define header()	nmsheader();
 
 #if HAVE_GUI
-#define ui_usage()	nms_printf(NMSML_NORM, "   --gui              Use Graphical User Interface\n"); \
-			nms_printf(NMSML_NORM, "   --tui              Use Textual User Interface (e-tui)\n"); \
-			nms_printf(NMSML_NORM, "   -i                 User interface will be interactive\n");
-#else				// HAVE_GUI
+#define ui_usage()	nmsprintf(NMSML_NORM, "   --gui              Use Graphical User Interface\n"); \
+			nmsprintf(NMSML_NORM, "   --tui              Use Textual User Interface (e-tui)\n");
+#else	// HAVE_GUI
 #define ui_usage()
-#endif				// HAVE_GUI
+#endif	// HAVE_GUI
 #define usage()	{ \
-			nms_printf(NMSML_NORM, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
-			nms_printf(NMSML_NORM, "\n"); \
-			nms_printf(NMSML_NORM, "   -h|--help          Display this help and exit\n"); \
-			nms_printf(NMSML_NORM, "   -V|--version       Display version information and exit\n"); \
-			nms_printf(NMSML_NORM, "   -v|--verbose [n]   Set verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
+			nmsprintf(NMSML_NORM, "Usage: %s [OPTION]... [URLNAME]\n", PROG_NAME); \
+			nmsprintf(NMSML_NORM, "\n"); \
+			nmsprintf(NMSML_NORM, "   -h|--help          Display this help and exit\n"); \
+			nmsprintf(NMSML_NORM, "   -V|--version       Display version information and exit\n"); \
+			nmsprintf(NMSML_NORM, "   -v|--verbose [n]   Set verbose level to 'n'. Without 'n' the level will be incremented.\n"); \
 			ui_usage() \
-			nms_printf(NMSML_NORM, "   --nostatus         Do not show buffers status and elapsed time.\n"); \
-			nms_printf(NMSML_NORM, "\n Output options:\n"); \
-			nms_printf(NMSML_NORM, "   --sysbuff <msec>   System cache of decoded milliseconds\n"); \
-			nms_printf(NMSML_NORM, "   --ao <drv[:dev]>   Select audio output driver (--ao help for a list)\n"); \
-			nms_printf(NMSML_NORM, "   --vo <drv[:opt]>   Select video output driver (--vo help for a list)\n"); \
-			nms_printf(NMSML_NORM, "   --noaudio          Do not inizialize audio output\n"); \
-			nms_printf(NMSML_NORM, "   --novideo          Do not inizialize video output\n"); \
-			nms_printf(NMSML_NORM, "   --nodisk           Do not inizialize diskwriter output\n"); \
-			nms_printf(NMSML_NORM, "\n RTP options:\n"); \
-			nms_printf(NMSML_NORM, "   -p|--first-port [n]   Force RTP/RTCP ports choise.\n"); \
-			nms_printf(NMSML_NORM, "   --rtsp-tcp            Force RTP/AVP/TCP transport.\n"); \
-			nms_printf(NMSML_NORM, "   --rtsp-sctp           Force RTP/AVP/SCTP transport.\n"); \
-			nms_printf(NMSML_NORM, "   --rtsp-sctp-udp       Force SCTP for RTSP protocol and RTP/AVP/UDP.\n"); \
-			nms_printf(NMSML_NORM, "\n"); \
+			nmsprintf(NMSML_NORM, "   --nostatus         Do not show buffers status and elapsed time.\n"); \
+			nmsprintf(NMSML_NORM, "\n Output options:\n"); \
+			nmsprintf(NMSML_NORM, "   --sysbuff <msec>   System cache of decoded milliseconds\n"); \
+			nmsprintf(NMSML_NORM, "   --ao <drv[:dev]>   Select audio output driver (--ao help for a list)\n"); \
+			nmsprintf(NMSML_NORM, "   --vo <drv[:opt]>   Select video output driver (--vo help for a list)\n"); \
+			nmsprintf(NMSML_NORM, "   --noaudio          Do not inizialize audio output\n"); \
+			nmsprintf(NMSML_NORM, "   --novideo          Do not inizialize video output\n"); \
+			nmsprintf(NMSML_NORM, "   --nodisk           Do not inizialize diskwriter output\n"); \
+			nmsprintf(NMSML_NORM, "\n RTP options:\n"); \
+			nmsprintf(NMSML_NORM, "   -p|--first-port [n]   Force RTP/RTCP ports choise.\n"); \
+			nmsprintf(NMSML_NORM, "\n"); \
 		}
 
 #define version() { \
-			nms_printf(NMSML_ALWAYS, "Copyleft 2001 - giampaolo.mancini@polito.it\n"); \
-			nms_printf(NMSML_ALWAYS, "              - francesco.varano@polito.it\n"); \
-			nms_printf(NMSML_ALWAYS, "              - marco.penno@polito.it\n\n"); \
+			nmsprintf(NMSML_ALWAYS, "Copyleft 2001 - giampaolo.mancini@polito.it\n"); \
+			nmsprintf(NMSML_ALWAYS, "              - francesco.varano@polito.it\n"); \
+			nmsprintf(NMSML_ALWAYS, "              - marco.penno@polito.it\n\n"); \
 		  }
 
-#define CL_MAIN_OPTIONS	"hiv::Vp:"	/* help, interactive, verbosity, version, first-port */
+#define CL_MAIN_OPTIONS	"hv::Vp:"		/* help, verbosity, version, first-port */
 #define CL_MAIN_LONG_OPTIONS	{"version", 0, NULL, 'V'}, \
 				{"help", 0, NULL, 'h'}, \
 				{"verbose", 2, NULL, 'v'}, \
@@ -93,20 +89,15 @@
 				{"noaudio", 0, NULL, 7}, \
 				{"novideo", 0, NULL, 8}, \
 				{"nodisk", 0, NULL, 9}, \
-				{"first-port", 1, NULL, 'p'}, \
-				{"rtsp-tcp", 0, NULL, 10}, \
-				{"rtsp-sctp", 0, NULL, 11}, \
-				{"rtsp-sctp-udp", 0, NULL, 12}
+				{"first-port", 1, NULL, 'p'}
 #define CL_UI_OPTIONS	""
 
 #define CL_OPTIONS	CL_MAIN_OPTIONS CL_UI_OPTIONS
 #define CL_LONG_OPTIONS CL_MAIN_LONG_OPTIONS
 
-int ui(rtsp_ctrl *, nms_ui_hints *, int, char **);
-int parse_cl(int, char **, nms_cl_opts *);
-int parse_prompt(rtsp_ctrl *, char *);
-int tui_event(rtsp_ctrl *, char);
-void throbber(void *);
-char *statustostr(int);
+int ui(struct RTSP_Ctrl *, NMSUiHints *, int, char **);
+int parse_cl(int, char **, NMSCLOptions *);
+int parse_prompt(struct RTSP_Ctrl *, char *);
+int throbber(struct RTSP_Ctrl *);
 
 #endif

@@ -1,15 +1,27 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(nemesi, 0.6.0)
+m4_define([nemesi_major_version], [0])
+m4_define([nemesi_minor_version], [6])
+m4_define([nemesi_micro_version], [1])
+m4_define([nemesi_interface_age], [0])
+m4_define([nemesi_binary_age],
+          [m4_eval(100 * nemesi_minor_version + nemesi_micro_version)])
+m4_define([nemesi_version],
+          [nemesi_major_version.nemesi_minor_version.nemesi_micro_version])
+m4_define([nemesi_lt_current],
+          [m4_eval(100 * nemesi_minor_version + nemesi_micro_version - nemesi_interface_age)])
+m4_define([nemesi_lt_revision], [nemesi_interface_age])
+m4_define([nemesi_lt_age], [m4_eval(nemesi_binary_age - nemesi_interface_age)])
+
+AC_INIT(libnms, [nemesi_version], [http://streaming.polito.it/tracker/nemesi/newticket])
+
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
-
-AC_PREFIX_PROGRAM(nemesi)
+AC_PREFIX_PROGRAM(libnms)
 
 test "x$prefix" = x. || test "x$prefix" = xNONE && prefix=/usr/local
 test "x$exec_prefix" = xNONE && exec_prefix=$prefix
-test "x$libdir" = 'x${exec_prefix}/lib' && libdir="${exec_prefix}/lib"
 test "x$sysconfdir" = 'x${prefix}/etc' && sysconfdir="/etc"
 test "x$localstatedir" = 'x${prefix}/var' && localstatedir="/var"
 test "x$mandir" = 'x${prefix}/man' && mandir="${prefix}/share/man"
@@ -32,40 +44,19 @@ AC_ARG_ENABLE(errors,
 AC_ARG_ENABLE(optimize,
 [  --enable-optimize       enable/chose optimization level: none, poor, normal, full, super [[default=normal]]],,
 	enable_optimize="normal")
-AC_ARG_ENABLE(sdl,
-[  --enable-sdl            enable/chose sdl as default output library [[default=autodetected]]],,
-	enable_sdl="yes")
-AC_ARG_ENABLE(avc,
-[  --enable-avc            enable libavcodec support [[default=autodetected]]],,
-	enable_avc="yes")
-AC_ARG_ENABLE(gui,
-[  --enable-gui            enable GUI [[default=autodetected]]],,
-	enable_gui="yes")
-dnl AC_ARG_ENABLE(ipv6,
-dnl [  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
-dnl 	enable_ipv6="yes")
+AC_ARG_ENABLE(ipv6,
+[  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
+	enable_ipv6="yes")
+AC_ARG_ENABLE(sctp,
+[  --enable-sctp            enable SCTP support [[default=autodetected]]],,
+	enable_sctp="yes")
 
 dnl Check for programs.
 AC_PROG_CC
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_CPP
-AC_PROG_AWK
 AC_PROG_INSTALL
-AC_PROG_LN_S
 AC_PROG_MAKE_SET
-
-dnl Check for LibTool Dynamic Loading
-AC_CHECK_LIB(ltdl,lt_dlopen,,\
-AC_MSG_ERROR([
- *********************************************************************
- *                                                                   *
- *         NeMeSI needs LibTool's libltdl to support plug-ins.       *
- *                                                                   *
- *            Please install libtool or libtool-libs from            *
- *               http://www.gnu.org/software/libtool                 *
- *           or check for a version suitable to your distro.         *
- *                                                                   *
- *********************************************************************]))
 
 m4_undefine([AC_PROG_CXX])
 m4_defun([AC_PROG_CXX],[])
@@ -77,19 +68,21 @@ LIBTOOL="$LIBTOOL --silent"
 AC_SUBST([LIBTOOL_DEPS])
 
 dnl Check for pthread libraries.
-AC_CHECK_LIB(pthread,pthread_create)
+ACX_PTHREAD(,AC_MSG_ERROR([Missing POSIX Threads support]))
+
+CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+LIBS="$LIBS $PTHREAD_LIBS"
+
+dnl AC_CHECK_LIB(pthread,pthread_create)
 
 dnl Check for Endianess
 AC_C_BIGENDIAN([BIGENDIAN="Big Endian"] AC_DEFINE([WORDS_BIGENDIAN], 1, [Define if manchine is big-endian]),[BIGENDIAN="Little Endian"] )
-
-dnl Replace `main' with a function in -lm:
-AC_CHECK_LIB(m, main)
 
 dnl Check for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
-AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h sys/ioctl.h sys/soundcard.h soundcard.h)
+AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h)
 
 dnl Check for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -104,82 +97,60 @@ AC_FUNC_ALLOCA
 AC_FUNC_MEMCMP
 AC_FUNC_MMAP
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv)
+AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv nanosleep)
 AC_CHECK_FUNC(getaddrinfo)
+AC_CHECK_FUNC(strdup,
+            [EXTRA_FLAGS="-DHAVE_STRDUP ${EXTRA_FLAGS}"],
+            )
+AC_CHECK_LIBM
 
 dnl check if we have the generic struct for net addresses the has max possible size
-AC_CHECK_TYPES(struct sockaddr_storage,,, [#include <sys/socket.h>])
-dnl AC_CHECK_MEMBERS(struct sockaddr_in.sin_len,,, [#include <netinet/in.h>])
-
-dnl CFLAGS=""
+AC_CHECK_TYPES(struct sockaddr_storage,
+            [EXTRA_FLAGS="-DHAVE_STRUCT_SOCKADDR_STORAGE ${EXTRA_FLAGS}"],
+            ,
+            [#include <sys/socket.h>])
 
 dnl Check for IPv6 support
-dnl if test "$enable_ipv6" = "yes"; then
-	dnl AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
-dnl else
-	dnl AC_MSG_WARN([IPv6 disabled: check skipped.])
-	dnl dnl AM_CONDITIONAL(NEMESI_HAVE_IPV6, /bin/false)
-	dnl dnl NEMESI_HAVE_IPV6=no
-dnl fi
-
-dnl Check for SDL libraryISL3880
-if test "$enable_sdl" = "yes"; then
-	AM_PATH_SDL("1.2.2",
-		AC_DEFINE([HAVE_SDL], 1, [Define if SDL library is present]) \
-		AC_SUBST(SDL_CFLAGS) \
-		AC_SUBST(SDL_LIBS) \
-		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/true) \
-		NEMESI_HAVE_SDL=yes, \
-		AC_MSG_WARN([Falling back to OSS Audio output!]) \
-		AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/false) \
-		NEMESI_HAVE_SDL=no)
+if test "$enable_ipv6" = "yes"; then
+	AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
 else
-	AC_MSG_WARN([SDL library disabled!])
-	AM_CONDITIONAL(NEMESI_HAVE_SDL, /bin/false)
-	NEMESI_HAVE_SDL=no
+	AC_MSG_WARN([IPv6 disabled: check skipped.])
 fi
 
-dnl Check for GTK+ support
-if test "$enable_gui" = "yes"; then
-	pkg_modules="gtk+-2.0 >= 2.4.0"
-	PKG_CHECK_MODULES(PACKAGE, [$pkg_modules], \
-		AC_DEFINE([HAVE_GUI], 1, [Define if GUI is present]) \
-		AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/true) \
-		NEMESI_HAVE_GTK=yes, \
-		AC_MSG_WARN([GUI will not be compiled!]) \
-		AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/false) \
-		NEMESI_HAVE_GTK=no)
-else
-	AC_MSG_WARN([GUI disabled!])
-	AM_CONDITIONAL(NEMESI_HAVE_GTK, /bin/false)
-	NEMESI_HAVE_GTK=no
-fi
+dnl Check for SCTP support
+if test "$enable_sctp" = "yes"; then
+        AC_CHECK_TYPE(struct sctp_sndrcvinfo,
+		 AC_CHECK_LIB(sctp,sctp_recvmsg,
+				AC_DEFINE([HAVE_SCTP_NEMESI], 1, [Define SCTP support]) \
+				AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" = "yes"]) \
+				nemesi_sctp_support=yes,
+				AC_MSG_WARN([SCTP not available]) \
+				AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" != "yes"]) \
+				nemesi_sctp_support=no),
+		AC_MSG_WARN([SCTP not available]) \
+		AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" != "yes"]) \
+		nemesi_sctp_support=no,
+		[#include <netinet/sctp.h>])
 	
-AC_SUBST(PACKAGE_CFLAGS)
-AC_SUBST(PACKAGE_LIBS)
-
-
-dnl Check for FFMpeg libavcodec library
-if test "x$enable_avc" = "xyes"; then
-        PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 50.5.0],
-        [have_avc=yes],[have_avc=no])
-         CFLAGS="$CFLAGS $LIBAVCODEC_CFLAGS"
-         LIBS="$LIBS $LIBAVCODEC_LIBS"
+else
+        AC_MSG_WARN([SCTP disabled: check skipped.])
+	AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" = "yes"])
+	nemesi_sctp_support=no
 fi
-AM_CONDITIONAL(NEMESI_HAVE_AVC, test "x$have_avc" = "xyes")
 
-AM_CONDITIONAL(NEMESI_EFENCE, /bin/false)
+AC_SUBST(LIBM)
+AC_SUBST(EXTRA_FLAGS)
+
+AM_CONDITIONAL(NEMESI_EFENCE, [test "$enable_efence" = "yes"])
 if test "$enable_efence" = "yes"; then
-	AM_CONDITIONAL(NEMESI_EFENCE, /bin/true)
 	AC_DEFINE(ENABLE_EFENCE, 1,[Debug enabled])
 	enable_debug=yes
 	efence_msg="   You chose to compile against Electric Fence lib"
 fi
 
-AM_CONDITIONAL(NEMESI_DEBUG, /bin/false)
+AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])
 if test "$enable_debug" = "yes"; then
 	CFLAGS="$CFLAGS -g -ggdb"
-	AM_CONDITIONAL(NEMESI_DEBUG, /bin/true) \
 	AC_DEFINE(ENABLE_DEBUG, 1,[Debug enabled])
 	debug_msg="
    Debuging flags enabled: welcome developer!!!"
@@ -231,8 +202,6 @@ esac
 ARCH_DEFINES=""
 case "$host" in 
 	i386-*-* | i486-*-* | i586-*-* | i686-*-* | i86pc-*-*)
-		dnl CFLAGS="$CFLAGS -mcpu=i486"
-		CFLAGS="$CFLAGS -march=i386"
 		ARCH_DEFINES="-DI386_ASSEM"
 		arch_type=ix86
 	;;
@@ -253,76 +222,42 @@ AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
 AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
 AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
 
-nemesi_bin=$PACKAGE_NAME
-AC_SUBST(nemesi_bin)
-nemesi_gui=g$nemesi_bin
-AC_SUBST(nemesi_gui)
+libnms_docsdir=$datadir/doc/$PACKAGE_NAME
+AC_SUBST(libnms_docsdir)
 
-nemesi_docsdir="$datadir/doc/$PACKAGE_NAME"
-AC_SUBST(nemesi_docsdir)
+libnms_libdir="$prefix"/lib
+AC_SUBST(libnms_libdir)
 
-nemesi_libdir="$libdir/$PACKAGE_NAME"
-AC_SUBST(nemesi_libdir)
-nemesi_plugindir="$nemesi_libdir/plugins"
-AC_SUBST(nemesi_plugindir)
+libnms_sharedir="$prefix"/share/$PACKAGE_NAME
+AC_SUBST(libnms_sharedir)
 
-nemesi_sharedir="$prefix/share/$PACKAGE_NAME"
-AC_SUBST(nemesi_sharedir)
-nemesi_throbberdir="$nemesi_sharedir/throbber"
-AC_SUBST(nemesi_throbberdir)
-nemesi_pixmapdir="$nemesi_sharedir/pixmaps"
-AC_SUBST(nemesi_pixmapdir)
+dnl libtool nonsense
+LT_CURRENT=nemesi_lt_current
+LT_REVISION=nemesi_lt_revision
+LT_AGE=nemesi_lt_age
+
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
 
 if test -f svnrev.h; then
 	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
 	REVISION=`sed -n -e 's/\(.*Rev: \)\([[0-9]]\+\)\(.*\)/\2/p' svnrev.h`
-	AC_SUBST(REVISION)
 fi
 
-AC_DEFINE_UNQUOTED(NEMESI_PLUGIN_DIR_DEFAULT, "$nemesi_plugindir", [Define default directory for NeMeSI plugins])
-AC_DEFINE(NEMESI_PLUGIN_DIR_ENV, "NEMESI_PLUGIN_DIR",[Define the name for the ENV variable forn NeMeSI plugins dir])
-
-AC_DEFINE_UNQUOTED(NEMESI_THROBBER_DIR_DEFAULT, "$nemesi_throbberdir", [Define default directory for NeMeSI throbber])
-AC_DEFINE(NEMESI_THROBBER_DIR_ENV, "NEMESI_THROBBER_DIR",[Define the name for the ENV variable forn NeMeSI throbber dir])
-
-AC_DEFINE_UNQUOTED(NEMESI_PIXMAPS_DIR_DEFAULT, "$nemesi_pixmapdir", [Define default directory for NeMeSI pixmaps])
-AC_DEFINE(NEMESI_PIXMAPS_DIR_ENV, "NEMESI_PIXMAP_DIR",[Define the name for the ENV variable forn NeMeSI pixmaps dir])
-
-AC_CONFIG_SUBDIRS(libnms)
-AC_CONFIG_FILES([Makefile])
-dnl AC_CONFIG_FILES([libnms/bufferpool/Makefile])
-AC_CONFIG_FILES([etui/Makefile])
-
-dnl if test x$NEMESI_HAVE_GTK = xyes; then
-AC_CONFIG_FILES([egui/Makefile])
-dnl fi
-
-dnl AC_CONFIG_FILES([libnms/libCCstreaming/Makefile])
-dnl AC_CONFIG_FILES([libnms/rtp/Makefile])
-dnl AC_CONFIG_FILES([libnms/rtcp/Makefile])
-dnl AC_CONFIG_FILES([libnms/sdp/Makefile])
-dnl AC_CONFIG_FILES([libnms/rtsp/Makefile])
-AC_CONFIG_FILES([src/Makefile])
-dnl AC_CONFIG_FILES([libnms/wsocket/Makefile])
-dnl AC_CONFIG_FILES([libnms/Makefile])
-AC_CONFIG_FILES([output/Makefile])
-AC_CONFIG_FILES([output/audio/Makefile])
-AC_CONFIG_FILES([output/video/Makefile])
-AC_CONFIG_FILES([output/diskwriter/Makefile])
-AC_CONFIG_FILES([decoder/Makefile])
-AC_CONFIG_FILES([decoder/L16_8k_m/Makefile])
-AC_CONFIG_FILES([decoder/gsm_amr_float/Makefile])
-
-dnl if test x$have_avc = xyes; then
-AC_CONFIG_FILES([decoder/libffmp3/Makefile])
-AC_CONFIG_FILES([decoder/libffmpeg/Makefile])
-AC_CONFIG_FILES([decoder/libffmpeg4/Makefile])
-dnl fi
-
-dnl AC_CONFIG_FILES([libnms/md5/Makefile])
-dnl AC_CONFIG_FILES([libnms/utils/Makefile])
-AC_CONFIG_FILES([plugins/Makefile])
-AC_CONFIG_FILES([docs/Makefile])
+AC_CONFIG_FILES([Makefile
+                 bufferpool/Makefile
+                 libCCstreaming/Makefile
+                 rtp/Makefile
+                 rtp/rtpparsers/Makefile
+                 rtcp/Makefile
+                 sdp/Makefile
+                 rtsp/Makefile
+                 wsocket/Makefile
+                 md5/Makefile
+                 utils/Makefile
+                 example/Makefile
+                 libnms.pc])
 AC_OUTPUT
 
 AC_MSG_NOTICE([Release is .......... : $VERSION])
@@ -333,24 +268,20 @@ AC_MSG_NOTICE([Revision is ......... : $REVISION
 fi
 
 AC_MSG_NOTICE([config files successfully generated!
+ 
+libnms version is .............. : $VERSION
 
-NeMeSI Install prefix .......... : $prefix
-NeMeSI Binary path ............. : ${exec_prefix}/bin/$nemesi_bin
-NeMeSI Plugins dir ............. : $nemesi_plugindir
-NeMeSI Throbbers dir ........... : $nemesi_throbberdir
-NeMeSI Pixmaps dir ............. : $nemesi_pixmapdir
+libnms Install prefix .......... : $prefix
+libnms Lib path ................ : $libnms_libdir
+
+libnms has SCTP support ........ : $nemesi_sctp_support
 
 Byte order ..................... : this is a $BIGENDIAN machine
 
-LibSDL support enabled ......... : $NEMESI_HAVE_SDL
-LibAVCodec support enabled ..... : $have_avc
-
-GUI support enabled ............ : $NEMESI_HAVE_GTK
-NeMeSI GUI Binary path ......... : $exec_prefix/bin/$nemesi_gui
 $debug_msg
 $efence_msg
 
- 'make' will now compile NeMeSI and 'su -c make install' will install it.
+ 'make' will now compile libnemesi and 'su -c make install' will install it.
  Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.
 ])
 dnl

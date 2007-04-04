@@ -29,32 +29,20 @@
 #ifndef __DECODER_H
 #define __DECODER_H
 
-#define ENABLE_DECODER_2
-
 #include <config.h>
 
 #include <sys/time.h>
 #include <pthread.h>
 
-#include <nemesi/rtsp.h>
 #include <nemesi/rtp.h>
 #include <nemesi/comm.h>
 #include <nemesi/bufferpool.h>
-#include <nemesi/output.h>
 #include <nemesi/types.h>
-
-typedef int (*decoder_fnc) (char *, int, nms_output *);
-#define DECODERS(x) ((decoder_fnc *)(x))
-
-extern pthread_t decoder_tid;	// decoder thread ID
-extern int (*decoders[128]) (char *, int, nms_output *);	// defined in decoder.c
 
 void *decoder(void *);
 
-//int dec_create(rtp_thread *);
-pthread_t dec_create(rtsp_ctrl *);
+int dec_create(struct Dec_args *);
 void dec_idle(void);
-int dec_destroy(pthread_t);
 void dec_clean(void *);
 
 #endif

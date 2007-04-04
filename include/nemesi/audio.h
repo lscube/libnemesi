@@ -60,35 +60,35 @@ typedef struct {
 	// True (1) if initialized
 	uint8 init;
 	// audio settings
-	 AUDIO_SETTINGS
-	    //! Functions for the specific audio output driver
-	 nms_au_fnc * functions;
-} nms_audio;
+	AUDIO_SETTINGS
+	//! Functions for the specific audio output driver
+	NMSAFunctions *functions;
+} NMSAudio;
 
 /* Audio Buffer defines */
 #define MSECONDS 500
 #define AUDIO_BUFF_SIZE (unsigned long)((FREQ*MSECONDS*CHANNELS*BYTES_X_SAMPLE)/1000)
-#define AUDIO_SYS_BUFF 0.5	/* Buffer first fill percentage */
-#define MIN_AUDIO_SYS_BUFF 0.2	/* min buffer percentage to request fast cycles */
-#define MAX_AUDIO_SYS_BUFF 0.9	/* max buffer percentage */
+#define AUDIO_SYS_BUFF 0.5 /* Buffer first fill percentage */
+#define MIN_AUDIO_SYS_BUFF 0.2 /* min buffer percentage to request fast cycles */
+#define MAX_AUDIO_SYS_BUFF 0.9 /* max buffer percentage */
 
 typedef struct audio_buff {
-	uint8 *audio_data;	//!< audio buffer data
+	uint8 *audio_data; //!< audio buffer data
 /*	uint8 audio_data[AUDIO_BUFF_SIZE]; */
-	uint32 buff_size;	//!< total size of allocated buffer
-	uint32 read_pos;	//!< read position in ring buffer
-	uint32 write_pos;	//!< write position in ring buffer
-	uint32 valid_data;	//!< position of buffer fill level
-	uint32 len;		//!< len of data in buffer
+	uint32 buff_size; //!< total size of allocated buffer
+	uint32 read_pos; //!< read position in ring buffer
+	uint32 write_pos; //!< write position in ring buffer
+	uint32 valid_data; //!< position of buffer fill level
+	uint32 len; //!< len of data in buffer
 	pthread_mutex_t syn;
 	pthread_cond_t cond_full;
-} nms_audio_buffer;
+} NMSAudioBuffer;
 
-nms_audio_buffer *ab_init(uint32);
+NMSAudioBuffer *ab_init(uint32);
 uint8 *ab_get(uint32, ...);
-void ab_uninit(nms_audio_buffer *);
+void ab_uninit(NMSAudioBuffer *);
 /* end of Audio Buffer defines */
 
-nms_audio *audio_init(char *, uint32);
+NMSAudio *audio_init(char *, uint32);
 
 #endif

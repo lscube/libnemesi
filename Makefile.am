@@ -1,44 +1,65 @@
-SUBDIRS =	output \
-		decoder \
-		etui
+SUBDIRS =	bufferpool \
+		wsocket \
+		md5 \
+		utils \
+		rtp \
+		rtcp \
+		libCCstreaming \
+		sdp \
+		rtsp \
+		. \
+		example
 
-SUBDIRS += libnms
+ACLOCAL_AMFLAGS = -I m4
 
-if NEMESI_HAVE_GTK
-SUBDIRS += egui
+lib_LTLIBRARIES = libnemesi.la
+
+libincludedir = $(includedir)/nemesi
+libinclude_HEADERS = 	include/nemesi/bufferpool.h\
+			include/nemesi/rtpptdefs.h\
+			include/nemesi/cc.h\
+			include/nemesi/rtsp.h\
+			include/nemesi/comm.h\
+			include/nemesi/sdp.h\
+			include/nemesi/md5.h\
+			include/nemesi/types.h\
+			include/nemesi/md5global.h\
+			include/nemesi/utils.h\
+			include/nemesi/methods.h\
+			include/nemesi/version.h\
+			include/nemesi/rtcp.h\
+			include/nemesi/wsocket.h\
+			include/nemesi/rtp.h
+
+libnemesi_la_SOURCES =
+
+libnemesi_la_LIBADD =	rtsp/librtsp.la \
+			sdp/libsdp.la \
+			libCCstreaming/libCCstreaming.la \
+			rtcp/librtcp.la \
+			rtp/librtp.la \
+			bufferpool/libbuffpool.la \
+			wsocket/libwsocket.la \
+			utils/libutils.la \
+			md5/libmd5.la \
+			$(LIBM)
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libnms.pc
+
+#fixme use VERSION
+libnemesi_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+
+if NEMESI_SCTP
+libnemesi_la_LDFLAGS += -lsctp
 endif
-
-SUBDIRS += src plugins docs
-
 
 EXTRA_DIST = 	config \
 		include \
 		debian
 
 
-install-exec-hook:
-	@echo -n "Removing static libraries..."; \
-	rm -f $(DESTDIR)$(nemesi_plugindir)/*.a; \
-	echo " done.";
-
-dist-hook:
-	@for plugin in $(distdir)/plugins/plugins/*; do \
-		rm -rf $$plugin; \
-	done
-	@for svn in `find $(distdir) -iname .svn`; do \
-		rm -rf $$svn; \
-	done
-
-uninstall-local:
-	test x"`ls $(DESTDIR)$(nemesi_libdir)`" = x && rm -rf $(DESTDIR)$(nemesi_libdir) || echo "$(DESTDIR)$(nemesi_libdir): Directory non empty"
-	test x"`ls $(DESTDIR)$(nemesi_sharedir)`" = x && rm -rf $(DESTDIR)$(nemesi_sharedir) || echo "$(DESTDIR)$(nemesi_sharedir): Directory non empty"
-	
-distclean-local:
-	@if test -d autom4te.cache; then \
-		rm -rf autom4te.cache; \
-	fi
-
-MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log egui/*.glade.bak egui/*.gladep.bak
+MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log libnms.pc
 MAINTAINER_DIRS = config
 
 maintainer-clean-local:
@@ -55,10 +76,6 @@ svnclean: maintainer-clean
 	test -z "$$SVNREV_DEFINE" && SVNREV_DEFINE="#define SVNREV \"\$$Rev\$$\"" || :; \
 	echo -e "/* This header is just for keeping track of current SVN revision.\n * If this file is present in the sources tree then this is a development SVN\n * version.\n * `date`\n * */\n\n#ifndef __SVNREV_H\n#define __SVNREV_H\n\n$$SVNREV_DEFINE\n\n#endif // __SVNREV_H\n" > svnrev.h
 
-svndist: dist
-	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)+svn$(REVISION).tar.gz
-	mv $(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE)-$(VERSION)+svn$(REVISION).tar.bz2
-
 indent:
 	@echo -n "indenting code with Kernighan & Ritchie coding style... "; \
 	export VERSION_CONTROL=simple; \
@@ -70,4 +87,3 @@ indent:
 		rm $${file}$${SIMPLE_BACKUP_SUFFIX}; \
 	done; \
 	echo "done."
-

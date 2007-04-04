@@ -31,6 +31,7 @@
 
 #include <nemesi/main.h>
 
-int gui(rtsp_ctrl *, nms_ui_hints *, int, char **);
+int gui(struct RTSP_Ctrl *, NMSUiHints *, int, char **);
 
-#endif				// __E_GUI_H
+#endif // __E_GUI_H
+

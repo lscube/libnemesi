@@ -1,19 +1,19 @@
-noinst_HEADERS	=	audio_driver.h \
-			audio_drivers.h
-			audio_format.h \
-			audio.h \
-			ccprefs.h \
-			decoder.h \
-			diskwriter.h \
-			egui.h \
-			etui.h \
-			img_format.h \
-			main.h \
-			output.h \
-			plugin.h
-			preferences.h \
+nemesiincludedir =	$(includedir)/nemesi
+
+noinst_HEADERS	=	bufferpool.h \
+			cc.h \
+			comm.h \
+			md5.h \
+			md5global.h \
+			methods.h \
+			rtcp.h \
+			rtp.h \
+			rtpptdefs.h \
+			rtsp.h \
+			sdp.h \
+			types.h \
+			utils.h \
 			version.h \
-			video_driver.h \
-			video_drivers.h \
-			video_img.h \
-			video.h
+			wsocket.h
+
+INCLUDES = $(top_srcdir)

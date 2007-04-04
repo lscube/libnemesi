@@ -37,7 +37,7 @@
 #define IMGFMT_RGB (('R'<<24)|('G'<<16)|('B'<<8))
 #define IMGFMT_RGB1  (IMGFMT_RGB|1)
 #define IMGFMT_RGB4  (IMGFMT_RGB|4)
-#define IMGFMT_RG4B  (IMGFMT_RGB|4|128)	// RGB4 with 1 pixel per byte
+#define IMGFMT_RG4B  (IMGFMT_RGB|4|128) // RGB4 with 1 pixel per byte
 #define IMGFMT_RGB8  (IMGFMT_RGB|8)
 #define IMGFMT_RGB15 (IMGFMT_RGB|15)
 #define IMGFMT_RGB16 (IMGFMT_RGB|16)
@@ -48,7 +48,7 @@
 #define IMGFMT_BGR (('B'<<24)|('G'<<16)|('R'<<8))
 #define IMGFMT_BGR1 (IMGFMT_BGR|1)
 #define IMGFMT_BGR4 (IMGFMT_BGR|4)
-#define IMGFMT_BG4B (IMGFMT_BGR|4|128)	// BGR4 with 1 pixel per byte
+#define IMGFMT_BG4B (IMGFMT_BGR|4|128) // BGR4 with 1 pixel per byte
 #define IMGFMT_BGR8 (IMGFMT_BGR|8)
 #define IMGFMT_BGR15 (IMGFMT_BGR|15)
 #define IMGFMT_BGR16 (IMGFMT_BGR|16)
@@ -126,4 +126,5 @@ typedef struct {
 
 char *img_format_name(int format);
 
-#endif				// __IMG_FORMAT_H
+#endif // __IMG_FORMAT_H
+
