@@ -13,18 +13,12 @@ m4_define([nemesi_lt_current],
 m4_define([nemesi_lt_revision], [nemesi_interface_age])
 m4_define([nemesi_lt_age], [m4_eval(nemesi_binary_age - nemesi_interface_age)])
 
-AC_INIT(libnms, [nemesi_version], [http://streaming.polito.it/tracker/nemesi/newticket])
+AC_INIT(libnemesi, [nemesi_version], [http://streaming.polito.it/tracker/nemesi/newticket])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
-AC_PREFIX_PROGRAM(libnms)
-
-test "x$prefix" = x. || test "x$prefix" = xNONE && prefix=/usr/local
-test "x$exec_prefix" = xNONE && exec_prefix=$prefix
-test "x$sysconfdir" = 'x${prefix}/etc' && sysconfdir="/etc"
-test "x$localstatedir" = 'x${prefix}/var' && localstatedir="/var"
-test "x$mandir" = 'x${prefix}/man' && mandir="${prefix}/share/man"
+AC_PREFIX_DEFAULT("/usr")
 
 AM_CONFIG_HEADER(config.h)
 
@@ -35,15 +29,9 @@ AC_ARG_ENABLE(efence,
 [  --enable-efence         link against Electric Fence library to debug memory usage
                           (this will involve --enable-debug) [[default=no]]],,
 	enable_efence="no")
-AC_ARG_ENABLE(warnings,
-[  --enable-warnings       enable/choose gcc warnings level: none, normal, pedantic [[default=none]]],,
-	enable_warnings="none")
 AC_ARG_ENABLE(errors,
 [  --enable-errors         make gcc warnings behave like errors: none, normal, pedantic [[default=none]]],,
 	enable_errors="none")
-AC_ARG_ENABLE(optimize,
-[  --enable-optimize       enable/chose optimization level: none, poor, normal, full, super [[default=normal]]],,
-	enable_optimize="normal")
 AC_ARG_ENABLE(ipv6,
 [  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
 	enable_ipv6="yes")
@@ -52,12 +40,6 @@ AC_ARG_ENABLE(sctp,
 	enable_sctp="yes")
 
 dnl Check for programs.
-AC_PROG_CC
-AC_PROG_GCC_TRADITIONAL
-AC_PROG_CPP
-AC_PROG_INSTALL
-AC_PROG_MAKE_SET
-
 m4_undefine([AC_PROG_CXX])
 m4_defun([AC_PROG_CXX],[])
 m4_undefine([AC_PROG_F77])
@@ -150,23 +132,13 @@ fi
 
 AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])
 if test "$enable_debug" = "yes"; then
-	CFLAGS="$CFLAGS -g -ggdb"
+	CFLAGS="$CFLAGS -g -ggdb -Wall"
 	AC_DEFINE(ENABLE_DEBUG, 1,[Debug enabled])
 	debug_msg="
    Debuging flags enabled: welcome developer!!!"
+else
+        CFLAGS="$CFLAGS -Wall"
 fi
-
-case "$enable_warnings" in
-	pedantic)
-		CFLAGS="$CFLAGS -W -Wall -pedantic"
-	;;
-	normal | yes)
-		CFLAGS="$CFLAGS -W -Wall"
-	;;
-	none | *)
-		CFLAGS="$CFLAGS"
-	;;
-esac
 
 case "$enable_errors" in
 	pedantic)
@@ -180,57 +152,6 @@ case "$enable_errors" in
 	;;
 esac
 
-case "$enable_optimize" in
-	poor)
-		CFLAGS="$CFLAGS -O1" 
-	;;
-	full)
-		CFLAGS="$CFLAGS -O3"
-	;;
-	super)
-		CFLAGS="$CFLAGS -O3 -funroll-loops -fstrength-reduce -fomit-frame-pointer -ffast-math -malign-functions=2 -malign-jumps=2 -malign-loops=2"
-	;;
-	none)
-		CFLAGS="$CFLAGS"
-	;;
-	normal | *)
-		CFLAGS="$CFLAGS -O2"
-	;;
-esac
-
-
-ARCH_DEFINES=""
-case "$host" in 
-	i386-*-* | i486-*-* | i586-*-* | i686-*-* | i86pc-*-*)
-		ARCH_DEFINES="-DI386_ASSEM"
-		arch_type=ix86
-	;;
-	ppc-*-*)
-		arch_type=ppc
-	;;
-	*-hpux-*)
-		ARCH_DEFINES="-DHPUX"
-	;;
-	*-sun-*)
-		have_solaris=yes
-	;;
-esac
-
-
-AC_SUBST(ARCH_DEFINES)
-AM_CONDITIONAL(ARCH_X86, test "x$arch_type" = "xix86")
-AM_CONDITIONAL(ARCH_PPC, test "x$arch_type" = "xppc")
-AM_CONDITIONAL(HAVE_SOLARIS, test "x$have_solaris" = xyes)
-
-libnms_docsdir=$datadir/doc/$PACKAGE_NAME
-AC_SUBST(libnms_docsdir)
-
-libnms_libdir="$prefix"/lib
-AC_SUBST(libnms_libdir)
-
-libnms_sharedir="$prefix"/share/$PACKAGE_NAME
-AC_SUBST(libnms_sharedir)
-
 dnl libtool nonsense
 LT_CURRENT=nemesi_lt_current
 LT_REVISION=nemesi_lt_revision
@@ -239,11 +160,6 @@ LT_AGE=nemesi_lt_age
 AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
-
-if test -f svnrev.h; then
-	AC_DEFINE(NEMESI_SVN, 1,[Define if this is a development (subversion) tree])
-	REVISION=`sed -n -e 's/\(.*Rev: \)\([[0-9]]\+\)\(.*\)/\2/p' svnrev.h`
-fi
 
 AC_CONFIG_FILES([Makefile
                  bufferpool/Makefile
@@ -257,24 +173,19 @@ AC_CONFIG_FILES([Makefile
                  md5/Makefile
                  utils/Makefile
                  example/Makefile
-                 libnms.pc])
+                 libnemesi.pc])
 AC_OUTPUT
 
 AC_MSG_NOTICE([Release is .......... : $VERSION])
 
-if test -f svnrev.h; then
-AC_MSG_NOTICE([Revision is ......... : $REVISION
-])
-fi
-
 AC_MSG_NOTICE([config files successfully generated!
  
-libnms version is .............. : $VERSION
+libnemesi version is .............. : $VERSION
 
-libnms Install prefix .......... : $prefix
-libnms Lib path ................ : $libnms_libdir
+libnemesi Install prefix .......... : $prefix
+libnemesi Lib path ................ : $libdir
 
-libnms has SCTP support ........ : $nemesi_sctp_support
+libnemesi has SCTP support ........ : $nemesi_sctp_support
 
 Byte order ..................... : this is a $BIGENDIAN machine
 
