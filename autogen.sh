@@ -5,7 +5,6 @@ WANT_AUTOMAKE=1.8
 
 export WANT_AUTOCONF WANT_AUTOMAKE
 
-
 function dots ()
 {
 	while ps h -p $1 >/dev/null; do
@@ -56,14 +55,6 @@ if which automake >/dev/null 2>&1 ; then
 	dots $! 
 	echo " done."
 fi
-
-#echo -n "Copying missing files..."
-#	cp -f config/lt* libltdl
-#	cp -f config/config.* libltdl
-#	cp -f config/install-sh libltdl
-#	cp -f config/mkinstalldirs .
-#	cp -f libltdl/acinclude.m4 .
-#echo " done."
 
 echo "All done. Bye."
 echo
