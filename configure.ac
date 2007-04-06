@@ -55,8 +55,6 @@ ACX_PTHREAD(,AC_MSG_ERROR([Missing POSIX Threads support]))
 CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 LIBS="$LIBS $PTHREAD_LIBS"
 
-dnl AC_CHECK_LIB(pthread,pthread_create)
-
 dnl Check for Endianess
 AC_C_BIGENDIAN([BIGENDIAN="Big Endian"] AC_DEFINE([WORDS_BIGENDIAN], 1, [Define if manchine is big-endian]),[BIGENDIAN="Little Endian"] )
 
@@ -183,7 +181,6 @@ AC_MSG_NOTICE([config files successfully generated!
 libnemesi version is .............. : $VERSION
 
 libnemesi Install prefix .......... : $prefix
-libnemesi Lib path ................ : $libdir
 
 libnemesi has SCTP support ........ : $nemesi_sctp_support
 
