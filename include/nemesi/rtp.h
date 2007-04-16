@@ -300,7 +300,13 @@ enum rtp_protos {
 void *rtp(void *);
 
 rtp_thread *rtp_init(void);
-rtp_session *rtp_session_init(nms_sockaddr *, nms_sockaddr *);
+/**
+ * Initializes a new rtp session with the specified endpoints
+ * @param local local endpoint
+ * @param peer remote endpoint
+ * @return a new rtp session, NULL as failure
+ */
+rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
 int rtp_thread_create(rtp_thread *);	// something like rtp_run could be better?
 
 int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt,
