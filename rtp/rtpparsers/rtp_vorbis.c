@@ -283,11 +283,16 @@ static long pkt_blocksize(rtp_vorbis * vorb, rtp_frame * fr)
     return vorb->blocksizes[vorb->param_blockflag[mode]];
 }
 
-//get standard mkv/nut/ffmpeg configuration packet from an rtp one
+/**
+ * Create standard mkv/nut/ffmpeg extradata from a configuration packet
+ * layouts:
+ * RTP: [Ident (30 bytes)][Setup (variable)]
+ * extradata: [(1byte)number of fields-1][len0][len1][Ident][Comment][Setup]
+ */
 static int cfg_fixup(rtp_vorbis * vorb, rtp_frame * fr, rtp_buff * config,
              int id)
 {
-    unsigned char comment[26] =
+    uint8_t comment[26] =
         /*quite minimal comment */
     { 3, 'v', 'o', 'r', 'b', 'i', 's',
         10, 0, 0, 0,
@@ -295,17 +300,20 @@ static int cfg_fixup(rtp_vorbis * vorb, rtp_frame * fr, rtp_buff * config,
         0, 0, 0, 0,
         1
     };
-
     int err = cfg_parse(vorb, fr);
+    unsigned int i, config->len = fr->len + 26 + 3;
+
     if (err)
         return err;
 
-    config->len = fr->len + 26;
     config->data = realloc(config->data, config->len);
+    config->data[0] = 2;
+    config->data[1] = 30; //Ident len
+    config->data[2] = 26; //Comment len
 
-    memcpy(config->data, fr->data, 30);    // id packet
-    memcpy(config->data + 30, comment, 26);    // comment packet
-    memcpy(config->data + 30 + 26, fr->data + 30, fr->len - 30);
+    memcpy(config->data + 3, fr->data, 30);         // id packet
+    memcpy(config->data + 3 + 30, comment, 26);     // comment packet
+    memcpy(config->data + 3 + 30 + 26, fr->data + 30, fr->len - 30);
     vorb->id = id;        //XXX
     //cfg_cache_append() //XXX
     return 0;
