@@ -301,7 +301,8 @@ static int cfg_fixup(rtp_vorbis * vorb, rtp_frame * fr, rtp_buff * config,
         1
     };
     int err = cfg_parse(vorb, fr);
-    unsigned int i, config->len = fr->len + 26 + 3;
+
+    config->len = fr->len + 26 + 3;
 
     if (err)
         return err;
@@ -450,7 +451,10 @@ int rtp_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
     return 0;
 }
 
-
+/**
+ * it should return a vorbis frame either by unpacking an aggregate
+ * or by fetching more than a single rtp packet
+ */
 
 static int rtp_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 {
@@ -465,24 +469,26 @@ static int rtp_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
             memcpy(vorb, ssrc->rtp_sess->ptdefs[fr->pt]->priv,
                sizeof(rtp_vorbis));
     }
-    //if I don't have previous work
+    // get the current packet
+    if (!(pkt = rtp_get_pkt(ssrc, &len)))
+        return RTP_BUFF_EMPTY;
+
+    // if I don't have previous work
     if (!vorb->pkts) {
-        //get a new packet
-        if (!(pkt = rtp_get_pkt(ssrc, &len)))
-            return RTP_BUFF_EMPTY;
-        //get the number of packets stuffed in the rtp
+        // get the number of packets stuffed in the rtp
         vorb->pkts = RTP_XIPH_PKTS(pkt);
 
-        //some error checking
+        // some error checking
         if (vorb->pkts > 0 && (RTP_XIPH_F(pkt) || !RTP_XIPH_T(pkt)))
             return RTP_PARSE_ERROR;
 
         if (RTP_XIPH_F(pkt))
             return frag_parse(vorb, pkt, fr, config, ssrc);
-        //single packet, easy case
+        // single packet, easy case
         if (vorb->pkts == 1)
             return single_parse(vorb, pkt, fr, config, ssrc);
         vorb->offset = 4;
     }
+    // keep parsing the current rtp packet
     return pack_parse(vorb, pkt, fr, config, ssrc);
 }
