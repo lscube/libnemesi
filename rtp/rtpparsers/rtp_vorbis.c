@@ -29,18 +29,28 @@
 #include "rtp_xiph.h"
 #include <math.h>
 
+/**
+ * @file rtp_vorbis.c
+ * Vorbis depacketizer - draft 03
+ */
+
+/**
+ * Local structure, contains data necessary to compose a vorbis frame out
+ * of rtp fragments and set the correct timings.
+ */
+
 typedef struct vorbis_s {
-    long offset;
-    long len;
-    int pkts;
-    char *buf;
-    long timestamp;
-    int id;
-    int modes;
-    long blocksizes[2];
-    int param_blockflag[64];
-    long prev_bs;
-    long curr_bs;
+    long offset;    //!< offset across an aggregate rtp packet
+    int pkts;       //!< number of packets yet to process in the aggregate
+    char *buf;      //!< constructed frame, fragments will be copied there 
+    long len;       //!< buf length, it's the sum of the fragments length
+    long timestamp; //!< calculated timestamp
+    int id;         //!< Vorbis id, it could change across packets.
+    int modes;                  //!< Internal vorbis data
+    long blocksizes[2];         //!< Internal vorbis data
+    int param_blockflag[64];    //!< Internal vorbis data
+    long prev_bs;               //!< Internal vorbis data
+    long curr_bs;               //!< Internal vorbis data
 } rtp_vorbis;
 
 static rtpparser_info served = {
