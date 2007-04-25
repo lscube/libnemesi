@@ -1,6 +1,5 @@
 libnmsdir = $(top_srcdir)
 libnmsincludedir = $(libnmsdir)/include
-# nemesiincludedir = $(top_srcdir)/include
 
 noinst_LTLIBRARIES = libutils.la
 
