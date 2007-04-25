@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2006 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -60,18 +60,18 @@
  * \see rtsp_session_info
  * */
 typedef struct _sdp_attr {
-	char *a;		/*!< Pointer to the string containig the
-				   attribute. */
-	struct _sdp_attr *next;	/*!< Pointer to the next element of attributes
-				   list. \c NULL if the current element is the
-				   last. */
+    char *a;        /*!< Pointer to the string containig the
+                   attribute. */
+    struct _sdp_attr *next;    /*!< Pointer to the next element of attributes
+                   list. \c NULL if the current element is the
+                   last. */
 } sdp_attr;
 
-#define SDP_MEDIA_FIELDS	"Multimedia Type & Transport Address", \
-				"Medium Title", \
-				"Connection Info", \
-				"Bandwidth Info", \
-				"Crypto Key"
+#define SDP_MEDIA_FIELDS    "Multimedia Type & Transport Address", \
+                "Medium Title", \
+                "Connection Info", \
+                "Bandwidth Info", \
+                "Crypto Key"
 /*!
  * \brief Medium imformations.
  * 
@@ -84,37 +84,37 @@ typedef struct _sdp_attr {
  * \see rtsp_session_info
  * */
 typedef struct _sdp_medium_info {
-	char *m;		/*!< medium name and transport address */
-	char *i;		/*!< medium title */
-	char *c;		/*!< connection information - optional if included at session-level */
-	char *b;		/*!< bandwidth information */
-	char *k;		/*!< encryption key */
-	sdp_attr *attr_list;	/*!< zero or more medium attribute lines */
+    char *m;        /*!< medium name and transport address */
+    char *i;        /*!< medium title */
+    char *c;        /*!< connection information - optional if included at session-level */
+    char *b;        /*!< bandwidth information */
+    char *k;        /*!< encryption key */
+    sdp_attr *attr_list;    /*!< zero or more medium attribute lines */
 
-	cc_license *cc;		/*!< Creative Commons License struct */
-	/*! informations from media description string (m=) */
-	char media_type;	/*!< possibile values: A=Audio, V=Video, P=aPplication, D=Data, C=Control */
-	int port;		/*!< port of stream */
-	int n_ports;		/*!< number of consecutive ports */
-	char transport[8];	/*!< transport string */
-	char *fmts;		/*!< media formats: AVP payload types for audio/video */
+    cc_license *cc;        /*!< Creative Commons License struct */
+    /*! informations from media description string (m=) */
+    char media_type;    /*!< possibile values: A=Audio, V=Video, P=aPplication, D=Data, C=Control */
+    int port;        /*!< port of stream */
+    int n_ports;        /*!< number of consecutive ports */
+    char transport[8];    /*!< transport string */
+    char *fmts;        /*!< media formats: AVP payload types for audio/video */
 
-	struct _sdp_medium_info *next;	/*!< Next medium informatioin struct */
+    struct _sdp_medium_info *next;    /*!< Next medium informatioin struct */
 } sdp_medium_info;
 
-#define SDP_SESSION_FIELDS	"Protocol Version", \
-				"Session Identifier & Creator", \
-				"Session Name", \
-				"Session Info", \
-				"URI Description", \
-				"e-mail Address", \
-				"Phone Number", \
-				"Connection Info", \
-				"Bandwidth Info", \
-				"Active Time", \
-				"I' so' llu re", \
-				"Time Zone", \
-				"Crypto Key"
+#define SDP_SESSION_FIELDS    "Protocol Version", \
+                "Session Identifier & Creator", \
+                "Session Name", \
+                "Session Info", \
+                "URI Description", \
+                "e-mail Address", \
+                "Phone Number", \
+                "Connection Info", \
+                "Bandwidth Info", \
+                "Active Time", \
+                "I' so' llu re", \
+                "Time Zone", \
+                "Crypto Key"
 /*!
  * \brief Session informations
  *
@@ -137,27 +137,27 @@ typedef struct _sdp_medium_info {
  * \see sdp_medium_info
  * */
 typedef struct {
-	char *v;		/*!< protocol version */
-	char *o;		/*!< owner/creator and session identifier */
-	char *s;		/*!< session name */
-	char *i;		/*!< session information */
-	char *u;		/*!< URI of description */
-	char *e;		/*!< email address */
-	char *p;		/*!< phone number */
-	char *c;		/*!< onnection information - not required if included in all media */
-	char *b;		/*!< bandwidth information */
+    char *v;        /*!< protocol version */
+    char *o;        /*!< owner/creator and session identifier */
+    char *s;        /*!< session name */
+    char *i;        /*!< session information */
+    char *u;        /*!< URI of description */
+    char *e;        /*!< email address */
+    char *p;        /*!< phone number */
+    char *c;        /*!< onnection information - not required if included in all media */
+    char *b;        /*!< bandwidth information */
 
-	char *t;		/*!< time the session is active */
-	char *r;		/*!< zero or more repeat times */
+    char *t;        /*!< time the session is active */
+    char *r;        /*!< zero or more repeat times */
 
-	char *z;		/*!< time zone adjustments */
-	char *k;		/*!< encryption key */
+    char *z;        /*!< time zone adjustments */
+    char *k;        /*!< encryption key */
 
-	sdp_attr *attr_list;	/*!< zero or more session attribute lines */
+    sdp_attr *attr_list;    /*!< zero or more session attribute lines */
 
-	cc_license *cc;		/*!< Creative Commons License struct */
+    cc_license *cc;        /*!< Creative Commons License struct */
 
-	sdp_medium_info *media_info_queue;	/*!< Media information queue */
+    sdp_medium_info *media_info_queue;    /*!< Media information queue */
 } sdp_session_info;
 
 sdp_session_info *sdp_session_setup(char *descr, int descr_len);
@@ -167,5 +167,5 @@ void sdp_session_destroy(sdp_session_info *);
 void sdp_media_destroy(sdp_medium_info *);
 int sdp_parse_m_descr(sdp_medium_info *, char *);
 
-#endif				// __SDP_H
+#endif                // __SDP_H
 /* @} */

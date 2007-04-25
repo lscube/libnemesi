@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,16 +29,16 @@
 #include <nemesi/utils.h>
 
 int timeval_add(struct timeval *res, const struct timeval *x,
-		const struct timeval *y)
+        const struct timeval *y)
 {
-	res->tv_sec = x->tv_sec + y->tv_sec;
+    res->tv_sec = x->tv_sec + y->tv_sec;
 
-	res->tv_usec = x->tv_usec + y->tv_usec;
+    res->tv_usec = x->tv_usec + y->tv_usec;
 
-	while (res->tv_usec > 1000000) {
-		res->tv_usec -= 1000000;
-		res->tv_sec++;
-	}
+    while (res->tv_usec > 1000000) {
+        res->tv_usec -= 1000000;
+        res->tv_sec++;
+    }
 
-	return 0;
+    return 0;
 }

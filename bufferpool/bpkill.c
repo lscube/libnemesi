@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@
 * */
 int bpkill(buffer_pool * bp)
 {
-	free(bp->bufferpool);
-	bp->bufferpool = NULL;
-	return 0;
+    free(bp->bufferpool);
+    bp->bufferpool = NULL;
+    return 0;
 }

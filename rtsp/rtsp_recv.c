@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,74 +33,74 @@
 #endif
 int rtsp_recv(rtsp_thread * rtsp_th)
 {
-	int n = -1, m = 0;
-	char buffer[BUFFERSIZE];
-	nms_rtsp_interleaved *p;
+    int n = -1, m = 0;
+    char buffer[BUFFERSIZE];
+    nms_rtsp_interleaved *p;
 #ifdef HAVE_SCTP_NEMESI
-	struct sctp_sndrcvinfo sinfo;
+    struct sctp_sndrcvinfo sinfo;
 #endif
 
-	memset(buffer, '\0', BUFFERSIZE);
+    memset(buffer, '\0', BUFFERSIZE);
 
-	switch(rtsp_th->transport.type) {
-	case TCP:
-		n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE, NULL);
-		break;
+    switch(rtsp_th->transport.type) {
+    case TCP:
+        n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE, NULL);
+        break;
 #ifdef HAVE_SCTP_NEMESI
-	case SCTP:
-		memset(&sinfo, 0, sizeof(sinfo));
-		n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE, &sinfo);
-		m = sinfo.sinfo_stream;
-		break;
+    case SCTP:
+        memset(&sinfo, 0, sizeof(sinfo));
+        n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE, &sinfo);
+        m = sinfo.sinfo_stream;
+        break;
 #endif
-	default:
-		break;
-	}
-	if (n == 0) {
-		return 0;
-	}
-	if (n < 0) {
-		nms_printf(NMSML_ERR, "Could not read from RTSP socket\n");
-		return n;
-	}
-	if (rtsp_th->transport.type == TCP || (rtsp_th->transport.type == SCTP && m==0)) {
-		if (((rtsp_th->in_buffer).size) == 0) {
-			if (((rtsp_th->in_buffer).data = 
-			     (char *) calloc(1, n + 1)) == NULL)
-				return nms_printf(NMSML_FATAL,
-				  "Cannot alloc memory space for received RTSP data\n");
+    default:
+        break;
+    }
+    if (n == 0) {
+        return 0;
+    }
+    if (n < 0) {
+        nms_printf(NMSML_ERR, "Could not read from RTSP socket\n");
+        return n;
+    }
+    if (rtsp_th->transport.type == TCP || (rtsp_th->transport.type == SCTP && m==0)) {
+        if (((rtsp_th->in_buffer).size) == 0) {
+            if (((rtsp_th->in_buffer).data = 
+                 (char *) calloc(1, n + 1)) == NULL)
+                return nms_printf(NMSML_FATAL,
+                  "Cannot alloc memory space for received RTSP data\n");
 
-			memcpy((rtsp_th->in_buffer).data, buffer, n);
-		} else {
-			if (((rtsp_th->in_buffer).data =
-			     (char *) realloc((rtsp_th->in_buffer).data,
-			    n + (rtsp_th->in_buffer).size + 1)) ==
-			    NULL)
-				return nms_printf(NMSML_FATAL,
-				  "Cannot alloc memory space for received RTSP data\n");
+            memcpy((rtsp_th->in_buffer).data, buffer, n);
+        } else {
+            if (((rtsp_th->in_buffer).data =
+                 (char *) realloc((rtsp_th->in_buffer).data,
+                n + (rtsp_th->in_buffer).size + 1)) ==
+                NULL)
+                return nms_printf(NMSML_FATAL,
+                  "Cannot alloc memory space for received RTSP data\n");
 
-			memcpy((rtsp_th->in_buffer).data + (rtsp_th->in_buffer).size, buffer, n);
-	}
-	(rtsp_th->in_buffer).size += n;
-	(rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size] = '\0';
-	} else /* if (rtsp_th->transport.type == SCTP && m!=0) */ {
+            memcpy((rtsp_th->in_buffer).data + (rtsp_th->in_buffer).size, buffer, n);
+    }
+    (rtsp_th->in_buffer).size += n;
+    (rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size] = '\0';
+    } else /* if (rtsp_th->transport.type == SCTP && m!=0) */ {
 #ifdef HAVE_SCTP_NEMESI
-		for (p = rtsp_th->interleaved; p && !((p->proto.sctp.rtp_st == m)
-			|| (p->proto.sctp.rtcp_st == m)); p = p->next);
-		if (p) {
-			if (p->proto.sctp.rtp_st == m) {
-				nms_printf(NMSML_DBG2,
-					   "Interleaved RTP data (%u bytes: channel %d -> sd %d)\n",
-					   n, m, p->rtp_fd);
-				send(p->rtp_fd, buffer, n, MSG_EOR);
-			} else {
-				nms_printf(NMSML_DBG2,
-					   "Interleaved RTCP data (%u bytes: channel %d -> sd %d)\n",
-					   n, m, p->rtcp_fd);
-				send(p->rtcp_fd, buffer, n, MSG_EOR);
-			}
-		}
+        for (p = rtsp_th->interleaved; p && !((p->proto.sctp.rtp_st == m)
+            || (p->proto.sctp.rtcp_st == m)); p = p->next);
+        if (p) {
+            if (p->proto.sctp.rtp_st == m) {
+                nms_printf(NMSML_DBG2,
+                       "Interleaved RTP data (%u bytes: channel %d -> sd %d)\n",
+                       n, m, p->rtp_fd);
+                send(p->rtp_fd, buffer, n, MSG_EOR);
+            } else {
+                nms_printf(NMSML_DBG2,
+                       "Interleaved RTCP data (%u bytes: channel %d -> sd %d)\n",
+                       n, m, p->rtcp_fd);
+                send(p->rtcp_fd, buffer, n, MSG_EOR);
+            }
+        }
 #endif
-	}
-	return n;
+    }
+    return n;
 }

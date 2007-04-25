@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,94 +29,94 @@
 #include <nemesi/rtp.h>
 
 int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
-		  nms_sockaddr * recfrom, enum rtp_protos proto_type)
+          nms_sockaddr * recfrom, enum rtp_protos proto_type)
 {
-	int addrcmp_err;
-	nms_addr nms_address;
+    int addrcmp_err;
+    nms_addr nms_address;
 
-	if (((*stm_src) = (rtp_ssrc *) calloc(1, sizeof(rtp_ssrc))) == NULL)
-		return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
+    if (((*stm_src) = (rtp_ssrc *) calloc(1, sizeof(rtp_ssrc))) == NULL)
+        return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
 
-	(*stm_src)->next = rtp_sess->ssrc_queue;
-	rtp_sess->ssrc_queue = *stm_src;
+    (*stm_src)->next = rtp_sess->ssrc_queue;
+    rtp_sess->ssrc_queue = *stm_src;
 
-	(*stm_src)->ssrc = ssrc;
-	(*stm_src)->no_rtcp = 0; //flag for connection errors
-	(*stm_src)->rtp_sess = rtp_sess;
-	// we do not need to reset memory area 'cause we use calloc
-	// memset(&(*stm_src)->ssrc_stats, 0, sizeof(struct rtp_ssrc_stats));
-	// memset(&(*stm_src)->ssrc_sdes, 0, sizeof(struct rtp_ssrc_descr));
+    (*stm_src)->ssrc = ssrc;
+    (*stm_src)->no_rtcp = 0; //flag for connection errors
+    (*stm_src)->rtp_sess = rtp_sess;
+    // we do not need to reset memory area 'cause we use calloc
+    // memset(&(*stm_src)->ssrc_stats, 0, sizeof(struct rtp_ssrc_stats));
+    // memset(&(*stm_src)->ssrc_sdes, 0, sizeof(struct rtp_ssrc_descr));
 
-	if (proto_type == RTP) {
-		sockaddrdup(&(*stm_src)->rtp_from, recfrom);
-		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTP\n");
-		// we do not need to reset memory area 'cause we use calloc
-		// memset(&((*stm_src)->rtcp_from), 0, sizeof(nms_sockaddr));
-	} else if (proto_type == RTCP) {
-		sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
-		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTCP\n");
-		// we do not need to reset memory area 'cause we use calloc
-		// memset(&((*stm_src)->rtp_from), 0, sizeof(nms_sockaddr));
-	}
+    if (proto_type == RTP) {
+        sockaddrdup(&(*stm_src)->rtp_from, recfrom);
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTP\n");
+        // we do not need to reset memory area 'cause we use calloc
+        // memset(&((*stm_src)->rtcp_from), 0, sizeof(nms_sockaddr));
+    } else if (proto_type == RTCP) {
+        sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTCP\n");
+        // we do not need to reset memory area 'cause we use calloc
+        // memset(&((*stm_src)->rtp_from), 0, sizeof(nms_sockaddr));
+    }
 
-	if (rtp_sess->transport.type != UDP) {
-		/*EN: It is not needed to check addresses because data is received
-		as interleaved or multistream from RTSP socket */	
-		return 0;
-	}
+    if (rtp_sess->transport.type != UDP) {
+        /*EN: It is not needed to check addresses because data is received
+        as interleaved or multistream from RTSP socket */    
+        return 0;
+    }
 
-	// we do not need to reset memory area 'cause we use calloc
-	// memset(&(*stm_src)->rtcp_to, 0, sizeof(nms_sockaddr));
-	if (sock_get_addr(recfrom->addr, &nms_address))
-		return -nms_printf(NMSML_ERR,
-				   "Address of received packet not valid\n");
-	if (!
-	    (addrcmp_err =
-	     addrcmp(&nms_address, &rtp_sess->transport.RTP.u.udp.srcaddr))) {
-		/* IT: Nel caso in cui l'indirizzo IP da cui riceviamo i dati
-		 * sia uguale a quello annunciato in RTSP, utilizziamo le
-		 * informazioni specificate nella sessione RTSP per impostare
-		 * l'indirizzo di trasporto della connessione RTCP di
-		 * destinazione. */
-		/* EN: If the address from which we are receiving data is the
-		 * same to that announced in RTSP session, then we use RTSP
-		 * informations to set transport address for RTCP connection */
-		if (rtcp_to_connect
-		    (*stm_src, &rtp_sess->transport.RTP.u.udp.srcaddr,
-		     (rtp_sess->transport).RTCP.remote_port) < 0)
-			return -1;
-		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTSP\n");
+    // we do not need to reset memory area 'cause we use calloc
+    // memset(&(*stm_src)->rtcp_to, 0, sizeof(nms_sockaddr));
+    if (sock_get_addr(recfrom->addr, &nms_address))
+        return -nms_printf(NMSML_ERR,
+                   "Address of received packet not valid\n");
+    if (!
+        (addrcmp_err =
+         addrcmp(&nms_address, &rtp_sess->transport.RTP.u.udp.srcaddr))) {
+        /* IT: Nel caso in cui l'indirizzo IP da cui riceviamo i dati
+         * sia uguale a quello annunciato in RTSP, utilizziamo le
+         * informazioni specificate nella sessione RTSP per impostare
+         * l'indirizzo di trasporto della connessione RTCP di
+         * destinazione. */
+        /* EN: If the address from which we are receiving data is the
+         * same to that announced in RTSP session, then we use RTSP
+         * informations to set transport address for RTCP connection */
+        if (rtcp_to_connect
+            (*stm_src, &rtp_sess->transport.RTP.u.udp.srcaddr,
+             (rtp_sess->transport).RTCP.remote_port) < 0)
+            return -1;
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTSP\n");
 
-	} else if (proto_type == RTCP) {
-		/* IT: In mancanza di informazioni assumiamo che l'indirizzo di rete
-		 * della destinazione RTCP conicida con quello della sorgente RTCP
-		 * e che le porte siano qualle specificate in RTSP */
-		/* EN: If we lack of informations we assume that net address of
-		 * RTCP destination is the same of RTP address and port is that
-		 * specified in RTSP*/
-		if (rtcp_to_connect
-		    (*stm_src, &nms_address,
-		     (rtp_sess->transport).RTCP.remote_port) < 0)
-			return -1;
-		nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
-	} else {
-		switch (addrcmp_err) {
-		case WSOCK_ERRFAMILY:
-			nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n",
-				   nms_address.family,
-				   rtp_sess->transport.RTP.u.udp.srcaddr.family);
-			break;
-		case WSOCK_ERRADDR:
-			nms_printf(NMSML_DBG2, "WSOCK_ERRADDR\n");
-			break;
-		case WSOCK_ERRFAMILYUNKNOWN:
-			nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILYUNKNOWN\n");
-			break;
-		}
-		nms_printf(NMSML_DBG2,
-			   "RTP/rtp_ssrc_init: rtcp_to NOT set!!!\n");
-		// return -1;
-	}
+    } else if (proto_type == RTCP) {
+        /* IT: In mancanza di informazioni assumiamo che l'indirizzo di rete
+         * della destinazione RTCP conicida con quello della sorgente RTCP
+         * e che le porte siano qualle specificate in RTSP */
+        /* EN: If we lack of informations we assume that net address of
+         * RTCP destination is the same of RTP address and port is that
+         * specified in RTSP*/
+        if (rtcp_to_connect
+            (*stm_src, &nms_address,
+             (rtp_sess->transport).RTCP.remote_port) < 0)
+            return -1;
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
+    } else {
+        switch (addrcmp_err) {
+        case WSOCK_ERRFAMILY:
+            nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n",
+                   nms_address.family,
+                   rtp_sess->transport.RTP.u.udp.srcaddr.family);
+            break;
+        case WSOCK_ERRADDR:
+            nms_printf(NMSML_DBG2, "WSOCK_ERRADDR\n");
+            break;
+        case WSOCK_ERRFAMILYUNKNOWN:
+            nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILYUNKNOWN\n");
+            break;
+        }
+        nms_printf(NMSML_DBG2,
+               "RTP/rtp_ssrc_init: rtcp_to NOT set!!!\n");
+        // return -1;
+    }
 
-	return 0;
+    return 0;
 }

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,17 +33,17 @@
 
 char *strdup(const char *s)
 {
-	char *dup;
+    char *dup;
 
-	if ((dup = (char *) malloc(strlen(s) + 1)) == NULL) {
-		perror("strdup");
-		return NULL;
-	}
-	strcpy(dup, s);
+    if ((dup = (char *) malloc(strlen(s) + 1)) == NULL) {
+        perror("strdup");
+        return NULL;
+    }
+    strcpy(dup, s);
 
-	return dup;
+    return dup;
 }
 
 // #else
 // char *strdup(const char *s);
-#endif				/* !HAVE_STRDUP */
+#endif                /* !HAVE_STRDUP */

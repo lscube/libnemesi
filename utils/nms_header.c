@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,17 +33,17 @@
 
 inline void nms_header(void)
 {
-	char svnrev[32] = "";
+    char svnrev[32] = "";
 #ifdef SVNREV
-	char *tkn;
+    char *tkn;
 
-	// strcat(svnrev, SVNREV+1);
-	snprintf(svnrev, sizeof(svnrev), "- SVN %s", SVNREV + 1);
-	if ((tkn = strchr(svnrev, '$')))
-		*tkn = '\0';
+    // strcat(svnrev, SVNREV+1);
+    snprintf(svnrev, sizeof(svnrev), "- SVN %s", SVNREV + 1);
+    if ((tkn = strchr(svnrev, '$')))
+        *tkn = '\0';
 #endif
-	nms_printf(NMSML_ALWAYS,
-		   "\n" NMSCLR_BLUE_BOLD "%s - %s -- release %s %s(%s)\n\n"
-		   NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, svnrev,
-		   VERSION_NAME);
+    nms_printf(NMSML_ALWAYS,
+           "\n" NMSCLR_BLUE_BOLD "%s - %s -- release %s %s(%s)\n\n"
+           NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, svnrev,
+           VERSION_NAME);
 }

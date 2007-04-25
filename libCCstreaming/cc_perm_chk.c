@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,25 +44,25 @@
  */
 int cc_perm_chk(cc_license * license, cc_perm_mask * mask)
 {
-	cc_perm_mask parsedmsk;
+    cc_perm_mask parsedmsk;
 
-	if (!license) {
-		nms_printf(NMSML_DBG1, "no CC license defined\n");
-		return 0;
-	}
-	// uriLicense parse
-	if (!license->uriLicense)
-		return nms_printf(NMSML_ERR,
-				  "no uriLicense present: could not parse license uri\n");
-	if ((cc_parse_urilicense(license->uriLicense, &parsedmsk)))
-		return nms_printf(NMSML_ERR,
-				  "cannot parse uriLicense (cc_prms_mask)\n");
+    if (!license) {
+        nms_printf(NMSML_DBG1, "no CC license defined\n");
+        return 0;
+    }
+    // uriLicense parse
+    if (!license->uriLicense)
+        return nms_printf(NMSML_ERR,
+                  "no uriLicense present: could not parse license uri\n");
+    if ((cc_parse_urilicense(license->uriLicense, &parsedmsk)))
+        return nms_printf(NMSML_ERR,
+                  "cannot parse uriLicense (cc_prms_mask)\n");
 
-	*((CC_BITMASK_T *) mask) =
-	    ~(*((CC_BITMASK_T *) mask)) & *((CC_BITMASK_T *) & parsedmsk);
+    *((CC_BITMASK_T *) mask) =
+        ~(*((CC_BITMASK_T *) mask)) & *((CC_BITMASK_T *) & parsedmsk);
 
-	if (*((CC_BITMASK_T *) mask))
-		return 1;
+    if (*((CC_BITMASK_T *) mask))
+        return 1;
 
-	return 0;
+    return 0;
 }

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
 
 int rtcp_send_bye(rtp_session * rtp_sess)
 {
-	// TODO: really send bye packet
-	nms_printf(NMSML_DBG1,
-		   "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!",
-		   rtp_sess->local_ssrc);
-	return 0;
+    // TODO: really send bye packet
+    nms_printf(NMSML_DBG1,
+           "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!",
+           rtp_sess->local_ssrc);
+    return 0;
 }

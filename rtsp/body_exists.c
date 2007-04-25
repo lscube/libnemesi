@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,14 +30,14 @@
 
 int body_exists(char *in_buffer)
 {
-	int body_len = 0;
-	char *con_len;
+    int body_len = 0;
+    char *con_len;
 
-	if ((con_len = strstrcase(in_buffer, "Content-Length")) != NULL) {
-		con_len += 14;
-		while ((*(con_len) == ' ') || (*(con_len) == ':'))
-			con_len++;
-		sscanf(con_len, "%d", &body_len);
-	}
-	return body_len;
+    if ((con_len = strstrcase(in_buffer, "Content-Length")) != NULL) {
+        con_len += 14;
+        while ((*(con_len) == ' ') || (*(con_len) == ':'))
+            con_len++;
+        sscanf(con_len, "%d", &body_len);
+    }
+    return body_len;
 }

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
+ *      
  *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
 
 int nmst_close(nms_transport * transport)
 {
-	if (transport->remote_host)
-		free(transport->remote_host);
+    if (transport->remote_host)
+        free(transport->remote_host);
 
-	// TODO should we do something else?
-	return close(transport->fd);
+    // TODO should we do something else?
+    return close(transport->fd);
 }

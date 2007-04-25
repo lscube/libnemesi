@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,21 +38,21 @@
 #include <nemesi/video_drivers.h>
 
 typedef struct {
-	// True (1) if initialized
-	uint8 init;
-	//! thread id
-	pthread_t tid;
-	// pixel format of video output
-	uint32 format;
-	// window width
-	uint32 width;
-	// window height
-	uint32 height;
-	// frame rate
-	float fps;
-	//! functions for the specific video output driver
-	NMSVFunctions *functions;
-	// void *functions;
+    // True (1) if initialized
+    uint8 init;
+    //! thread id
+    pthread_t tid;
+    // pixel format of video output
+    uint32 format;
+    // window width
+    uint32 width;
+    // window height
+    uint32 height;
+    // frame rate
+    float fps;
+    //! functions for the specific video output driver
+    NMSVFunctions *functions;
+    // void *functions;
 } NMSVideo;
 
 NMSVideo *video_preinit(char *, uint32);

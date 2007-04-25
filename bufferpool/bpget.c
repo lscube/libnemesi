@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,22 +42,22 @@
 * */
 int bpget(buffer_pool * bp)
 {
-	int offset;
+    int offset;
 
-	/*
-	   if (bp->flhead == -1) {
-	   fprintf(stderr, "\n\tFreelist empty\n");
-	   return -1;
-	   }
-	 */
+    /*
+       if (bp->flhead == -1) {
+       fprintf(stderr, "\n\tFreelist empty\n");
+       return -1;
+       }
+     */
 
-	pthread_mutex_lock(&(bp->fl_mutex));
-	while (bp->flhead == -1)
-		pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
-	offset = bp->flhead;
-	bp->flhead = bp->freelist[bp->flhead];
-	bp->flcount++;
-	pthread_mutex_unlock(&(bp->fl_mutex));
+    pthread_mutex_lock(&(bp->fl_mutex));
+    while (bp->flhead == -1)
+        pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
+    offset = bp->flhead;
+    bp->flhead = bp->freelist[bp->flhead];
+    bp->flcount++;
+    pthread_mutex_unlock(&(bp->fl_mutex));
 
-	return offset;
+    return offset;
 }

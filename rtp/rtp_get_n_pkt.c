@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,24 +42,24 @@
  * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */
 rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, int *len, uint32 n)
-{				// TODO complete;
-	int i;
+{                // TODO complete;
+    int i;
 
-	pthread_mutex_lock(&(stm_src->po.po_mutex));
-	i = stm_src->po.potail;
-	while ((i >= 0) && (n-- > 0)) {
-		i = stm_src->po.pobuff[i].next;
-	}
-	if (i < 0) {
-		pthread_mutex_unlock(&(stm_src->po.po_mutex));
-		return NULL;
-	}
-	pthread_mutex_unlock(&(stm_src->po.po_mutex));
+    pthread_mutex_lock(&(stm_src->po.po_mutex));
+    i = stm_src->po.potail;
+    while ((i >= 0) && (n-- > 0)) {
+        i = stm_src->po.pobuff[i].next;
+    }
+    if (i < 0) {
+        pthread_mutex_unlock(&(stm_src->po.po_mutex));
+        return NULL;
+    }
+    pthread_mutex_unlock(&(stm_src->po.po_mutex));
 
 
-	if (len)
-		*len = (stm_src->po.pobuff[i]).pktlen;
+    if (len)
+        *len = (stm_src->po.pobuff[i]).pktlen;
 //      pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
 
-	return (rtp_pkt *) (*(stm_src->po.bufferpool) + i);
+    return (rtp_pkt *) (*(stm_src->po.bufferpool) + i);
 }

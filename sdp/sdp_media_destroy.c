@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,27 +32,27 @@
 
 void sdp_media_destroy(sdp_medium_info * media_queue)
 {
-	sdp_medium_info *sdp_m, *sdp_m_prev;
-	sdp_attr *sdp_attr, *sdp_attr_prev;
+    sdp_medium_info *sdp_m, *sdp_m_prev;
+    sdp_attr *sdp_attr, *sdp_attr_prev;
 
-	for (sdp_m = media_queue; sdp_m;
-	     sdp_m_prev = sdp_m, sdp_m = sdp_m->next, free(sdp_m_prev))
-		for (sdp_attr = sdp_m->attr_list; sdp_attr;
-		     sdp_attr_prev = sdp_attr, sdp_attr =
-		     sdp_attr->next, free(sdp_attr_prev));
+    for (sdp_m = media_queue; sdp_m;
+         sdp_m_prev = sdp_m, sdp_m = sdp_m->next, free(sdp_m_prev))
+        for (sdp_attr = sdp_m->attr_list; sdp_attr;
+             sdp_attr_prev = sdp_attr, sdp_attr =
+             sdp_attr->next, free(sdp_attr_prev));
 
-	/* the last two lines are equivalent to these, but aren't they more beautiful ? ;-)
-	   sdp_m=session->media_info_queue;
-	   while (sdp_m) {
-	   sdp_attr=sdp_m->attr_list;
-	   while(sdp_attr) {
-	   sdp_attr_prev=sdp_attr;
-	   sdp_attr=sdp_attr->next;
-	   free(sdp_attr_prev);
-	   }
-	   sdp_m_prev=sdp_m;
-	   sdp_m=sdp_m->next;
-	   free(sdp_m_prev);
-	   }
-	 */
+    /* the last two lines are equivalent to these, but aren't they more beautiful ? ;-)
+       sdp_m=session->media_info_queue;
+       while (sdp_m) {
+       sdp_attr=sdp_m->attr_list;
+       while(sdp_attr) {
+       sdp_attr_prev=sdp_attr;
+       sdp_attr=sdp_attr->next;
+       free(sdp_attr_prev);
+       }
+       sdp_m_prev=sdp_m;
+       sdp_m=sdp_m->next;
+       free(sdp_m_prev);
+       }
+     */
 }

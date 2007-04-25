@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@
 
 #include <nemesi/wsocket.h>
 
-#ifdef	HAVE_SOCKADDR_DL_STRUCT
-# include	<net/if_dl.h>
+#ifdef    HAVE_SOCKADDR_DL_STRUCT
+# include    <net/if_dl.h>
 #endif
 
 /*
@@ -41,27 +41,27 @@
  * \return 0 if port are equal, -1 if family is not known.
  * */
 int sock_cmp_port(const struct sockaddr *sa1,
-		  const struct sockaddr *sa2 /*, socklen_t salen */ )
+          const struct sockaddr *sa2 /*, socklen_t salen */ )
 {
-	if (sa1->sa_family != sa2->sa_family)
-		return -1;
+    if (sa1->sa_family != sa2->sa_family)
+        return -1;
 
-	switch (sa1->sa_family) {
-	case AF_INET:
-		return !(((struct sockaddr_in *) sa1)->sin_port ==
-			 ((struct sockaddr_in *) sa2)->sin_port);
-		break;
+    switch (sa1->sa_family) {
+    case AF_INET:
+        return !(((struct sockaddr_in *) sa1)->sin_port ==
+             ((struct sockaddr_in *) sa2)->sin_port);
+        break;
 
-#ifdef	IPV6
-	case AF_INET6:
-		return !(((struct sockaddr_in6 *) sa1)->sin6_port ==
-			 ((struct sockaddr_in6 *) sa2)->sin6_port);
-		break;
+#ifdef    IPV6
+    case AF_INET6:
+        return !(((struct sockaddr_in6 *) sa1)->sin6_port ==
+             ((struct sockaddr_in6 *) sa2)->sin6_port);
+        break;
 #endif
-	default:
-		return -1;
-		break;
+    default:
+        return -1;
+        break;
 
-	}
-	// return -1;
+    }
+    // return -1;
 }

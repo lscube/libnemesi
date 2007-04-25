@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,37 +32,37 @@
 int send_teardown_request(rtsp_thread * rtsp_th)
 {
 
-	char b[256 + strlen(rtsp_th->urlname)];
-	rtsp_session *rtsp_sess;
-	rtsp_medium *rtsp_med;
+    char b[256 + strlen(rtsp_th->urlname)];
+    rtsp_session *rtsp_sess;
+    rtsp_medium *rtsp_med;
 
-	memset(b, 0, 256 + strlen(rtsp_th->urlname));
+    memset(b, 0, 256 + strlen(rtsp_th->urlname));
 
-	// if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
-	if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
-	    || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
-		return 1;
+    // if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
+    if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
+        || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
+        return 1;
 
-	if (rtsp_sess->content_base != NULL)
-		sprintf(b, "%s %s/%s %s" RTSP_EL, CLOSE_TKN,
-			rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
-	else
-		sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN, rtsp_med->filename,
-			RTSP_VER);
+    if (rtsp_sess->content_base != NULL)
+        sprintf(b, "%s %s/%s %s" RTSP_EL, CLOSE_TKN,
+            rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
+    else
+        sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN, rtsp_med->filename,
+            RTSP_VER);
 
-	sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
-	if (rtsp_sess->Session_ID != 0)	/*must add session ID? */
-		sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
-			rtsp_sess->Session_ID);
-	strcat(b, RTSP_EL);
+    sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
+    if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
+        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+            rtsp_sess->Session_ID);
+    strcat(b, RTSP_EL);
 
-	if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
-		nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
-		return 1;
-	}
+    if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
+        nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
+        return 1;
+    }
 
-	sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_CLOSE_RESPONSE,
-		rtsp_sess->Session_ID, rtsp_sess->CSeq);
+    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_CLOSE_RESPONSE,
+        rtsp_sess->Session_ID, rtsp_sess->CSeq);
 
-	return 0;
+    return 0;
 }

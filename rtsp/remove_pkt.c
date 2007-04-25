@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,26 +31,26 @@
 int remove_pkt(rtsp_thread * rtsp_th)
 {
 
-	char *buff = NULL;
-	size_t new_size;
+    char *buff = NULL;
+    size_t new_size;
 
-	if ((new_size = rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size)) {
-		if ((buff =
-		     (char *) malloc(new_size)) ==
-		    NULL)
-			return nms_printf(NMSML_FATAL,
-					  "remove_pkt: Cannot allocate memory! (%d bytes)\n", new_size);
+    if ((new_size = rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size)) {
+        if ((buff =
+             (char *) malloc(new_size)) ==
+            NULL)
+            return nms_printf(NMSML_FATAL,
+                      "remove_pkt: Cannot allocate memory! (%d bytes)\n", new_size);
 
-		memcpy(buff,
-		       rtsp_th->in_buffer.data +
-		       rtsp_th->in_buffer.first_pkt_size,
-		       rtsp_th->in_buffer.size -
-		       rtsp_th->in_buffer.first_pkt_size);
-	} else
-		buff = NULL;
-	free(rtsp_th->in_buffer.data);
-	rtsp_th->in_buffer.data = buff;
-	rtsp_th->in_buffer.size -= rtsp_th->in_buffer.first_pkt_size;
-	rtsp_th->in_buffer.first_pkt_size = 0;
-	return 0;
+        memcpy(buff,
+               rtsp_th->in_buffer.data +
+               rtsp_th->in_buffer.first_pkt_size,
+               rtsp_th->in_buffer.size -
+               rtsp_th->in_buffer.first_pkt_size);
+    } else
+        buff = NULL;
+    free(rtsp_th->in_buffer.data);
+    rtsp_th->in_buffer.data = buff;
+    rtsp_th->in_buffer.size -= rtsp_th->in_buffer.first_pkt_size;
+    rtsp_th->in_buffer.first_pkt_size = 0;
+    return 0;
 }

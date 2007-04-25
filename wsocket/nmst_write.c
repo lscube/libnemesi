@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
+ *      
  *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,25 +31,25 @@
 int nmst_write(nms_transport * transport, void *buffer, size_t nbytes, void *protodata)
 {
 #ifdef HAVE_SCTP_NEMESI
-	struct sctp_sndrcvinfo sinfo;
+    struct sctp_sndrcvinfo sinfo;
 #endif
-	switch (transport->type) {
-	case TCP:
-		return write(transport->fd, buffer, nbytes);
-		break;
+    switch (transport->type) {
+    case TCP:
+        return write(transport->fd, buffer, nbytes);
+        break;
 #ifdef HAVE_SCTP_NEMESI
-	case SCTP:
-		if (!protodata) {
-			protodata = &sinfo;
-			memset(protodata, 0, sizeof(struct sctp_sndrcvinfo));
-		}
-		return sctp_send(transport->fd, buffer, nbytes, 
-			(struct sctp_sndrcvinfo *) protodata, MSG_EOR);
-		break;
+    case SCTP:
+        if (!protodata) {
+            protodata = &sinfo;
+            memset(protodata, 0, sizeof(struct sctp_sndrcvinfo));
+        }
+        return sctp_send(transport->fd, buffer, nbytes, 
+            (struct sctp_sndrcvinfo *) protodata, MSG_EOR);
+        break;
 #endif
-	default:
-		break;
-	}
+    default:
+        break;
+    }
 
-	return -1;
+    return -1;
 }

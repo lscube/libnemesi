@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,33 +40,33 @@
  * */
 int poinit(playout_buff * po, buffer_pool * bp)
 {
-	pthread_mutexattr_t mutex_attr;
-	pthread_condattr_t cond_attr;
-	int i;
+    pthread_mutexattr_t mutex_attr;
+    pthread_condattr_t cond_attr;
+    int i;
 
-	po->bufferpool = &(bp->bufferpool);
-	po->pohead = po->potail = -1;
-	po->cycles = 0;
-	po->pocount = 0;
+    po->bufferpool = &(bp->bufferpool);
+    po->pohead = po->potail = -1;
+    po->cycles = 0;
+    po->pocount = 0;
 
-	if ((i = pthread_mutexattr_init(&mutex_attr)) > 0)
-		return i;
+    if ((i = pthread_mutexattr_init(&mutex_attr)) > 0)
+        return i;
 #if 0
-#ifdef	_POSIX_THREAD_PROCESS_SHARED
-	if ((i =
-	     pthread_mutexattr_setpshared(&mutex_attr,
-					  PTHREAD_PROCESS_SHARED)) > 0)
-		return i;
+#ifdef    _POSIX_THREAD_PROCESS_SHARED
+    if ((i =
+         pthread_mutexattr_setpshared(&mutex_attr,
+                      PTHREAD_PROCESS_SHARED)) > 0)
+        return i;
 #endif
 #endif
-	if ((i = pthread_mutex_init(&(po->po_mutex), &mutex_attr)) > 0)
-		return i;
+    if ((i = pthread_mutex_init(&(po->po_mutex), &mutex_attr)) > 0)
+        return i;
 
-	// cond initialization
-	if ((i = pthread_condattr_init(&cond_attr)) > 0)
-		return i;
+    // cond initialization
+    if ((i = pthread_condattr_init(&cond_attr)) > 0)
+        return i;
 //      if ( (i = pthread_cond_init(&(po->cond_empty), &cond_attr) ) > 0)
 //              return i;
 
-	return 0;
+    return 0;
 }

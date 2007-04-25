@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,18 +57,18 @@
 
 #include <nemesi/types.h>
 
-/*! The number of slots consisting the Playout Buffer. */			/* #define BP_SLOT_NUM 50 */
+/*! The number of slots consisting the Playout Buffer. */            /* #define BP_SLOT_NUM 50 */
 /* 1000ms / 20ms = Playout Buffer Size (in seconds) / Required RTP payload size (in seconds) */
-#define BP_SLOT_NUM 150		// Bigger buffer. For video needs.
+#define BP_SLOT_NUM 150        // Bigger buffer. For video needs.
 
 /*! Slot size.  Derived from <em>"Minimum Reassembly Buffer Size"</em> IPv4: the maximal dimension of non fragmented packets */
 
 /*#define BP_SLOT_SIZE 548 *//* 576 - 20 - 8 = Minimum Reassembly Buffer Size - IP datagram header -  UDP hedaer */
-#define BP_SLOT_SIZE 2048	/* bigger slot */
+#define BP_SLOT_SIZE 2048    /* bigger slot */
 
 /*! Buffer Pool size */
-#define BP_SIZE BP_SLOT_NUM*BP_SLOT_SIZE	/* 1 sec G.711 - 8kHz * 8bit
-						   per sample */
+#define BP_SIZE BP_SLOT_NUM*BP_SLOT_SIZE    /* 1 sec G.711 - 8kHz * 8bit
+                           per sample */
 
 
 /*! \brief Network Playout Buffer Slots.
@@ -78,7 +78,7 @@
  * Never use it directly.
  * */
 typedef struct {
-	char x[BP_SLOT_SIZE];	/*!< Memory used to hold the packets 
+    char x[BP_SLOT_SIZE];    /*!< Memory used to hold the packets 
                                      received from the network, 
                                      NEVER ACCESS IT DIRECTLY! */
 } bp_slot;
@@ -91,9 +91,9 @@ typedef struct {
 * \note the list delimiter is \c -1
 * */
 typedef struct {
-	int pktlen; /*!< Lenght of the packet held */
-	int prev;   /*!< Index of the previous element */
-	int next;   /*!< index of the next element */
+    int pktlen; /*!< Lenght of the packet held */
+    int prev;   /*!< Index of the previous element */
+    int next;   /*!< index of the next element */
 } poitem;
 
 /*!
@@ -104,22 +104,22 @@ typedef struct {
  * \see podel
  * */
 typedef struct {
-	bp_slot **bufferpool;	    /*!< Pointer to memory space allocated for 
+    bp_slot **bufferpool;        /*!< Pointer to memory space allocated for 
                                          Bufferpool and defined elsewhere. 
                                          \see bpinit */
-	poitem pobuff[BP_SLOT_NUM]; /*!< Array that will keep the sorted
+    poitem pobuff[BP_SLOT_NUM]; /*!< Array that will keep the sorted
                                          list of slots containing arrived
                                          packets. */
-	pthread_mutex_t po_mutex;   /*!< Mutex variable used for access control
+    pthread_mutex_t po_mutex;   /*!< Mutex variable used for access control
                                          to shared structures of playout 
                                          buffer. */
-	/* pthread_cond_t cond_empty; *//*!< Conditional variable used for 
+    /* pthread_cond_t cond_empty; *//*!< Conditional variable used for 
                                             signaling in case of playout buffer
                                             empty */
-	int pocount;		    /*!< List members count. */
-	int pohead;		    /*!< List head. */
-	int potail;		    /*!< List tail. */
-	uint32 cycles;		    /*!< Counts how many times the RTP 
+    int pocount;            /*!< List members count. */
+    int pohead;            /*!< List head. */
+    int potail;            /*!< List tail. */
+    uint32 cycles;            /*!< Counts how many times the RTP 
                                          \c timestamp rolls over */
                                          // shawill: probably to be moved.
 } playout_buff;
@@ -134,19 +134,19 @@ typedef struct {
 * \see bprmv
 * */
 typedef struct {
-	bp_slot *bufferpool;	        /*!< Pointer to the Bufferpool memory.
+    bp_slot *bufferpool;            /*!< Pointer to the Bufferpool memory.
                                             \see bpinit */
-	pthread_mutex_t fl_mutex;	/*!< Mutex to access the Bufferpool
+    pthread_mutex_t fl_mutex;    /*!< Mutex to access the Bufferpool
                                              internals. */
-	pthread_cond_t cond_full;	/*!< Signals if the Bufferpool is 
+    pthread_cond_t cond_full;    /*!< Signals if the Bufferpool is 
                                              full */
-	int freelist[BP_SLOT_NUM];	/*!< Free slots. */
-	int flhead;		        /*!< Free List head. */
-	int flcount;		        /*!< Free List count. */
+    int freelist[BP_SLOT_NUM];    /*!< Free slots. */
+    int flhead;                /*!< Free List head. */
+    int flcount;                /*!< Free List count. */
 } buffer_pool;
 
-#define PKT_DUPLICATED	1
-#define PKT_MISORDERED	2
+#define PKT_DUPLICATED    1
+#define PKT_MISORDERED    2
 
 int poinit(playout_buff *, buffer_pool *);
 int poadd(playout_buff *, int, uint32);

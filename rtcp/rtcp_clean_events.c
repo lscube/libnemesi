@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,13 +31,13 @@
 
 void rtcp_clean_events(void *events)
 {
-	struct rtcp_event *event = *(struct rtcp_event **) events;
-	struct rtcp_event *free_event;
+    struct rtcp_event *event = *(struct rtcp_event **) events;
+    struct rtcp_event *free_event;
 
-	while (event) {
-		// fprintf(stderr, "\n\n\nfreeing rtcp event\n\n\n");
-		free_event = event;
-		event = event->next;
-		free(free_event);
-	}
+    while (event) {
+        // fprintf(stderr, "\n\n\nfreeing rtcp event\n\n\n");
+        free_event = event;
+        event = event->next;
+        free(free_event);
+    }
 }

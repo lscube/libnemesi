@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,52 +31,52 @@
 
 #include <nemesi/wsocket.h>
 
-#ifdef	HAVE_SOCKADDR_DL_STRUCT
-# include	<net/if_dl.h>
+#ifdef    HAVE_SOCKADDR_DL_STRUCT
+# include    <net/if_dl.h>
 #endif
-#ifdef	AF_UNIX
+#ifdef    AF_UNIX
 #include <sys/un.h>
 #endif
 
 int sock_cmp_addr(const struct sockaddr *sa1,
-		  const struct sockaddr *sa2 /*, socklen_t salen */ )
+          const struct sockaddr *sa2 /*, socklen_t salen */ )
 {
-	if (sa1->sa_family != sa2->sa_family)
-		return -1;
+    if (sa1->sa_family != sa2->sa_family)
+        return -1;
 
-	switch (sa1->sa_family) {
-	case AF_INET:
-		return (memcmp
-			(&((struct sockaddr_in *) sa1)->sin_addr,
-			 &((struct sockaddr_in *) sa2)->sin_addr,
-			 sizeof(struct in_addr)));
-		break;
+    switch (sa1->sa_family) {
+    case AF_INET:
+        return (memcmp
+            (&((struct sockaddr_in *) sa1)->sin_addr,
+             &((struct sockaddr_in *) sa2)->sin_addr,
+             sizeof(struct in_addr)));
+        break;
 
-#ifdef	IPV6
-	case AF_INET6:
-		return (memcmp
-			(&((struct sockaddr_in6 *) sa1)->sin6_addr,
-			 &((struct sockaddr_in6 *) sa2)->sin6_addr,
-			 sizeof(struct in6_addr)));
-		break;
+#ifdef    IPV6
+    case AF_INET6:
+        return (memcmp
+            (&((struct sockaddr_in6 *) sa1)->sin6_addr,
+             &((struct sockaddr_in6 *) sa2)->sin6_addr,
+             sizeof(struct in6_addr)));
+        break;
 #endif
 
-#ifdef	AF_UNIX
-	case AF_UNIX:
-		return (strcmp
-			(((struct sockaddr_un *) sa1)->sun_path,
-			 ((struct sockaddr_un *) sa2)->sun_path));
-		break;
+#ifdef    AF_UNIX
+    case AF_UNIX:
+        return (strcmp
+            (((struct sockaddr_un *) sa1)->sun_path,
+             ((struct sockaddr_un *) sa2)->sun_path));
+        break;
 #endif
 
-#ifdef	HAVE_SOCKADDR_DL_STRUCT
-	case AF_LINK:
-		return -1;	/* no idea what to compare here ? */
-		break;
+#ifdef    HAVE_SOCKADDR_DL_STRUCT
+    case AF_LINK:
+        return -1;    /* no idea what to compare here ? */
+        break;
 #endif
-	default:
-		return -1;
-		break;
-	}
-	// return -1;
+    default:
+        return -1;
+        break;
+    }
+    // return -1;
 }

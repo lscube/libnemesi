@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2006 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,10 +40,10 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
  * */
 
 #define RTP_PARSER(x) rtpparser rtp_parser_##x = { \
-	&served, \
-	NULL, \
-	rtp_parse, \
-	NULL \
+    &served, \
+    NULL, \
+    rtp_parse, \
+    NULL \
 }
 
 /* the <tt>rtp_parser_init</tt> function is called at rtp thread start (in <tt>rtp_thread_create</tt>)
@@ -51,13 +51,13 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
  * */
 
 #define RTP_PARSER_FULL(x) \
-	static int rtp_init_parser(rtp_session *rtp_sess, unsigned pt); \
-	static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt); \
-	rtpparser rtp_parser_##x = {\
-		&served, \
-		rtp_init_parser, \
-		rtp_parse, \
-		rtp_uninit_parser \
-	}
+    static int rtp_init_parser(rtp_session *rtp_sess, unsigned pt); \
+    static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt); \
+    rtpparser rtp_parser_##x = {\
+        &served, \
+        rtp_init_parser, \
+        rtp_parse, \
+        rtp_uninit_parser \
+    }
 
-#endif				/*RTPPTFRAMER_H_ */
+#endif                /*RTPPTFRAMER_H_ */

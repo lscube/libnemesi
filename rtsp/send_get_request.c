@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,24 +33,24 @@
 
 int send_get_request(rtsp_thread * rtsp_th)
 {
-	char *buf = malloc(strlen(rtsp_th->urlname)+256); //XXX use vla
+    char *buf = malloc(strlen(rtsp_th->urlname)+256); //XXX use vla
 
         if (buf == NULL) return 1;
 
-	/* save the url string for future use in setup request. */
-	sprintf(buf, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
-		rtsp_th->urlname, RTSP_VER, 1);
-	strcat(buf, "Accept: application/sdp;" RTSP_EL);	/* application/x-rtsp-mh"RTSP_EL); */
-	sprintf(buf + strlen(buf),
-		"User-Agent: %s - %s -- Release %s (%s)" RTSP_EL, PROG_NAME,
-		PROG_DESCR, VERSION, VERSION_NAME);
-	strcat(buf, RTSP_EL);
-	if (!nmst_write(&rtsp_th->transport, buf, strlen(buf), NULL)) {
-		nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
+    /* save the url string for future use in setup request. */
+    sprintf(buf, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
+        rtsp_th->urlname, RTSP_VER, 1);
+    strcat(buf, "Accept: application/sdp;" RTSP_EL);    /* application/x-rtsp-mh"RTSP_EL); */
+    sprintf(buf + strlen(buf),
+        "User-Agent: %s - %s -- Release %s (%s)" RTSP_EL, PROG_NAME,
+        PROG_DESCR, VERSION, VERSION_NAME);
+    strcat(buf, RTSP_EL);
+    if (!nmst_write(&rtsp_th->transport, buf, strlen(buf), NULL)) {
+        nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
                 free(buf);
-		return 1;
-	}
-	sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
+        return 1;
+    }
+    sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
         free(buf);
-	return 0;
+    return 0;
 }

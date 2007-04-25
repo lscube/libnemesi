@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,36 +30,36 @@
 
 rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
 {
-	rtsp_session *rtsp_s;
+    rtsp_session *rtsp_s;
 
-	if ((rtsp_s = (rtsp_session *) malloc(sizeof(rtsp_session))) == NULL) {
-		nms_printf(NMSML_FATAL,
-			   "rtsp_sess_create: Cannot allocate memory.\n");
-		return NULL;
-	}
-	if (content_base == NULL) {
-		rtsp_s->content_base = NULL;
-		rtsp_s->pathname = urlname;
-	} else {
-		/* shawill: using strdup insted
-		   if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(strlen(content_base)+1))==NULL) {
-		   nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
-		   return NULL;
-		   }
-		   strcpy(rtsp_s->content_base,content_base);
-		 */
-		if (!
-		    (rtsp_s->pathname = rtsp_s->content_base =
-		     strdup(content_base)))
-			return NULL;
-		rtsp_s->pathname += strlen(content_base);
-	}
-	rtsp_s->Session_ID = 0;
-	rtsp_s->CSeq = 1;
-	rtsp_s->media_queue = NULL;
-	rtsp_s->next = NULL;
+    if ((rtsp_s = (rtsp_session *) malloc(sizeof(rtsp_session))) == NULL) {
+        nms_printf(NMSML_FATAL,
+               "rtsp_sess_create: Cannot allocate memory.\n");
+        return NULL;
+    }
+    if (content_base == NULL) {
+        rtsp_s->content_base = NULL;
+        rtsp_s->pathname = urlname;
+    } else {
+        /* shawill: using strdup insted
+           if ((rtsp_s->pathname=rtsp_s->content_base=(char *)malloc(strlen(content_base)+1))==NULL) {
+           nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
+           return NULL;
+           }
+           strcpy(rtsp_s->content_base,content_base);
+         */
+        if (!
+            (rtsp_s->pathname = rtsp_s->content_base =
+             strdup(content_base)))
+            return NULL;
+        rtsp_s->pathname += strlen(content_base);
+    }
+    rtsp_s->Session_ID = 0;
+    rtsp_s->CSeq = 1;
+    rtsp_s->media_queue = NULL;
+    rtsp_s->next = NULL;
 
-	rtsp_s->info = NULL;
+    rtsp_s->info = NULL;
 
-	return rtsp_s;
+    return rtsp_s;
 }

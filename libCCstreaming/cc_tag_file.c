@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,48 +42,48 @@ static char **cc_exts = NULL;
 
 static int cc_tagsinit(void)
 {
-	// if ( (!cc_headers) && (!(cc_headers=calloc(128, sizeof(char *)))))
-	if ((!cc_tags) && (!(cc_tags = calloc(128, sizeof(cc_tag)))))
-		return nms_printf(NMSML_FATAL,
-				  "cc_tag: could not alloc static tags\n");
+    // if ( (!cc_headers) && (!(cc_headers=calloc(128, sizeof(char *)))))
+    if ((!cc_tags) && (!(cc_tags = calloc(128, sizeof(cc_tag)))))
+        return nms_printf(NMSML_FATAL,
+                  "cc_tag: could not alloc static tags\n");
 
-	if ((!cc_exts) && (!(cc_exts = calloc(128, sizeof(char *)))))
-		return nms_printf(NMSML_FATAL,
-				  "cc_tag: could not alloc static extensions\n");
+    if ((!cc_exts) && (!(cc_exts = calloc(128, sizeof(char *)))))
+        return nms_printf(NMSML_FATAL,
+                  "cc_tag: could not alloc static extensions\n");
 
-	cc_taginit = 1;
+    cc_taginit = 1;
 
-	return 0;
+    return 0;
 }
 
 int cc_setag(int pt, cc_license * license)
 {
-	if (!license)
-		return 0;
+    if (!license)
+        return 0;
 
-	if ((!cc_taginit) && (cc_tagsinit()))
-		return 1;
+    if ((!cc_taginit) && (cc_tagsinit()))
+        return 1;
 
-	switch (pt) {
-	case CC_PT_MPA:	// MPA
-		cc_id3v2(license, &cc_tags[CC_PT_MPA]);
-		// TODO: set extension
-		cc_exts[CC_PT_MPA] = strdup("mp3");
-		break;
-	default:
-		break;
-	}
+    switch (pt) {
+    case CC_PT_MPA:    // MPA
+        cc_id3v2(license, &cc_tags[CC_PT_MPA]);
+        // TODO: set extension
+        cc_exts[CC_PT_MPA] = strdup("mp3");
+        break;
+    default:
+        break;
+    }
 
-	return 0;
+    return 0;
 }
 
 int cc_getag(int pt, cc_tag ** tag, char **ext)
 {
-	if ((!cc_taginit) && (cc_tagsinit()))
-		return 1;
+    if ((!cc_taginit) && (cc_tagsinit()))
+        return 1;
 
-	*tag = &cc_tags[pt];
-	*ext = cc_exts[pt];
+    *tag = &cc_tags[pt];
+    *ext = cc_exts[pt];
 
-	return 0;
+    return 0;
 }

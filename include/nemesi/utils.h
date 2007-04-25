@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,12 +53,12 @@ int strncmpcase(const char *, const char *, size_t);
 int strcmpcase(const char *, const char *);
 #if !HAVE_STRDUP
 char *strdup(const char *s);
-#endif				/* !HAVE_STRDUP */
+#endif                /* !HAVE_STRDUP */
 uint32 random32(int);
 int timeval_subtract(struct timeval *, const struct timeval *,
-		     const struct timeval *);
+             const struct timeval *);
 int timeval_add(struct timeval *, const struct timeval *,
-		const struct timeval *);
+        const struct timeval *);
 void f2time(double, struct timeval *);
 
 

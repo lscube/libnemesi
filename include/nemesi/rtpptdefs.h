@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,18 +38,18 @@
 #define RTP_DEF_MAX_NAME_LEN 16
 
 typedef enum {
-	AU = 0,
-	VI = 1,
-	AV = 2,
-	NA = 3
+    AU = 0,
+    VI = 1,
+    AV = 2,
+    NA = 3
 } rtp_media_type;
 
 #define RTP_ATTRS_ARRAY_DEF_SIZE 3
 
 typedef struct {
-	char **data;
-	uint32 size;
-	uint32 allocated;
+    char **data;
+    uint32 size;
+    uint32 allocated;
 } rtp_pt_attrs;
 
 #define RTP_PT_ATTRS_INITIALIZER {NULL, 0, 0}
@@ -61,12 +61,12 @@ typedef struct {
                                         (N)ot(/)(A)pplicable */ \
         uint32 rate; /* Clock Rate - in Hertz*/ \
         rtp_pt_attrs attrs; /* attribute strings from sdp description */ \
-        void *priv;		/* private data for rtp payload type */
+        void *priv;        /* private data for rtp payload type */
 
 /* XXX audio and video fields must have different names, 
  * because they are used together in rtp_audio_video
  */
-#define RTP_AUDIO_FIELDS	uint8 channels;	/* Channels */
+#define RTP_AUDIO_FIELDS    uint8 channels;    /* Channels */
 
 #define RTP_VIDEO_FIELDS
 
@@ -84,9 +84,9 @@ RTP_PT_COMMON_FIELDS} rtp_pt;
 
 #define RTP_FMTS_ARRAY_DEF_SIZE 3
 typedef struct _rtp_fmts_list {
-	unsigned pt;
-	rtp_pt *rtppt;
-	struct _rtp_fmts_list *next;
+    unsigned pt;
+    rtp_pt *rtppt;
+    struct _rtp_fmts_list *next;
 } rtp_fmts_list;
 #define RTP_FMTS_INITIALIZER {0, NULL, NULL}
 

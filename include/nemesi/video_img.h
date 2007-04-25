@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,22 +31,22 @@
 #define __VIDEO_IMG_H
 
 typedef struct {
-	uint8 *data[4];
-	int linesize[4];
+    uint8 *data[4];
+    int linesize[4];
 } NMSPicture;
 
 /* ViCoTrA stuff
 typedef struct {
-	uint8 *data[4];
-	int linesize[4];
-	void *bmp; // for SDL Video is SDL_Overlay, for others ...
-	int width;
-	int height;
+    uint8 *data[4];
+    int linesize[4];
+    void *bmp; // for SDL Video is SDL_Overlay, for others ...
+    int width;
+    int height;
 } NMSFrame;
 
 typedef struct {
-	int16 x, y;
-	uint16 w, h;
+    int16 x, y;
+    uint16 w, h;
 } NMSRect;
 */
 

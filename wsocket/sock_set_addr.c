@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,27 +31,27 @@
 
 #include <nemesi/wsocket.h>
 
-void sock_set_addr(struct sockaddr *sa,	/* socklen_t salen, */
-		   const void *addr)
+void sock_set_addr(struct sockaddr *sa,    /* socklen_t salen, */
+           const void *addr)
 {
-	switch (sa->sa_family) {
-	case AF_INET:{
-			struct sockaddr_in *sin = (struct sockaddr_in *) sa;
+    switch (sa->sa_family) {
+    case AF_INET:{
+            struct sockaddr_in *sin = (struct sockaddr_in *) sa;
 
-			memcpy(&sin->sin_addr, addr, sizeof(struct in_addr));
-			return;
-		}
+            memcpy(&sin->sin_addr, addr, sizeof(struct in_addr));
+            return;
+        }
 
-#ifdef	IPV6
-	case AF_INET6:{
-			struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) sa;
+#ifdef    IPV6
+    case AF_INET6:{
+            struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) sa;
 
-			memcpy(&sin6->sin6_addr, addr,
-			       sizeof(struct in6_addr));
-			return;
-		}
+            memcpy(&sin6->sin6_addr, addr,
+                   sizeof(struct in6_addr));
+            return;
+        }
 #endif
-	}
+    }
 
-	return;
+    return;
 }

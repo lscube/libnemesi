@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,42 +30,42 @@
 
 void rtp_update_seq(rtp_ssrc * stm_src, uint16 seq)
 {
-	struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
-	uint16 udelta = seq - stats->max_seq;
+    struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
+    uint16 udelta = seq - stats->max_seq;
 
-	if (stats->probation) {
-		if (seq == stats->max_seq + 1) {
-			stats->probation--;
-			stats->max_seq = seq;
-			if (stats->probation == 0) {
-				rtp_init_seq(stm_src, seq);
-				stats->received++;
-				return;
-			}
-		} else {
-			stats->probation = MIN_SEQUENTIAL - 1;
-			stats->max_seq = seq;
-		}
-		return;
-	} else if (udelta < MAX_DROPOUT) {
-		if (seq < stats->max_seq) {
-			/*
-			 * Sequence number wrapped - count another 64k cycle.
-			 */
-			stats->cycles += RTP_SEQ_MOD;
-		}
-		stats->max_seq = seq;
-	} else if (udelta <= RTP_SEQ_MOD - MAX_MISORDER) {
-		/* the sequence number made a very large jump */
-		if (seq == stats->bad_seq) {
-			rtp_init_seq(stm_src, seq);
-		} else {
-			stats->bad_seq = (seq + 1) & (RTP_SEQ_MOD - 1);
-			return;
-		}
-	}			/* else {
-				   duplicate or reorder packet
-				   } */
-	stats->received++;
-	return;
+    if (stats->probation) {
+        if (seq == stats->max_seq + 1) {
+            stats->probation--;
+            stats->max_seq = seq;
+            if (stats->probation == 0) {
+                rtp_init_seq(stm_src, seq);
+                stats->received++;
+                return;
+            }
+        } else {
+            stats->probation = MIN_SEQUENTIAL - 1;
+            stats->max_seq = seq;
+        }
+        return;
+    } else if (udelta < MAX_DROPOUT) {
+        if (seq < stats->max_seq) {
+            /*
+             * Sequence number wrapped - count another 64k cycle.
+             */
+            stats->cycles += RTP_SEQ_MOD;
+        }
+        stats->max_seq = seq;
+    } else if (udelta <= RTP_SEQ_MOD - MAX_MISORDER) {
+        /* the sequence number made a very large jump */
+        if (seq == stats->bad_seq) {
+            rtp_init_seq(stm_src, seq);
+        } else {
+            stats->bad_seq = (seq + 1) & (RTP_SEQ_MOD - 1);
+            return;
+        }
+    }            /* else {
+                   duplicate or reorder packet
+                   } */
+    stats->received++;
+    return;
 }

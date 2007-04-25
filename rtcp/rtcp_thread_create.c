@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,19 +30,19 @@
 
 int rtcp_thread_create(rtp_thread * rtp_th)
 {
-	int n;
-	pthread_attr_t rtcp_attr;
+    int n;
+    pthread_attr_t rtcp_attr;
 
-	pthread_attr_init(&rtcp_attr);
-	if (pthread_attr_setdetachstate(&rtcp_attr, PTHREAD_CREATE_JOINABLE) !=
-	    0)
-		return nms_printf(NMSML_FATAL,
-				  "Cannot set RTCP Thread attributes!\n");
+    pthread_attr_init(&rtcp_attr);
+    if (pthread_attr_setdetachstate(&rtcp_attr, PTHREAD_CREATE_JOINABLE) !=
+        0)
+        return nms_printf(NMSML_FATAL,
+                  "Cannot set RTCP Thread attributes!\n");
 
-	if ((n =
-	     pthread_create(&rtp_th->rtcp_tid, &rtcp_attr, &rtcp,
-			    (void *) rtp_th)) > 0)
-		return nms_printf(NMSML_FATAL, "%s\n", strerror(n));
+    if ((n =
+         pthread_create(&rtp_th->rtcp_tid, &rtcp_attr, &rtcp,
+                (void *) rtp_th)) > 0)
+        return nms_printf(NMSML_FATAL, "%s\n", strerror(n));
 
-	return 0;
+    return 0;
 }

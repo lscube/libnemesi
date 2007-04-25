@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,42 +31,42 @@
 
 int server_create(char *host, char *port, int *sock)
 {
-	int n;
-	struct addrinfo *res, *ressave;
-	struct addrinfo hints;
+    int n;
+    struct addrinfo *res, *ressave;
+    struct addrinfo hints;
 
-	memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_flags = AI_PASSIVE;
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_flags = AI_PASSIVE;
 #ifdef IPV6
-	hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_UNSPEC;
 #else
-	hints.ai_family = AF_INET;
+    hints.ai_family = AF_INET;
 #endif
-	hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_socktype = SOCK_DGRAM;
 
-	if ((n = gethostinfo(&res, host, port, &hints)) != 0)
-		return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
-				  gai_strerror(n));
+    if ((n = gethostinfo(&res, host, port, &hints)) != 0)
+        return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
+                  gai_strerror(n));
 
-	ressave = res;
+    ressave = res;
 
-	do {
-		if ((*sock =
-		     socket(res->ai_family, res->ai_socktype,
-			    res->ai_protocol)) < 0)
-			continue;
+    do {
+        if ((*sock =
+             socket(res->ai_family, res->ai_socktype,
+                res->ai_protocol)) < 0)
+            continue;
 
-		if (bind(*sock, res->ai_addr, res->ai_addrlen) == 0)
-			break;
+        if (bind(*sock, res->ai_addr, res->ai_addrlen) == 0)
+            break;
 
-		if (close(*sock) < 0)
-			return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
-					  strerror(errno));
+        if (close(*sock) < 0)
+            return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
+                      strerror(errno));
 
 
-	} while ((res = res->ai_next) != NULL);
+    } while ((res = res->ai_next) != NULL);
 
-	freeaddrinfo(ressave);
+    freeaddrinfo(ressave);
 
-	return res ? 0 : 1;
+    return res ? 0 : 1;
 }

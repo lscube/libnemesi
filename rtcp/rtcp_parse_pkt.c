@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,34 +30,34 @@
 
 int rtcp_parse_pkt(rtp_ssrc * stm_src, rtcp_pkt * pkt, int len)
 {
-	rtcp_pkt *end;
-	end = (rtcp_pkt *) ((uint32 *) pkt + len / 4);
+    rtcp_pkt *end;
+    end = (rtcp_pkt *) ((uint32 *) pkt + len / 4);
 
-	while (pkt < end) {
-		switch ((pkt->common).pt) {
-		case RTCP_SR:
-			rtcp_parse_sr(stm_src, pkt);
-			break;
-		case RTCP_SDES:
-			if (rtcp_parse_sdes(stm_src, pkt))
-				return -1;
-			break;
-		case RTCP_RR:
-			rtcp_parse_rr(pkt);
-			break;
-		case RTCP_BYE:
-			rtcp_parse_bye(pkt);
-			break;
-		case RTCP_APP:
-			rtcp_parse_app(pkt);
-			break;
-		default:
-			nms_printf(NMSML_WARN, "Received unknown RTCP pkt\n");
-			return 1;
-		}
-		pkt =
-		    (rtcp_pkt *) ((uint32 *) pkt + ntohs((pkt->common).len) +
-				  1);
-	}
-	return 0;
+    while (pkt < end) {
+        switch ((pkt->common).pt) {
+        case RTCP_SR:
+            rtcp_parse_sr(stm_src, pkt);
+            break;
+        case RTCP_SDES:
+            if (rtcp_parse_sdes(stm_src, pkt))
+                return -1;
+            break;
+        case RTCP_RR:
+            rtcp_parse_rr(pkt);
+            break;
+        case RTCP_BYE:
+            rtcp_parse_bye(pkt);
+            break;
+        case RTCP_APP:
+            rtcp_parse_app(pkt);
+            break;
+        default:
+            nms_printf(NMSML_WARN, "Received unknown RTCP pkt\n");
+            return 1;
+        }
+        pkt =
+            (rtcp_pkt *) ((uint32 *) pkt + ntohs((pkt->common).len) +
+                  1);
+    }
+    return 0;
 }

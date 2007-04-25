@@ -6,10 +6,10 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
- *	Dario Gallucci - dario.gallucci@gmail.com
+ *      
+ *    Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
+ *    Dario Gallucci - dario.gallucci@gmail.com
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,32 +32,32 @@
 
 int set_transport_str_udp(rtp_session * rtp_sess, char *buff)
 {
-	char addr[128];		/* Unix domain is largest */
-	in_port_t ports[2];
+    char addr[128];        /* Unix domain is largest */
+    in_port_t ports[2];
 
-	if (rtp_get_delivery(rtp_sess) == multicast)
-		sprintf(buff + strlen(buff), "multicast;");
-	else
-		sprintf(buff + strlen(buff), "unicast;");
-	if (rtp_transport_get
-	    (rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addr,
-	     sizeof(addr)) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "destination=%s;", addr);
-	if (rtp_transport_get
-	    (rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addr,
-	     sizeof(addr)) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "source=%s;", addr);
-	if (rtp_get_layers(rtp_sess))
-		sprintf(buff + strlen(buff), "layers=%d;",
-			rtp_get_layers(rtp_sess));
-	if (rtp_get_ttl(rtp_sess))
-		sprintf(buff + strlen(buff), "ttl=%d;", rtp_get_ttl(rtp_sess));
-	if (rtp_get_mcsports(rtp_sess, ports) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "port=%d-%d;", (int) ports[0],
-			(int) ports[1]);
-	if (rtp_get_cliports(rtp_sess, ports) == RTP_TRANSPORT_SET)
-		sprintf(buff + strlen(buff), "client_port=%d-%d;",
-			(int) ports[0], (int) ports[1]);
+    if (rtp_get_delivery(rtp_sess) == multicast)
+        sprintf(buff + strlen(buff), "multicast;");
+    else
+        sprintf(buff + strlen(buff), "unicast;");
+    if (rtp_transport_get
+        (rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addr,
+         sizeof(addr)) == RTP_TRANSPORT_SET)
+        sprintf(buff + strlen(buff), "destination=%s;", addr);
+    if (rtp_transport_get
+        (rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addr,
+         sizeof(addr)) == RTP_TRANSPORT_SET)
+        sprintf(buff + strlen(buff), "source=%s;", addr);
+    if (rtp_get_layers(rtp_sess))
+        sprintf(buff + strlen(buff), "layers=%d;",
+            rtp_get_layers(rtp_sess));
+    if (rtp_get_ttl(rtp_sess))
+        sprintf(buff + strlen(buff), "ttl=%d;", rtp_get_ttl(rtp_sess));
+    if (rtp_get_mcsports(rtp_sess, ports) == RTP_TRANSPORT_SET)
+        sprintf(buff + strlen(buff), "port=%d-%d;", (int) ports[0],
+            (int) ports[1]);
+    if (rtp_get_cliports(rtp_sess, ports) == RTP_TRANSPORT_SET)
+        sprintf(buff + strlen(buff), "client_port=%d-%d;",
+            (int) ports[0], (int) ports[1]);
 
-	return 0;
+    return 0;
 }

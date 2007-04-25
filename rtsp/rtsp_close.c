@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@
 
 int rtsp_close(rtsp_ctrl * rtsp_ctl)
 {
-	pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-	rtsp_ctl->comm->opcode = CLOSE;
-	write(rtsp_ctl->pipefd[1], "c", 1);
-	rtsp_ctl->busy = 1;
-	pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
+    rtsp_ctl->comm->opcode = CLOSE;
+    write(rtsp_ctl->pipefd[1], "c", 1);
+    rtsp_ctl->busy = 1;
+    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
-	return 0;
+    return 0;
 }

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,10 +30,10 @@
 
 struct rtcp_event *rtcp_deschedule(struct rtcp_event *head)
 {
-	struct rtcp_event *phead = head;
+    struct rtcp_event *phead = head;
 
-	head = head->next;
-	free(phead);
+    head = head->next;
+    free(phead);
 
-	return head;
+    return head;
 }

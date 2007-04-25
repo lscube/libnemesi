@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 
 int rtcp_parse_bye(rtcp_pkt * pkt)
 {
-	// TODO: handle bye packet
-	nms_printf(NMSML_DBG1, "Received BYE from SSRC: %u\n", pkt->r.bye.src);
-	return 0;
+    // TODO: handle bye packet
+    nms_printf(NMSML_DBG1, "Received BYE from SSRC: %u\n", pkt->r.bye.src);
+    return 0;
 }

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,27 +30,27 @@
 
 int addrcmp(const nms_addr * addr1, const nms_addr * addr2)
 {
-	if (addr1->family != addr2->family)
-		return WSOCK_ERRFAMILY;
-	switch (addr1->family) {
-	case AF_INET:
-		if (!memcmp
-		    (&addr1->addr.in, &addr2->addr.in, sizeof(struct in_addr)))
-			return 0;
-		else
-			return WSOCK_ERRADDR;
-		break;
-	case AF_INET6:
-		if (!memcmp
-		    (&addr1->addr.in6, &addr2->addr.in6,
-		     sizeof(struct in6_addr)))
-			return 0;
-		else
-			return WSOCK_ERRADDR;
-		break;
-	default:
-		return WSOCK_ERRFAMILYUNKNOWN;
-	}
+    if (addr1->family != addr2->family)
+        return WSOCK_ERRFAMILY;
+    switch (addr1->family) {
+    case AF_INET:
+        if (!memcmp
+            (&addr1->addr.in, &addr2->addr.in, sizeof(struct in_addr)))
+            return 0;
+        else
+            return WSOCK_ERRADDR;
+        break;
+    case AF_INET6:
+        if (!memcmp
+            (&addr1->addr.in6, &addr2->addr.in6,
+             sizeof(struct in6_addr)))
+            return 0;
+        else
+            return WSOCK_ERRADDR;
+        break;
+    default:
+        return WSOCK_ERRFAMILYUNKNOWN;
+    }
 
-	return 0;
+    return 0;
 }

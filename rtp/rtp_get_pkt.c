@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,23 +42,23 @@
  * */
 rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
 {
-	pthread_mutex_lock(&(stm_src->po.po_mutex));
-	do {
-		if (stm_src->po.potail < 0) {
-			pthread_mutex_unlock(&(stm_src->po.po_mutex));
-			return NULL;
-		}
-	} while (!stm_src->rtp_sess->
-		 ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) +
-				      stm_src->po.potail))->pt]
-		 &&
-		 /* always true - XXX be careful if bufferpool API changes -> */
-		 !rtp_rm_pkt(stm_src));
-	pthread_mutex_unlock(&(stm_src->po.po_mutex));
+    pthread_mutex_lock(&(stm_src->po.po_mutex));
+    do {
+        if (stm_src->po.potail < 0) {
+            pthread_mutex_unlock(&(stm_src->po.po_mutex));
+            return NULL;
+        }
+    } while (!stm_src->rtp_sess->
+         ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) +
+                      stm_src->po.potail))->pt]
+         &&
+         /* always true - XXX be careful if bufferpool API changes -> */
+         !rtp_rm_pkt(stm_src));
+    pthread_mutex_unlock(&(stm_src->po.po_mutex));
 
-	if (len)
-		*len = (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
+    if (len)
+        *len = (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
 //      pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
 
-	return (rtp_pkt *) (*(stm_src->po.bufferpool) + stm_src->po.potail);
+    return (rtp_pkt *) (*(stm_src->po.bufferpool) + stm_src->po.potail);
 }

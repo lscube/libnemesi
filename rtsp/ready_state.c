@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,51 +31,51 @@
 
 int ready_state(rtsp_thread * rtsp_th, short event)
 {
-	switch (event) {
-	case RTSP_PLAY_RESPONSE:
-		if (handle_play_response(rtsp_th))
-			return 1;
-		// if (get_curr_sess(rtsp_th, NULL, NULL)) {
-		if (!get_curr_sess(GCS_NXT_SESS)) {
-			/* Nessun altra PLAY da inviare */
-			rtsp_th->status = PLAYING;
-			rtsp_unbusy(rtsp_th);
-			// rtsp_th->busy = 0;
-			nms_printf(NMSML_NORM, "----- Playing... -----\n");
-			/* Inizializza a NULL le variabili statiche interne */
-			// get_curr_sess(NULL, NULL, NULL);
-			get_curr_sess(GCS_UNINIT);
-			break;
-		}
-		if (send_play_request(rtsp_th, ""))
-			return 1;
-		break;
-	case RTSP_CLOSE_RESPONSE:
-		if (handle_teardown_response(rtsp_th))
-			return 1;
-		// if (get_curr_sess(rtsp_th, NULL, NULL)) {
-		if (!get_curr_sess(GCS_NXT_MED)) {
-			/* Nessun altra TEARDOWN da inviare */
-			rtsp_th->status = INIT;
-			rtsp_reinit(rtsp_th);
-			rtsp_unbusy(rtsp_th);
-			// rtsp_th->busy = 0;
-			nms_printf(NMSML_NORM,
-				   "----- All Connections closed -----\n");
-			/* Inizializza a NULL le variabili statiche interne */
-			// get_curr_sess(NULL, NULL, NULL);
-			get_curr_sess(GCS_UNINIT);
-			break;
-		}
-		if (send_teardown_request(rtsp_th))
-			return 1;
-		break;
-	default:
-		nms_printf(NMSML_ERR,
-			   "Could not handle method in READY state\n");
-		return 1;
-		break;
+    switch (event) {
+    case RTSP_PLAY_RESPONSE:
+        if (handle_play_response(rtsp_th))
+            return 1;
+        // if (get_curr_sess(rtsp_th, NULL, NULL)) {
+        if (!get_curr_sess(GCS_NXT_SESS)) {
+            /* Nessun altra PLAY da inviare */
+            rtsp_th->status = PLAYING;
+            rtsp_unbusy(rtsp_th);
+            // rtsp_th->busy = 0;
+            nms_printf(NMSML_NORM, "----- Playing... -----\n");
+            /* Inizializza a NULL le variabili statiche interne */
+            // get_curr_sess(NULL, NULL, NULL);
+            get_curr_sess(GCS_UNINIT);
+            break;
+        }
+        if (send_play_request(rtsp_th, ""))
+            return 1;
+        break;
+    case RTSP_CLOSE_RESPONSE:
+        if (handle_teardown_response(rtsp_th))
+            return 1;
+        // if (get_curr_sess(rtsp_th, NULL, NULL)) {
+        if (!get_curr_sess(GCS_NXT_MED)) {
+            /* Nessun altra TEARDOWN da inviare */
+            rtsp_th->status = INIT;
+            rtsp_reinit(rtsp_th);
+            rtsp_unbusy(rtsp_th);
+            // rtsp_th->busy = 0;
+            nms_printf(NMSML_NORM,
+                   "----- All Connections closed -----\n");
+            /* Inizializza a NULL le variabili statiche interne */
+            // get_curr_sess(NULL, NULL, NULL);
+            get_curr_sess(GCS_UNINIT);
+            break;
+        }
+        if (send_teardown_request(rtsp_th))
+            return 1;
+        break;
+    default:
+        nms_printf(NMSML_ERR,
+               "Could not handle method in READY state\n");
+        return 1;
+        break;
 
-	}
-	return 0;
+    }
+    return 0;
 }

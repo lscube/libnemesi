@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,12 +28,12 @@
 
 #include <nemesi/rtsp.h>
 
-#define RET_ERR(ret_level, ...)	do { \
-					nms_printf(ret_level, __VA_ARGS__ ); \
-					free(rtsp_th->comm); \
-					free(rtsp_th); \
-					return NULL; \
-				} while (0)
+#define RET_ERR(ret_level, ...)    do { \
+                    nms_printf(ret_level, __VA_ARGS__ ); \
+                    free(rtsp_th->comm); \
+                    free(rtsp_th); \
+                    return NULL; \
+                } while (0)
 
 /*!
  * \brief Function called to start rtsp lib.
@@ -46,149 +46,149 @@
  */
 rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 {
-	rtsp_thread *rtsp_th;
-	pthread_attr_t rtsp_attr;
-	pthread_mutexattr_t mutex_attr;
-	// pthread_condattr_t cond_attr;
-	int n;
+    rtsp_thread *rtsp_th;
+    pthread_attr_t rtsp_attr;
+    pthread_mutexattr_t mutex_attr;
+    // pthread_condattr_t cond_attr;
+    int n;
 
-	// if ( !(rtsp_th = (rtsp_thread *) malloc(sizeof(rtsp_thread))) )
-	// We use calloc so that we are not in need to initialize to zero below
-	if (!(rtsp_th = (rtsp_thread *) calloc(1, sizeof(rtsp_thread)))) {
-		nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
-		return NULL;
-	}
+    // if ( !(rtsp_th = (rtsp_thread *) malloc(sizeof(rtsp_thread))) )
+    // We use calloc so that we are not in need to initialize to zero below
+    if (!(rtsp_th = (rtsp_thread *) calloc(1, sizeof(rtsp_thread)))) {
+        nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
+        return NULL;
+    }
 
-	/* not needed if we use calloc
-	 * rtsp_th->comm = NULL;
-	 */
+    /* not needed if we use calloc
+     * rtsp_th->comm = NULL;
+     */
 
-	if (pipe(rtsp_th->pipefd) < 0)
-		RET_ERR(NMSML_FATAL, "Could not create pipe\n");
+    if (pipe(rtsp_th->pipefd) < 0)
+        RET_ERR(NMSML_FATAL, "Could not create pipe\n");
 
-	if ((n = pthread_mutexattr_init(&mutex_attr)) > 0)
-		RET_ERR(NMSML_FATAL, "Could not init mutex attributes\n");
+    if ((n = pthread_mutexattr_init(&mutex_attr)) > 0)
+        RET_ERR(NMSML_FATAL, "Could not init mutex attributes\n");
 
 #if 0
-#ifdef	_POSIX_THREAD_PROCESS_SHARED
-	if ((n =
-	     pthread_mutexattr_setpshared(&mutex_attr,
-					  PTHREAD_PROCESS_SHARED)) > 0)
-		return NULL;
+#ifdef    _POSIX_THREAD_PROCESS_SHARED
+    if ((n =
+         pthread_mutexattr_setpshared(&mutex_attr,
+                      PTHREAD_PROCESS_SHARED)) > 0)
+        return NULL;
 #endif
 #endif
-	if ((n = pthread_mutex_init(&(rtsp_th->comm_mutex), &mutex_attr)) > 0)
-		RET_ERR(NMSML_FATAL, "Could not init mutex\n");
+    if ((n = pthread_mutex_init(&(rtsp_th->comm_mutex), &mutex_attr)) > 0)
+        RET_ERR(NMSML_FATAL, "Could not init mutex\n");
 
-	/* // we give NULL to cond_init: uncommet this (and the declaration above)
-	 * if you want to give different attributes to cond
-	 if (pthread_condattr_init(&cond_attr) > 0)
-	 RET_ERR(NMSML_FATAL, "Could not init condition variable attributes\n");
-	 */
-	if (pthread_cond_init(&(rtsp_th->cond_busy), NULL /*&cond_attr */ ) >
-	    0)
-		RET_ERR(NMSML_FATAL, "Could not init condition variable\n");
+    /* // we give NULL to cond_init: uncommet this (and the declaration above)
+     * if you want to give different attributes to cond
+     if (pthread_condattr_init(&cond_attr) > 0)
+     RET_ERR(NMSML_FATAL, "Could not init condition variable attributes\n");
+     */
+    if (pthread_cond_init(&(rtsp_th->cond_busy), NULL /*&cond_attr */ ) >
+        0)
+        RET_ERR(NMSML_FATAL, "Could not init condition variable\n");
 
-	if ((rtsp_th->comm =
-	     (struct command *) malloc(sizeof(struct command))) == NULL)
-		RET_ERR(NMSML_FATAL, "Could not alloc memory\n");
+    if ((rtsp_th->comm =
+         (struct command *) malloc(sizeof(struct command))) == NULL)
+        RET_ERR(NMSML_FATAL, "Could not alloc memory\n");
 
-	nmst_init(&rtsp_th->transport);
-	rtsp_th->default_rtp_proto = UDP;
-	rtsp_th->status = INIT;
-#if 0				// we do not need to initilize to zero because of calloc usage
-	rtsp_th->descr_fmt = 0;
-	memset(rtsp_th->waiting_for, '\0', sizeof(rtsp_th->waiting_for));
-	rtsp_th->busy = 0;
-	rtsp_th->urlname = NULL;
-	(rtsp_th->in_buffer).size = 0;
-	(rtsp_th->in_buffer).first_pkt_size = 0;
-	(rtsp_th->in_buffer).data = NULL;
-	rtsp_th->rtsp_queue = NULL;
-	rtsp_th->force_rtp_port = 0;
+    nmst_init(&rtsp_th->transport);
+    rtsp_th->default_rtp_proto = UDP;
+    rtsp_th->status = INIT;
+#if 0                // we do not need to initilize to zero because of calloc usage
+    rtsp_th->descr_fmt = 0;
+    memset(rtsp_th->waiting_for, '\0', sizeof(rtsp_th->waiting_for));
+    rtsp_th->busy = 0;
+    rtsp_th->urlname = NULL;
+    (rtsp_th->in_buffer).size = 0;
+    (rtsp_th->in_buffer).first_pkt_size = 0;
+    (rtsp_th->in_buffer).data = NULL;
+    rtsp_th->rtsp_queue = NULL;
+    rtsp_th->force_rtp_port = 0;
 #endif
-	CC_ACCEPT_ALL(rtsp_th->accepted_CC);
+    CC_ACCEPT_ALL(rtsp_th->accepted_CC);
 
-	rtsp_th->hints = hints;
-	// check for the exactness of values hinted
-	if (hints) {		// hints given
-		// set first RTP port
-		if (hints->first_rtp_port > 0) {
-			if (hints->first_rtp_port < RTSP_MIN_RTP_PORT)
-				RET_ERR(NMSML_ERR,
-					"For security reasons RTSP Library imposes that port number should be greater than %d\n",
-					RTSP_MIN_RTP_PORT);
-			else if (hints->first_rtp_port > 65535)
-				RET_ERR(NMSML_ERR,
-					"Port number can't be greater than 65535\n");
-			rtsp_th->force_rtp_port = hints->first_rtp_port;
-			nms_printf(NMSML_WARN,
-				   "RTP ports forced by user (not randomly generated)\n");
-		}
-		//force RTSP protocol
-		switch (hints->pref_rtsp_proto) {
-		case SOCK_NONE:
-		case TCP:
-			rtsp_th->transport.type = TCP;
-			break;
+    rtsp_th->hints = hints;
+    // check for the exactness of values hinted
+    if (hints) {        // hints given
+        // set first RTP port
+        if (hints->first_rtp_port > 0) {
+            if (hints->first_rtp_port < RTSP_MIN_RTP_PORT)
+                RET_ERR(NMSML_ERR,
+                    "For security reasons RTSP Library imposes that port number should be greater than %d\n",
+                    RTSP_MIN_RTP_PORT);
+            else if (hints->first_rtp_port > 65535)
+                RET_ERR(NMSML_ERR,
+                    "Port number can't be greater than 65535\n");
+            rtsp_th->force_rtp_port = hints->first_rtp_port;
+            nms_printf(NMSML_WARN,
+                   "RTP ports forced by user (not randomly generated)\n");
+        }
+        //force RTSP protocol
+        switch (hints->pref_rtsp_proto) {
+        case SOCK_NONE:
+        case TCP:
+            rtsp_th->transport.type = TCP;
+            break;
 #ifdef HAVE_SCTP_NEMESI
-		case SCTP:
-			rtsp_th->transport.type = SCTP;
-			break;
+        case SCTP:
+            rtsp_th->transport.type = SCTP;
+            break;
 #endif
-		default:
-			RET_ERR(NMSML_ERR, "RTSP protocol not supported!\n");
-		}
-		//force RTP Protocol
-		switch (hints->pref_rtp_proto) {
-		case SOCK_NONE:
-		case UDP:
-			rtsp_th->default_rtp_proto = UDP;
-			break;
-		case TCP:
-			if (rtsp_th->transport.type == TCP)
-				rtsp_th->default_rtp_proto = TCP;
-			else
-				RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
-			break;
+        default:
+            RET_ERR(NMSML_ERR, "RTSP protocol not supported!\n");
+        }
+        //force RTP Protocol
+        switch (hints->pref_rtp_proto) {
+        case SOCK_NONE:
+        case UDP:
+            rtsp_th->default_rtp_proto = UDP;
+            break;
+        case TCP:
+            if (rtsp_th->transport.type == TCP)
+                rtsp_th->default_rtp_proto = TCP;
+            else
+                RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
+            break;
 #ifdef HAVE_SCTP_NEMESI
-		case SCTP:
-			if (rtsp_th->transport.type == SCTP)
-				rtsp_th->default_rtp_proto = SCTP;
-			else
-				RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
-			break;
+        case SCTP:
+            if (rtsp_th->transport.type == SCTP)
+                rtsp_th->default_rtp_proto = SCTP;
+            else
+                RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
+            break;
 #endif
-		default:
-			RET_ERR(NMSML_ERR, "RTP protocol not supported!\n");
-		}
-	}
-	// hook to rtp lib
-	if (!(rtsp_th->rtp_th = rtp_init()))
-		RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n");
+        default:
+            RET_ERR(NMSML_ERR, "RTP protocol not supported!\n");
+        }
+    }
+    // hook to rtp lib
+    if (!(rtsp_th->rtp_th = rtp_init()))
+        RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n");
 
-	cmd[0] = open_cmd;
-	cmd[1] = play_cmd;
-	cmd[2] = pause_cmd;
-	cmd[3] = stop_cmd;
-	cmd[4] = close_cmd;
+    cmd[0] = open_cmd;
+    cmd[1] = play_cmd;
+    cmd[2] = pause_cmd;
+    cmd[3] = stop_cmd;
+    cmd[4] = close_cmd;
 
-	state_machine[0] = init_state;
-	state_machine[1] = ready_state;
-	state_machine[2] = playing_state;
-	state_machine[3] = recording_state;
+    state_machine[0] = init_state;
+    state_machine[1] = ready_state;
+    state_machine[2] = playing_state;
+    state_machine[3] = recording_state;
 
-	// Creation of RTSP Thread
-	pthread_attr_init(&rtsp_attr);
-	if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) !=
-	    0)
-		RET_ERR(NMSML_FATAL, "Cannot set RTSP Thread attributes!\n");
+    // Creation of RTSP Thread
+    pthread_attr_init(&rtsp_attr);
+    if (pthread_attr_setdetachstate(&rtsp_attr, PTHREAD_CREATE_JOINABLE) !=
+        0)
+        RET_ERR(NMSML_FATAL, "Cannot set RTSP Thread attributes!\n");
 
-	if ((n =
-	     pthread_create(&rtsp_th->rtsp_tid, NULL, &rtsp,
-			    (void *) rtsp_th)) > 0)
-		RET_ERR(NMSML_FATAL, "Cannot create RTSP Thread: %s\n",
-			strerror(n));
+    if ((n =
+         pthread_create(&rtsp_th->rtsp_tid, NULL, &rtsp,
+                (void *) rtsp_th)) > 0)
+        RET_ERR(NMSML_FATAL, "Cannot create RTSP Thread: %s\n",
+            strerror(n));
 
-	return (rtsp_ctrl *) rtsp_th;
+    return (rtsp_ctrl *) rtsp_th;
 }

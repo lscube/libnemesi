@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,17 +52,17 @@
 #endif
 
 #define AUDIO_SETTINGS \
-	uint32 rate; \
-	uint8 channels; \
-	uint32 format;
+    uint32 rate; \
+    uint8 channels; \
+    uint32 format;
 
 typedef struct {
-	// True (1) if initialized
-	uint8 init;
-	// audio settings
-	AUDIO_SETTINGS
-	//! Functions for the specific audio output driver
-	NMSAFunctions *functions;
+    // True (1) if initialized
+    uint8 init;
+    // audio settings
+    AUDIO_SETTINGS
+    //! Functions for the specific audio output driver
+    NMSAFunctions *functions;
 } NMSAudio;
 
 /* Audio Buffer defines */
@@ -73,15 +73,15 @@ typedef struct {
 #define MAX_AUDIO_SYS_BUFF 0.9 /* max buffer percentage */
 
 typedef struct audio_buff {
-	uint8 *audio_data; //!< audio buffer data
-/*	uint8 audio_data[AUDIO_BUFF_SIZE]; */
-	uint32 buff_size; //!< total size of allocated buffer
-	uint32 read_pos; //!< read position in ring buffer
-	uint32 write_pos; //!< write position in ring buffer
-	uint32 valid_data; //!< position of buffer fill level
-	uint32 len; //!< len of data in buffer
-	pthread_mutex_t syn;
-	pthread_cond_t cond_full;
+    uint8 *audio_data; //!< audio buffer data
+/*    uint8 audio_data[AUDIO_BUFF_SIZE]; */
+    uint32 buff_size; //!< total size of allocated buffer
+    uint32 read_pos; //!< read position in ring buffer
+    uint32 write_pos; //!< write position in ring buffer
+    uint32 valid_data; //!< position of buffer fill level
+    uint32 len; //!< len of data in buffer
+    pthread_mutex_t syn;
+    pthread_cond_t cond_full;
 } NMSAudioBuffer;
 
 NMSAudioBuffer *ab_init(uint32);

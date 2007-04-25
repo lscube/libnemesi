@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,60 +56,60 @@
 #endif
 
 #ifndef HAVE_STRUCT_SOCKADDR_STORAGE
-#define MAXSOCKADDR 128		/*!< max socket address structure size */
+#define MAXSOCKADDR 128        /*!< max socket address structure size */
 struct sockaddr_storage {
-	char padding[MAXSOCKADDR];
+    char padding[MAXSOCKADDR];
 };
-#endif				// HAVE_STRUCT_SOCKADDR_STORAGE
+#endif                // HAVE_STRUCT_SOCKADDR_STORAGE
 
 typedef struct {
-	struct sockaddr *addr;
-	socklen_t addr_len;
+    struct sockaddr *addr;
+    socklen_t addr_len;
 } nms_sockaddr;
 
 typedef struct {
-	sa_family_t family;
-	union {
-		struct in_addr in;
-		struct in6_addr in6;
-	} addr;
+    sa_family_t family;
+    union {
+        struct in_addr in;
+        struct in6_addr in6;
+    } addr;
 } nms_addr;
 
 enum sock_types {
-	SOCK_NONE = 0,
-	TCP,
-	UDP,
-	SCTP
+    SOCK_NONE = 0,
+    TCP,
+    UDP,
+    SCTP
 };
 
 typedef struct {
-	enum sock_types type;
-	int fd;		/*!< file descriptor for reading the data to and from the server */
-	char *buffer;	/*!< for storing not completely transmitted data */
-	union {
-		struct {
-			nms_addr srcaddr;	//!< stored in network order
-			nms_addr dstaddr; 	//!< stored in network order
-		} udp;
-		struct {
-			uint8 ilvd;		//!< stored in host order
-		} tcp;
-		struct {
-			uint16 stream;		//!< stored in host order
-		} sctp;
-	} u;
-	/*human readable datas */
-	in_port_t local_port;			//!< stored in host order
-	in_port_t remote_port;			//!< stored in host order
-	in_port_t multicast_port;		//!< stored in host order
-	char *remote_host;
+    enum sock_types type;
+    int fd;        /*!< file descriptor for reading the data to and from the server */
+    char *buffer;    /*!< for storing not completely transmitted data */
+    union {
+        struct {
+            nms_addr srcaddr;    //!< stored in network order
+            nms_addr dstaddr;     //!< stored in network order
+        } udp;
+        struct {
+            uint8 ilvd;        //!< stored in host order
+        } tcp;
+        struct {
+            uint16 stream;        //!< stored in host order
+        } sctp;
+    } u;
+    /*human readable datas */
+    in_port_t local_port;            //!< stored in host order
+    in_port_t remote_port;            //!< stored in host order
+    in_port_t multicast_port;        //!< stored in host order
+    char *remote_host;
  /**/} nms_transport;
 
-#define WSOCK_ERRFAMILYUNKNOWN	-1
-#define WSOCK_ERRSIZE	1
-#define WSOCK_ERRFAMILY	2
-#define WSOCK_ERRADDR	3
-#define WSOCK_ERRPORT	4
+#define WSOCK_ERRFAMILYUNKNOWN    -1
+#define WSOCK_ERRSIZE    1
+#define WSOCK_ERRFAMILY    2
+#define WSOCK_ERRADDR    3
+#define WSOCK_ERRPORT    4
 
 int gethostinfo(struct addrinfo **, char *, char *, struct addrinfo *);
 int tcp_open(struct sockaddr *, int);
@@ -118,9 +118,9 @@ int server_create(char *, char *, int *);
 int tcp_write(int, void *, size_t);
 int tcp_read(int, void *, size_t);
 int sock_cmp_addr(const struct sockaddr *,
-		  const struct sockaddr * /*, socklen_t */ );
+          const struct sockaddr * /*, socklen_t */ );
 int sock_cmp_port(const struct sockaddr *,
-		  const struct sockaddr * /*, socklen_t */ );
+          const struct sockaddr * /*, socklen_t */ );
 void sock_set_port(struct sockaddr *, /* socklen_t, */ int);
 void sock_set_addr(struct sockaddr *, /* socklen_t, */ const void *addr);
 uint16 sock_get_port(const struct sockaddr * /*, socklen_t */ );

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,23 +30,23 @@
 
 rtsp_medium *rtsp_med_create(int fd)
 {
-	rtsp_medium *rtsp_m;
-	struct sockaddr_storage localaddr, peeraddr;
-	nms_sockaddr local =
-	    { (struct sockaddr *) &localaddr, sizeof(localaddr) };
-	nms_sockaddr peer =
-	    { (struct sockaddr *) &peeraddr, sizeof(peeraddr) };
+    rtsp_medium *rtsp_m;
+    struct sockaddr_storage localaddr, peeraddr;
+    nms_sockaddr local =
+        { (struct sockaddr *) &localaddr, sizeof(localaddr) };
+    nms_sockaddr peer =
+        { (struct sockaddr *) &peeraddr, sizeof(peeraddr) };
 
-	getsockname(fd, (struct sockaddr *) local.addr, &local.addr_len);
-	getpeername(fd, (struct sockaddr *) peer.addr, &peer.addr_len);
+    getsockname(fd, (struct sockaddr *) local.addr, &local.addr_len);
+    getpeername(fd, (struct sockaddr *) peer.addr, &peer.addr_len);
 
-	if ((rtsp_m = (rtsp_medium *) calloc(1, sizeof(rtsp_medium))) == NULL) {
-		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
-		return NULL;
-	}
+    if ((rtsp_m = (rtsp_medium *) calloc(1, sizeof(rtsp_medium))) == NULL) {
+        nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
+        return NULL;
+    }
 
-	if ((rtsp_m->rtp_sess = rtp_session_init(&local, &peer)) == NULL)
-		return NULL;
+    if ((rtsp_m->rtp_sess = rtp_session_init(&local, &peer)) == NULL)
+        return NULL;
 
-	return rtsp_m;
+    return rtsp_m;
 }

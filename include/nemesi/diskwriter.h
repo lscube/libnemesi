@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,10 +38,10 @@
 #define MAX_PT 127
 
 typedef struct {
-	char *basename;
-	CCTag *tag[MAX_PT+1];
-	char *ext[MAX_PT+1];
-	int fd[MAX_PT+1];
+    char *basename;
+    CCTag *tag[MAX_PT+1];
+    char *ext[MAX_PT+1];
+    int fd[MAX_PT+1];
 } NMSDiskWriter;
 
 NMSDiskWriter *diskwriter_init(const char *);

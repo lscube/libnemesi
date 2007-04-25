@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2006 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,15 +32,15 @@
 #include <nemesi/rtp.h>
 
 typedef struct {
-	int16 static_pt;	// -1 terminated list of served static payload numbers (MUST be <96)
-	char *mime[];		// NULL terminated list of served mime tipes in the form "type/subtype"
+    int16 static_pt;    // -1 terminated list of served static payload numbers (MUST be <96)
+    char *mime[];        // NULL terminated list of served mime tipes in the form "type/subtype"
 } rtpparser_info;
 
 typedef struct {
-	rtpparser_info *served;
-	rtp_parser_init init;
-	rtp_parser parse;
-	rtp_parser_uninit uninit;
+    rtpparser_info *served;
+    rtp_parser_init init;
+    rtp_parser parse;
+    rtp_parser_uninit uninit;
 } rtpparser;
 
-#endif				/* RTPFRAMERS_H_ */
+#endif                /* RTPFRAMERS_H_ */

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,29 +30,29 @@
 
 int rtp_thread_create(rtp_thread * rtp_th)
 {
-	int n;
-	pthread_attr_t rtp_attr;
-	rtp_session *rtp_sess;
-	rtp_fmts_list *fmt;
+    int n;
+    pthread_attr_t rtp_attr;
+    rtp_session *rtp_sess;
+    rtp_fmts_list *fmt;
 
-	pthread_attr_init(&rtp_attr);
-	if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) !=
-	    0)
-		return nms_printf(NMSML_FATAL,
-				  "Cannot set RTP Thread attributes (detach state)\n");
+    pthread_attr_init(&rtp_attr);
+    if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) !=
+        0)
+        return nms_printf(NMSML_FATAL,
+                  "Cannot set RTP Thread attributes (detach state)\n");
 
-	if ((n =
-	     pthread_create(&rtp_th->rtp_tid, &rtp_attr, &rtp,
-			    (void *) rtp_th)) > 0)
-		return nms_printf(NMSML_FATAL, "%s\n", strerror(n));
+    if ((n =
+         pthread_create(&rtp_th->rtp_tid, &rtp_attr, &rtp,
+                (void *) rtp_th)) > 0)
+        return nms_printf(NMSML_FATAL, "%s\n", strerror(n));
 
-	for (rtp_sess = rtp_th->rtp_sess_head; rtp_sess;
-	     rtp_sess = rtp_sess->next) {
-		for (fmt = rtp_sess->announced_fmts; fmt; fmt = fmt->next)
-			if (rtp_sess->parsers_inits[fmt->pt])
-				rtp_sess->parsers_inits[fmt->pt] (rtp_sess,
-								  fmt->pt);
-	}
+    for (rtp_sess = rtp_th->rtp_sess_head; rtp_sess;
+         rtp_sess = rtp_sess->next) {
+        for (fmt = rtp_sess->announced_fmts; fmt; fmt = fmt->next)
+            if (rtp_sess->parsers_inits[fmt->pt])
+                rtp_sess->parsers_inits[fmt->pt] (rtp_sess,
+                                  fmt->pt);
+    }
 
-	return 0;
+    return 0;
 }

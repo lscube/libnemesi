@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,11 +43,11 @@
 #define DEF_SYSBUFF_MS 500
 
 typedef struct {
-	double elapsed;
-	uint32 sysbuff_ms;
-	NMSAudio *audio;
-	NMSVideo *video;
-	NMSDiskWriter *diskwriter;
+    double elapsed;
+    uint32 sysbuff_ms;
+    NMSAudio *audio;
+    NMSVideo *video;
+    NMSDiskWriter *diskwriter;
 } NMSOutput;
 
 OUTPUT_EXTERN NMSOutput *nmsoutc;

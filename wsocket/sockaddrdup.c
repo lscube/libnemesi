@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,10 +31,10 @@
 int sockaddrdup(nms_sockaddr * dst, nms_sockaddr * src)
 {
 
-	if (!(dst->addr = malloc(src->addr_len)))
-		return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
-	memcpy(dst->addr, src->addr, src->addr_len);
-	dst->addr_len = src->addr_len;
+    if (!(dst->addr = malloc(src->addr_len)))
+        return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
+    memcpy(dst->addr, src->addr, src->addr_len);
+    dst->addr_len = src->addr_len;
 
-	return 0;
+    return 0;
 }

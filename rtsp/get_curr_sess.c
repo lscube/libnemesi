@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,51 +32,51 @@
 
 void *get_curr_sess(int cmd, ...)
 {
-	va_list ap;
-	rtsp_thread *rtsp_th;
-	static rtsp_session *static_sess = NULL;
-	static rtsp_medium *static_med = NULL;
+    va_list ap;
+    rtsp_thread *rtsp_th;
+    static rtsp_session *static_sess = NULL;
+    static rtsp_medium *static_med = NULL;
 
-	switch (cmd) {
-	case GCS_INIT:
-		va_start(ap, cmd);
-		rtsp_th = va_arg(ap, rtsp_thread *);
-		static_sess = rtsp_th->rtsp_queue;
-		static_med = static_sess->media_queue;
-		va_end(ap);
-		break;
-	case GCS_NXT_SESS:
-		if (static_sess)
-			static_sess = static_sess->next;
-		if (static_sess)
-			static_med = static_sess->media_queue;
-		else
-			static_med = NULL;
-	case GCS_CUR_SESS:
-		return static_sess;
-		break;
-	case GCS_NXT_MED:
-		/* sessione corrente, prossimo media */
-		if (static_med)
-			static_med = static_med->next;
-		/* prossima sessione, primo media */
-		if ((!static_med) && static_sess) {
-			static_sess = static_sess->next;
-			if (static_sess)
-				static_med = static_sess->media_queue;
-		}
-	case GCS_CUR_MED:
-		return static_med;
-		break;
-	case GCS_UNINIT:
-		static_sess = NULL;
-		static_med = NULL;
-		break;
-	default:
-		break;
-	}
+    switch (cmd) {
+    case GCS_INIT:
+        va_start(ap, cmd);
+        rtsp_th = va_arg(ap, rtsp_thread *);
+        static_sess = rtsp_th->rtsp_queue;
+        static_med = static_sess->media_queue;
+        va_end(ap);
+        break;
+    case GCS_NXT_SESS:
+        if (static_sess)
+            static_sess = static_sess->next;
+        if (static_sess)
+            static_med = static_sess->media_queue;
+        else
+            static_med = NULL;
+    case GCS_CUR_SESS:
+        return static_sess;
+        break;
+    case GCS_NXT_MED:
+        /* sessione corrente, prossimo media */
+        if (static_med)
+            static_med = static_med->next;
+        /* prossima sessione, primo media */
+        if ((!static_med) && static_sess) {
+            static_sess = static_sess->next;
+            if (static_sess)
+                static_med = static_sess->media_queue;
+        }
+    case GCS_CUR_MED:
+        return static_med;
+        break;
+    case GCS_UNINIT:
+        static_sess = NULL;
+        static_med = NULL;
+        break;
+    default:
+        break;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 // XXX: OLD get_curr_session FUNCTION
@@ -108,43 +108,43 @@ void *get_curr_sess(int cmd, ...)
 * */
 
 int get_curr_sess(rtsp_thread * rtsp_th, rtsp_session ** rtsp_sess,
-		  rtsp_medium ** rtsp_med)
+          rtsp_medium ** rtsp_med)
 {
-	static rtsp_session *static_sess = NULL;
-	static rtsp_medium *static_med = NULL;
+    static rtsp_session *static_sess = NULL;
+    static rtsp_medium *static_med = NULL;
 
-	if ((rtsp_th == NULL) && (rtsp_sess == NULL) && (rtsp_med == NULL)) {
-		static_sess = NULL;
-		static_med = NULL;
-		return 0;
-	}
+    if ((rtsp_th == NULL) && (rtsp_sess == NULL) && (rtsp_med == NULL)) {
+        static_sess = NULL;
+        static_med = NULL;
+        return 0;
+    }
 
-	if (rtsp_th != NULL) {
+    if (rtsp_th != NULL) {
 
-		/* Prima chiamata: prima sessione, primo media */
-		if ((static_sess == NULL) && (static_med == NULL)) {
-			static_sess = rtsp_th->rtsp_queue;
-			static_med = static_sess->media_queue;
-			return 0;
-		} else {	/* Chiamate successive */
-			/* sessione corrente, prossimo media */
-			if (static_med->next != NULL)
-				static_med = static_med->next;
-			/* prossima sessione, primo media */
-			else if (static_sess->next != NULL) {
-				static_sess = static_sess->next;
-				static_med = static_sess->media_queue;
-			} else
-				return 1;
-		}
-	}
-	if (rtsp_sess != NULL)
-		if ((*rtsp_sess = static_sess) == NULL)
-			return 1;
-	if (rtsp_med != NULL)
-		if ((*rtsp_med = static_med) == NULL)
-			return 1;
+        /* Prima chiamata: prima sessione, primo media */
+        if ((static_sess == NULL) && (static_med == NULL)) {
+            static_sess = rtsp_th->rtsp_queue;
+            static_med = static_sess->media_queue;
+            return 0;
+        } else {    /* Chiamate successive */
+            /* sessione corrente, prossimo media */
+            if (static_med->next != NULL)
+                static_med = static_med->next;
+            /* prossima sessione, primo media */
+            else if (static_sess->next != NULL) {
+                static_sess = static_sess->next;
+                static_med = static_sess->media_queue;
+            } else
+                return 1;
+        }
+    }
+    if (rtsp_sess != NULL)
+        if ((*rtsp_sess = static_sess) == NULL)
+            return 1;
+    if (rtsp_med != NULL)
+        if ((*rtsp_med = static_med) == NULL)
+            return 1;
 
-	return 0;
+    return 0;
 }
-#endif				// if 0
+#endif                // if 0

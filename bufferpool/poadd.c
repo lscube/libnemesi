@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,59 +46,59 @@
 * */
 int poadd(playout_buff * po, int index, uint32 cycles)
 {
-	int i;
-	uint32 cseq;
+    int i;
+    uint32 cseq;
 
-	pthread_mutex_lock(&(po->po_mutex));
+    pthread_mutex_lock(&(po->po_mutex));
 
-	i = po->pohead;
+    i = po->pohead;
 
-	cseq =
-	    (uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + index))->seq) +
-	    cycles;
-	while ((i != -1)
-	       && ((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) +
-		   po->cycles > cseq)) {
-		i = po->pobuff[i].next;
-	}
-	if ((i != -1)
-	    && (cseq ==
-		((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) +
-		 po->cycles))) {
-		pthread_mutex_unlock(&(po->po_mutex));
-		return PKT_DUPLICATED;
-	}
-	if (i == po->pohead) {	/* inserimento in testa */
-		po->pobuff[index].next = i;
-		po->pohead = index;
-		if (i == -1)
-			po->potail = index;
-		else
-			po->pobuff[i].prev = index;
-		po->pobuff[index].prev = -1;
-		po->cycles = cycles;
+    cseq =
+        (uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + index))->seq) +
+        cycles;
+    while ((i != -1)
+           && ((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) +
+           po->cycles > cseq)) {
+        i = po->pobuff[i].next;
+    }
+    if ((i != -1)
+        && (cseq ==
+        ((uint32) ntohs(((rtp_pkt *) (*(po->bufferpool) + i))->seq) +
+         po->cycles))) {
+        pthread_mutex_unlock(&(po->po_mutex));
+        return PKT_DUPLICATED;
+    }
+    if (i == po->pohead) {    /* inserimento in testa */
+        po->pobuff[index].next = i;
+        po->pohead = index;
+        if (i == -1)
+            po->potail = index;
+        else
+            po->pobuff[i].prev = index;
+        po->pobuff[index].prev = -1;
+        po->cycles = cycles;
 
-		po->pocount++;
-	} else {
-		if (i == -1) {	/* inserimento in coda */
-			i = po->potail;
-			po->potail = index;
-		} else		/* inserimento */
-			po->pobuff[po->pobuff[i].next].prev = index;
+        po->pocount++;
+    } else {
+        if (i == -1) {    /* inserimento in coda */
+            i = po->potail;
+            po->potail = index;
+        } else        /* inserimento */
+            po->pobuff[po->pobuff[i].next].prev = index;
 
-		po->pobuff[index].next = po->pobuff[i].next;
-		po->pobuff[i].next = index;
-		po->pobuff[index].prev = i;
+        po->pobuff[index].next = po->pobuff[i].next;
+        po->pobuff[i].next = index;
+        po->pobuff[index].prev = i;
 
-		po->pocount++;
+        po->pocount++;
 
-		pthread_mutex_unlock(&(po->po_mutex));
-		return PKT_MISORDERED;
-	}
+        pthread_mutex_unlock(&(po->po_mutex));
+        return PKT_MISORDERED;
+    }
 
 //      pthread_cond_signal(&(po->cond_empty));
 
-	pthread_mutex_unlock(&(po->po_mutex));
+    pthread_mutex_unlock(&(po->po_mutex));
 
-	return 0;
+    return 0;
 }

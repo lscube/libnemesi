@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,9 +44,9 @@
  * */
 int bprmv(buffer_pool * bp, playout_buff * po, int index)
 {
-	podel(po, index);
-	bpfree(bp, index);
-	pthread_cond_signal(&(bp->cond_full));
+    podel(po, index);
+    bpfree(bp, index);
+    pthread_cond_signal(&(bp->cond_full));
 
-	return 0;
+    return 0;
 }

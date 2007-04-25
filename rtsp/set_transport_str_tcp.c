@@ -6,10 +6,10 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
- *	Dario Gallucci - dario.gallucci@gmail.com
+ *      
+ *    Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
+ *    Dario Gallucci - dario.gallucci@gmail.com
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@
 
 int set_transport_str_tcp(rtp_session * rtp_sess, char *buff)
 {
-	uint8 ilvds[2];
+    uint8 ilvds[2];
 
-	sprintf(buff + strlen(buff), "unicast;");
+    sprintf(buff + strlen(buff), "unicast;");
 
-	if ( rtp_get_interleaved(rtp_sess, ilvds) == RTP_TRANSPORT_SET)
-		sprintf(buff+strlen(buff), "interleaved=%u-%u;", ilvds[0], ilvds[1]);
-	
-	return 0;
+    if ( rtp_get_interleaved(rtp_sess, ilvds) == RTP_TRANSPORT_SET)
+        sprintf(buff+strlen(buff), "interleaved=%u-%u;", ilvds[0], ilvds[1]);
+    
+    return 0;
 }

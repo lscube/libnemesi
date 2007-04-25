@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,32 +31,32 @@
 
 int pause_cmd(rtsp_thread * rtsp_th, ...)
 {
-	va_list ap;
-	char *args;
+    va_list ap;
+    char *args;
 
-	va_start(ap, rtsp_th);
-	args = va_arg(ap, char *);
+    va_start(ap, rtsp_th);
+    args = va_arg(ap, char *);
 
-	if (rtsp_th->status == INIT) {
-		nms_printf(NMSML_ERR, "Player not initialized!\n");
-		va_end(ap);
-		return 1;
-	}
-	if (rtsp_th->status == READY) {
-		nms_printf(NMSML_ERR,
-			   "I don't think you're yet playinq or recording\n");
-		va_end(ap);
-		return 0;
-	}
-	// get_curr_sess(NULL, NULL, NULL);
-	// get_curr_sess(GCS_UNINIT); // useless
-	// get_curr_sess(rtsp_th, NULL, NULL);
-	get_curr_sess(GCS_INIT, rtsp_th);
-	if (send_pause_request(rtsp_th, args)) {
-		va_end(ap);
-		return 1;
-	}
+    if (rtsp_th->status == INIT) {
+        nms_printf(NMSML_ERR, "Player not initialized!\n");
+        va_end(ap);
+        return 1;
+    }
+    if (rtsp_th->status == READY) {
+        nms_printf(NMSML_ERR,
+               "I don't think you're yet playinq or recording\n");
+        va_end(ap);
+        return 0;
+    }
+    // get_curr_sess(NULL, NULL, NULL);
+    // get_curr_sess(GCS_UNINIT); // useless
+    // get_curr_sess(rtsp_th, NULL, NULL);
+    get_curr_sess(GCS_INIT, rtsp_th);
+    if (send_pause_request(rtsp_th, args)) {
+        va_end(ap);
+        return 1;
+    }
 
-	va_end(ap);
-	return 0;
+    va_end(ap);
+    return 0;
 }

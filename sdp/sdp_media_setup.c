@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,110 +35,110 @@
 
 sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
 {
-	sdp_medium_info *queue = NULL, *curr_sdp_m = NULL;
-	char *tkn = NULL;
-	char error = 0;		// error flag
-	// for cc tagging
-	int pt;
-	char *endtkn = NULL;
+    sdp_medium_info *queue = NULL, *curr_sdp_m = NULL;
+    char *tkn = NULL;
+    char error = 0;        // error flag
+    // for cc tagging
+    int pt;
+    char *endtkn = NULL;
 
-	do {
-		if (tkn == NULL)
-			tkn = strtok(*descr, "\r\n");
-		else
-			tkn = strtok(NULL, "\r\n");
-		if (tkn == NULL) {
-			nms_printf(NMSML_ERR,
-				   "Invalid SDP Media description section.\n");
-			return NULL;
-		}
-		switch (*tkn) {
-		case 'm':	/* create struct for new medium */
-			if (!curr_sdp_m) {	// first medium description
-				// we use calloc, so it's all already initialized to NULL
-				if (!
-				    (queue = curr_sdp_m =
-				     (sdp_medium_info *) calloc(1,
-								sizeof
-								(sdp_medium_info))))
-					return NULL;
-			} else {	// not first medium in sdp session
-				// we use calloc, so it's all already initialized to NULL
-				if (!
-				    (curr_sdp_m->next =
-				     (sdp_medium_info *) calloc(1,
-								sizeof
-								(sdp_medium_info))))
-				{
-					error = 1;
-					break;
-					// return NULL;
-				}
-				curr_sdp_m = curr_sdp_m->next;
-			}
-			curr_sdp_m->m = tkn + 2;
-			if (sdp_parse_m_descr(curr_sdp_m, curr_sdp_m->m))
-				error = 1;
-			break;
-		case 'i':
-			curr_sdp_m->i = tkn + 2;
-			break;
-		case 'c':
-			curr_sdp_m->c = tkn + 2;
-			break;
-		case 'b':
-			curr_sdp_m->b = tkn + 2;
-			break;
-		case 'k':
-			curr_sdp_m->k = tkn + 2;
-			break;
-		case 'a':
-			tkn += 2;
-			if (sdp_set_attr(&(curr_sdp_m->attr_list), tkn)) {
-				nms_printf(NMSML_ERR,
-					   "Error setting SDP media atrtibute\n");
-				error = 1;
-				break;
-				// return NULL;
-			}
-			if (issdplicense(tkn)) {
-				if (!curr_sdp_m->cc)
-					if (!
-					    (curr_sdp_m->cc =
-					     cc_newlicense())) {
-						nms_printf(NMSML_ERR,
-							   "Could not get new CC license struct\n");
-						error = 1;
-						break;
-						// return NULL;
-					}
-				if (cc_set_sdplicense(curr_sdp_m->cc, tkn)) {
-					error = 1;
-					break;
-					// return NULL;
-				}
-			}
-			break;
-		}
-	} while ((!error) && ((tkn + strlen(tkn) - *descr + 2) < descr_len));
-	*descr = tkn;
+    do {
+        if (tkn == NULL)
+            tkn = strtok(*descr, "\r\n");
+        else
+            tkn = strtok(NULL, "\r\n");
+        if (tkn == NULL) {
+            nms_printf(NMSML_ERR,
+                   "Invalid SDP Media description section.\n");
+            return NULL;
+        }
+        switch (*tkn) {
+        case 'm':    /* create struct for new medium */
+            if (!curr_sdp_m) {    // first medium description
+                // we use calloc, so it's all already initialized to NULL
+                if (!
+                    (queue = curr_sdp_m =
+                     (sdp_medium_info *) calloc(1,
+                                sizeof
+                                (sdp_medium_info))))
+                    return NULL;
+            } else {    // not first medium in sdp session
+                // we use calloc, so it's all already initialized to NULL
+                if (!
+                    (curr_sdp_m->next =
+                     (sdp_medium_info *) calloc(1,
+                                sizeof
+                                (sdp_medium_info))))
+                {
+                    error = 1;
+                    break;
+                    // return NULL;
+                }
+                curr_sdp_m = curr_sdp_m->next;
+            }
+            curr_sdp_m->m = tkn + 2;
+            if (sdp_parse_m_descr(curr_sdp_m, curr_sdp_m->m))
+                error = 1;
+            break;
+        case 'i':
+            curr_sdp_m->i = tkn + 2;
+            break;
+        case 'c':
+            curr_sdp_m->c = tkn + 2;
+            break;
+        case 'b':
+            curr_sdp_m->b = tkn + 2;
+            break;
+        case 'k':
+            curr_sdp_m->k = tkn + 2;
+            break;
+        case 'a':
+            tkn += 2;
+            if (sdp_set_attr(&(curr_sdp_m->attr_list), tkn)) {
+                nms_printf(NMSML_ERR,
+                       "Error setting SDP media atrtibute\n");
+                error = 1;
+                break;
+                // return NULL;
+            }
+            if (issdplicense(tkn)) {
+                if (!curr_sdp_m->cc)
+                    if (!
+                        (curr_sdp_m->cc =
+                         cc_newlicense())) {
+                        nms_printf(NMSML_ERR,
+                               "Could not get new CC license struct\n");
+                        error = 1;
+                        break;
+                        // return NULL;
+                    }
+                if (cc_set_sdplicense(curr_sdp_m->cc, tkn)) {
+                    error = 1;
+                    break;
+                    // return NULL;
+                }
+            }
+            break;
+        }
+    } while ((!error) && ((tkn + strlen(tkn) - *descr + 2) < descr_len));
+    *descr = tkn;
 
-	if (error) {		// there was an error?
-		sdp_media_destroy(queue);
-		return NULL;
-	} else {		// setup CC tags for disk writing
-		for (curr_sdp_m = queue; curr_sdp_m;
-		     curr_sdp_m = curr_sdp_m->next) {
-			for (tkn = curr_sdp_m->fmts; *tkn; tkn = endtkn) {
-				for (; *tkn == ' '; tkn++);	// skip spaces
-				pt = strtol(tkn, &endtkn, 10);
-				if (tkn != endtkn)
-					cc_setag(pt, curr_sdp_m->cc);
-				else
-					break;
-			}
-		}
-	}
+    if (error) {        // there was an error?
+        sdp_media_destroy(queue);
+        return NULL;
+    } else {        // setup CC tags for disk writing
+        for (curr_sdp_m = queue; curr_sdp_m;
+             curr_sdp_m = curr_sdp_m->next) {
+            for (tkn = curr_sdp_m->fmts; *tkn; tkn = endtkn) {
+                for (; *tkn == ' '; tkn++);    // skip spaces
+                pt = strtol(tkn, &endtkn, 10);
+                if (tkn != endtkn)
+                    cc_setag(pt, curr_sdp_m->cc);
+                else
+                    break;
+            }
+        }
+    }
 
-	return queue;
+    return queue;
 }

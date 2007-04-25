@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,16 +30,16 @@
 
 int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
-	rtp_pkt *pkt;
+    rtp_pkt *pkt;
 
-	if (!(pkt = rtp_get_pkt(stm_src, NULL)))
-		return RTP_BUFF_EMPTY;
+    if (!(pkt = rtp_get_pkt(stm_src, NULL)))
+        return RTP_BUFF_EMPTY;
 
-	fr->pt = RTP_PKT_PT(pkt);
-	fr->timestamp = RTP_PKT_TS(pkt);
-	fr->time_sec =
-	    ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
-	    (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
+    fr->pt = RTP_PKT_PT(pkt);
+    fr->timestamp = RTP_PKT_TS(pkt);
+    fr->time_sec =
+        ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
+        (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
 
-	return stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config);
+    return stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config);
 }

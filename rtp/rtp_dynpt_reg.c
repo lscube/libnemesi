@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
+ *      
  *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,14 +30,14 @@
 
 int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime)
 {
-	if (rtp_dynpt_encname(rtp_sess->ptdefs, pt, mime))
-		return RTP_ERROR;
+    if (rtp_dynpt_encname(rtp_sess->ptdefs, pt, mime))
+        return RTP_ERROR;
 
-	if (rtp_parser_reg(rtp_sess, pt, mime))
-		return RTP_ERROR;
+    if (rtp_parser_reg(rtp_sess, pt, mime))
+        return RTP_ERROR;
 
-	nms_printf(NMSML_DBG2, "registered %s mime for %d payload type\n",
-		   mime, pt);
+    nms_printf(NMSML_DBG2, "registered %s mime for %d payload type\n",
+           mime, pt);
 
-	return RTP_OK;
+    return RTP_OK;
 }

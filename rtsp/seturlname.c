@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,35 +30,35 @@
 
 int seturlname(rtsp_thread * rtsp_th, char *urlname)
 {
-	char *server = NULL, *port = NULL, *path = NULL;
+    char *server = NULL, *port = NULL, *path = NULL;
 
-	if (urltokenize(urlname, &server, &port, &path) > 0)
-		return 1;
-	if (port == NULL) {
-		if ((port = (char *) malloc(6)))
-			snprintf(port, 6, "%d", RTSP_DEFAULT_PORT);
-		else
-			return 1;
-	}
-	nms_printf(NMSML_DBG1, "server %s port %s\n", server, port);
+    if (urltokenize(urlname, &server, &port, &path) > 0)
+        return 1;
+    if (port == NULL) {
+        if ((port = (char *) malloc(6)))
+            snprintf(port, 6, "%d", RTSP_DEFAULT_PORT);
+        else
+            return 1;
+    }
+    nms_printf(NMSML_DBG1, "server %s port %s\n", server, port);
 
-	if ((rtsp_th->urlname =
-	     (char *) malloc(strlen("rtsp://") + strlen(server) +
-			     strlen(path) + 1)) == NULL)
-		return 1;
-	strcpy(rtsp_th->urlname, "rtsp://");
-	strcat(rtsp_th->urlname, server);
-	strcat(rtsp_th->urlname, path);
-#if 0				// port is already an allocated space => we use this without duplicating string;
-	if ((rtsp_th->server_port = (char *) malloc(strlen(port) + 1)) == NULL)
-		return 1;
-	strcpy(rtsp_th->server_port, port);
+    if ((rtsp_th->urlname =
+         (char *) malloc(strlen("rtsp://") + strlen(server) +
+                 strlen(path) + 1)) == NULL)
+        return 1;
+    strcpy(rtsp_th->urlname, "rtsp://");
+    strcat(rtsp_th->urlname, server);
+    strcat(rtsp_th->urlname, path);
+#if 0                // port is already an allocated space => we use this without duplicating string;
+    if ((rtsp_th->server_port = (char *) malloc(strlen(port) + 1)) == NULL)
+        return 1;
+    strcpy(rtsp_th->server_port, port);
 #endif
-	rtsp_th->server_port = port;
+    rtsp_th->server_port = port;
 
-	// free no more useful memory
-	free(server);
-	free(path);
+    // free no more useful memory
+    free(server);
+    free(path);
 
-	return 0;
+    return 0;
 }

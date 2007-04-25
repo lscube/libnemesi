@@ -25,9 +25,9 @@ documentation and/or software.
 
 /* MD5 context. */
 typedef struct {
-	UINT4 state[4];		/* state (ABCD) */
-	UINT4 count[2];		/* number of bits, modulo 2^64 (lsb first) */
-	unsigned char buffer[64];	/* input buffer */
+    UINT4 state[4];        /* state (ABCD) */
+    UINT4 count[2];        /* number of bits, modulo 2^64 (lsb first) */
+    unsigned char buffer[64];    /* input buffer */
 } md5_ctx;
 
 void md5_init PROTO_LIST((md5_ctx *));

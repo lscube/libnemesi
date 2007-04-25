@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,40 +49,40 @@ typedef struct {
 } NMSADrvInfo;
 
 typedef struct {
-	NMSADrvInfo *info;
+    NMSADrvInfo *info;
         /*
          * Initialize the audio driver.
-	 * params: (in and out)
-         * 	rate:
-	 * 	channels: number of channels
-	 * 	format:
+     * params: (in and out)
+         *     rate:
+     *     channels: number of channels
+     *     format:
          * returns : zero on successful initialization, non-zero on error.
          */
-	// XXX: rate, channels and format are both input and output parameters
+    // XXX: rate, channels and format are both input and output parameters
         uint32 (*init)(uint32 *rate, uint8 *channels, uint32 *format, uint32 buff_ms, uint32 flags, const char *arg);
-	/*
-	 * Control interface
-	 * params:
-	 *	cmd: commnand to exec
-	 *	arg: argument for command
-	 */
-	 uint32 (*control)(uint32 cmd, void *arg);
-	/*
-	 * allocs buffer for new decoded data.
-	 * params:
-	 *	len: length of requested buffer
-	 * returns pointer to new buffer
-	 */
-	uint8 *(*get_buff)(uint32 len);
-	/*
-	 * This function must be called by decoder after the decoded data has
-	 * been written on the allocated buffer
-	 * params:
-	 * 	data: buffer to play.
-	 *	len: length of buffer
-	 * retuns 1 on error, 0 otherwise
-	 */
-	uint32 (*play_buff)(uint8 *data, uint32 len, double pts);
+    /*
+     * Control interface
+     * params:
+     *    cmd: commnand to exec
+     *    arg: argument for command
+     */
+     uint32 (*control)(uint32 cmd, void *arg);
+    /*
+     * allocs buffer for new decoded data.
+     * params:
+     *    len: length of requested buffer
+     * returns pointer to new buffer
+     */
+    uint8 *(*get_buff)(uint32 len);
+    /*
+     * This function must be called by decoder after the decoded data has
+     * been written on the allocated buffer
+     * params:
+     *     data: buffer to play.
+     *    len: length of buffer
+     * retuns 1 on error, 0 otherwise
+     */
+    uint32 (*play_buff)(uint8 *data, uint32 len, double pts);
         /*
          * Pauses the driver
          */
@@ -91,10 +91,10 @@ typedef struct {
          * Resume playing
          */
         void (*resume)(void);
-	/*
-	 * Reset audio buffer. For seeking pourpose
-	 */
-	 void (*reset)(void);
+    /*
+     * Reset audio buffer. For seeking pourpose
+     */
+     void (*reset)(void);
         /*
          * Closes driver. Should restore the original state of the system.
          */

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,15 +47,15 @@ static void uninit(void);
 
 #define NMS_LIB_AUDIO(x) NMSAFunctions nms_audio_##x =\
 {\
-	&info, \
-	init, \
-	control, \
-	get_buff, \
-	play_buff, \
-	audio_pause, \
-	audio_resume, \
-	reset, \
-	uninit \
+    &info, \
+    init, \
+    control, \
+    get_buff, \
+    play_buff, \
+    audio_pause, \
+    audio_resume, \
+    reset, \
+    uninit \
 }
 
 #endif // __AUDIO_DRIVER_H

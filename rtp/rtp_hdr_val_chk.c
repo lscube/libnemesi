@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,43 +30,43 @@
 
 int rtp_hdr_val_chk(rtp_pkt * pkt, int len)
 {
-	if (RTP_PAYLOAD_SIZE(pkt, len) < 0) {
+    if (RTP_PAYLOAD_SIZE(pkt, len) < 0) {
 //      if (len < 12) {
-		nms_printf(NMSML_ERR,
-			   "RTP packet too small (%d: smaller than RTP header size)!!!\n",
-			   len);
-		return 1;
-	}
+        nms_printf(NMSML_ERR,
+               "RTP packet too small (%d: smaller than RTP header size)!!!\n",
+               len);
+        return 1;
+    }
 
-	if (pkt->ver != RTP_VERSION) {
-		nms_printf(NMSML_WARN,
-			   "RTP Header not valid: mismatching version number!"
-			   BLANK_LINE);
-		return 1;
-	}
-	if ((pkt->pt >= 200) && (pkt->pt <= 204)) {
-		nms_printf(NMSML_WARN,
-			   "RTP Header not valid: mismatching payload type!"
-			   BLANK_LINE);
-		return 1;
-	}
-	if ((pkt->pad)
-	    && (*(((uint8 *) pkt) + len - 1) >
-		(len - ((uint8 *) (pkt->data) - (uint8 *) pkt)))) {
-		nms_printf(NMSML_WARN,
-			   "RTP Header not valid: mismatching lenght!"
-			   BLANK_LINE);
-		return 1;
-	}
-	if ((pkt->cc)
-	    && (pkt->cc >
-		(len - ((uint8 *) (pkt->data) - (uint8 *) pkt)) -
-		((*(((uint8 *) pkt) + len - 1)) * pkt->pad))) {
-		nms_printf(NMSML_WARN,
-			   "RTP Header not valid: mismatching CSRC count!"
-			   BLANK_LINE);
-		return 1;
-	}
+    if (pkt->ver != RTP_VERSION) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching version number!"
+               BLANK_LINE);
+        return 1;
+    }
+    if ((pkt->pt >= 200) && (pkt->pt <= 204)) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching payload type!"
+               BLANK_LINE);
+        return 1;
+    }
+    if ((pkt->pad)
+        && (*(((uint8 *) pkt) + len - 1) >
+        (len - ((uint8 *) (pkt->data) - (uint8 *) pkt)))) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching lenght!"
+               BLANK_LINE);
+        return 1;
+    }
+    if ((pkt->cc)
+        && (pkt->cc >
+        (len - ((uint8 *) (pkt->data) - (uint8 *) pkt)) -
+        ((*(((uint8 *) pkt) + len - 1)) * pkt->pad))) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching CSRC count!"
+               BLANK_LINE);
+        return 1;
+    }
 
-	return 0;
+    return 0;
 }

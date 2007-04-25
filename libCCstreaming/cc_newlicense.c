@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,14 +32,14 @@
 
 cc_license *cc_newlicense(void)
 {
-	/* if we need some other initializations:
-	   cc_license *new;
+    /* if we need some other initializations:
+       cc_license *new;
 
-	   if (!(new=(cc_license *)calloc(1, sizeof(cc_license))))
-	   return NULL;
+       if (!(new=(cc_license *)calloc(1, sizeof(cc_license))))
+       return NULL;
 
-	   return new;
-	 */// else:
-	// we use calloc for initialization tu NULL of all fields
-	return (cc_license *) calloc(1, sizeof(cc_license));
+       return new;
+     */// else:
+    // we use calloc for initialization tu NULL of all fields
+    return (cc_license *) calloc(1, sizeof(cc_license));
 }

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,15 +32,15 @@
 
 void sdp_session_destroy(sdp_session_info * session)
 {
-	sdp_attr *sdp_attr, *sdp_attr_prev;
+    sdp_attr *sdp_attr, *sdp_attr_prev;
 
-	if (session) {
-		sdp_media_destroy(session->media_info_queue);
-		// destroy session attributes
-		for (sdp_attr = session->attr_list; sdp_attr;
-		     sdp_attr_prev = sdp_attr, sdp_attr =
-		     sdp_attr->next, free(sdp_attr_prev));
+    if (session) {
+        sdp_media_destroy(session->media_info_queue);
+        // destroy session attributes
+        for (sdp_attr = session->attr_list; sdp_attr;
+             sdp_attr_prev = sdp_attr, sdp_attr =
+             sdp_attr->next, free(sdp_attr_prev));
 
-		free(session);
-	}
+        free(session);
+    }
 }

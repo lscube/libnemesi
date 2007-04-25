@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,54 +50,54 @@ typedef struct {
 } NMSVDrvInfo;
 
 typedef struct {
-	NMSVDrvInfo *info;
-	/*
-	 * Preinitializes driver (real INITIALIZATION)
-	 *   arg - currently it's vo_subdevice
-	 *   returns: zero on successful initialization, non-zero on error.
-	 */
-	uint32 (*preinit)(const char *arg, uint32 buff_ms);
+    NMSVDrvInfo *info;
+    /*
+     * Preinitializes driver (real INITIALIZATION)
+     *   arg - currently it's vo_subdevice
+     *   returns: zero on successful initialization, non-zero on error.
+     */
+    uint32 (*preinit)(const char *arg, uint32 buff_ms);
         /*
          * Initialize (means CONFIGURE) the display driver.
-	 * params:
+     * params:
          *   width,height: image source size
-	 *   d_width,d_height: size of the requested window size, just a hint
-	 *   fullscreen: flag, 0=windowd 1=fullscreen, just a hint
-	 *   title: window title, if available
-	 *   format: fourcc of pixel format
+     *   d_width,d_height: size of the requested window size, just a hint
+     *   fullscreen: flag, 0=windowd 1=fullscreen, just a hint
+     *   title: window title, if available
+     *   format: fourcc of pixel format
          * returns : zero on successful initialization, non-zero on error.
          */
         uint32 (*config)(uint32 width, uint32 height, uint32 d_width,
-			 uint32 d_height, uint32 fps, uint8 fullscreen,
-			 char *title, uint32 format);
-	uint32 (*control)(uint32 cmd, void *arg, ...);
-	/*
-	 * allocs a new picture.
-	 * params:
-	 *	w: width of requested picture
-	 *	h: height of requested picture
-	 *	pict: the pointer to a NMSPicture struct that will contain data allocated.
-	 * returns 1 on error, 0 otherwise
-	 */
-	uint32 (*get_picture)(int w, int h, NMSPicture *pict);
-	/*
-	 * This function must be called by decoder after the whole picture has
-	 * been written on the allocated NMSPicture, in order to unlock
-	 * previously locked data by "get_picture".
-	 * params:
-	 *    pict: picture to draw. // XXX: For now we don't need it, but in future... (?)
-	 * retuns 1 on error, 0 otherwise
-	 */
-	uint32 (*draw_picture)(NMSPicture *pict, double pts);
+             uint32 d_height, uint32 fps, uint8 fullscreen,
+             char *title, uint32 format);
+    uint32 (*control)(uint32 cmd, void *arg, ...);
+    /*
+     * allocs a new picture.
+     * params:
+     *    w: width of requested picture
+     *    h: height of requested picture
+     *    pict: the pointer to a NMSPicture struct that will contain data allocated.
+     * returns 1 on error, 0 otherwise
+     */
+    uint32 (*get_picture)(int w, int h, NMSPicture *pict);
+    /*
+     * This function must be called by decoder after the whole picture has
+     * been written on the allocated NMSPicture, in order to unlock
+     * previously locked data by "get_picture".
+     * params:
+     *    pict: picture to draw. // XXX: For now we don't need it, but in future... (?)
+     * retuns 1 on error, 0 otherwise
+     */
+    uint32 (*draw_picture)(NMSPicture *pict, double pts);
 
         /*
          * Display a new RGB/BGR frame of the video to the screen.
          */
         uint32 (*update_screen)(double *next_pts);
-	/*
-	 * Closes window and reset video buffer
-	 */
-	void (*reset)(void);
+    /*
+     * Closes window and reset video buffer
+     */
+    void (*reset)(void);
         /*
          * Closes driver. Should restore the original state of the system.
          */

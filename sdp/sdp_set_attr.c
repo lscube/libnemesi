@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,16 +33,16 @@
 
 int sdp_set_attr(sdp_attr ** attr_list, char *a)
 {
-	sdp_attr *new, **i;
+    sdp_attr *new, **i;
 
-	// we use calloc, so it's all already initialized to NULL
-	if (!(new = (sdp_attr *) calloc(1, sizeof(sdp_attr))))
-		return nms_printf(NMSML_FATAL, "Could not allocate memory\n");
+    // we use calloc, so it's all already initialized to NULL
+    if (!(new = (sdp_attr *) calloc(1, sizeof(sdp_attr))))
+        return nms_printf(NMSML_FATAL, "Could not allocate memory\n");
 
-	new->a = a;
+    new->a = a;
 
-	for (i = attr_list; *i; i = &((*i)->next));	// serch for the tail of queue
-	*i = new;
+    for (i = attr_list; *i; i = &((*i)->next));    // serch for the tail of queue
+    *i = new;
 
-	return 0;
+    return 0;
 }

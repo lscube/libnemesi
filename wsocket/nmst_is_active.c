@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
+ *      
  *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,5 +30,5 @@
 
 inline int nmst_is_active(nms_transport * transport)
 {
-	return ((transport->type != SOCK_NONE) && (transport->fd >= 0));
+    return ((transport->type != SOCK_NONE) && (transport->fd >= 0));
 }

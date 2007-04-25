@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
+ *      
  *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@
 
 int rtp_fill_buffers(rtp_thread * rtp_th)
 {
-	pthread_mutex_lock(&(rtp_th->syn));
-	pthread_mutex_unlock(&(rtp_th->syn));
+    pthread_mutex_lock(&(rtp_th->syn));
+    pthread_mutex_unlock(&(rtp_th->syn));
 
-	return 0;
+    return 0;
 }

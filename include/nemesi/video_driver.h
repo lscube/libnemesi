@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@
 
 static uint32 preinit(const char *arg, uint32 buff_ms);
 static uint32 config(uint32 width, uint32 height, uint32 d_width,
-		     uint32 d_height, uint32 fps, uint8 fullscreen,
-		     char *title, uint32 format);
+             uint32 d_height, uint32 fps, uint8 fullscreen,
+             char *title, uint32 format);
 /*
 static void *config(uint32 width, uint32 height, char *title, uint32 format);
 */
@@ -50,15 +50,15 @@ static void uninit(void);
 
 #define NMS_LIB_VIDEO(x) NMSVFunctions nms_video_##x =\
 {\
-	&info, \
-	preinit, \
-	config, \
-	control, \
-	get_picture, \
-	draw_picture, \
-	update_screen, \
-	reset, \
-	uninit \
+    &info, \
+    preinit, \
+    config, \
+    control, \
+    get_picture, \
+    draw_picture, \
+    update_screen, \
+    reset, \
+    uninit \
 }
 
 #endif // __VIDEO_DRIVER_H

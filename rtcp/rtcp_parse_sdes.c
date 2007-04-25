@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,37 +30,37 @@
 
 int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
 {
-	int8 count = pkt->common.count;
-	rtcp_sdes_t *sdes = &(pkt->r.sdes);
-	rtcp_sdes_item_t *rsp, *rspn;
-	rtcp_sdes_item_t *end =
-	    (rtcp_sdes_item_t *) ((uint32 *) pkt + pkt->common.len + 1);
+    int8 count = pkt->common.count;
+    rtcp_sdes_t *sdes = &(pkt->r.sdes);
+    rtcp_sdes_item_t *rsp, *rspn;
+    rtcp_sdes_item_t *end =
+        (rtcp_sdes_item_t *) ((uint32 *) pkt + pkt->common.len + 1);
 
-	nms_printf(NMSML_DBG1, "Received SDES from SSRC: %u\n",
-		   pkt->r.sdes.src);
-	while (--count >= 0) {
-		rsp = &(sdes->item[0]);
-		if (rsp >= end)
-			break;
-		for (; rsp->type; rsp = rspn) {
-			rspn =
-			    (rtcp_sdes_item_t *) ((uint8 *) rsp + rsp->len +
-						  2);
-			if (rspn >= end) {
-				rsp = rspn;
-				break;
-			}
-			if (rtcp_set_ssrc_sdes(stm_src, rsp))
-				return 1;
-		}
-		sdes =
-		    (rtcp_sdes_t *) ((uint32 *) sdes +
-				     (((uint8 *) rsp - (uint8 *) sdes) >> 2) +
-				     1);
-	}
-	if (count >= 0)
-		nms_printf(NMSML_WARN, "Invalid RTCP SDES pkt format!\n");
-	else if (stm_src->ssrc_stats.probation)
-		stm_src->ssrc_stats.probation = 1;
-	return 0;
+    nms_printf(NMSML_DBG1, "Received SDES from SSRC: %u\n",
+           pkt->r.sdes.src);
+    while (--count >= 0) {
+        rsp = &(sdes->item[0]);
+        if (rsp >= end)
+            break;
+        for (; rsp->type; rsp = rspn) {
+            rspn =
+                (rtcp_sdes_item_t *) ((uint8 *) rsp + rsp->len +
+                          2);
+            if (rspn >= end) {
+                rsp = rspn;
+                break;
+            }
+            if (rtcp_set_ssrc_sdes(stm_src, rsp))
+                return 1;
+        }
+        sdes =
+            (rtcp_sdes_t *) ((uint32 *) sdes +
+                     (((uint8 *) rsp - (uint8 *) sdes) >> 2) +
+                     1);
+    }
+    if (count >= 0)
+        nms_printf(NMSML_WARN, "Invalid RTCP SDES pkt format!\n");
+    else if (stm_src->ssrc_stats.probation)
+        stm_src->ssrc_stats.probation = 1;
+    return 0;
 }

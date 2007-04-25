@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,49 +33,49 @@
 
 int urltokenize(char *urlname, char **host, char **port, char **path)
 {
-	char *token, *tokenda;
+    char *token, *tokenda;
 
-	// initialization
-	if (port)
-		*port = NULL;
-	if (host)
-		*host = NULL;
+    // initialization
+    if (port)
+        *port = NULL;
+    if (host)
+        *host = NULL;
 
-	if ((tokenda = (char *) malloc(strlen(urlname) + 1)) == NULL)
-		return 1;
-	strcpy(tokenda, urlname);
-	if ((token = strstr(tokenda, "://")) != NULL) {
-		token = strtok(tokenda, ":");
-		if (port != NULL) {
-			*port = strdup(token);
-		}
-		token += strlen(token) + 3;	/* skip *:// */
-	} else
-		token = tokenda;
-	if (strstr(token, ":") != NULL) {
-		token = strtok(token, ":");
-		if (host != NULL) {
-			*host = strdup(token);
-		}
-		token = strtok(NULL, "/");
-		if (port != NULL) {
-			free(*port);
-			*port = strdup(token);
-		}
-	} else {
-		token = strtok(token, "/");
-		if (host != NULL) {
-			free(*host);
-			*host = strdup(token);
-		}
-	}
-	token += strlen(token);
-	*(token) = '/';
-	if (path != NULL) {
-		*path = strdup(token);
-	}
+    if ((tokenda = (char *) malloc(strlen(urlname) + 1)) == NULL)
+        return 1;
+    strcpy(tokenda, urlname);
+    if ((token = strstr(tokenda, "://")) != NULL) {
+        token = strtok(tokenda, ":");
+        if (port != NULL) {
+            *port = strdup(token);
+        }
+        token += strlen(token) + 3;    /* skip *:// */
+    } else
+        token = tokenda;
+    if (strstr(token, ":") != NULL) {
+        token = strtok(token, ":");
+        if (host != NULL) {
+            *host = strdup(token);
+        }
+        token = strtok(NULL, "/");
+        if (port != NULL) {
+            free(*port);
+            *port = strdup(token);
+        }
+    } else {
+        token = strtok(token, "/");
+        if (host != NULL) {
+            free(*host);
+            *host = strdup(token);
+        }
+    }
+    token += strlen(token);
+    *(token) = '/';
+    if (path != NULL) {
+        *path = strdup(token);
+    }
 
-	free(tokenda);
+    free(tokenda);
 
-	return 0;
+    return 0;
 }

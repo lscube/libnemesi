@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,22 +40,22 @@
  */
 int cc_set_sdplicense(cc_license * cc, char *sdp_l)
 {
-	char *cclicenses[][2] = CC_LICENSE;
-	unsigned int i;
+    char *cclicenses[][2] = CC_LICENSE;
+    unsigned int i;
 
-	// shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
-	for (i = 0; i < sizeof(cclicenses) / sizeof(*cclicenses); i++) {
-		if (!strncmpcase
-		    (sdp_l, cclicenses[i][CC_ATTR_NAME],
-		     strlen(cclicenses[i][CC_ATTR_NAME]))) {
-			// XXX: we do not duplicate the string!!! Do we have to do that?
-			/* set the correct field using cc_license struct like an array of strings
-			 * skipping the sdp param and setting the pointer after the colon */
-			((char **) cc)[i] =
-			    sdp_l + strlen(cclicenses[i][CC_ATTR_NAME]) + 1;
-			return 0;
-		}
-	}
+    // shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
+    for (i = 0; i < sizeof(cclicenses) / sizeof(*cclicenses); i++) {
+        if (!strncmpcase
+            (sdp_l, cclicenses[i][CC_ATTR_NAME],
+             strlen(cclicenses[i][CC_ATTR_NAME]))) {
+            // XXX: we do not duplicate the string!!! Do we have to do that?
+            /* set the correct field using cc_license struct like an array of strings
+             * skipping the sdp param and setting the pointer after the colon */
+            ((char **) cc)[i] =
+                sdp_l + strlen(cclicenses[i][CC_ATTR_NAME]) + 1;
+            return 0;
+        }
+    }
 
-	return 1;
+    return 1;
 }

@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@
 
 #ifndef ENABLE_DEBUG
 #define DEFAULT_VERBOSITY NMSML_NORM
-#else				// ENABLE_DEBUG => debug enabled
+#else                // ENABLE_DEBUG => debug enabled
 #define DEFAULT_VERBOSITY NMSML_DBG1
-#endif				// ENABLE_DEBUG
+#endif                // ENABLE_DEBUG
 
 int (*nms_printf) (int level, const char *fmt, ...) = nms_printf_default;
 int (*nms_statusprintf) (int cmd, const char *fmt, ...) =
@@ -46,24 +46,24 @@ static int verbosity = DEFAULT_VERBOSITY;
 
 int nms_verbosity_set(int level)
 {
-	if (level >= 0) {
-		if ((level + NMSML_NORM) > NMSML_MAX)
-			verbosity = NMSML_MAX;
-		else
-			verbosity = NMSML_ALWAYS + level;
-	} else {
-		fprintf(stderr,
-			NMSCLR_YELLOW
-			"warning: verbosity level must be a non negative integer. Setting to 0\n"
-			NMSCLR_DEFAULT);
-		verbosity = 0;
-	}
-	return verbosity - NMSML_ALWAYS;
+    if (level >= 0) {
+        if ((level + NMSML_NORM) > NMSML_MAX)
+            verbosity = NMSML_MAX;
+        else
+            verbosity = NMSML_ALWAYS + level;
+    } else {
+        fprintf(stderr,
+            NMSCLR_YELLOW
+            "warning: verbosity level must be a non negative integer. Setting to 0\n"
+            NMSCLR_DEFAULT);
+        verbosity = 0;
+    }
+    return verbosity - NMSML_ALWAYS;
 }
 
 int nms_verbosity_get(void)
 {
-	return verbosity - NMSML_ALWAYS;
+    return verbosity - NMSML_ALWAYS;
 }
 
 /*!  \brief Default print function.
@@ -82,41 +82,41 @@ int nms_verbosity_get(void)
  */
 int nms_printf_default(int level, const char *fmt, ...)
 {
-	// int ret=0;
-	va_list args;
-	FILE *out_stm = (level <= NMSML_WARN) ? stderr : stdout;
+    // int ret=0;
+    va_list args;
+    FILE *out_stm = (level <= NMSML_WARN) ? stderr : stdout;
 #ifdef NMS_COLOURED
-	static const char *colours[NMSML_MAX + 1] = { NMSML_COLOURS };
-#endif				// NMS_COLOURED
+    static const char *colours[NMSML_MAX + 1] = { NMSML_COLOURS };
+#endif                // NMS_COLOURED
 
-	/*
-	   if (level < 0) {
-	   fprintf(stderr, NMSCLR_YELLOW"warning: verbosity level must be a non negative integer. Setting to 0\n"NMSCLR_DEFAULT);
-	   level = 0;
-	   }
-	 */
+    /*
+       if (level < 0) {
+       fprintf(stderr, NMSCLR_YELLOW"warning: verbosity level must be a non negative integer. Setting to 0\n"NMSCLR_DEFAULT);
+       level = 0;
+       }
+     */
 
-	if (verbosity >= level) {
-		// fprintf(stderr, "\r");
-		nmscolour(out_stm, colours[level]);
-		switch (level) {
-		case NMSML_ERR:
-			fprintf(out_stm, "Error: ");
-			nmscolour(out_stm, NMSCLR_DEFAULT);
-			break;
-		case NMSML_WARN:
-			fprintf(out_stm, "Warning: ");
-			nmscolour(out_stm, NMSCLR_DEFAULT);
-			break;
-		}
-		va_start(args, fmt);
-		/*ret= */ vfprintf(out_stm, fmt, args);
-		va_end(args);
-		nmscolour(out_stm, NMSCLR_DEFAULT);
-		fflush(out_stm);
-	}
-	// return ret;
-	return (level < NMSML_WARN) ? 1 : 0;
+    if (verbosity >= level) {
+        // fprintf(stderr, "\r");
+        nmscolour(out_stm, colours[level]);
+        switch (level) {
+        case NMSML_ERR:
+            fprintf(out_stm, "Error: ");
+            nmscolour(out_stm, NMSCLR_DEFAULT);
+            break;
+        case NMSML_WARN:
+            fprintf(out_stm, "Warning: ");
+            nmscolour(out_stm, NMSCLR_DEFAULT);
+            break;
+        }
+        va_start(args, fmt);
+        /*ret= */ vfprintf(out_stm, fmt, args);
+        va_end(args);
+        nmscolour(out_stm, NMSCLR_DEFAULT);
+        fflush(out_stm);
+    }
+    // return ret;
+    return (level < NMSML_WARN) ? 1 : 0;
 }
 
 /*! \brief Default buffer status print function
@@ -135,47 +135,47 @@ int nms_printf_default(int level, const char *fmt, ...)
 
 int nms_status_printf_default(int cmd, const char *fmt, ...)
 {
-	static char buffers[256] = "\0";
-	static char elapsed[256] = "\0";
-	static char no_status = 0;
-	int ret = 0;
-	va_list args;
+    static char buffers[256] = "\0";
+    static char elapsed[256] = "\0";
+    static char no_status = 0;
+    int ret = 0;
+    va_list args;
 
-	if (cmd == PRINT_STATUS)
-		no_status = 0;
-	if (no_status)
-		return 0;
-	switch (cmd) {
-	case NO_STATUS:
-		no_status = 1;
-		return 0;
-		break;
-	case BUFFERS_STATUS:
-		if (verbosity >= BUFFERS_STATUS_VERBOSITY) {
-			va_start(args, fmt);
-			ret = vsprintf(buffers, fmt, args);
-			va_end(args);
-		}
-		break;
-	case ELAPSED_STATUS:
-		if (verbosity >= ELAPSED_STATUS_VERBOSITY) {
-			va_start(args, fmt);
-			ret = vsprintf(elapsed, fmt, args);
-			va_end(args);
-		}
-		break;
-	default:
-		return 0;
-		break;
-	}
+    if (cmd == PRINT_STATUS)
+        no_status = 0;
+    if (no_status)
+        return 0;
+    switch (cmd) {
+    case NO_STATUS:
+        no_status = 1;
+        return 0;
+        break;
+    case BUFFERS_STATUS:
+        if (verbosity >= BUFFERS_STATUS_VERBOSITY) {
+            va_start(args, fmt);
+            ret = vsprintf(buffers, fmt, args);
+            va_end(args);
+        }
+        break;
+    case ELAPSED_STATUS:
+        if (verbosity >= ELAPSED_STATUS_VERBOSITY) {
+            va_start(args, fmt);
+            ret = vsprintf(elapsed, fmt, args);
+            va_end(args);
+        }
+        break;
+    default:
+        return 0;
+        break;
+    }
 
-	if ((verbosity >= BUFFERS_STATUS_VERBOSITY)
-	    && (verbosity >= ELAPSED_STATUS_VERBOSITY))
-		fprintf(stderr, "\r%s - %s   ", elapsed, buffers);
-	else if (verbosity >= BUFFERS_STATUS_VERBOSITY)
-		fprintf(stderr, "\r%s   ", buffers);
-	else if (verbosity >= ELAPSED_STATUS_VERBOSITY)
-		fprintf(stderr, "\r%s   ", elapsed);
+    if ((verbosity >= BUFFERS_STATUS_VERBOSITY)
+        && (verbosity >= ELAPSED_STATUS_VERBOSITY))
+        fprintf(stderr, "\r%s - %s   ", elapsed, buffers);
+    else if (verbosity >= BUFFERS_STATUS_VERBOSITY)
+        fprintf(stderr, "\r%s   ", buffers);
+    else if (verbosity >= ELAPSED_STATUS_VERBOSITY)
+        fprintf(stderr, "\r%s   ", elapsed);
 
-	return ret;
+    return ret;
 }

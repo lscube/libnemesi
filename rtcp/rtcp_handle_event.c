@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,57 +31,57 @@
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 {
 
-	double t;
-	struct timeval tv, now;
-	rtp_session *rtp_save;
-	int n;
+    double t;
+    struct timeval tv, now;
+    rtp_session *rtp_save;
+    int n;
 
-	gettimeofday(&now, NULL);
+    gettimeofday(&now, NULL);
 
-	switch (event->type) {
+    switch (event->type) {
 
-	case RTCP_RR:
-	case RTCP_SDES:
+    case RTCP_RR:
+    case RTCP_SDES:
 
-		if (event->rtp_sess->ssrc_queue) {
-			n = rtcp_send_rr(event->rtp_sess);
-			event->rtp_sess->sess_stats.avg_rtcp_size =
-			    (1. / 16.) * n +
-			    (15. / 16.) *
-			    (event->rtp_sess->sess_stats.avg_rtcp_size);
-		}
-		event->rtp_sess->sess_stats.tp = now;
+        if (event->rtp_sess->ssrc_queue) {
+            n = rtcp_send_rr(event->rtp_sess);
+            event->rtp_sess->sess_stats.avg_rtcp_size =
+                (1. / 16.) * n +
+                (15. / 16.) *
+                (event->rtp_sess->sess_stats.avg_rtcp_size);
+        }
+        event->rtp_sess->sess_stats.tp = now;
 
-		t = rtcp_interval(event->rtp_sess->sess_stats.members,
-				  event->rtp_sess->sess_stats.senders,
-				  event->rtp_sess->sess_stats.rtcp_bw,
-				  event->rtp_sess->sess_stats.we_sent,
-				  event->rtp_sess->sess_stats.avg_rtcp_size,
-				  event->rtp_sess->sess_stats.initial);
+        t = rtcp_interval(event->rtp_sess->sess_stats.members,
+                  event->rtp_sess->sess_stats.senders,
+                  event->rtp_sess->sess_stats.rtcp_bw,
+                  event->rtp_sess->sess_stats.we_sent,
+                  event->rtp_sess->sess_stats.avg_rtcp_size,
+                  event->rtp_sess->sess_stats.initial);
 
-		tv.tv_sec = (long int) t;
-		tv.tv_usec = (long int) ((t - tv.tv_sec) * 1000000);
-		timeval_add(&(event->rtp_sess->sess_stats.tn), &now, &tv);
+        tv.tv_sec = (long int) t;
+        tv.tv_usec = (long int) ((t - tv.tv_sec) * 1000000);
+        timeval_add(&(event->rtp_sess->sess_stats.tn), &now, &tv);
 
-		event->rtp_sess->sess_stats.initial = 0;
-		event->rtp_sess->sess_stats.pmembers =
-		    event->rtp_sess->sess_stats.members;
+        event->rtp_sess->sess_stats.initial = 0;
+        event->rtp_sess->sess_stats.pmembers =
+            event->rtp_sess->sess_stats.members;
 
-		rtp_save = event->rtp_sess;
-		event = rtcp_deschedule(event);
-		if ((event =
-		     rtcp_schedule(event, rtp_save, rtp_save->sess_stats.tn,
-				   RTCP_RR)) == NULL)
-			return NULL;
+        rtp_save = event->rtp_sess;
+        event = rtcp_deschedule(event);
+        if ((event =
+             rtcp_schedule(event, rtp_save, rtp_save->sess_stats.tn,
+                   RTCP_RR)) == NULL)
+            return NULL;
 
-		break;
+        break;
 
-	case RTCP_BYE:
-		rtcp_send_bye(event->rtp_sess);
-		break;
-	default:
-		nms_printf(NMSML_ERR, "RTCP Event not handled!\n");
-		break;
-	}
-	return event;
+    case RTCP_BYE:
+        rtcp_send_bye(event->rtp_sess);
+        break;
+    default:
+        nms_printf(NMSML_ERR, "RTCP Event not handled!\n");
+        break;
+    }
+    return event;
 }

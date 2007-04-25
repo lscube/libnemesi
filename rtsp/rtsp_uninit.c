@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,32 +30,32 @@
 
 int rtsp_uninit(rtsp_ctrl * rtsp_ctl)
 {
-	void *ret = NULL;
+    void *ret = NULL;
 
-	/* THREAD CANCEL */
-	nms_printf(NMSML_DBG1, "Sending cancel signal to all threads\n");
-	if (rtsp_ctl->rtsp_tid > 0) {
-		nms_printf(NMSML_DBG1,
-			   "Sending cancel signal to RTSP Thread (ID: %lu)\n",
-			   rtsp_ctl->rtsp_tid);
-		if (pthread_cancel(rtsp_ctl->rtsp_tid) != 0)
-			nms_printf(NMSML_DBG2,
-				   "Error while sending cancelation to RTSP Thread.\n");
-		else
-			pthread_join(rtsp_ctl->rtsp_tid, (void **) &ret);
-		if (ret != PTHREAD_CANCELED) {
-			nms_printf(NMSML_DBG2,
-				   "Warning! RTSP Thread joined, but  not canceled!\n");
-			return 1;
-		}
-	} else {
-		nms_printf(NMSML_DBG1,
-			   "Cannot send cancel signal to RTSP Thread\n");
-		return 1;
-	}
+    /* THREAD CANCEL */
+    nms_printf(NMSML_DBG1, "Sending cancel signal to all threads\n");
+    if (rtsp_ctl->rtsp_tid > 0) {
+        nms_printf(NMSML_DBG1,
+               "Sending cancel signal to RTSP Thread (ID: %lu)\n",
+               rtsp_ctl->rtsp_tid);
+        if (pthread_cancel(rtsp_ctl->rtsp_tid) != 0)
+            nms_printf(NMSML_DBG2,
+                   "Error while sending cancelation to RTSP Thread.\n");
+        else
+            pthread_join(rtsp_ctl->rtsp_tid, (void **) &ret);
+        if (ret != PTHREAD_CANCELED) {
+            nms_printf(NMSML_DBG2,
+                   "Warning! RTSP Thread joined, but  not canceled!\n");
+            return 1;
+        }
+    } else {
+        nms_printf(NMSML_DBG1,
+               "Cannot send cancel signal to RTSP Thread\n");
+        return 1;
+    }
 
-	free(rtsp_ctl->comm);
-	free(rtsp_ctl);
+    free(rtsp_ctl->comm);
+    free(rtsp_ctl);
 
-	return 0;
+    return 0;
 }

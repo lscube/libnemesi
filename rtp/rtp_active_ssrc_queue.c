@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
+ *      
  *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@
 
 rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head)
 {
-	rtp_session *rtp_sess;
+    rtp_session *rtp_sess;
 
-	for (rtp_sess = rtp_sess_head;
-	     rtp_sess && !rtp_sess->active_ssrc_queue;
-	     rtp_sess = rtp_sess->next);
+    for (rtp_sess = rtp_sess_head;
+         rtp_sess && !rtp_sess->active_ssrc_queue;
+         rtp_sess = rtp_sess->next);
 
-	return rtp_sess ? rtp_sess->active_ssrc_queue : NULL;
+    return rtp_sess ? rtp_sess->active_ssrc_queue : NULL;
 }

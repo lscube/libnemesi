@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,18 +30,18 @@
 
 int handle_pause_response(rtsp_thread * rtsp_th)
 {
-	char *prev_tkn;
+    char *prev_tkn;
 
-	if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
-		nms_printf(NMSML_ERR, "Invalid RTSP-PAUSE response\n");
-		return 1;
-	}
-	if (check_status(prev_tkn, rtsp_th) < 0) {
-		remove_pkt(rtsp_th);
-		return 1;
-	}
+    if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
+        nms_printf(NMSML_ERR, "Invalid RTSP-PAUSE response\n");
+        return 1;
+    }
+    if (check_status(prev_tkn, rtsp_th) < 0) {
+        remove_pkt(rtsp_th);
+        return 1;
+    }
 
-	remove_pkt(rtsp_th);
-	memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
-	return 0;
+    remove_pkt(rtsp_th);
+    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
+    return 0;
 }

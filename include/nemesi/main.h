@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,21 +41,21 @@
 #include <nemesi/types.h>
 
 typedef struct {
-	char *audio;
-	char *video;
-	char *diskwriter;
-	int32 sysbuff_ms;
+    char *audio;
+    char *video;
+    char *diskwriter;
+    int32 sysbuff_ms;
 } NMSOutputHints;
 
 typedef struct {
-	uint8 gui;
-	char *url;
+    uint8 gui;
+    char *url;
 } NMSUiHints;
 
 typedef struct {
-	NMSOutputHints *output;
-	NMSUiHints *ui;
-	NMSRtspHints *rtsp;
+    NMSOutputHints *output;
+    NMSUiHints *ui;
+    NMSRtspHints *rtsp;
 } NMSCLOptions;
 
 int output_init(NMSOutputHints *);

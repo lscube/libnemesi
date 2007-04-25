@@ -6,10 +6,10 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
- *	Dario Gallucci - dario.gallucci@gmail.com
+ *      
+ *    Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
+ *    Dario Gallucci - dario.gallucci@gmail.com
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@
 
 int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
 {
-	uint16 streams[2];
+    uint16 streams[2];
 
-	sprintf(buff + strlen(buff), "unicast;");
+    sprintf(buff + strlen(buff), "unicast;");
 
-	if ( rtp_get_streams(rtp_sess, streams) == RTP_TRANSPORT_SET)
-		sprintf(buff+strlen(buff), "streams=%u-%u;", streams[0], streams[1]);
+    if ( rtp_get_streams(rtp_sess, streams) == RTP_TRANSPORT_SET)
+        sprintf(buff+strlen(buff), "streams=%u-%u;", streams[0], streams[1]);
 
-	return 0;
+    return 0;
 }

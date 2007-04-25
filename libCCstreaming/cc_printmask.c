@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,24 +31,24 @@
 
 void cc_printmask(cc_perm_mask mask)
 {
-	unsigned int i;
-	CC_BITMASK_T spec_l = (CC_BITMASK_T) mask.spec_license;
+    unsigned int i;
+    CC_BITMASK_T spec_l = (CC_BITMASK_T) mask.spec_license;
 
-	if (spec_l) {
-		for (i = 0; cc_spec_licenses[i].int_code; i++) {
-			if ((cc_spec_licenses[i].int_code & spec_l))
-				nms_printf(NMSML_ALWAYS, "%s: %s\n",
-					   cc_spec_licenses[i].name,
-					   cc_spec_licenses[i].descr);
-		}
-	}
-	if (mask.by)
-		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_by.name, cc_by.descr);
-	if (mask.nc)
-		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_nc.name, cc_nc.descr);
-	if (mask.nd)
-		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_nd.name, cc_nd.descr);
-	if (mask.sa)
-		nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_sa.name, cc_sa.descr);
-	nms_printf(NMSML_ALWAYS, "\n");
+    if (spec_l) {
+        for (i = 0; cc_spec_licenses[i].int_code; i++) {
+            if ((cc_spec_licenses[i].int_code & spec_l))
+                nms_printf(NMSML_ALWAYS, "%s: %s\n",
+                       cc_spec_licenses[i].name,
+                       cc_spec_licenses[i].descr);
+        }
+    }
+    if (mask.by)
+        nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_by.name, cc_by.descr);
+    if (mask.nc)
+        nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_nc.name, cc_nc.descr);
+    if (mask.nd)
+        nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_nd.name, cc_nd.descr);
+    if (mask.sa)
+        nms_printf(NMSML_ALWAYS, "%s: %s\n", cc_sa.name, cc_sa.descr);
+    nms_printf(NMSML_ALWAYS, "\n");
 }

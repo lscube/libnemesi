@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,61 +34,61 @@
 
 int sdp_parse_m_descr(sdp_medium_info * m_info, char *m_descr)
 {
-	char *tkn, *endtkn;
+    char *tkn, *endtkn;
 
-	if (!(tkn = strchr(m_descr, ' ')))
-		return nms_printf(NMSML_ERR,
-				  "SDP Media description string not valid: (m=%s)\n",
-				  m_descr);
-	*tkn = '\0';
+    if (!(tkn = strchr(m_descr, ' ')))
+        return nms_printf(NMSML_ERR,
+                  "SDP Media description string not valid: (m=%s)\n",
+                  m_descr);
+    *tkn = '\0';
 
-	// parse media type
-	if (!strcmp(m_descr, "video"))
-		m_info->media_type = 'V';
-	else if (!strcmp(m_descr, "audio"))
-		m_info->media_type = 'A';
-	else if (!strcmp(m_descr, "application"))
-		m_info->media_type = 'P';
-	else if (!strcmp(m_descr, "data"))
-		m_info->media_type = 'D';
-	else if (!strcmp(m_descr, "control"))
-		m_info->media_type = 'C';
+    // parse media type
+    if (!strcmp(m_descr, "video"))
+        m_info->media_type = 'V';
+    else if (!strcmp(m_descr, "audio"))
+        m_info->media_type = 'A';
+    else if (!strcmp(m_descr, "application"))
+        m_info->media_type = 'P';
+    else if (!strcmp(m_descr, "data"))
+        m_info->media_type = 'D';
+    else if (!strcmp(m_descr, "control"))
+        m_info->media_type = 'C';
 
-	*tkn = ' ';
+    *tkn = ' ';
 
-	// parse port and number of ports
-	m_info->port = strtol(tkn, &endtkn, 10);
-	if (tkn == endtkn)
-		return nms_printf(NMSML_ERR,
-				  "SDP Media description string not valid: (m=%s)\nCould not find port field\n",
-				  m_descr);
-	tkn = endtkn;		// + 1;
-	if (*endtkn == '/') {
-		m_info->n_ports = strtol(tkn + 1, &endtkn, 10);
-		tkn = endtkn;	// + 1;
-	} else
-		m_info->n_ports = 1;
+    // parse port and number of ports
+    m_info->port = strtol(tkn, &endtkn, 10);
+    if (tkn == endtkn)
+        return nms_printf(NMSML_ERR,
+                  "SDP Media description string not valid: (m=%s)\nCould not find port field\n",
+                  m_descr);
+    tkn = endtkn;        // + 1;
+    if (*endtkn == '/') {
+        m_info->n_ports = strtol(tkn + 1, &endtkn, 10);
+        tkn = endtkn;    // + 1;
+    } else
+        m_info->n_ports = 1;
 
-	for (; *tkn == ' '; tkn++);	// skip spaces
-	if (!(*tkn))
-		return nms_printf(NMSML_ERR,
-				  "SDP Media description string not valid: (m=%s)\nCould not find transport field\n",
-				  m_descr);
+    for (; *tkn == ' '; tkn++);    // skip spaces
+    if (!(*tkn))
+        return nms_printf(NMSML_ERR,
+                  "SDP Media description string not valid: (m=%s)\nCould not find transport field\n",
+                  m_descr);
 
-	// parse transport protocol
-	if (!(endtkn = strchr(tkn, ' ')))
-		return nms_printf(NMSML_ERR,
-				  "SDP Media description string not valid: (m=%s)\nDescription terminates whithout <fmt list>\n",
-				  m_descr);
-	*endtkn = '\0';
-	strncpy(m_info->transport, tkn, 7);
-	m_info->transport[7] = '\0';
-	*endtkn = ' ';
-	tkn = endtkn + 1;
+    // parse transport protocol
+    if (!(endtkn = strchr(tkn, ' ')))
+        return nms_printf(NMSML_ERR,
+                  "SDP Media description string not valid: (m=%s)\nDescription terminates whithout <fmt list>\n",
+                  m_descr);
+    *endtkn = '\0';
+    strncpy(m_info->transport, tkn, 7);
+    m_info->transport[7] = '\0';
+    *endtkn = ' ';
+    tkn = endtkn + 1;
 
-	// fmt list: here we expect to store payload types
-	for (; *tkn == ' '; tkn++);	// skip spaces
-	m_info->fmts = tkn;
+    // fmt list: here we expect to store payload types
+    for (; *tkn == ' '; tkn++);    // skip spaces
+    m_info->fmts = tkn;
 
-	return 0;
+    return 0;
 }

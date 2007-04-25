@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,13 +37,13 @@
  */
 int tcp_open(struct sockaddr *name, int namelen)
 {
-	int f;
+    int f;
 
-	if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return nms_printf(NMSML_ERR, "socket() error in tcp_open.\n");
+    if ((f = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        return nms_printf(NMSML_ERR, "socket() error in tcp_open.\n");
 
-	if (connect(f, name, namelen) < 0)
-		return nms_printf(NMSML_ERR, "connect() error in tcp_open.\n");
+    if (connect(f, name, namelen) < 0)
+        return nms_printf(NMSML_ERR, "connect() error in tcp_open.\n");
 
-	return f;
+    return f;
 }

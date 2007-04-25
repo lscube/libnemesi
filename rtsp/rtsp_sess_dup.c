@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,18 +30,18 @@
 
 rtsp_session *rtsp_sess_dup(rtsp_session * curr_rtsp_s)
 {
-	rtsp_session *new_rtsp_s;
+    rtsp_session *new_rtsp_s;
 
-	if ((new_rtsp_s =
-	     (rtsp_session *) malloc(sizeof(rtsp_session))) == NULL) {
-		nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
-		return NULL;
-	}
+    if ((new_rtsp_s =
+         (rtsp_session *) malloc(sizeof(rtsp_session))) == NULL) {
+        nms_printf(NMSML_FATAL, "Cannot allocate memory.\n");
+        return NULL;
+    }
 
-	memcpy(new_rtsp_s, curr_rtsp_s, sizeof(rtsp_session));
+    memcpy(new_rtsp_s, curr_rtsp_s, sizeof(rtsp_session));
 
-	new_rtsp_s->Session_ID = 0;
-	new_rtsp_s->next = NULL;
+    new_rtsp_s->Session_ID = 0;
+    new_rtsp_s->next = NULL;
 
-	return new_rtsp_s;
+    return new_rtsp_s;
 }

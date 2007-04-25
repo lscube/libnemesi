@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,27 +36,27 @@
 * */
 int open_cmd(rtsp_thread * rtsp_th, ...)
 {
-	char *server;
+    char *server;
 
-	if (rtsp_th->status != INIT) {
-		nms_printf(NMSML_WARN, "Client already connected!\n");
-		return 1;
-	}
-	if (!*rtsp_th->comm->arg) {
-		nms_printf(NMSML_ERR, "No address given\n");
-		return 1;
-	}
-	if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
-		return 1;
-	urltokenize(rtsp_th->urlname, &server, NULL, NULL);
-	if (server_connect
-	    (server, rtsp_th->server_port, &rtsp_th->transport.fd, rtsp_th->transport.type)) {
-		rtsp_th->transport.fd = -1;
-		return nms_printf(NMSML_ERR, "Cannot connect to the server\n");
-	}
-	free(server);
-	if (send_get_request(rtsp_th))
-		return 1;
+    if (rtsp_th->status != INIT) {
+        nms_printf(NMSML_WARN, "Client already connected!\n");
+        return 1;
+    }
+    if (!*rtsp_th->comm->arg) {
+        nms_printf(NMSML_ERR, "No address given\n");
+        return 1;
+    }
+    if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
+        return 1;
+    urltokenize(rtsp_th->urlname, &server, NULL, NULL);
+    if (server_connect
+        (server, rtsp_th->server_port, &rtsp_th->transport.fd, rtsp_th->transport.type)) {
+        rtsp_th->transport.fd = -1;
+        return nms_printf(NMSML_ERR, "Cannot connect to the server\n");
+    }
+    free(server);
+    if (send_get_request(rtsp_th))
+        return 1;
 
-	return 0;
+    return 0;
 }

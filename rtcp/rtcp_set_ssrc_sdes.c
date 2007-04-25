@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,30 +30,30 @@
 
 int rtcp_set_ssrc_sdes(rtp_ssrc * stm_src, rtcp_sdes_item_t * item)
 {
-	char *str = ((char **) (&(stm_src->ssrc_sdes)))[item->type];
+    char *str = ((char **) (&(stm_src->ssrc_sdes)))[item->type];
 
-	if (str != NULL) {
-		if (memcmp(str, item->data, item->len) != 0) {
-			free(str);
-			if ((str =
-			     (((char **) (&(stm_src->ssrc_sdes)))[item->
-								  type]) =
-			     (char *) malloc(item->len + 1)) == NULL)
-				return nms_printf(NMSML_FATAL,
-						  "Cannot allocate memory!\n");
+    if (str != NULL) {
+        if (memcmp(str, item->data, item->len) != 0) {
+            free(str);
+            if ((str =
+                 (((char **) (&(stm_src->ssrc_sdes)))[item->
+                                  type]) =
+                 (char *) malloc(item->len + 1)) == NULL)
+                return nms_printf(NMSML_FATAL,
+                          "Cannot allocate memory!\n");
 
-			memcpy(str, item->data, item->len);
-			str[item->len] = 0;
-		}
+            memcpy(str, item->data, item->len);
+            str[item->len] = 0;
+        }
 
-	} else {
-		if ((str = ((char **) (&(stm_src->ssrc_sdes)))[item->type] =
-		     (char *) malloc(item->len + 1)) == NULL)
-			return nms_printf(NMSML_FATAL,
-					  "Cannot allocate memory!\n");
+    } else {
+        if ((str = ((char **) (&(stm_src->ssrc_sdes)))[item->type] =
+             (char *) malloc(item->len + 1)) == NULL)
+            return nms_printf(NMSML_FATAL,
+                      "Cannot allocate memory!\n");
 
-		memcpy(str, item->data, item->len);
-		str[item->len] = 0;
-	}
-	return 0;
+        memcpy(str, item->data, item->len);
+        str[item->len] = 0;
+    }
+    return 0;
 }

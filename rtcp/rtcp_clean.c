@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,16 +30,16 @@
 
 void rtcp_clean(void *args)
 {
-	/*
-	rtp_session *rtp_sess_head = (*(rtp_session **) args);
-	rtp_session *rtp_sess;
-	rtp_ssrc *stm_src;
+    /*
+    rtp_session *rtp_sess_head = (*(rtp_session **) args);
+    rtp_session *rtp_sess;
+    rtp_ssrc *stm_src;
 
-	for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
-		for (stm_src = rtp_sess->ssrc_queue; stm_src;
-		     stm_src = stm_src->next)
-			if (stm_src->rtcptofd > 0)
-				close(stm_src->rtcptofd);
-	*/
-	nms_printf(NMSML_DBG1, "RTCP Thread R.I.P.\n");
+    for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
+        for (stm_src = rtp_sess->ssrc_queue; stm_src;
+             stm_src = stm_src->next)
+            if (stm_src->rtcptofd > 0)
+                close(stm_src->rtcptofd);
+    */
+    nms_printf(NMSML_DBG1, "RTCP Thread R.I.P.\n");
 }

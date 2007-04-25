@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
+ *      
  *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,10 +30,10 @@
 
 void nmst_init(nms_transport * transport)
 {
-	memset(transport, 0, sizeof(nms_transport));
+    memset(transport, 0, sizeof(nms_transport));
 
-	// TCP is default protocol implemented for RTSP, so I init type to TCP.
-	transport->type = TCP;
+    // TCP is default protocol implemented for RTSP, so I init type to TCP.
+    transport->type = TCP;
 
-	transport->fd = -1;
+    transport->fd = -1;
 }

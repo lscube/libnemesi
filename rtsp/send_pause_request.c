@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,43 +32,43 @@
 
 int send_pause_request(rtsp_thread * rtsp_th, char *range)
 {
-	char b[256+strlen(rtsp_th->urlname)];
-	rtsp_session *rtsp_sess;
+    char b[256+strlen(rtsp_th->urlname)];
+    rtsp_session *rtsp_sess;
 
-	// get_curr_sess(NULL, &rtsp_sess, NULL);
-	rtsp_sess = get_curr_sess(GCS_CUR_SESS);
+    // get_curr_sess(NULL, &rtsp_sess, NULL);
+    rtsp_sess = get_curr_sess(GCS_CUR_SESS);
 
-	if (rtsp_sess->content_base != NULL)
-		if (*(rtsp_sess->pathname) != 0)
-			sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
-				PAUSE_TKN, rtsp_sess->content_base,
-				rtsp_sess->pathname, RTSP_VER,
-				++(rtsp_sess->CSeq));
-		else
-			sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
-				PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
-				++(rtsp_sess->CSeq));
-	else
-		sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
-			rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+    if (rtsp_sess->content_base != NULL)
+        if (*(rtsp_sess->pathname) != 0)
+            sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+                PAUSE_TKN, rtsp_sess->content_base,
+                rtsp_sess->pathname, RTSP_VER,
+                ++(rtsp_sess->CSeq));
+        else
+            sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+                PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
+                ++(rtsp_sess->CSeq));
+    else
+        sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
+            rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 
-	if (rtsp_sess->Session_ID != 0)	/* must add session ID? */
-		sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
-			rtsp_sess->Session_ID);
-	if (range && *range)
-		sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
-	else
-		sprintf(b + strlen(b), "Range: time=0-" RTSP_EL);
+    if (rtsp_sess->Session_ID != 0)    /* must add session ID? */
+        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+            rtsp_sess->Session_ID);
+    if (range && *range)
+        sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
+    else
+        sprintf(b + strlen(b), "Range: time=0-" RTSP_EL);
 
-	strcat(b, RTSP_EL);
+    strcat(b, RTSP_EL);
 
-	if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
-		nms_printf(NMSML_ERR, "Cannot send PAUSE request...\n");
-		return 1;
-	}
+    if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
+        nms_printf(NMSML_ERR, "Cannot send PAUSE request...\n");
+        return 1;
+    }
 
-	sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PAUSE_RESPONSE,
-		rtsp_sess->Session_ID, rtsp_sess->CSeq);
+    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PAUSE_RESPONSE,
+        rtsp_sess->Session_ID, rtsp_sess->CSeq);
 
-	return 0;
+    return 0;
 }

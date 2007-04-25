@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,37 +29,37 @@
 #include <nemesi/rtcp.h>
 
 struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
-				 rtp_session * rtp_sess, struct timeval tv,
-				 rtcp_type_t type)
+                 rtp_session * rtp_sess, struct timeval tv,
+                 rtcp_type_t type)
 {
-	struct rtcp_event *new_event;
-	struct rtcp_event *pevent = head;
-	struct rtcp_event *event = head;
+    struct rtcp_event *new_event;
+    struct rtcp_event *pevent = head;
+    struct rtcp_event *event = head;
 
-	if ((new_event =
-	     (struct rtcp_event *) malloc(sizeof(struct rtcp_event))) ==
-	    NULL) {
-		nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
-		return NULL;
-	}
-	new_event->rtp_sess = rtp_sess;
-	new_event->tv = tv;
-	new_event->type = type;
-	new_event->next = NULL;
+    if ((new_event =
+         (struct rtcp_event *) malloc(sizeof(struct rtcp_event))) ==
+        NULL) {
+        nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
+        return NULL;
+    }
+    new_event->rtp_sess = rtp_sess;
+    new_event->tv = tv;
+    new_event->type = type;
+    new_event->next = NULL;
 
-	if (!head)
-		return new_event;
+    if (!head)
+        return new_event;
 
-	while (event && timeval_subtract(NULL, &(event->tv), &tv)) {
-		pevent = event;
-		event = event->next;
-	}
-	if (pevent == head) {
-		new_event->next = head;
-		return new_event;
-	}
-	pevent->next = new_event;
-	new_event->next = event;
+    while (event && timeval_subtract(NULL, &(event->tv), &tv)) {
+        pevent = event;
+        event = event->next;
+    }
+    if (pevent == head) {
+        new_event->next = head;
+        return new_event;
+    }
+    pevent->next = new_event;
+    new_event->next = event;
 
-	return head;
+    return head;
 }

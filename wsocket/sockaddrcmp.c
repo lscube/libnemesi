@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,16 +38,16 @@
  * first difference encountered. 
  */
 int sockaddrcmp(struct sockaddr *addr1, socklen_t addr1_len,
-		struct sockaddr *addr2, socklen_t addr2_len)
+        struct sockaddr *addr2, socklen_t addr2_len)
 {
-	if (addr1_len != addr2_len)
-		return WSOCK_ERRSIZE;
-	if (addr1->sa_family != addr1->sa_family)
-		return WSOCK_ERRFAMILY;
-	if (sock_cmp_addr(addr1, addr2 /*, addr1_len */ ))
-		return WSOCK_ERRADDR;
-	if (sock_cmp_port(addr1, addr2 /*, addr1_len */ ))
-		return WSOCK_ERRPORT;
+    if (addr1_len != addr2_len)
+        return WSOCK_ERRSIZE;
+    if (addr1->sa_family != addr1->sa_family)
+        return WSOCK_ERRFAMILY;
+    if (sock_cmp_addr(addr1, addr2 /*, addr1_len */ ))
+        return WSOCK_ERRADDR;
+    if (sock_cmp_port(addr1, addr2 /*, addr1_len */ ))
+        return WSOCK_ERRPORT;
 
-	return 0;
+    return 0;
 }

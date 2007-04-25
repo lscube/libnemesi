@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,11 +29,11 @@
 #include <nemesi/wsocket.h>
 
 int gethostinfo(struct addrinfo **res, char *host, char *serv,
-		struct addrinfo *hints)
+        struct addrinfo *hints)
 {
-	int n;
+    int n;
 
-	if ((n = getaddrinfo(host, serv, hints, res)) != 0)
-		return n;
-	return 0;
+    if ((n = getaddrinfo(host, serv, hints, res)) != 0)
+        return n;
+    return 0;
 }

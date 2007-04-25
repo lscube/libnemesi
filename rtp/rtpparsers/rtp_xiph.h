@@ -6,8 +6,8 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2006 by
- *  	
- *	Luca Barbato - lu_zero@gentoo.org
+ *      
+ *    Luca Barbato - lu_zero@gentoo.org
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,13 +29,13 @@
  * Common parsing for xiph format
  */
 
-#define RTP_XIPH_ID(pkt)    (   (RTP_PKT_DATA(pkt)[0]<<16) +	\
-				 (RTP_PKT_DATA(pkt)[1]<<8) +	\
+#define RTP_XIPH_ID(pkt)    (   (RTP_PKT_DATA(pkt)[0]<<16) +    \
+                 (RTP_PKT_DATA(pkt)[1]<<8) +    \
                                 RTP_PKT_DATA(pkt)[2]    )
 #define RTP_XIPH_F(pkt)     ((RTP_PKT_DATA(pkt)[3]& 0xc0)>> 6)
 #define RTP_XIPH_T(pkt)     ((RTP_PKT_DATA(pkt)[3]& 0x30)>> 4)
 #define RTP_XIPH_PKTS(pkt)  (RTP_PKT_DATA(pkt)[3]& 0x0F)
-#define RTP_XIPH_LEN(pkt,off)   ((RTP_PKT_DATA(pkt)[off]<<8)+	\
+#define RTP_XIPH_LEN(pkt,off)   ((RTP_PKT_DATA(pkt)[off]<<8)+    \
                                  RTP_PKT_DATA(pkt)[off+1])
 #define RTP_XIPH_DATA(pkt,off)  (RTP_PKT_DATA(pkt)+off+2)
 
@@ -76,62 +76,62 @@
 
 static const unsigned long mask[] =
     { 0x00000000, 0x00000001, 0x00000003, 0x00000007, 0x0000000f,
-	0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff, 0x000001ff,
-	0x000003ff, 0x000007ff, 0x00000fff, 0x00001fff, 0x00003fff,
-	0x00007fff, 0x0000ffff, 0x0001ffff, 0x0003ffff, 0x0007ffff,
-	0x000fffff, 0x001fffff, 0x003fffff, 0x007fffff, 0x00ffffff,
-	0x01ffffff, 0x03ffffff, 0x07ffffff, 0x0fffffff, 0x1fffffff,
-	0x3fffffff, 0x7fffffff, 0xffffffff
+    0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff, 0x000001ff,
+    0x000003ff, 0x000007ff, 0x00000fff, 0x00001fff, 0x00003fff,
+    0x00007fff, 0x0000ffff, 0x0001ffff, 0x0003ffff, 0x0007ffff,
+    0x000fffff, 0x001fffff, 0x003fffff, 0x007fffff, 0x00ffffff,
+    0x01ffffff, 0x03ffffff, 0x07ffffff, 0x0fffffff, 0x1fffffff,
+    0x3fffffff, 0x7fffffff, 0xffffffff
 };
 
 typedef struct bit_context_s {
-	long endbyte;
-	int endbit;
-	unsigned char *buffer;
-	unsigned char *ptr;
-	long storage;
+    long endbyte;
+    int endbit;
+    unsigned char *buffer;
+    unsigned char *ptr;
+    long storage;
 } bit_context;
 
 static inline long bit_read(bit_context * b, int bits)
 {
-	long ret;
-	unsigned long m = mask[bits];
+    long ret;
+    unsigned long m = mask[bits];
 
-	bits += b->endbit;
+    bits += b->endbit;
 
-	if (b->endbyte + 4 >= b->storage) {
-		/* not the main path */
-		ret = -1L;
-		if (b->endbyte * 8 + bits > b->storage * 8)
-			goto overflow;
-	}
+    if (b->endbyte + 4 >= b->storage) {
+        /* not the main path */
+        ret = -1L;
+        if (b->endbyte * 8 + bits > b->storage * 8)
+            goto overflow;
+    }
 
-	ret = b->ptr[0] >> b->endbit;
-	if (bits > 8) {
-		ret |= b->ptr[1] << (8 - b->endbit);
-		if (bits > 16) {
-			ret |= b->ptr[2] << (16 - b->endbit);
-			if (bits > 24) {
-				ret |= b->ptr[3] << (24 - b->endbit);
-				if (bits > 32 && b->endbit) {
-					ret |= b->ptr[4] << (32 - b->endbit);
-				}
-			}
-		}
-	}
-	ret &= m;
+    ret = b->ptr[0] >> b->endbit;
+    if (bits > 8) {
+        ret |= b->ptr[1] << (8 - b->endbit);
+        if (bits > 16) {
+            ret |= b->ptr[2] << (16 - b->endbit);
+            if (bits > 24) {
+                ret |= b->ptr[3] << (24 - b->endbit);
+                if (bits > 32 && b->endbit) {
+                    ret |= b->ptr[4] << (32 - b->endbit);
+                }
+            }
+        }
+    }
+    ret &= m;
 
       overflow:
 
-	b->ptr += bits / 8;
-	b->endbyte += bits / 8;
-	b->endbit = bits & 7;
-	return (ret);
+    b->ptr += bits / 8;
+    b->endbyte += bits / 8;
+    b->endbit = bits & 7;
+    return (ret);
 }
 
 static inline void bit_readinit(bit_context * b, unsigned char *buf, int bytes)
 {
-	memset(b, 0, sizeof(*b));
-	b->buffer = b->ptr = buf;
-	b->storage = bytes;
+    memset(b, 0, sizeof(*b));
+    b->buffer = b->ptr = buf;
+    b->storage = bytes;
 }

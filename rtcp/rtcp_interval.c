@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - manchoz@inwind.it
- *	Francesco "shawill" Varano - shawill@infinto.it
+ *      
+ *      Giampaolo "mancho" Mancini - manchoz@inwind.it
+ *    Francesco "shawill" Varano - shawill@infinto.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,27 +29,27 @@
 #include <nemesi/rtcp.h>
 
 double rtcp_interval(int members, int senders, double rtcp_bw, int we_sent,
-		     double avg_rtcp_size, int initial)
+             double avg_rtcp_size, int initial)
 {
-	double t;
-	double rtcp_min_time = RTCP_MIN_TIME;
-	int n;
+    double t;
+    double rtcp_min_time = RTCP_MIN_TIME;
+    int n;
 
-	if (initial)
-		rtcp_min_time /= 2;
+    if (initial)
+        rtcp_min_time /= 2;
 
-	n = members;
-	if (senders > 0 && senders < members * RTCP_SENDER_BW_FRACTION) {
-		if (we_sent) {
-			rtcp_bw *= RTCP_SENDER_BW_FRACTION;
-			n = senders;
-		} else {
-			rtcp_bw *= RTCP_RCVR_BW_FRACTION;
-			n -= senders;
-		}
-	}
-	if ((t = avg_rtcp_size * n / rtcp_bw) < rtcp_min_time)
-		t = rtcp_min_time;
-	t = (t * (drand48() + 0.5)) / COMPENSATION;
-	return t;
+    n = members;
+    if (senders > 0 && senders < members * RTCP_SENDER_BW_FRACTION) {
+        if (we_sent) {
+            rtcp_bw *= RTCP_SENDER_BW_FRACTION;
+            n = senders;
+        } else {
+            rtcp_bw *= RTCP_RCVR_BW_FRACTION;
+            n -= senders;
+        }
+    }
+    if ((t = avg_rtcp_size * n / rtcp_bw) < rtcp_min_time)
+        t = rtcp_min_time;
+    t = (t * (drand48() + 0.5)) / COMPENSATION;
+    return t;
 }
