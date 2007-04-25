@@ -6,9 +6,9 @@
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
  *  Copyright (C) 2001 by
- *  	
- *  	Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *	Francesco "shawill" Varano - francesco.varano@polito.it
+ *      
+ *      Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
+ *    Francesco "shawill" Varano - francesco.varano@polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,40 +30,40 @@
 
 int rtp_def_frmr(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
 {
-	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
-	
-	pkt=rtp_get_pkt(stm_src, (int *)&pkt_len);
-	*timestamp = RTP_PKT_TS(pkt);
-	
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
-	
-	return dst_used;
+    rtp_pkt *pkt;
+    size_t pkt_len, dst_used=0;
+    size_t to_cpy;
+    
+    pkt=rtp_get_pkt(stm_src, (int *)&pkt_len);
+    *timestamp = RTP_PKT_TS(pkt);
+    
+    do {
+        to_cpy = min(pkt_len, dst_size);
+        memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
+        dst_used += to_cpy;
+        rtp_rm_pkt(rtp_sess, stm_src);
+    } while ( (dst_used<dst_size) && (pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
+    
+    return dst_used;
 }
 
 int rtp_def_frmr_nonblock(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
-{	
-	rtp_pkt *pkt;
-	size_t pkt_len, dst_used=0;
-	size_t to_cpy;
-	
-	if ( !(pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) )
-		return RTP_FILL_EMPTY;
-	*timestamp = RTP_PKT_TS(pkt);
-	
-	do {
-		to_cpy = min(pkt_len, dst_size);
-		memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
-		dst_used += to_cpy;
-		rtp_rm_pkt(rtp_sess, stm_src);
-	} while ( (dst_used<dst_size) && (pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
-	
-	return dst_used;
+{    
+    rtp_pkt *pkt;
+    size_t pkt_len, dst_used=0;
+    size_t to_cpy;
+    
+    if ( !(pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) )
+        return RTP_FILL_EMPTY;
+    *timestamp = RTP_PKT_TS(pkt);
+    
+    do {
+        to_cpy = min(pkt_len, dst_size);
+        memcpy(dst, RTP_PKT_DATA(pkt), to_cpy);
+        dst_used += to_cpy;
+        rtp_rm_pkt(rtp_sess, stm_src);
+    } while ( (dst_used<dst_size) && (pkt=rtp_get_pkt_nonblock(stm_src, (int *)&pkt_len)) && (RTP_PKT_TS(pkt)==*timestamp) );
+    
+    return dst_used;
 }
 
