@@ -53,9 +53,9 @@
 #define RTP_VERSION 2
 
 // #define RTP_AVP_UDP "RTP/AVP/UDP"
-#define RTP_AVP_UDP "RTP/AVP"    /* Default low-trasport is UDP. See RFC2326 12.39 */
-#define RTP_AVP_TCP "RTP/AVP/TCP"    /* interleaved TCP low transport. */
-#define RTP_AVP_SCTP "RTP/AVP/SCTP"    /* multistream SCTP low transport. */
+#define RTP_AVP_UDP "RTP/AVP"           //!< Default low-trasport is UDP. See RFC2326 12.39
+#define RTP_AVP_TCP "RTP/AVP/TCP"       //!< interleaved TCP low transport.
+#define RTP_AVP_SCTP "RTP/AVP/SCTP"     //!< multistream SCTP low transport.
 #define RTP_SEQ_MOD (1<<16)
 #define MIN_SEQUENTIAL 2
 #define MAX_DROPOUT 3000
@@ -68,6 +68,10 @@
 #define RTP_ERROR        1
 #define RTP_ERRALLOC    -1
 
+
+/**
+ * RTP packet structure, the header is a bitfield
+ */
 typedef struct {
 #ifdef WORDS_BIGENDIAN
     uint32 ver:2;
@@ -75,28 +79,29 @@ typedef struct {
     uint32 ext:1;
     uint32 cc:4;
 #else
-    uint32 cc:4;        /* source count */
-    uint32 ext:1;        /* extension flag */
-    uint32 pad:1;        /* padding flag */
-    uint32 ver:2;        /* version */
+    uint32 cc:4;        //!< source count
+    uint32 ext:1;       //!< extension flag
+    uint32 pad:1;       //!< padding flag
+    uint32 ver:2;       //!< version
 #endif
 #ifdef WORDS_BIGENDIAN
     uint32 mark:1;
     uint32 pt:7;
 #else
-    uint32 pt:7;        /* payload type */
-    uint32 mark:1;        /* marker flag */
+    uint32 pt:7;        //!< payload type
+    uint32 mark:1;      //!< marker flag 
 #endif
-    uint32 seq:16;        /* sequence number */
-    uint32 time;        /* timestamp */
-    uint32 ssrc;        /* synchronization source identifier */
-    uint8 data[1];        /* beginning of RTP data */
+    uint32 seq:16;      //!< sequence number
+    uint32 time;        //!< timestamp
+    uint32 ssrc;        //!< synchronization source identifier
+    uint8 data[1];      //!< beginning of RTP data
 } rtp_pkt;
 
 typedef struct {
     uint32 len;
     char *data;
 } rtp_buff;
+
 
 typedef struct {
     uint32 len;
@@ -106,13 +111,13 @@ typedef struct {
     char *data;
 } rtp_frame;
 
-#define RTP_PKT_CC(pkt)        (pkt->cc)
-#define RTP_PKT_MARK(pkt)    (pkt->mark)
-#define RTP_PKT_PT(pkt)        (pkt->pt)
+#define RTP_PKT_CC(pkt)     (pkt->cc)
+#define RTP_PKT_MARK(pkt)   (pkt->mark)
+#define RTP_PKT_PT(pkt)     (pkt->pt)
 #define RTP_PKT_SEQ(pkt)    ntohs(pkt->seq)
-#define RTP_PKT_TS(pkt)        ntohl(pkt->time)
-#define RTP_PKT_SSRC(pkt)    ntohl(pkt->ssrc)
-#define RTP_PKT_DATA(pkt)    (pkt->data  + pkt->cc)
+#define RTP_PKT_TS(pkt)     ntohl(pkt->time)
+#define RTP_PKT_SSRC(pkt)   ntohl(pkt->ssrc)
+#define RTP_PKT_DATA(pkt)   (pkt->data  + pkt->cc)
 #define RTP_PAYLOAD_SIZE(pkt, pkt_len)    ((pkt) ? pkt_len - ((pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+pkt_len-1)) * pkt->pad) : 0)
 /*(pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1*/
 
@@ -164,21 +169,21 @@ typedef struct {
 } rtp_transport;
 
 struct rtp_ssrc_stats {
-    uint16 max_seq;        /* highest seq number seen */
-    uint32 cycles;        /* shifted count of seq number cycles */
-    uint32 base_seq;    /* base seq number */
-    uint32 bad_seq;        /* last 'bad' seq number + 1 */
-    uint32 probation;    /* sequ. pkts till source is valid */
-    uint32 received;    /* RTP pkts received */
-    uint32 expected_prior;    /* pkt expected at last interval */
-    uint32 received_prior;    /* pkt received al last interval */
-    uint32 transit;        /* relative trans time for prev pkt */
-    double jitter;        /* extimated jitter */
-    struct timeval lastrtp;    /* last RTP pkt reception time */
-    struct timeval lastsr;    /* last RTCP SR pkt reception time */
-    uint32 ntplastsr[2];    /* last RTCP SR pkt NTP reception time */
-    uint32 firstts;        /* first pkt timestamp */
-    struct timeval firsttv;    /* first pkt timeval */
+    uint16 max_seq;         //!< highest seq number seen 
+    uint32 cycles;          //!< shifted count of seq number cycles 
+    uint32 base_seq;        //!< base seq number 
+    uint32 bad_seq;         //!< last 'bad' seq number + 1 
+    uint32 probation;       //!< sequ. pkts till source is valid 
+    uint32 received;        //!< RTP pkts received 
+    uint32 expected_prior;  //!< pkt expected at last interval 
+    uint32 received_prior;  //!< pkt received al last interval 
+    uint32 transit;         //!< relative trans time for prev pkt 
+    double jitter;          //!< extimated jitter 
+    struct timeval lastrtp; //!< last RTP pkt reception time 
+    struct timeval lastsr;  //!< last RTCP SR pkt reception time 
+    uint32 ntplastsr[2];    //!< last RTCP SR pkt NTP reception time 
+    uint32 firstts;         //!< first pkt timestamp 
+    struct timeval firsttv; //!< first pkt timeval 
 };
 
 struct rtp_ssrc_descr {
@@ -194,24 +199,15 @@ struct rtp_ssrc_descr {
 };
 
 struct rtp_session_stats {
-    struct timeval tp;    /* the last time an RTCP pkt was transmitted */
-    struct timeval tn;    /* the next scheduled transmission time of an
-                   RTCP pkt */
-    uint32 pmembers;    /* the estimated number of session members at
-                   time tm was last recomputed */
-    uint32 members;        /* the most currente estimate for the number of
-                   the session members */
-    uint32 senders;        /* the most currente estimate for the number of
-                   senders in the session */
-    double rtcp_bw;        /* the target RTCP bandwidht */
-    uint8 we_sent;        /* flag that is true if the app has sent data
-                   since the second previous RTCP Report was
-                   transmitted */
-    double avg_rtcp_size;    /* the average Compound RTCP pkt size, in
-                   octets, over all RTCP pkts sent and received
-                   by this partecipant */
-    uint8 initial;        /* the flag that is true if the app has not yet
-                   sent an RTCP pkt */
+    struct timeval tp;      //!< the last time an RTCP pkt was transmitted
+    struct timeval tn;      //!< the next scheduled transmission time of an RTCP pkt
+    uint32 pmembers;        //!< the estimated number of session members at time tm was last recomputed
+    uint32 members;         //!< the most currente estimate for the number of the session members
+    uint32 senders;         //!< the most currente estimate for the number of senders in the session
+    double rtcp_bw;         //!< the target RTCP bandwidth
+    uint8 we_sent;          //!< flag that is true if the app has sent data since the second previous RTCP Report was transmitted
+    double avg_rtcp_size;   //!< the average Compound RTCP pkt size, in octets, over all RTCP pkts sent and received by this partecipant
+    uint8 initial;          //!< the flag that is true if the app has not yet sent an RTCP pkt
 };
 
 #define SSRC_KNOWN    0
@@ -229,18 +225,11 @@ typedef struct rtp_ssrc_s {
     struct rtp_ssrc_stats ssrc_stats;
     struct rtp_ssrc_descr ssrc_sdes;
     playout_buff po;
-    struct rtp_session_s *rtp_sess;    // RTP session SSRC belogns to.
-//      rtp_pt **ptdefs;  /* convenience pointer to the same struct as 
-//                              rtp_session. (not to be freed here) */
-    void *privs[128];    /*!< I would like to keep rtp able to manage
-                   dynamic payload changes at its best. */
-    struct rtp_ssrc_s *next;    // next known SSRC
-    struct rtp_ssrc_s *next_active;    // next active SSRC
-    /* 
-     * park is a link for parking external variables (i.e. from decoder).
-     * libnms will never use that.
-     */
-    void *park;
+    struct rtp_session_s *rtp_sess;     //!< RTP session SSRC belogns to.
+    void *privs[128];                   //!< I would like to keep rtp able to manage dynamic payload changes at its best.
+    struct rtp_ssrc_s *next;            //!< next known SSRC
+    struct rtp_ssrc_s *next_active;     //!< next active SSRC
+    void *park;                         //!< private pointer used by the application (e.g. to hold decoder state variables)
 } rtp_ssrc;
 
 struct rtp_conflict {
@@ -249,10 +238,11 @@ struct rtp_conflict {
     struct rtp_conflict *next;
 };
 
-/*! the <tt>rtp_parser_init</tt> function is called at rtp thread start
+/** 
+ * the <tt>rtp_parser_init</tt> function is called at rtp thread start
  * (in <tt>rtp_thread_create</tt>) for all the parsers registered for announced
  * payload types (present in the <tt>announced_fmts</tt> list)
- * */
+ */
 typedef int (*rtp_parser_init) (struct rtp_session_s * rtp_sess, unsigned pt);
 typedef int (*rtp_parser) (rtp_ssrc * stm_src, rtp_frame * fr,
                rtp_buff * conf);
@@ -262,26 +252,19 @@ typedef struct rtp_session_s {
     uint32 local_ssrc;
     rtp_transport transport;
     struct rtp_session_stats sess_stats;
-    rtp_ssrc *ssrc_queue;    // queue of all known SSRCs
-    rtp_ssrc *active_ssrc_queue;    // queue of active SSRCs
+    rtp_ssrc *ssrc_queue;                   //!< queue of all known SSRCs
+    rtp_ssrc *active_ssrc_queue;            //!< queue of active SSRCs
     struct rtp_conflict *conf_queue;
     buffer_pool bp;
     struct rtp_session_s *next;
     pthread_mutex_t syn;
-    // payload type definitions for the session 
-    // (included dynamically defined)
-    rtp_pt *ptdefs[128];
-    rtp_fmts_list *announced_fmts;    /* list of rtp pt announced in sdp 
-                     * description (if present) */
+    rtp_pt *ptdefs[128];                    //!< payload type definitions for the session (included dynamically defined)
+    rtp_fmts_list *announced_fmts;          //!< list of rtp pt announced in sdp description (if present)
     // parsers functions
     rtp_parser_init parsers_inits[128];
     rtp_parser parsers[128];
     rtp_parser_uninit parsers_uninits[128];
-    /*
-     * park is a link for parking external variables (i.e. from decoder).
-     * libnms will never use that.
-     */
-    void *park;
+    void *park;                             //!< private pointer used by the application (e.g. to hold decoder state variables)
 } rtp_session;
 
 typedef struct {
@@ -331,22 +314,35 @@ rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc);
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
-// wrappers for rtp_pkt
+/**
+ * RTP packet handling
+ * @defgroup rtp_pkt RTP packet functions
+ * @{
+ */
 rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
 rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32);
 inline int rtp_rm_pkt(rtp_ssrc *);
 int rtp_fill_buffer(rtp_ssrc *, rtp_frame *, rtp_buff *);
 double rtp_get_next_ts(rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_ssrc *);
+/**
+ * @}
+ */
 
-// time wrappers
-//int rtp_get_time(rtp_ssrc *ssrc, uint32 timestamp, struct timeval *time);
-
-// rtp transport setup functions
+/**
+ * RTP transport setup functions
+ * @defgroup rtp_transport RTP transport functions
+ * @{
+ */
 int rtp_transport_set(rtp_session *, int, void *);
 int rtp_transport_get(rtp_session *, int, void *, uint32);
+/**
+ * @}
+ */
 
-// rtp transport wrapper functions for rtp_transport_get
+/**
+ * RTP transport wrapper functions for rtp_transport_get
+ */
 inline char *rtp_get_spec(rtp_session *);
 inline enum sock_types rtp_get_socktype(rtp_session *);
 inline enum deliveries rtp_get_delivery(rtp_session *);
