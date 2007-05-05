@@ -56,19 +56,11 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
         case 'm':    /* create struct for new medium */
             if (!curr_sdp_m) {    // first medium description
                 // we use calloc, so it's all already initialized to NULL
-                if (!
-                    (queue = curr_sdp_m =
-                     (sdp_medium_info *) calloc(1,
-                                sizeof
-                                (sdp_medium_info))))
+                if (!(queue = curr_sdp_m = calloc(1, sizeof (sdp_medium_info))))
                     return NULL;
             } else {    // not first medium in sdp session
                 // we use calloc, so it's all already initialized to NULL
-                if (!
-                    (curr_sdp_m->next =
-                     (sdp_medium_info *) calloc(1,
-                                sizeof
-                                (sdp_medium_info))))
+                if (!(curr_sdp_m->next = calloc(1, sizeof(sdp_medium_info))))
                 {
                     error = 1;
                     break;
@@ -96,16 +88,14 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
             tkn += 2;
             if (sdp_set_attr(&(curr_sdp_m->attr_list), tkn)) {
                 nms_printf(NMSML_ERR,
-                       "Error setting SDP media atrtibute\n");
+                       "Error setting SDP media attribute\n");
                 error = 1;
                 break;
                 // return NULL;
             }
             if (issdplicense(tkn)) {
                 if (!curr_sdp_m->cc)
-                    if (!
-                        (curr_sdp_m->cc =
-                         cc_newlicense())) {
+                    if (!(curr_sdp_m->cc = cc_newlicense())) {
                         nms_printf(NMSML_ERR,
                                "Could not get new CC license struct\n");
                         error = 1;
@@ -127,7 +117,8 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
         sdp_media_destroy(queue);
         return NULL;
     } else {        // setup CC tags for disk writing
-        for (curr_sdp_m = queue; curr_sdp_m;
+        for (curr_sdp_m = queue;
+             curr_sdp_m;
              curr_sdp_m = curr_sdp_m->next) {
             for (tkn = curr_sdp_m->fmts; *tkn; tkn = endtkn) {
                 for (; *tkn == ' '; tkn++);    // skip spaces

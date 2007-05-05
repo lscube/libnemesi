@@ -106,10 +106,8 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
             break;
         case 'm':
             tkn[strlen(tkn)] = '\n';
-            if (!
-                (new->media_info_queue =
-                 sdp_media_setup(&tkn,
-                         descr_len - (tkn - descr)))) {
+            if (!(new->media_info_queue = 
+                    sdp_media_setup(&tkn, descr_len - (tkn - descr)))) {
                 error = 1;
                 break;
                 // return NULL;

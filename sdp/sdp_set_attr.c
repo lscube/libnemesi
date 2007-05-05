@@ -41,7 +41,7 @@ int sdp_set_attr(sdp_attr ** attr_list, char *a)
 
     new->a = a;
 
-    for (i = attr_list; *i; i = &((*i)->next));    // serch for the tail of queue
+    for (i = attr_list; *i; i = &((*i)->next)); // search for the tail of queue
     *i = new;
 
     return 0;

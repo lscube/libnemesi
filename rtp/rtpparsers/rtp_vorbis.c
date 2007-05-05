@@ -296,8 +296,8 @@ static long pkt_blocksize(rtp_vorbis * vorb, rtp_frame * fr)
 /**
  * Create standard mkv/nut/ffmpeg extradata from a configuration packet
  * layouts:
- * RTP: [Ident (30 bytes)][Setup (variable)]
- * extradata: [(1byte)number of fields-1][len0][len1][Ident][Comment][Setup]
+ * RTP:         [Ident (30 bytes)][Setup (variable)]
+ * extradata:   [(1byte)number of fields-1][len0][len1][Ident][Comment][Setup]
  */
 static int cfg_fixup(rtp_vorbis * vorb, rtp_frame * fr, rtp_buff * config,
              int id)
