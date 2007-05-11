@@ -28,9 +28,164 @@
 
 #include <nemesi/utils.h>
 
+typedef struct
+{
+    char * protocol;
+    char * hostname;
+    char * port;
+    char * path;
+} RTSP_Url;
+
+int RTSP_Url_init(RTSP_Url * url, char * urlname)
+{
+    char * protocol_begin, * hostname_begin, * port_begin, * path_begin;
+    size_t protocol_len, hostname_len, port_len, path_len;
+
+    memset(url, 0, sizeof(RTSP_Url));
+
+    hostname_begin = strstr(urlname, "://");
+    if (hostname_begin == NULL) {
+        hostname_begin = urlname;
+        protocol_begin = NULL;
+        protocol_len = 0;
+    }
+    else {
+        protocol_len = (size_t)(hostname_begin - urlname);
+        hostname_begin = hostname_begin + 3;
+        protocol_begin = urlname;
+    }
+
+    hostname_len = strlen(urlname) - ((size_t)(hostname_begin - urlname));
+
+    path_begin = strstr(hostname_begin, "/");
+    if (path_begin == NULL) {
+        path_len = 0;
+    }
+    else {
+        ++path_begin;
+        hostname_len = (size_t)(path_begin - hostname_begin - 1);
+        path_len = strlen(urlname) - ((size_t)(path_begin - urlname));
+    }
+
+    port_begin = strstr(hostname_begin, ":");
+    if ((port_begin == NULL) || ((port_begin > path_begin) && (path_begin != NULL))) {
+        port_len = 0;
+        port_begin = NULL;
+    }
+    else {
+        ++port_begin;
+        if (path_len)
+            port_len = (size_t)(path_begin - port_begin - 1);
+        else
+            port_len = strlen(urlname) - ((size_t)(port_begin - urlname));
+        hostname_len = (size_t)(port_begin - hostname_begin - 1);
+    }
+
+    if (protocol_len) {
+        url->protocol = (char*)malloc(protocol_len+1);
+        strncpy(url->protocol, protocol_begin, protocol_len);
+        url->protocol[protocol_len] = '\0';
+    }
+
+    if (port_len) {
+        url->port = (char*)malloc(port_len+1);
+        strncpy(url->port, port_begin, port_len);
+        url->port[port_len] = '\0';
+    }
+
+    if (path_len) {
+        url->path = (char*)malloc(path_len+1);
+        strncpy(url->path, path_begin, path_len);
+        url->path[path_len] = '\0';
+    }
+
+    url->hostname = (char*)malloc(hostname_len+1);
+    strncpy(url->hostname, hostname_begin, hostname_len);
+    url->hostname[hostname_len] = '\0';
+
+    return 0;
+}
+
+void RTSP_Url_destroy(RTSP_Url * url)
+{
+    free(url->protocol);
+    free(url->hostname);
+    free(url->port);
+    free(url->path);
+}
+
+void test_url(char * url, char * protocol, char * host, char * port, char * path)
+{
+    RTSP_Url turl;
+
+    RTSP_Url_init(&turl, url);
+
+    if (protocol != turl.protocol) {
+        if ( (protocol == NULL) || (turl.protocol == NULL) || (strcmp(turl.protocol, protocol) != 0) )
+            printf("Url test failed on protocol check for %s\n", url);
+    }
+
+    if (host != turl.hostname) {
+        if ( (host == NULL) || (turl.hostname == NULL) || (strcmp(turl.hostname, host) != 0) )
+            printf("Url test failed on host check for %s\n", url);
+    }
+
+    if (port != turl.port) {
+        if ( (port == NULL) || (turl.port == NULL) || (strcmp(turl.port, port) != 0) )
+            printf("Url test failed on port check for %s\n", url);
+    }
+
+    if (path != turl.path) {
+        if ( (path == NULL) || (turl.path == NULL) || (strcmp(turl.path, path) != 0) )
+            printf("Url test failed on path check for %s\n", url);
+    }
+
+    RTSP_Url_destroy(&turl);
+}
+
+void url_test_set()
+{
+    test_url("rtsp://this.is.a.very.long.url:this_should_be_the_port/this/is/a/path/to/file.wmv",
+             "rtsp", "this.is.a.very.long.url", "this_should_be_the_port", "this/is/a/path/to/file.wmv");
+
+    test_url("rtsp://this.is.the.host/this/is/the/path.avi", "rtsp", "this.is.the.host", NULL, "this/is/the/path.avi");
+    test_url("host:80/file.wmv", NULL, "host", "80", "file.wmv");
+    test_url("host/file.wmv", NULL, "host", NULL, "file.wmv");
+    test_url("host", NULL, "host", NULL, NULL);
+    test_url("rtsp://host", "rtsp", "host", NULL, NULL);
+    test_url("rtsp://host:port", "rtsp", "host", "port", NULL);
+}
+
+int urltokenize(char *urlname, char **host, char **port, char **path)
+{
+    RTSP_Url url;
+
+    RTSP_Url_init(&url, urlname);
+
+    if (host != NULL) 
+        *host = url.hostname;
+    else
+        free(url.hostname);
+
+    if (port != NULL) 
+        *port = url.port;
+    else
+        free(url.port);
+
+    if (path != NULL) 
+        *path = url.path;
+    else
+        free(url.path);
+
+    free(url.protocol);
+
+    return 0;
+}
+
+
+#if 0
 // XXX it should parse rtsp://hostname:port/path/to/resource
 // XXX should not use strtok!
-
 int urltokenize(char *urlname, char **host, char **port, char **path)
 {
     char *token, *tokenda;
@@ -79,3 +234,4 @@ int urltokenize(char *urlname, char **host, char **port, char **path)
 
     return 0;
 }
+#endif
