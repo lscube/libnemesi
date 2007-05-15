@@ -305,20 +305,18 @@ void rtp_pt_attrs_init(rtp_pt_attrs * attrs)
 
 int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *attr)
 {
-    rtp_pt_attrs *attrs = &defs[value]->attrs;
+    rtp_pt_attrs *attrs;
 
     if (value > 127)
         return 1;
 
+    attrs = &defs[value]->attrs;
+
     if (attrs->allocated == attrs->size) {    // we must realloc
-        if (!
-            (attrs->data =
-             realloc(attrs->data,
-                 min(attrs->allocated + 1,
-                 RTP_ATTRS_ARRAY_DEF_SIZE))))
+        int minsize = min(attrs->allocated + 1, RTP_ATTRS_ARRAY_DEF_SIZE);
+        if (! (attrs->data = realloc(attrs->data, minsize * sizeof(char*))))
             return -1;
-        attrs->allocated =
-            min(attrs->allocated + 1, RTP_ATTRS_ARRAY_DEF_SIZE);
+        attrs->allocated = minsize;
     }
     if (!(attrs->data[attrs->size] = strdup(attr)))
         return -1;
