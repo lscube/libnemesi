@@ -36,7 +36,7 @@ int rtsp_recv(rtsp_thread * rtsp_th)
     int n = -1, m = 0;
     char buffer[BUFFERSIZE];
     nms_rtsp_interleaved *p;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
     struct sctp_sndrcvinfo sinfo;
 #endif
 
@@ -46,7 +46,7 @@ int rtsp_recv(rtsp_thread * rtsp_th)
     case TCP:
         n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE, NULL);
         break;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
     case SCTP:
         memset(&sinfo, 0, sizeof(sinfo));
         n = nmst_read(&rtsp_th->transport, buffer, BUFFERSIZE, &sinfo);
@@ -84,7 +84,7 @@ int rtsp_recv(rtsp_thread * rtsp_th)
     (rtsp_th->in_buffer).size += n;
     (rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size] = '\0';
     } else /* if (rtsp_th->transport.type == SCTP && m!=0) */ {
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
         for (p = rtsp_th->interleaved; p && !((p->proto.sctp.rtp_st == m)
             || (p->proto.sctp.rtcp_st == m)); p = p->next);
         if (p) {

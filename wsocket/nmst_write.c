@@ -30,14 +30,14 @@
 
 int nmst_write(nms_transport * transport, void *buffer, size_t nbytes, void *protodata)
 {
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
     struct sctp_sndrcvinfo sinfo;
 #endif
     switch (transport->type) {
     case TCP:
         return write(transport->fd, buffer, nbytes);
         break;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
     case SCTP:
         if (!protodata) {
             protodata = &sinfo;

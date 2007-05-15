@@ -98,25 +98,19 @@ else
 fi
 
 dnl Check for SCTP support
+nemesi_sctp_support="yes"
 if test "$enable_sctp" = "yes"; then
-        AC_CHECK_TYPE(struct sctp_sndrcvinfo,
-		 AC_CHECK_LIB(sctp,sctp_recvmsg,
-				AC_DEFINE([HAVE_SCTP_NEMESI], 1, [Define SCTP support]) \
-				AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" = "yes"]) \
-				nemesi_sctp_support=yes,
-				AC_MSG_WARN([SCTP not available]) \
-				AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" != "yes"]) \
-				nemesi_sctp_support=no),
-		AC_MSG_WARN([SCTP not available]) \
-		AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" != "yes"]) \
-		nemesi_sctp_support=no,
-		[#include <netinet/sctp.h>])
-	
+        AC_CHECK_TYPE(struct sctp_sndrcvinfo, [
+         AC_CHECK_LIB(sctp,sctp_recvmsg)],
+         AC_MSG_WARN([SCTP disabled: headers not found])
+	 nemesi_sctp_support="no",
+         [#include <netinet/sctp.h>])
 else
-        AC_MSG_WARN([SCTP disabled: check skipped.])
-	AM_CONDITIONAL(NEMESI_SCTP, [test "$enable_sctp" = "yes"])
-	nemesi_sctp_support=no
+    AC_MSG_WARN([SCTP disabled: check skipped.])
+    nemesi_sctp_support="no"
 fi
+
+AM_CONDITIONAL(HAVE_LIBSCTP, [test "$nemesi_sctp_support" = "yes"])
 
 AC_SUBST(LIBM)
 AC_SUBST(EXTRA_FLAGS)

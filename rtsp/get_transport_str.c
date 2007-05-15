@@ -39,7 +39,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
     if (strstrcase(buff, RTP_AVP_TCP))
         rtp_sess->transport.type = TCP;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
     else if (strstrcase(buff, RTP_AVP_SCTP))
         rtp_sess->transport.type = SCTP;
 #endif
@@ -59,7 +59,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
         n = get_transport_str_tcp(rtp_sess, tkna, tknb);
         break;
     case SCTP:
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
         n = get_transport_str_sctp(rtp_sess, tkna, tknb);
 #endif
         break;

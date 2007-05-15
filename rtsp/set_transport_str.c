@@ -49,7 +49,7 @@ int set_transport_str(rtp_session * rtp_sess, char **str)
         set_transport_str_tcp(rtp_sess, buff);
         break;
     case SCTP:
-#ifndef HAVE_SCTP_NEMESI
+#ifndef HAVE_LIBSCTP
         return nms_printf(NMSML_FATAL,
             "set_transport_str: SCTP support not compiled in!\n");
 #else

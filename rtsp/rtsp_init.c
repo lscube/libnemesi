@@ -131,7 +131,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
         case TCP:
             rtsp_th->transport.type = TCP;
             break;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
         case SCTP:
             rtsp_th->transport.type = SCTP;
             break;
@@ -151,7 +151,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
             else
                 RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
             break;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
         case SCTP:
             if (rtsp_th->transport.type == SCTP)
                 rtsp_th->default_rtp_proto = SCTP;
