@@ -1,6 +1,4 @@
 /* * 
- *  $Id$
- *  
  *  This file is part of NeMeSI
  *
  *  NeMeSI -- NEtwork MEdia Streamer I

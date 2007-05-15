@@ -55,13 +55,14 @@ typedef struct {
 #define RTP_PT_ATTRS_INITIALIZER {NULL, 0, 0}
 
 #define RTP_PT_COMMON_FIELDS \
-        char name[RTP_DEF_MAX_NAME_LEN]; /* Encoding Name */ \
-        rtp_media_type type; /* Media Type: (A)udio, (V)ideo,
-                                        (A)udio(/)(V)ideo,
-                                        (N)ot(/)(A)pplicable */ \
-        uint32 rate; /* Clock Rate - in Hertz*/ \
-        rtp_pt_attrs attrs; /* attribute strings from sdp description */ \
-        void *priv;        /* private data for rtp payload type */
+        char name[RTP_DEF_MAX_NAME_LEN]; /*!< Encoding Name */             \
+        rtp_media_type type; /*!< Media Type: (A)udio, (V)ideo,            \
+                                        (A)udio(/)(V)ideo,                 \
+                                        (N)ot(/)(A)pplicable */            \
+        uint32 rate; /*!< Clock Rate - in Hertz*/                          \
+        rtp_pt_attrs attrs; /*!< fmtp attribute strings from sdp           \
+                                 description */                            \
+        void *priv;         /*!< private data for rtp payload type */
 
 /* XXX audio and video fields must have different names, 
  * because they are used together in rtp_audio_video
@@ -101,7 +102,7 @@ rtp_pt *rtp_pt_new(rtp_media_type mtype);
 int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8 value);
 int rtp_dynpt_encname(rtp_pt * defs[], uint8 value, char *enc_name);
 
-//rtp_pt_attrs specific functions
+//!rtp_pt_attrs specific functions
 //void rtp_pt_attrs_init(rtp_pt_attrs *);
 int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *);
 
