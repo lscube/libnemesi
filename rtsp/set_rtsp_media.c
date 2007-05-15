@@ -79,7 +79,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
             // setup rtp format list for current media
             for (tkn = sdp_m->fmts;
                  *tkn && !(!(pt = strtoul(tkn, &ch, 10))
-                       && ch == tkn); tkn = ch) {
+                            && ch == tkn); tkn = ch) {
                 switch (sdp_m->media_type) {
                 case 'A':
                     if (rtp_announce_pt
@@ -116,9 +116,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                     // skip spaces and colon (we should not do this!)
                     while ((*tkn == ' ') || (*tkn == ':'))
                         tkn++;
-                    if (((pt =
-                          (uint8) strtoul(tkn, &tkn,
-                                  10)) >= 96)
+                    if (((pt = (uint8) strtoul(tkn, &tkn, 10)) >= 96)
                         && (pt <= 127)) {
                         while (*tkn == ' ')
                             tkn++;
@@ -128,29 +126,18 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                             break;
                         }
                         *ch = '\0';
-                        if (rtp_dynpt_reg
-                            (curr_rtsp_m->rtp_sess, pt,
-                             tkn))
+                        if (rtp_dynpt_reg (curr_rtsp_m->rtp_sess, pt, tkn))
                             return 1;
                         switch (sdp_m->media_type) {
                         case 'A':
                             sscanf(ch + 1, "%u/%c",
-                                   &curr_rtsp_m->
-                                   rtp_sess->
-                                   ptdefs[pt]->
-                                   rate,
-                                   &RTP_AUDIO
-                                   (curr_rtsp_m->
-                                rtp_sess->
-                                ptdefs[pt])->
+                                &curr_rtsp_m->rtp_sess->ptdefs[pt]->rate,
+                                &RTP_AUDIO(curr_rtsp_m->rtp_sess->ptdefs[pt])->
                                    channels);
                             break;
                         case 'V':
                             sscanf(ch + 1, "%u",
-                                   &curr_rtsp_m->
-                                   rtp_sess->
-                                   ptdefs[pt]->
-                                   rate);
+                                   &curr_rtsp_m->rtp_sess->ptdefs[pt]->rate);
                             break;
                         default:
                             // not recognized
@@ -161,7 +148,8 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                     } else {
                         // shawill: should be an error or a warning?
                         nms_printf(NMSML_WARN,
-                               "Warning: rtpmap attribute is trying to set a non-dynamic payload type: not permitted\n");
+                            "Warning: rtpmap attribute is trying to set a"
+                            "non-dynamic payload type: not permitted\n");
                     }
                 } else
                     if (!strncmpcase(sdp_attr->a, "fmtp", 4)) {
@@ -171,19 +159,15 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                     // skip spaces and colon (we should not do this!)
                     while ((*tkn == ' ') || (*tkn == ':'))
                         tkn++;
-                    if ((pt =
-                         (uint8) strtoul(tkn, &tkn,
-                                 10)) <= 127) {
+                    if ((pt = (uint8) strtoul(tkn, &tkn, 10)) <= 127) {
                         while (*tkn == ' ')
                             tkn++;
-                        rtp_pt_attr_add(curr_rtsp_m->
-                                rtp_sess->
-                                ptdefs, pt,
-                                tkn);
+                        rtp_pt_attr_add(curr_rtsp_m->rtp_sess->ptdefs, pt, tkn);
                     } else {
                         // shawill: should be an error or a warning?
                         nms_printf(NMSML_WARN,
-                               "Warning: fmtp attribute is trying to set an out of bounds payload type: not permitted\n");
+                            "Warning: fmtp attribute is trying to set an"
+                            "out of bounds payload type: not permitted\n");
                     }
                 } else if (!strncmpcase(sdp_attr->a, "med", 3)) {    // dirty keyword from old fenice used for dinamic payload change
                     sdp_medium_info m_info;
@@ -199,12 +183,11 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                         return 1;
                     }
                     // check if everything is correct
-                    if (!
-                        (pt =
-                         strtoul(m_info.fmts, &ch, 10))
-&& ch == m_info.fmts) {
+                    if (!(pt = strtoul(m_info.fmts, &ch, 10)) 
+                        && ch == m_info.fmts) {
                         nms_printf(NMSML_ERR,
-                               "Could not determine pt value in a=med: string from fenice\n");
+                            "Could not determine pt value in a=med: string"
+                            " from fenice\n");
                         return 1;
                     }
                     switch (sdp_m->media_type) {
@@ -212,7 +195,8 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                         if (strncmpcase
                             (tkn, "audio ", 6)) {
                             nms_printf(NMSML_ERR,
-                                   "a=med; attribute defined a different media type than the original\n");
+                                "a=med; attribute defined a different media"
+                                " type than the original\n");
                             return 1;
                         }
                         if (rtp_announce_pt
@@ -224,7 +208,8 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                         if (strncmpcase
                             (tkn, "video ", 6)) {
                             nms_printf(NMSML_ERR,
-                                   "a=med; attribute defined a different media type than the original\n");
+                                "a=med; attribute defined a different media"
+                                " type than the original\n");
                             return 1;
                         }
                         if (rtp_announce_pt
