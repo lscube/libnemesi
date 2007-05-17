@@ -27,6 +27,7 @@
 
 #include "rtpparser.h"
 #include "rtp_xiph.h"
+#include "rtp_utils.h"
 #include <math.h>
 
 /**
@@ -44,8 +45,10 @@ typedef struct vorbis_s {
     int pkts;       //!< number of packets yet to process in the aggregate
     char *buf;      //!< constructed frame, fragments will be copied there 
     long len;       //!< buf length, it's the sum of the fragments length
-    long timestamp; //!< calculated timestamp
+    long timestamp; //!< calculated timestamp.
     int id;         //!< Vorbis id, it could change across packets.
+    uint8_t *conf;     //!< Configuration, in mkv/nut/ffmpeg format.
+    long conf_len;  //!< Configuration length.
     int modes;                  //!< Internal vorbis data
     long blocksizes[2];         //!< Internal vorbis data
     int param_blockflag[64];    //!< Internal vorbis data
@@ -424,6 +427,7 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
 static int rtp_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
     rtp_vorbis *vorb = malloc(sizeof(rtp_vorbis));
+    char *attr, *p;
 
     if (!vorb)
         return RTP_ERRALLOC;
@@ -431,23 +435,54 @@ static int rtp_init_parser(rtp_session * rtp_sess, unsigned pt)
     memset(vorb, 0, sizeof(rtp_vorbis));
 
 // parse the sdp to get the first configuration
+    if (!rtp_sess->ptdefs[pt]->attrs.allocated) goto err_alloc;
+    attr = rtp_sess->ptdefs[pt]->attrs.data[0]; //XXX may be more, loop over?
+    // find the in band delivery method
+    while ((p = strstr(attr, "delivery-method="))) {
+        if (!strncmp(p,"in_band",7)) {
+            p = strstr(p, "configuration=");
+            if (p) {
+                vorb->conf = malloc(strlen(p));
+                if (!vorb->conf) goto err_alloc;
+                vorb->conf_len = nms_base64_decode(vorb->conf, p, strlen(p));
+            if (vorb->conf_len < 0) goto err_alloc2;
+            } else goto err_alloc;
+        }
+    }
 
+    if (vorb->conf) {
+    // reformat the configuration
+    } else {
+    // no string, invalid sdp
+        goto err_alloc;
+    }
 // setup the config cache //LATER
 
 // associate it to the right payload
-
     rtp_sess->ptdefs[pt]->priv = vorb;
 
     return 0;
+
+    err_alloc2:
+    free(vorb->conf);
+
+    err_alloc:
+    free(vorb);
+    vorb = NULL;
+
+    return RTP_PARSE_ERROR;
 }
 
 int rtp_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 {
-
     rtp_vorbis *vorb = ssrc->privs[pt];
+
+    ssrc->privs[pt] = NULL;
 
     if (vorb && vorb->buf)
         free(vorb->buf);
+    if (vorb && vorb->conf)
+        free(vorb->conf);
     if (vorb)
         free(vorb);
 
