@@ -34,7 +34,7 @@ int nmst_read(nms_transport * transport, void *buffer, size_t nbytes, void *prot
     case TCP:
         return read(transport->fd, buffer, nbytes);
         break;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
     case SCTP:
         if (!protodata) {
             return -1;

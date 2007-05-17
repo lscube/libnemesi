@@ -44,7 +44,7 @@
 #include <nemesi/comm.h>
 #include <nemesi/types.h>
 
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
 #include <netinet/sctp.h>
 #define MAX_SCTP_STREAMS 11
 #endif

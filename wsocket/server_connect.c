@@ -44,7 +44,7 @@ int server_connect(char *host, char *port, int *sock,
     int n, connect_new;
     struct addrinfo *res, *ressave;
     struct addrinfo hints;
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
     struct sctp_initmsg initparams;
     struct sctp_event_subscribe subscribe;
 #endif
@@ -60,7 +60,7 @@ int server_connect(char *host, char *port, int *sock,
 
     switch (sock_type) {
     case SCTP:
-#ifndef HAVE_SCTP_NEMESI
+#ifndef HAVE_LIBSCTP
         return nms_printf(NMSML_ERR,
                   "%s: SCTP protocol not compiled in\n",
                   PROG_NAME);
@@ -88,7 +88,7 @@ int server_connect(char *host, char *port, int *sock,
     connect_new = (*sock < 0);
 
     do {
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
         if (sock_type == SCTP)
             res->ai_protocol = IPPROTO_SCTP;
 #endif // TODO: remove this code when SCTP will be supported from getaddrinfo()
@@ -98,7 +98,7 @@ int server_connect(char *host, char *port, int *sock,
                 res->ai_protocol)) < 0)
             continue;
 
-#ifdef HAVE_SCTP_NEMESI
+#ifdef HAVE_LIBSCTP
         if (sock_type == SCTP) {
             // Enable the propagation of packets headers
             memset(&subscribe, 0, sizeof(subscribe));

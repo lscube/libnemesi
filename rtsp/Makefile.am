@@ -60,7 +60,7 @@ librtsp_la_SOURCES =	body_exists.c \
 			set_transport_str_udp.c \
 			seturlname.c \
 			stop_cmd.c
-if NEMESI_SCTP
+if HAVE_LIBSCTP
 librtsp_la_SOURCES +=	get_transport_str_sctp.c \
 			set_transport_str_sctp.c
 endif
