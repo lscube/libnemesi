@@ -1,9 +1,0 @@
-libNeMeSI -- NEtwork MEdia Streamer I
-
-Copyright (C) 2006 by
-
-	Giampaolo "mancho" Mancini -- manchoz@inwind.it
-	Francesco "shawill" Varano -- shawill@infinto.it
-
-RTSP client library, please refer to INSTALL to install issues and to the 
-doxygenerated documentation and the headers for usage.
