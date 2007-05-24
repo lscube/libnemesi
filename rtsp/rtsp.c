@@ -336,10 +336,11 @@ int rtsp_open(rtsp_ctrl * rtsp_ctl, char *urlname)
         return 1;
 
     pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-    rtsp_ctl->comm->opcode = OPEN;
+    //rtsp_ctl->comm->opcode = OPEN;
     strncpy(rtsp_ctl->comm->arg, urlname, sizeof(rtsp_ctl->comm->arg));
-    write(rtsp_ctl->pipefd[1], "o", 1);
-    rtsp_ctl->busy = 1;
+    //write(rtsp_ctl->pipefd[1], "o", 1);
+    //rtsp_ctl->busy = 1;
+	open_cmd((rtsp_thread*)rtsp_ctl);
     pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
     return 0;

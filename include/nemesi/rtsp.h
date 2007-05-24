@@ -46,7 +46,7 @@
  *
  * @{ */
 
-/*! Default RTSP port (default setting from rfc) if not explicitly scecified. */
+/*! Default RTSP port (default setting from rfc) if not explicitly specified. */
 #define RTSP_DEFAULT_PORT 554
 
 /*! Version of implemented protocol. */
@@ -68,18 +68,18 @@ typedef struct {
 } nms_rtsp_hints;
 
 /*!
- * \brief RTSP medium description.
+ * @brief RTSP medium description.
  *
  * This struct is an item in a single-linked list that identifies all the media
  * that belong to a RTSP session. Through the \c rtp_sess pointer is possible
  * to get the RTP session of the described medium.
  
- * \note The methods SETUP e TEARDOWN are defined on a ``per medium'' scope,
+ * @note The methods SETUP e TEARDOWN are defined on a ``per medium'' scope,
  * they have to be sent for each medium and you must wait for a reply from 
  * the server for each of them.
  *
- * \see Medium_info
- * \see rtsp_session
+ * @see Medium_info
+ * @see rtsp_session
  * */
 typedef struct rtsp_medium_s {
     sdp_medium_info *medium_info;    /*!< Medium informations. */
@@ -92,7 +92,7 @@ typedef struct rtsp_medium_s {
 } rtsp_medium;
 
 /*!
- * \brief RTSP session description.
+ * @brief RTSP session description.
  *
  * Item of the RTSP sessions list.
  *
@@ -100,14 +100,14 @@ typedef struct rtsp_medium_s {
  * For each session there is a queue of media that belongs to the same
  * ``presentation''
  *
- * \note The methods PLAY, PAUSE, RECORD are defined on a``per session'' scope,
+ * @note The methods PLAY, PAUSE, RECORD are defined on a``per session'' scope,
  * they have to be sent for each active session. Aggregated media belongs to
  * the same session, so a session method will have effect to every of them.
  * E.g a PLAY method on an Audio Video session will start both audio and video
  * streams at the same time
  *
- * \see rtsp_session_info
- * \see rtsp_medium
+ * @see rtsp_session_info
+ * @see rtsp_medium
  * */
 typedef struct rtsp_session_s {
     uint64 Session_ID;    /*!< RTSP identifier. */
@@ -136,13 +136,13 @@ typedef struct rtsp_session_s {
                    <tt>\ref rtsp_session_info</tt>. */
 } rtsp_session;
 
-/*! \enum Definition for possible states in RTSP state-machine
+/*! @enum Definition for possible states in RTSP state-machine
  * The last ("STATES_NUM") is used to know how many states are present in the machine.
  */
 enum states { INIT, READY, PLAYING, RECORDING, STATES_NUM };
 
 /*!
- * \brief Definition of the common part for rtsp_thread and rtsp_ctrl structs
+ * @brief Definition of the common part for rtsp_thread and rtsp_ctrl structs
  */
 #define RTSP_COMMON_IF \
             int pipefd[2]; \

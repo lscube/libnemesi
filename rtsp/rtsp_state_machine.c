@@ -456,7 +456,7 @@ void *rtsp(void *rtsp_thrd)
             }
         }
 
-        if (FD_ISSET(command_fd, &readset)) {
+        /*if (FD_ISSET(command_fd, &readset)) {
             pthread_mutex_lock(&(rtsp_th->comm_mutex));
             read(command_fd, ch, 1);
             if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
@@ -466,7 +466,7 @@ void *rtsp(void *rtsp_thrd)
             }
             rtsp_th->comm->opcode = NONE;
             pthread_mutex_unlock(&(rtsp_th->comm_mutex));
-        }
+        }*/
     }
 
     pthread_cleanup_pop(1);
