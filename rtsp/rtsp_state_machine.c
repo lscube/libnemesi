@@ -137,7 +137,6 @@ int play_cmd(rtsp_thread * rtsp_th, ...)
 
 int close_cmd(rtsp_thread * rtsp_th, ...)
 {
-
     if (rtsp_th->status == INIT) {
         nms_printf(NMSML_NORM, BLANK_LINE);
         nms_printf(NMSML_NORM, "No Connection to close\n");
@@ -198,16 +197,9 @@ void rtsp_clean(void *rtsp_thrd)
     int command_fd = rtsp_th->pipefd[0];
     char ch[1];
 
-    if ((n = fcntl(command_fd, F_GETFL, 0)) < 0)
-        nms_printf(NMSML_ERR, "fcntl F_GETFL error\n");
-    n |= O_NONBLOCK;
-    if (fcntl(command_fd, F_SETFL, n) < 0)
-        nms_printf(NMSML_ERR, "fcntl F_SETFL error\n");
-#if 1                // We must read last teardown reply from server
+#if 1                
+    // We must read last teardown reply from server
     nms_printf(NMSML_DBG1, "Waiting for last Teardown response\n");
-    if ((n = read(command_fd, ch, 1)) == 1)
-        if (cmd[comm->opcode] (rtsp_th, comm->arg))
-            return;
     if ((*(rtsp_th->waiting_for)) && nmst_is_active(&rtsp_th->transport)) {
         if ((n = rtsp_recv(rtsp_th)) < 0)
             nms_printf(NMSML_WARN,
@@ -384,25 +376,41 @@ void *rtsp(void *rtsp_thrd)
     while (1) {
         FD_ZERO(&readset);
 
-        FD_SET(command_fd, &readset);
-        max_fd = command_fd;
+        //FD_SET(command_fd, &readset);
+        //max_fd = command_fd;
+
+        max_fd = rtsp_th->transport.fd;
+
         if (nmst_is_active(&rtsp_th->transport)) {
             FD_SET(rtsp_th->transport.fd, &readset);
             max_fd = max(rtsp_th->transport.fd, max_fd);
-            }
+        }
+
         for (p = rtsp_th->interleaved; p; p = p->next) {
             if (p->rtcp_fd >= 0) {
                 FD_SET(p->rtcp_fd, &readset);
                 max_fd = max(p->rtcp_fd, max_fd);
             }
         }
-        if (select
-            (max_fd + 1, &readset,
-             NULL, NULL, NULL) < 0) {
-            nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME,
-                   strerror(errno));
-            pthread_exit(NULL);
+
+        /*pthread_mutex_lock(&(rtsp_th->comm_mutex));
+        if (comm->opcode != NONE) {
+            if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
+                nms_printf(NMSML_DBG3,
+                       "Error handling user command.\n\n");
+                rtsp_th->busy = 0;
+            }
+            rtsp_th->comm->opcode = NONE;
+            pthread_mutex_unlock(&(rtsp_th->comm_mutex));
         }
+        else {
+            pthread_mutex_unlock(&(rtsp_th->comm_mutex));*/
+            if (select(max_fd + 1, &readset, NULL, NULL, NULL) < 0) {
+                    nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
+                    pthread_exit(NULL);
+            }
+        //}
+
         if (nmst_is_active(&rtsp_th->transport))
             if (FD_ISSET(rtsp_th->transport.fd, &readset)) {
                 if ((n = rtsp_recv(rtsp_th)) < 0)
@@ -414,9 +422,10 @@ void *rtsp(void *rtsp_thrd)
                     nms_printf(NMSML_NORM,
                            "Session closed.\n");
                 } else {
+                    nms_printf(NMSML_NORM, "Getting Packets\n");
                     while (rtsp_th->in_buffer.size > 0 && full_msg_rcvd(rtsp_th))
                         if (handle_rtsp_pkt(rtsp_th)) {
-                            // nms_printf(NMSML_ERR, "\nError!\n");
+                            nms_printf(NMSML_ERR, "\nError!\n");
                             rtsp_reinit(rtsp_th);
                         }
                 } 
@@ -455,6 +464,7 @@ void *rtsp(void *rtsp_thrd)
                 }
             }
         }
+
 
         /*if (FD_ISSET(command_fd, &readset)) {
             pthread_mutex_lock(&(rtsp_th->comm_mutex));

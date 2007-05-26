@@ -94,11 +94,16 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    printf("Init, done!\n");
+
     if (rtsp_open(ctl, url)) {
         fprintf(stderr, "rtsp_open failed.\n");
         // die
         return 1;
     }
+       
+    printf("Open, done!\n");
+
     // you must call rtsp_wait after issuing any command
     rtsp_wait(ctl);
 
@@ -109,6 +114,8 @@ int main(int argc, char **argv)
         fprintf(stderr, "No session available.\n");
         return 1;
     }
+
+    printf("!!! Passato !!!\n");
 
     while (sess) {        // foreach session...
         fprintf(outfile, "\tSession %s\n", sess->pathname);

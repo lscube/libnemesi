@@ -208,6 +208,7 @@ int rtsp_close(rtsp_ctrl * rtsp_ctl)
     rtsp_ctl->comm->opcode = CLOSE;
     write(rtsp_ctl->pipefd[1], "c", 1);
     rtsp_ctl->busy = 1;
+    close_cmd((rtsp_thread*)rtsp_ctl);
     pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
     return 0;
@@ -332,18 +333,45 @@ inline int rtsp_is_busy(rtsp_ctrl * rtsp_ctl)
  */
 int rtsp_open(rtsp_ctrl * rtsp_ctl, char *urlname)
 {
-    if (!urlname || !*urlname)
-        return 1;
+    int got_error = 1;
+    char *server;
+    rtsp_thread * rtsp_th = (rtsp_thread*)rtsp_ctl;
+
+    if (!urlname || !*urlname) {
+        nms_printf(NMSML_ERR, "No address given\n");
+        goto quit_function;
+    }
 
     pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-    //rtsp_ctl->comm->opcode = OPEN;
-    strncpy(rtsp_ctl->comm->arg, urlname, sizeof(rtsp_ctl->comm->arg));
-    //write(rtsp_ctl->pipefd[1], "o", 1);
-    //rtsp_ctl->busy = 1;
-	open_cmd((rtsp_thread*)rtsp_ctl);
-    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    rtsp_ctl->busy = 1;
 
-    return 0;
+    if (rtsp_th->status != INIT) {
+        nms_printf(NMSML_WARN, "Client already connected!\n");
+        goto quit_function;
+    }
+
+    if (seturlname(rtsp_th, urlname) > 0)
+        goto quit_function;
+
+    urltokenize(rtsp_th->urlname, &server, NULL, NULL);
+    if (server_connect
+        (server, rtsp_th->server_port, &rtsp_th->transport.fd, rtsp_th->transport.type)) {
+        rtsp_th->transport.fd = -1;
+        nms_printf(NMSML_ERR, "Cannot connect to the server\n");
+        goto quit_function;
+    }
+
+    free(server);
+    if (send_get_request(rtsp_th))
+        goto quit_function;
+
+    got_error = 0;
+   
+quit_function:
+    if (got_error)
+        rtsp_ctl->busy = 0;
+    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    return ret_code;
 }
 
 /**
@@ -374,7 +402,8 @@ int rtsp_pause(rtsp_ctrl * rtsp_ctl)
 int rtsp_play(rtsp_ctrl * rtsp_ctl, double start, double stop)
 {
     pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-    rtsp_ctl->comm->opcode = PLAY;
+
+
     if ((start >= 0) && (stop > 0))
         sprintf(rtsp_ctl->comm->arg, "npt=%.2f-%.2f", start, stop);
     else if (start >= 0)
@@ -384,8 +413,8 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, double start, double stop)
     else
         *(rtsp_ctl->comm->arg) = '\0';
 
-    write(rtsp_ctl->pipefd[1], "p", 1);
     rtsp_ctl->busy = 1;
+    play_cmd((rtsp_thread*)rtsp_ctl, rtsp_ctl->comm->arg);
     pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
     return 0;
@@ -401,10 +430,9 @@ int rtsp_stop(rtsp_ctrl * rtsp_ctl)
 {
 
     pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-    rtsp_ctl->comm->opcode = STOP;
-    write(rtsp_ctl->pipefd[1], "s", 1);
     *(rtsp_ctl->comm->arg) = '\0';
     rtsp_ctl->busy = 1;
+    stop_cmd((rtsp_thread*)rtsp_ctl, rtsp_ctl->comm->arg);
     pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
     return 0;
