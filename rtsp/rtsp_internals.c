@@ -100,11 +100,11 @@ int check_response(rtsp_thread * rtsp_th)
     return opcode;
 }
 
-/*!
- * \brief scan status code of an RTSP reply
+/**
+ * @brief scan status code of an RTSP reply
  *
- * \param status_line the status line in the reply
- * \return reply status code or -1 on error
+ * @param status_line the status line in the reply
+ * @return reply status code or -1 on error
  */
 int check_status(char *status_line, rtsp_thread * rtsp_th)
 {

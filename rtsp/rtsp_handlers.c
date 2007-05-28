@@ -200,6 +200,13 @@ int handle_play_response(rtsp_thread * rtsp_th)
     return 0;
 }
 
+
+/**
+ * Handles any incoming rtsp packet, it is called by the main loop.
+ * It then calls the correct handling function depending on the current state of the thread
+ * @param rtsp_th The thread for which to handle the pending packets
+ * @return 0 or 1 on invalid or unexpected packet
+ */
 int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 {
     char ver[32];

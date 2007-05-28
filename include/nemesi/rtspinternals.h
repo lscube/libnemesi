@@ -75,19 +75,11 @@ typedef struct nms_rtsp_interleaved_s {
 } nms_rtsp_interleaved;
 
 
-/*! \enum opcodes: enum which codify the available commands for the user.
-* "COMMAND_NUM" is the total number of recognized commands.
-* "NONE" is a special command, just for internal purpouses
-* and not considered elsewhere.
-*/
-enum opcodes { OPEN, PLAY, PAUSE, STOP, CLOSE, COMMAND_NUM, NONE };
-
 /*!
  * \brief Struct used for internal comunication
  *
  * */
 struct command {
-    enum opcodes opcode;    /*!< Command code inserted by user. */
     char arg[256];        /*!< Possible command arguments. */
 };
 

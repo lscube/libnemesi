@@ -186,7 +186,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 
 /**
  * Sends to the rtsp main loop the request to close the connection for the given control structure
- * @rtsp_ctl The control structure for which to close the connection
+ * @param rtsp_ctl The control structure for which to close the connection
  * @return 0
  */
 int rtsp_close(rtsp_ctrl * rtsp_ctl)
@@ -219,7 +219,7 @@ quit_function:
 /**
  * Waits for the main loop to handle the last given command, this should be called after issuing a command
  * to the rtsp main loop.
- * @rtsp_ctl The control structure for which to wait.
+ * @param rtsp_ctl The control structure for which to wait.
  */
 void rtsp_wait(rtsp_ctrl * rtsp_ctl)
 {
@@ -235,7 +235,7 @@ void rtsp_wait(rtsp_ctrl * rtsp_ctl)
 
 /**
  * Gets the head of the RTP sessions queue linked to the given RTSP controller
- * @rtsp_ctl The RTSP controller for which to get the RTP sessions queue
+ * @param rtsp_ctl The RTSP controller for which to get the RTP sessions queue
  * @return The RTP session queue
  */
 inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl)
@@ -245,7 +245,7 @@ inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl)
 
 /**
  * Gets the RTP thread linked to the given RTSP controller
- * @rtsp_ctl The RTSP controller for which to get the RTP thread
+ * @param rtsp_ctl The RTSP controller for which to get the RTP thread
  * @return The RTP thread
  */
 inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl)
@@ -256,7 +256,7 @@ inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl)
 /**
  * Prints the informations about the given RTSP controller: 
  * Session informations, medium informations.
- * @rtsp_ctl The controller for which to print the informations
+ * @param rtsp_ctl The controller for which to print the informations
  */
 void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
 {
@@ -319,7 +319,7 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
 
 /**
  * Checks if the given controller is waiting to process a given command
- * @rtsp_ctl The controller for which to check the state
+ * @param rtsp_ctl The controller for which to check the state
  * @return TRUE if its busy, FALSE if its ready
  */
 inline int rtsp_is_busy(rtsp_ctrl * rtsp_ctl)
@@ -329,8 +329,8 @@ inline int rtsp_is_busy(rtsp_ctrl * rtsp_ctl)
 
 /**
  * Sends to the controller the request to open a given url
- * @rtsp_ctl The controller that should open the url
- * @urlanem The path of the document to open
+ * @param rtsp_ctl The controller that should open the url
+ * @param urlanem The path of the document to open
  * @return 0
  */
 int rtsp_open(rtsp_ctrl * rtsp_ctl, char *urlname)
@@ -378,7 +378,7 @@ quit_function:
 
 /**
  * Sends to the controller the request to pause the current stream
- * @rtsp_ctl The controller for which to pause the content
+ * @param rtsp_ctl The controller for which to pause the content
  * @return 0
  */
 int rtsp_pause(rtsp_ctrl * rtsp_ctl)
@@ -415,9 +415,9 @@ quit_function:
 
 /**
  * Sends to the controller the request to play the content in a given range
- * @rtsp_ctl The controller that should start playing its content
- * @start from where to start playing
- * @stop where to stop playing
+ * @param rtsp_ctl The controller that should start playing its content
+ * @param start from where to start playing
+ * @param stop where to stop playing
  * @return 0
  */
 int rtsp_play(rtsp_ctrl * rtsp_ctl, double start, double stop)
@@ -462,9 +462,8 @@ quit_function:
 }
 
 /**
- * Sends to the controller the request to open a given url
- * @rtsp_ctl The controller that should open the url
- * @urlanem The path of the document to open
+ * Sends to the controller the request to stop
+ * @param rtsp_ctl The controller that should stop
  * @return 0
  */
 int rtsp_stop(rtsp_ctrl * rtsp_ctl)
@@ -502,7 +501,7 @@ quit_function:
 
 /**
  * Uninits the given RTSP controller
- * @rtsp_ctl The controller to shut down
+ * @param rtsp_ctl The controller to shut down
  * @return 0 If Shutdown was done
  * @return 1 If it wasn't possible to cancel the running main loop
  */
