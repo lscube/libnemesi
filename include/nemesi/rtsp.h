@@ -145,7 +145,6 @@ enum states { INIT, READY, PLAYING, RECORDING, STATES_NUM };
  * @brief Definition of the common part for rtsp_thread and rtsp_ctrl structs
  */
 #define RTSP_COMMON_IF \
-            int pipefd[2]; \
             pthread_mutex_t comm_mutex; \
             struct command *comm; \
             enum states status;    /*!< Current RTSP state-machine status */ \

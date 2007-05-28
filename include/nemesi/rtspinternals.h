@@ -150,11 +150,6 @@ void rtsp_unbusy(rtsp_thread *);
 int rtsp_reinit(rtsp_thread *);
 void rtsp_clean(void *);
 
-/*
-extern int (*cmd[COMMAND_NUM]) (rtsp_thread *, char *);
-*/
-
-extern int (*cmd[COMMAND_NUM]) (rtsp_thread *, ...);
 extern int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
 void *rtsp(void *);
 

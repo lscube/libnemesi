@@ -156,12 +156,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
                 nms_printf(NMSML_NORM, "Redirecting to %s\n",
                        location);
                 // XXX:proving
-                pthread_mutex_lock(&(rtsp_th->comm_mutex));
-                rtsp_th->comm->opcode = OPEN;
-                write(rtsp_th->pipefd[1], "o", 1);
-                strncpy(rtsp_th->comm->arg, location,
-                    sizeof(rtsp_th->comm->arg));
-                pthread_mutex_unlock(&(rtsp_th->comm_mutex));
+                rtsp_open((rtsp_ctrl*)rtsp_th, location);
                 ///// XXX: end proving
             } else
                 return -nms_printf(NMSML_ERR,

@@ -30,160 +30,7 @@
 #include <stdarg.h>
 #include <fcntl.h>
 
-int (*cmd[COMMAND_NUM]) (rtsp_thread *, ...);
 int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
-
-/**
-* funzione che gestisce il comando open da parte della UI.
-* Si occupa di inizializzare la sessione e di mettere il thread nello stato READY.
-* @param rtap_t il puntatore che conterra la nuova struttura rtsp_thread.
-* */
-int open_cmd(rtsp_thread * rtsp_th, ...)
-{
-    char *server;
-
-    if (rtsp_th->status != INIT) {
-        nms_printf(NMSML_WARN, "Client already connected!\n");
-        return 1;
-    }
-    if (!*rtsp_th->comm->arg) {
-        nms_printf(NMSML_ERR, "No address given\n");
-        return 1;
-    }
-    if (seturlname(rtsp_th, rtsp_th->comm->arg) > 0)
-        return 1;
-    urltokenize(rtsp_th->urlname, &server, NULL, NULL);
-    if (server_connect
-        (server, rtsp_th->server_port, &rtsp_th->transport.fd, rtsp_th->transport.type)) {
-        rtsp_th->transport.fd = -1;
-        return nms_printf(NMSML_ERR, "Cannot connect to the server\n");
-    }
-    free(server);
-    if (send_get_request(rtsp_th))
-        return 1;
-
-    return 0;
-}
-
-int pause_cmd(rtsp_thread * rtsp_th, ...)
-{
-    va_list ap;
-    char *args;
-
-    va_start(ap, rtsp_th);
-    args = va_arg(ap, char *);
-
-    if (rtsp_th->status == INIT) {
-        nms_printf(NMSML_ERR, "Player not initialized!\n");
-        va_end(ap);
-        return 1;
-    }
-    if (rtsp_th->status == READY) {
-        nms_printf(NMSML_ERR,
-               "I don't think you're yet playinq or recording\n");
-        va_end(ap);
-        return 0;
-    }
-    // get_curr_sess(NULL, NULL, NULL);
-    // get_curr_sess(GCS_UNINIT); // useless
-    // get_curr_sess(rtsp_th, NULL, NULL);
-    get_curr_sess(GCS_INIT, rtsp_th);
-    if (send_pause_request(rtsp_th, args)) {
-        va_end(ap);
-        return 1;
-    }
-
-    va_end(ap);
-    return 0;
-}
-
-/**
-* funzione che gestisce il comndo PLAY da parte della UI.
-* Controlla se il player e' nello stato READY per cominciare la riproduzione.
-* Chiama la funzione adeguata per spedire il pacchetto di tipo PLAY.
-* @return 0 in caso di successo, 1 altrimenti.
-* @see send_play_request.
-* */
-int play_cmd(rtsp_thread * rtsp_th, ...)
-{
-    va_list ap;
-    char *args;
-
-    va_start(ap, rtsp_th);
-    args = va_arg(ap, char *);
-
-    if (rtsp_th->status == INIT) {
-        nms_printf(NMSML_ERR, "Player not initialized!\n");
-        va_end(ap);
-        return 1;
-    }
-    if (rtsp_th->status == RECORDING) {
-        nms_printf(NMSML_ERR, "Still recording...\n");
-        va_end(ap);
-        return 1;
-    }
-    // get_curr_sess(NULL, NULL, NULL);
-    // get_curr_sess(GCS_UNINIT); // useless
-    // get_curr_sess(rtsp_th, NULL, NULL);
-    get_curr_sess(GCS_INIT, rtsp_th);
-    if (send_play_request(rtsp_th, args)) {
-        va_end(ap);
-        return 1;
-    }
-
-    va_end(ap);
-    return 0;
-}
-
-int close_cmd(rtsp_thread * rtsp_th, ...)
-{
-    if (rtsp_th->status == INIT) {
-        nms_printf(NMSML_NORM, BLANK_LINE);
-        nms_printf(NMSML_NORM, "No Connection to close\n");
-        return 1;
-    }
-    // get_curr_sess(NULL, NULL, NULL);
-    // get_curr_sess(GCS_UNINIT); // useless
-    // get_curr_sess(rtsp_th, NULL, NULL);
-    get_curr_sess(GCS_INIT, rtsp_th);
-    if (send_teardown_request(rtsp_th))
-        return 1;
-
-    return 0;
-}
-
-int stop_cmd(rtsp_thread * rtsp_th, ...)
-{
-    va_list ap;
-    char *args;
-
-    va_start(ap, rtsp_th);
-    args = va_arg(ap, char *);
-
-    if (rtsp_th->status == INIT) {
-        nms_printf(NMSML_ERR, "Player not initialized!\n");
-        va_end(ap);
-        return 1;
-    }
-    if (rtsp_th->status == READY) {
-        nms_printf(NMSML_ERR,
-               "I don't think you're yet playing or recording\n");
-        va_end(ap);
-        // return 0;
-        return 1;
-    }
-    // get_curr_sess(NULL, NULL, NULL);
-    // get_curr_sess(GCS_UNINIT); // useless
-    // get_curr_sess(rtsp_th, NULL, NULL);
-    get_curr_sess(GCS_INIT, rtsp_th);
-    if (send_pause_request(rtsp_th, args)) {
-        va_end(ap);
-        return 1;
-    }
-
-    va_end(ap);
-    return 0;
-}
 
 void rtsp_clean(void *rtsp_thrd)
 {
@@ -193,9 +40,6 @@ void rtsp_clean(void *rtsp_thrd)
 #ifdef USE_UIPRINTF
     char optstr[256];
 #endif                // USE_UIPRINTF
-    struct command *comm = rtsp_th->comm;
-    int command_fd = rtsp_th->pipefd[0];
-    char ch[1];
 
 #if 1                
     // We must read last teardown reply from server
@@ -220,9 +64,6 @@ void rtsp_clean(void *rtsp_thrd)
     while ((n = read(UIINPUT_FILENO, optstr, 1)) > 0)
         write(STDERR_FILENO, optstr, n);
 #endif                // USE_UIPRINTF
-
-    close(rtsp_th->pipefd[0]);
-    close(rtsp_th->pipefd[1]);
 }
 
 
@@ -358,10 +199,7 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 void *rtsp(void *rtsp_thrd)
 {
     rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_thrd;
-    struct command *comm = rtsp_th->comm;
-    int command_fd = rtsp_th->pipefd[0];
     fd_set readset;
-    char ch[1];
     int n, max_fd;
     nms_rtsp_interleaved *p;
     char buffer[RTSP_BUFFERSIZE];
@@ -375,10 +213,6 @@ void *rtsp(void *rtsp_thrd)
 
     while (1) {
         FD_ZERO(&readset);
-
-        //FD_SET(command_fd, &readset);
-        //max_fd = command_fd;
-
         max_fd = rtsp_th->transport.fd;
 
         if (nmst_is_active(&rtsp_th->transport)) {
@@ -393,23 +227,10 @@ void *rtsp(void *rtsp_thrd)
             }
         }
 
-        /*pthread_mutex_lock(&(rtsp_th->comm_mutex));
-        if (comm->opcode != NONE) {
-            if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
-                nms_printf(NMSML_DBG3,
-                       "Error handling user command.\n\n");
-                rtsp_th->busy = 0;
-            }
-            rtsp_th->comm->opcode = NONE;
-            pthread_mutex_unlock(&(rtsp_th->comm_mutex));
-        }
-        else {
-            pthread_mutex_unlock(&(rtsp_th->comm_mutex));*/
-            if (select(max_fd + 1, &readset, NULL, NULL, NULL) < 0) {
-                    nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
-                    pthread_exit(NULL);
-            }
-        //}
+       if (select(max_fd + 1, &readset, NULL, NULL, NULL) < 0) {
+                nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
+                pthread_exit(NULL);
+       }
 
         if (nmst_is_active(&rtsp_th->transport))
             if (FD_ISSET(rtsp_th->transport.fd, &readset)) {
@@ -464,19 +285,6 @@ void *rtsp(void *rtsp_thrd)
                 }
             }
         }
-
-
-        /*if (FD_ISSET(command_fd, &readset)) {
-            pthread_mutex_lock(&(rtsp_th->comm_mutex));
-            read(command_fd, ch, 1);
-            if (cmd[comm->opcode] (rtsp_th, comm->arg)) {
-                nms_printf(NMSML_DBG3,
-                       "Error handling user command.\n\n");
-                rtsp_th->busy = 0;
-            }
-            rtsp_th->comm->opcode = NONE;
-            pthread_mutex_unlock(&(rtsp_th->comm_mutex));
-        }*/
     }
 
     pthread_cleanup_pop(1);

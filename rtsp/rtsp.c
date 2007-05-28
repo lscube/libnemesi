@@ -63,13 +63,6 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
         return NULL;
     }
 
-    /* not needed if we use calloc
-     * rtsp_th->comm = NULL;
-     */
-
-    if (pipe(rtsp_th->pipefd) < 0)
-        RET_ERR(NMSML_FATAL, "Could not create pipe\n");
-
     if ((n = pthread_mutexattr_init(&mutex_attr)) > 0)
         RET_ERR(NMSML_FATAL, "Could not init mutex attributes\n");
 
@@ -171,12 +164,6 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
     if (!(rtsp_th->rtp_th = rtp_init()))
         RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n");
 
-    cmd[0] = open_cmd;
-    cmd[1] = play_cmd;
-    cmd[2] = pause_cmd;
-    cmd[3] = stop_cmd;
-    cmd[4] = close_cmd;
-
     state_machine[0] = init_state;
     state_machine[1] = ready_state;
     state_machine[2] = playing_state;
@@ -204,14 +191,29 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
  */
 int rtsp_close(rtsp_ctrl * rtsp_ctl)
 {
-    pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-    rtsp_ctl->comm->opcode = CLOSE;
-    write(rtsp_ctl->pipefd[1], "c", 1);
-    rtsp_ctl->busy = 1;
-    close_cmd((rtsp_thread*)rtsp_ctl);
-    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    int got_error = 1;
+    rtsp_thread * rtsp_th = (rtsp_thread*)rtsp_ctl;
 
-    return 0;
+    pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
+    rtsp_ctl->busy = 1;
+
+    if (rtsp_th->status == INIT) {
+        nms_printf(NMSML_NORM, BLANK_LINE);
+        nms_printf(NMSML_NORM, "No Connection to close\n");
+        goto quit_function;
+    }
+
+    get_curr_sess(GCS_INIT, rtsp_th);
+    if (send_teardown_request(rtsp_th))
+        goto quit_function;
+
+    got_error = 0;
+
+quit_function:
+    if (got_error)
+        rtsp_ctl->busy = 0;
+    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    return got_error;
 }
 
 /**
@@ -371,7 +373,7 @@ quit_function:
     if (got_error)
         rtsp_ctl->busy = 0;
     pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
-    return ret_code;
+    return got_error;
 }
 
 /**
@@ -381,15 +383,34 @@ quit_function:
  */
 int rtsp_pause(rtsp_ctrl * rtsp_ctl)
 {
+    int got_error = 1;
+    rtsp_thread * rtsp_th = (rtsp_thread*)rtsp_ctl;
 
     pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-    rtsp_ctl->comm->opcode = PAUSE;
-    write(rtsp_ctl->pipefd[1], "z", 1);
-    *(rtsp_ctl->comm->arg) = '\0';
+    rtsp_ctl->comm->arg[0] = '\0';
     rtsp_ctl->busy = 1;
-    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
-    return 0;
+    if (rtsp_th->status == INIT) {
+        nms_printf(NMSML_ERR, "Player not initialized!\n");
+        goto quit_function;
+    }
+    if (rtsp_th->status == READY) {
+        nms_printf(NMSML_ERR,
+               "I don't think you're yet playinq or recording\n");
+        goto quit_function;
+    }
+
+    get_curr_sess(GCS_INIT, rtsp_th);
+    if (send_pause_request(rtsp_th, rtsp_ctl->comm->arg)) 
+        goto quit_function;
+
+    got_error = 0;
+
+quit_function:
+    if (got_error)
+        rtsp_ctl->busy = 0;
+    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    return got_error;
 }
 
 /**
@@ -401,8 +422,10 @@ int rtsp_pause(rtsp_ctrl * rtsp_ctl)
  */
 int rtsp_play(rtsp_ctrl * rtsp_ctl, double start, double stop)
 {
-    pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
+    int got_error = 1;
+    rtsp_thread * rtsp_th = (rtsp_thread*)rtsp_ctl;
 
+    pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
 
     if ((start >= 0) && (stop > 0))
         sprintf(rtsp_ctl->comm->arg, "npt=%.2f-%.2f", start, stop);
@@ -414,10 +437,28 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, double start, double stop)
         *(rtsp_ctl->comm->arg) = '\0';
 
     rtsp_ctl->busy = 1;
-    play_cmd((rtsp_thread*)rtsp_ctl, rtsp_ctl->comm->arg);
-    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
-    return 0;
+    if (rtsp_th->status == INIT) {
+        nms_printf(NMSML_ERR, "Player not initialized!\n");
+        goto quit_function;
+    }
+    if (rtsp_th->status == RECORDING) {
+        nms_printf(NMSML_ERR, "Still recording...\n");
+        goto quit_function;
+    }
+
+    get_curr_sess(GCS_INIT, rtsp_th);
+    if (send_play_request(rtsp_th, rtsp_ctl->comm->arg)) {
+        goto quit_function;
+    }
+
+    got_error = 0;
+
+quit_function:
+    if (got_error)
+        rtsp_ctl->busy = 0;
+    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    return got_error;
 }
 
 /**
@@ -428,14 +469,35 @@ int rtsp_play(rtsp_ctrl * rtsp_ctl, double start, double stop)
  */
 int rtsp_stop(rtsp_ctrl * rtsp_ctl)
 {
+    int got_error = 1;
+    rtsp_thread * rtsp_th = (rtsp_thread*)rtsp_ctl;
 
     pthread_mutex_lock(&(rtsp_ctl->comm_mutex));
-    *(rtsp_ctl->comm->arg) = '\0';
+    rtsp_ctl->comm->arg[0] = '\0';
     rtsp_ctl->busy = 1;
-    stop_cmd((rtsp_thread*)rtsp_ctl, rtsp_ctl->comm->arg);
-    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
 
-    return 0;
+    if (rtsp_th->status == INIT) {
+        nms_printf(NMSML_ERR, "Player not initialized!\n");
+        goto quit_function;
+    }
+    if (rtsp_th->status == READY) {
+        nms_printf(NMSML_ERR,
+               "I don't think you're yet playing or recording\n");
+        goto quit_function;
+    }
+
+    get_curr_sess(GCS_INIT, rtsp_th);
+    if (send_pause_request(rtsp_th, rtsp_ctl->comm->arg)) {
+        goto quit_function;
+    }
+
+    got_error = 0;
+
+quit_function:
+    if (got_error)
+        rtsp_ctl->busy = 0;
+    pthread_mutex_unlock(&(rtsp_ctl->comm_mutex));
+    return got_error;
 }
 
 /**
