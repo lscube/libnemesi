@@ -28,6 +28,9 @@
 
 #include <nemesi/rtp.h>
 
+/**
+ * Waits for rtp thread to be ready
+ */
 int rtp_fill_buffers(rtp_thread * rtp_th)
 {
     pthread_mutex_lock(&(rtp_th->syn));
