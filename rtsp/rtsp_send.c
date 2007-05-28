@@ -1,14 +1,11 @@
 /* * 
- *  $Id:send_setup_request.c 267 2006-01-12 17:19:45Z shawill $
+ *  $Id$
  *  
  *  This file is part of NeMeSI
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
- *      
- *      Giampaolo "mancho" Mancini - manchoz@inwind.it
- *    Francesco "shawill" Varano - shawill@infinto.it
+ *  Copyright (C) 2007 by team@streaming.polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,8 +23,146 @@
  *  
  * */
 
-#include <nemesi/rtsp.h>
+#include <nemesi/rtspinternals.h>
+#include <nemesi/utils.h>
+#include <nemesi/version.h>
 #include <nemesi/methods.h>
+#include <nemesi/wsocket.h>
+#include <nemesi/cc.h>
+
+int send_get_request(rtsp_thread * rtsp_th)
+{
+    char *buf = malloc(strlen(rtsp_th->urlname)+256); //XXX use vla
+
+        if (buf == NULL) return 1;
+
+    /* save the url string for future use in setup request. */
+    sprintf(buf, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
+        rtsp_th->urlname, RTSP_VER, 1);
+    strcat(buf, "Accept: application/sdp;" RTSP_EL);    /* application/x-rtsp-mh"RTSP_EL); */
+    sprintf(buf + strlen(buf),
+        "User-Agent: %s - %s -- Release %s (%s)" RTSP_EL, PROG_NAME,
+        PROG_DESCR, VERSION, VERSION_NAME);
+    strcat(buf, RTSP_EL);
+    if (!nmst_write(&rtsp_th->transport, buf, strlen(buf), NULL)) {
+        nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
+                free(buf);
+        return 1;
+    }
+    sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
+        free(buf);
+    return 0;
+}
+
+
+int send_pause_request(rtsp_thread * rtsp_th, char *range)
+{
+    char b[256+strlen(rtsp_th->urlname)];
+    rtsp_session *rtsp_sess;
+
+    // get_curr_sess(NULL, &rtsp_sess, NULL);
+    rtsp_sess = get_curr_sess(GCS_CUR_SESS);
+
+    if (rtsp_sess->content_base != NULL)
+        if (*(rtsp_sess->pathname) != 0)
+            sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+                PAUSE_TKN, rtsp_sess->content_base,
+                rtsp_sess->pathname, RTSP_VER,
+                ++(rtsp_sess->CSeq));
+        else
+            sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+                PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
+                ++(rtsp_sess->CSeq));
+    else
+        sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
+            rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+
+    if (rtsp_sess->Session_ID != 0)    /* must add session ID? */
+        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+            rtsp_sess->Session_ID);
+    if (range && *range)
+        sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
+    else
+        sprintf(b + strlen(b), "Range: time=0-" RTSP_EL);
+
+    strcat(b, RTSP_EL);
+
+    if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
+        nms_printf(NMSML_ERR, "Cannot send PAUSE request...\n");
+        return 1;
+    }
+
+    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PAUSE_RESPONSE,
+        rtsp_sess->Session_ID, rtsp_sess->CSeq);
+
+    return 0;
+}
+
+int send_play_request(rtsp_thread * rtsp_th, char *range)
+{
+    char b[256+strlen(rtsp_th->urlname)];
+    rtsp_session *rtsp_sess;
+    rtsp_medium *rtsp_med;
+    cc_perm_mask cc_mask, cc_conflict;
+
+    // get_curr_sess(NULL, &rtsp_sess, NULL);
+    if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS)))
+        return 1;
+
+    // CC License check
+
+    rtsp_med = rtsp_sess->media_queue;
+    memset(&cc_conflict, 0, sizeof(cc_conflict));
+    while (rtsp_med) {
+        memcpy(&cc_mask, &rtsp_th->accepted_CC, sizeof(cc_perm_mask));
+//              pref2ccmask(&cc_mask);
+        if (cc_perm_chk(rtsp_med->medium_info->cc, &cc_mask))
+            *((CC_BITMASK_T *) & cc_conflict) |=
+                *((CC_BITMASK_T *) & cc_mask);
+        rtsp_med = rtsp_med->next;
+    }
+    if (*((CC_BITMASK_T *) & cc_conflict)) {
+        nms_printf(NMSML_ERR,
+               "You didn't accept some requested conditions of license:\n");
+        cc_printmask(cc_conflict);
+        return 1;
+    }
+    // end of CC part
+
+    if (rtsp_sess->content_base != NULL)
+        if (*(rtsp_sess->pathname) != 0)
+            sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+                PLAY_TKN, rtsp_sess->content_base,
+                rtsp_sess->pathname, RTSP_VER,
+                ++(rtsp_sess->CSeq));
+        else
+            sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+                PLAY_TKN, rtsp_sess->content_base, RTSP_VER,
+                ++(rtsp_sess->CSeq));
+    else
+        sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN,
+            rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+
+    if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
+        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+            rtsp_sess->Session_ID);
+    if (range && *range)
+        sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
+    else
+        sprintf(b + strlen(b), "Range: time=0-" RTSP_EL);
+
+    strcat(b, RTSP_EL);
+
+    if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
+        nms_printf(NMSML_ERR, "Cannot send PLAY request...\n");
+        return 1;
+    }
+
+    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PLAY_RESPONSE,
+        rtsp_sess->Session_ID, rtsp_sess->CSeq);
+
+    return 0;
+}
 
 int send_setup_request(rtsp_thread * rtsp_th)
 {
@@ -221,3 +356,43 @@ int send_setup_request(rtsp_thread * rtsp_th)
 
     return 0;
 }
+
+int send_teardown_request(rtsp_thread * rtsp_th)
+{
+
+    char b[256 + strlen(rtsp_th->urlname)];
+    rtsp_session *rtsp_sess;
+    rtsp_medium *rtsp_med;
+
+    memset(b, 0, 256 + strlen(rtsp_th->urlname));
+
+    // if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
+    if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
+        || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
+        return 1;
+
+    if (rtsp_sess->content_base != NULL)
+        sprintf(b, "%s %s/%s %s" RTSP_EL, CLOSE_TKN,
+            rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
+    else
+        sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN, rtsp_med->filename,
+            RTSP_VER);
+
+    sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
+    if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
+        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+            rtsp_sess->Session_ID);
+    strcat(b, RTSP_EL);
+
+    if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
+        nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
+        return 1;
+    }
+
+    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_CLOSE_RESPONSE,
+        rtsp_sess->Session_ID, rtsp_sess->CSeq);
+
+    return 0;
+}
+
+

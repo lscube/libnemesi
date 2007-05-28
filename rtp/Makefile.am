@@ -8,12 +8,9 @@ noinst_LTLIBRARIES = librtp.la
 
 librtp_la_SOURCES =	rtp_init.c \
 			rtp_active_ssrc_queue.c \
-			rtp_announce_pt.c \
 			rtp_clean.c \
-			rtp_dynpt_reg.c \
 			rtp_fill_buffer.c \
 			rtp_fill_buffers.c \
-			rtp_get_next_pt.c \
 			rtp_get_next_ts.c \
 			rtp_get_n_pkt.c \
 			rtp_get_pkt.c \
@@ -32,7 +29,8 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_transport_get.c \
 			rtp_transport_wrappers.c \
 			rtp_next_active_ssrc.c \
-			rtpptdefs.c
+			rtpptdefs.c \
+			rtp_payload_type.c
 
 librtp_la_LIBADD = rtpparsers/librtpparsers.la
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

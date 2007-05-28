@@ -99,6 +99,7 @@ int main(int argc, char **argv)
         // die
         return 1;
     }
+       
     // you must call rtsp_wait after issuing any command
     rtsp_wait(ctl);
 
