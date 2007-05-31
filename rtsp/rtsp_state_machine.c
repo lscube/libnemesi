@@ -243,7 +243,6 @@ void *rtsp(void *rtsp_thrd)
                     nms_printf(NMSML_NORM,
                            "Session closed.\n");
                 } else {
-                    nms_printf(NMSML_NORM, "Getting Packets\n");
                     while (rtsp_th->in_buffer.size > 0 && full_msg_rcvd(rtsp_th))
                         if (handle_rtsp_pkt(rtsp_th)) {
                             nms_printf(NMSML_ERR, "\nError!\n");

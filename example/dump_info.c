@@ -154,7 +154,6 @@ int main(int argc, char **argv)
      */
 
     rtsp_uninit(ctl);
-    rtsp_wait(ctl);
 
     return 0;
 }
