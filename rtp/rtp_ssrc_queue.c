@@ -65,3 +65,265 @@ rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc)
 
     return NULL;
 }
+
+/**
+ * Initializes a new synchronization source and appens it to the queue
+ * @param rtp_sess The RTP session for which to create the new source
+ * @param stm_src A pointer to the pointer to initialize with the new source
+ * @param ssrc The RTP ssrc value from which to create the source
+ * @param recfrom The link from which to receive the data for the source
+ * @param proto_type The protocol type for the source
+ *
+ * @return o if everything was ok, -1 on initialization errors
+ */
+int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
+          nms_sockaddr * recfrom, enum rtp_protos proto_type)
+{
+    int addrcmp_err;
+    nms_addr nms_address;
+
+    if (((*stm_src) = (rtp_ssrc *) calloc(1, sizeof(rtp_ssrc))) == NULL)
+        return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
+
+    (*stm_src)->next = rtp_sess->ssrc_queue;
+    rtp_sess->ssrc_queue = *stm_src;
+
+    (*stm_src)->ssrc = ssrc;
+    (*stm_src)->no_rtcp = 0; //flag for connection errors
+    (*stm_src)->rtp_sess = rtp_sess;
+
+    if (proto_type == RTP) {
+        sockaddrdup(&(*stm_src)->rtp_from, recfrom);
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTP\n");
+    } else if (proto_type == RTCP) {
+        sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTCP\n");
+    }
+
+    if (rtp_sess->transport.type != UDP) {
+        /*It is not needed to check addresses because data is received
+        as interleaved or multistream from RTSP socket */    
+        return 0;
+    }
+
+    if (sock_get_addr(recfrom->addr, &nms_address))
+        return -nms_printf(NMSML_ERR,
+                   "Address of received packet not valid\n");
+    if (!
+        (addrcmp_err =
+         addrcmp(&nms_address, &rtp_sess->transport.RTP.u.udp.srcaddr))) {
+        /* If the address from which we are receiving data is the
+         * same to that announced in RTSP session, then we use RTSP
+         * informations to set transport address for RTCP connection */
+        if (rtcp_to_connect
+            (*stm_src, &rtp_sess->transport.RTP.u.udp.srcaddr,
+             (rtp_sess->transport).RTCP.remote_port) < 0)
+            return -1;
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTSP\n");
+
+    } else if (proto_type == RTCP) {
+        /* If we lack of informations we assume that net address of
+         * RTCP destination is the same of RTP address and port is that
+         * specified in RTSP*/
+        if (rtcp_to_connect
+            (*stm_src, &nms_address,
+             (rtp_sess->transport).RTCP.remote_port) < 0)
+            return -1;
+        nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
+    } else {
+        switch (addrcmp_err) {
+        case WSOCK_ERRFAMILY:
+            nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILY (%d!=%d)\n",
+                   nms_address.family,
+                   rtp_sess->transport.RTP.u.udp.srcaddr.family);
+            break;
+        case WSOCK_ERRADDR:
+            nms_printf(NMSML_DBG2, "WSOCK_ERRADDR\n");
+            break;
+        case WSOCK_ERRFAMILYUNKNOWN:
+            nms_printf(NMSML_DBG2, "WSOCK_ERRFAMILYUNKNOWN\n");
+            break;
+        }
+        nms_printf(NMSML_DBG2,
+               "RTP/rtp_ssrc_init: rtcp_to NOT set!!!\n");
+        // return -1;
+    }
+
+    return 0;
+}
+
+/**
+ * Checks the ssrc of incoming packets and creates a new synchronization source
+ * if it wasn't already known.
+ * @param rtp_sess The session for which to create the synchronization source
+ * @param ssrc The RTP SSRC value
+ * @param stm_ssrc Where to create the new synchronization source if it isn't already known
+ * @param recfrom The link to check for the packets with the ssrc
+ * @param proto_type The type of protocol used by the link
+ *
+ * @return SSRC_KNOWN, SSRC_NEW, SSRC_COLLISION, -1 on internal fatal error.
+ * */
+int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
+           nms_sockaddr * recfrom, enum rtp_protos proto_type)
+{
+    struct rtp_conflict *stm_conf = rtp_sess->conf_queue;
+    struct sockaddr_storage sockaddr;
+    nms_sockaddr sock =
+        { (struct sockaddr *) &sockaddr, sizeof(sockaddr) };
+    uint8 local_collision;
+
+
+    local_collision = (rtp_sess->local_ssrc == ssrc) ? SSRC_COLLISION : 0;
+    pthread_mutex_lock(&rtp_sess->syn);
+    pthread_mutex_unlock(&rtp_sess->syn);
+    for (*stm_src = rtp_sess->ssrc_queue;
+         !local_collision && *stm_src && ((*stm_src)->ssrc != ssrc);
+         *stm_src = (*stm_src)->next);
+    if (!*stm_src && !local_collision) {
+        /* nuovo SSRC */
+        /* inserimento in testa */
+        pthread_mutex_lock(&rtp_sess->syn);
+        nms_printf(NMSML_DBG1, "new SSRC\n");
+        if (rtp_ssrc_init(rtp_sess, stm_src, ssrc, recfrom, proto_type)
+            < 0) {
+            pthread_mutex_unlock(&rtp_sess->syn);
+            return -nms_printf(NMSML_ERR,
+                       "Error while setting new Stream Source\n");
+        }
+
+        poinit(&((*stm_src)->po), &(rtp_sess->bp));
+        pthread_mutex_unlock(&rtp_sess->syn);
+        return SSRC_NEW;
+    } else {
+        if (local_collision) {
+
+            if (proto_type == RTP)
+                getsockname(rtp_sess->transport.RTP.fd, sock.addr,
+                        &sock.addr_len);
+            else
+                getsockname(rtp_sess->transport.RTCP.fd, sock.addr,
+                        &sock.addr_len);
+
+        } else if (proto_type == RTP) {
+
+            if (!(*stm_src)->rtp_from.addr) {
+                sockaddrdup(&(*stm_src)->rtp_from, recfrom);
+                nms_printf(NMSML_DBG1, "new SSRC for RTP\n");
+                local_collision = SSRC_RTPNEW;
+            }
+            sock.addr = (*stm_src)->rtp_from.addr;
+            sock.addr_len = (*stm_src)->rtp_from.addr_len;
+
+        } else {    /* if (proto_type == RTCP) */
+
+
+            if (!(*stm_src)->rtcp_from.addr) {
+                sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
+                nms_printf(NMSML_DBG1, "new SSRC for RTCP\n");
+                local_collision = SSRC_RTCPNEW;
+            }
+            sock.addr = (*stm_src)->rtcp_from.addr;
+            sock.addr_len = (*stm_src)->rtcp_from.addr_len;
+
+            if (rtp_sess->transport.type != UDP)
+                return local_collision;
+
+            if (!(*stm_src)->rtcp_to.addr) {
+                nms_addr nms_address;
+
+                if (sock_get_addr(recfrom->addr, &nms_address))
+                    return -nms_printf(NMSML_ERR,
+                               "Invalid address for received packet\n");
+
+                // if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).RTCP.remote_port) < 0 )
+                if (rtcp_to_connect
+                    (*stm_src, &nms_address,
+                     (rtp_sess->transport).RTCP.remote_port) < 0)
+                    return -1;
+            }
+        }
+
+        if ((rtp_sess->transport.type == UDP) && sockaddrcmp
+            (sock.addr, sock.addr_len, recfrom->addr,
+             recfrom->addr_len)) {
+            nms_printf(NMSML_ERR,
+                   "An identifier collision or a loop is indicated\n");
+
+            /* An identifier collision or a loop is indicated */
+
+            if (ssrc != rtp_sess->local_ssrc) {
+                /* OPTIONAL error counter step not implemented */
+                nms_printf(NMSML_VERB,
+                       "Warning! An identifier collision or a loop is indicated.\n");
+                return SSRC_COLLISION;
+            }
+
+            /* A collision or loop of partecipants's own packets */
+
+            else {
+                while (stm_conf
+                       && sockaddrcmp(stm_conf->transaddr.addr,
+                              stm_conf->transaddr.
+                              addr_len, recfrom->addr,
+                              recfrom->addr_len))
+                    stm_conf = stm_conf->next;
+
+                if (stm_conf) {
+
+                    /* OPTIONAL error counter step not implemented */
+
+                    stm_conf->time = time(NULL);
+                    return SSRC_COLLISION;
+                } else {
+
+                    /* New collision, change SSRC identifier */
+
+                    nms_printf(NMSML_VERB,
+                           "SSRC collision detected: getting new!\n");
+
+
+                    /* Send RTCP BYE pkt */
+                    /*       TODO        */
+
+                    /* choosing new ssrc */
+                    rtp_sess->local_ssrc = random32(0);
+                    rtp_sess->transport.ssrc =
+                        rtp_sess->local_ssrc;
+
+                    /* New entry in SSRC queue with conflicting ssrc */
+                    if ((stm_conf = (struct rtp_conflict *)
+                         malloc(sizeof
+                            (struct rtp_conflict))) ==
+                        NULL)
+                        return -nms_printf(NMSML_FATAL,
+                                   "Cannot allocate memory!\n");
+
+                    /* inserimento in testa */
+                    /* insert at the beginning of Stream Sources queue */
+                    pthread_mutex_lock(&rtp_sess->syn);
+                    if (rtp_ssrc_init
+                        (rtp_sess, stm_src, ssrc, recfrom,
+                         proto_type) < 0) {
+                        pthread_mutex_unlock
+                            (&rtp_sess->syn);
+                        return -nms_printf(NMSML_ERR,
+                                   "Error while setting new Stream Source\n");
+                    }
+                    poinit(&((*stm_src)->po),
+                           &(rtp_sess->bp));
+                    pthread_mutex_unlock(&rtp_sess->syn);
+
+                    /* New entry in SSRC rtp_conflict queue */
+                    sockaddrdup(&stm_conf->transaddr,
+                            &sock);
+                    stm_conf->time = time(NULL);
+                    stm_conf->next = rtp_sess->conf_queue;
+                    rtp_sess->conf_queue = stm_conf;
+                }
+
+            }
+        }
+    }
+
+    return local_collision;
+}
