@@ -5,10 +5,7 @@
  *
  *  NeMeSI -- NEtwork MEdia Streamer I
  *
- *  Copyright (C) 2001 by
- *      
- *  Giampaolo "mancho" Mancini - giampaolo.mancini@polito.it
- *    Francesco "shawill" Varano - francesco.varano@polito.it
+ *  Copyright (C) 2007 by team@streaming.polito.it
  *
  *  NeMeSI is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +25,13 @@
 
 #include <nemesi/rtp.h>
 
+
+/**
+ * Gets the queue of active sources
+ * @param rtp_sess_head The head of the rtp session queue. Can be retrieved from
+                        the RTSP controller with rtsp_get_rtp_queue
+ * @return The first active source, NULL if there isn't any.
+ */
 rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head)
 {
     rtp_session *rtp_sess;
@@ -37,4 +41,27 @@ rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head)
          rtp_sess = rtp_sess->next);
 
     return rtp_sess ? rtp_sess->active_ssrc_queue : NULL;
+}
+
+/**
+ * Gets the next active source
+ * @param ssrc The source from which to retrieve the subsequent source
+ * @return The next active source or NULL if ssrc was the last one
+ */
+rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc)
+{
+    rtp_session *rtp_sess;
+
+    if (!ssrc)
+        return NULL;
+
+    if (ssrc->next_active)
+        return ssrc->next_active;
+
+    for (rtp_sess = ssrc->rtp_sess->next; rtp_sess;
+         rtp_sess = rtp_sess->next)
+        if (rtp_sess->active_ssrc_queue)
+            return rtp_sess->active_ssrc_queue;
+
+    return NULL;
 }
