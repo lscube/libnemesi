@@ -19,8 +19,6 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_recv.c \
 			rtp_rm_pkt.c \
 			rtp_hdr_val_chk.c \
-			rtp_ssrc_init.c \
-			rtp_ssrc_check.c \
 			rtp_init_seq.c \
 			rtp_update_seq.c \
 			rtcp_to_connect.c \
