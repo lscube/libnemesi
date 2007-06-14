@@ -462,6 +462,28 @@ quit_function:
 }
 
 /**
+ * Starts playing the given new range of the stream, stopping the previously played one
+ * This is implemented with a PAUSE and PLAY methods call
+ * @param rtsp_ctl The controller that should start playing in the new range
+ * @param start from where to start playing
+ * @param stop where to stop playing
+ * @return 0
+ */
+int rtsp_seek(rtsp_ctrl * rtsp_ctl, double new_start, double new_end)
+{
+    int got_error = 0;
+
+    got_error = rtsp_pause(rtsp_ctl);
+    if (!got_error) {
+        rtsp_wait(rtsp_ctl);
+        got_error = rtsp_play(rtsp_ctl, new_start, new_end);
+    }
+
+    return got_error;
+}
+
+
+/**
  * Sends to the controller the request to stop
  * @param rtsp_ctl The controller that should stop
  * @return 0
