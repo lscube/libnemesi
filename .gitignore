@@ -12,6 +12,7 @@ config.h.in
 config.log
 config.status
 config/
+config/*
 configure
 example/dump_info
 example/dump_stream
@@ -19,4 +20,4 @@ libnemesi.pc
 libnemesi.pc.in
 libtool
 stamp-h1
-
+INSTALL
