@@ -146,6 +146,7 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
     if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
         sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
             rtsp_sess->Session_ID);
+
     if (range && *range)
         sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
     else

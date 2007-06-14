@@ -22,9 +22,7 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_init_seq.c \
 			rtp_update_seq.c \
 			rtcp_to_connect.c \
-			rtp_transport_set.c \
-			rtp_transport_get.c \
-			rtp_transport_wrappers.c \
+			rtp_transport.c \
 			rtpptdefs.c \
 			rtp_ssrc_queue.c \
 			rtp_payload_type.c
