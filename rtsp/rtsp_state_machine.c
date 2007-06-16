@@ -213,7 +213,7 @@ void *rtsp(void *rtsp_thrd)
 
     while (1) {
         FD_ZERO(&readset);
-        max_fd = rtsp_th->transport.fd;
+        max_fd = 0;
 
         if (nmst_is_active(&rtsp_th->transport)) {
             FD_SET(rtsp_th->transport.fd, &readset);
@@ -227,7 +227,7 @@ void *rtsp(void *rtsp_thrd)
             }
         }
 
-       if (select(max_fd + 1, &readset, NULL, NULL, NULL) < 0) {
+       if ( (max_fd) && (select(max_fd + 1, &readset, NULL, NULL, NULL) < 0) ) {
                 nms_printf(NMSML_FATAL, "(%s) %s\n", PROG_NAME, strerror(errno));
                 pthread_exit(NULL);
        }
