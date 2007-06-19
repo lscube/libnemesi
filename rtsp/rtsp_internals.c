@@ -122,6 +122,8 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
     }
     reason_phrase = strchr(strchr(status_line, ' ') + 1, ' ') + 1;
 
+    rtsp_th->response_id = res_state;
+
     if (RTSP_IS_SUCCESS(res_state))
         return res_state;
     else if (RTSP_IS_REDIRECT(res_state)) { // (res_state>=300) && (res_state<400)

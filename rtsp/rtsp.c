@@ -220,8 +220,9 @@ quit_function:
  * Waits for the main loop to handle the last given command, this should be called after issuing a command
  * to the rtsp main loop.
  * @param rtsp_ctl The control structure for which to wait.
+ * @return The last response received from the server
  */
-void rtsp_wait(rtsp_ctrl * rtsp_ctl)
+int rtsp_wait(rtsp_ctrl * rtsp_ctl)
 {
     rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_ctl;
 
@@ -231,6 +232,8 @@ void rtsp_wait(rtsp_ctrl * rtsp_ctl)
                   &(rtsp_th->comm_mutex));
 
     pthread_mutex_unlock(&(rtsp_th->comm_mutex));
+
+    return rtsp_ctl->response_id;
 }
 
 /**

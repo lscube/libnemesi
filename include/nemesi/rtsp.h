@@ -153,7 +153,8 @@ enum states { INIT, READY, PLAYING, RECORDING, STATES_NUM };
             pthread_t rtsp_tid; \
             char descr_fmt; /* Description format inside RTSP body */ \
             rtsp_session *rtsp_queue;/*!< List of active sessions. */ \
-            cc_perm_mask accepted_CC;    /* accepted CC licenses */
+            cc_perm_mask accepted_CC;    /* accepted CC licenses */ \
+            int response_id; /*!< Last received response from the server */
 
 typedef struct {
 RTSP_COMMON_IF
@@ -162,7 +163,7 @@ RTSP_COMMON_IF
 rtsp_ctrl *rtsp_init(nms_rtsp_hints *);
 inline int rtsp_is_busy(rtsp_ctrl *);
 
-void rtsp_wait(rtsp_ctrl *);
+int rtsp_wait(rtsp_ctrl *);
 int rtsp_close(rtsp_ctrl *);
 int rtsp_open(rtsp_ctrl *, char *);
 int rtsp_pause(rtsp_ctrl *);
