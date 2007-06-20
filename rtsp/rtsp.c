@@ -220,7 +220,9 @@ quit_function:
  * Waits for the main loop to handle the last given command, this should be called after issuing a command
  * to the rtsp main loop.
  * @param rtsp_ctl The control structure for which to wait.
- * @return The last response received from the server
+ * @return The last response received from the server if the server is still alive. 
+ *          0 If the library has just been initialized
+ *         -1 If the library has been reinitialized (connection error, server went down, etc)
  */
 int rtsp_wait(rtsp_ctrl * rtsp_ctl)
 {

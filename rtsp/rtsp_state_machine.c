@@ -87,6 +87,7 @@ static void clean_rtsp_th(rtsp_thread *rtsp_th)
 
     // Remove busy state if pending
     rtsp_unbusy(rtsp_th);
+    rtsp_th->response_id = -1;
 
     // reset first RP port
     if (rtsp_th->hints
