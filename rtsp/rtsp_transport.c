@@ -320,14 +320,14 @@ int set_transport_str_udp(rtp_session * rtp_sess, char *buff)
         sprintf(buff + strlen(buff), "multicast;");
     else
         sprintf(buff + strlen(buff), "unicast;");
-    if (rtp_transport_get
+/*    if (rtp_transport_get
         (rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addr,
          sizeof(addr)) == RTP_TRANSPORT_SET)
         sprintf(buff + strlen(buff), "destination=%s;", addr);
     if (rtp_transport_get
         (rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addr,
          sizeof(addr)) == RTP_TRANSPORT_SET)
-        sprintf(buff + strlen(buff), "source=%s;", addr);
+        sprintf(buff + strlen(buff), "source=%s;", addr); */
     if (rtp_get_layers(rtp_sess))
         sprintf(buff + strlen(buff), "layers=%d;",
             rtp_get_layers(rtp_sess));
