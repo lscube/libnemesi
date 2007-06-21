@@ -3,6 +3,7 @@
 *~
 *.deps
 *.libs
+*.swp
 Makefile
 Makefile.in
 aclocal.m4
