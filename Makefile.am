@@ -1,6 +1,5 @@
 SUBDIRS =	bufferpool \
 		wsocket \
-		md5 \
 		utils \
 		rtp \
 		rtcp \
@@ -21,9 +20,7 @@ libinclude_HEADERS = 	include/nemesi/bufferpool.h\
 			include/nemesi/rtsp.h\
 			include/nemesi/comm.h\
 			include/nemesi/sdp.h\
-			include/nemesi/md5.h\
 			include/nemesi/types.h\
-			include/nemesi/md5global.h\
 			include/nemesi/utils.h\
 			include/nemesi/methods.h\
 			include/nemesi/version.h\
@@ -41,7 +38,6 @@ libnemesi_la_LIBADD =	rtsp/librtsp.la \
 			bufferpool/libbuffpool.la \
 			wsocket/libwsocket.la \
 			utils/libutils.la \
-			md5/libmd5.la \
 			$(LIBM)
 
 pkgconfigdir = $(libdir)/pkgconfig

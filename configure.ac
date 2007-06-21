@@ -162,7 +162,6 @@ AC_CONFIG_FILES([Makefile
                  sdp/Makefile
                  rtsp/Makefile
                  wsocket/Makefile
-                 md5/Makefile
                  utils/Makefile
                  example/Makefile
                  libnemesi.pc])
