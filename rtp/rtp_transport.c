@@ -101,7 +101,7 @@ int rtp_transport_set(rtp_session * rtp_sess, int par, void *value)
         // could not set spec for outsid library for now.
         break;
     case RTP_TRANSPORT_SOCKTYPE:
-        rtp_sess->transport.type = *(enum sock_types *) value;
+        rtp_sess->transport.type = *(sock_type *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_DELIVERY:
@@ -158,29 +158,29 @@ int rtp_transport_set(rtp_session * rtp_sess, int par, void *value)
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_CLIRTP:
-        rtp_sess->transport.RTP.local_port = *(in_port_t *) value;
+        rtp_sess->transport.RTP.sock.local_port = *(in_port_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_CLIRTCP:
-        rtp_sess->transport.RTCP.local_port = *(in_port_t *) value;
+        rtp_sess->transport.RTCP.sock.local_port = *(in_port_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_CLIPORTS:
-        rtp_sess->transport.RTP.local_port  = ((in_port_t *) value)[0];
-        rtp_sess->transport.RTCP.local_port = ((in_port_t *) value)[1];
+        rtp_sess->transport.RTP.sock.local_port  = ((in_port_t *) value)[0];
+        rtp_sess->transport.RTCP.sock.local_port = ((in_port_t *) value)[1];
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SRVRTP:
-        rtp_sess->transport.RTP.remote_port = *(in_port_t *) value;
+        rtp_sess->transport.RTP.sock.remote_port = *(in_port_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SRVRTCP:
-        rtp_sess->transport.RTCP.remote_port = *(in_port_t *) value;
+        rtp_sess->transport.RTCP.sock.remote_port = *(in_port_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SRVPORTS:
-        rtp_sess->transport.RTP.remote_port  = ((in_port_t *) value)[0];
-        rtp_sess->transport.RTCP.remote_port = ((in_port_t *) value)[1];
+        rtp_sess->transport.RTP.sock.remote_port  = ((in_port_t *) value)[0];
+        rtp_sess->transport.RTCP.sock.remote_port = ((in_port_t *) value)[1];
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_ILVDRTP:
@@ -241,7 +241,7 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SOCKTYPE:
-        *(enum sock_types *) value = rtp_sess->transport.type;
+        *(sock_type *) value = rtp_sess->transport.type;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_DELIVERY:
@@ -256,7 +256,7 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SRCADDRSTR:
-        if (addr_ntop
+        if (nms_addr_ntop
             (&rtp_sess->transport.RTP.u.udp.srcaddr, (char *) value, len))
             ret = RTP_TRANSPORT_SET;
         break;
@@ -268,7 +268,7 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_DSTADDRSTR:
-        if (addr_ntop
+        if (nms_addr_ntop
             (&rtp_sess->transport.RTP.u.udp.dstaddr, (char *) value, len))
             ret = RTP_TRANSPORT_SET;
         break;
@@ -304,33 +304,33 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_CLIRTP:
-        if ((*(in_port_t *) value = rtp_sess->transport.RTP.local_port))
+        if ((*(in_port_t *) value = rtp_sess->transport.RTP.sock.local_port))
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_CLIRTCP:
-        if ((*(in_port_t *) value = rtp_sess->transport.RTCP.local_port))
+        if ((*(in_port_t *) value = rtp_sess->transport.RTCP.sock.local_port))
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_CLIPORTS:
         if ((((in_port_t *) value)[0] =
-             rtp_sess->transport.RTP.local_port)
+             rtp_sess->transport.RTP.sock.local_port)
             && (((in_port_t *) value)[1] =
-            rtp_sess->transport.RTCP.local_port))
+            rtp_sess->transport.RTCP.sock.local_port))
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SRVRTP:
-        if ((*(in_port_t *) value = rtp_sess->transport.RTP.remote_port))
+        if ((*(in_port_t *) value = rtp_sess->transport.RTP.sock.remote_port))
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SRVRTCP:
-        if ((*(in_port_t *) value = rtp_sess->transport.RTCP.remote_port))
+        if ((*(in_port_t *) value = rtp_sess->transport.RTCP.sock.remote_port))
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SRVPORTS:
         if ((((in_port_t *) value)[0] =
-             rtp_sess->transport.RTP.remote_port)
+             rtp_sess->transport.RTP.sock.remote_port)
             && (((in_port_t *) value)[1] =
-            rtp_sess->transport.RTCP.remote_port))
+            rtp_sess->transport.RTCP.sock.remote_port))
             ret = RTP_TRANSPORT_SET;
         break;
     
@@ -444,12 +444,12 @@ inline int rtp_get_mcsports(rtp_session * rtp_sess, in_port_t ports[2])
 
 inline in_port_t rtp_get_srvrtpport(rtp_session * rtp_sess)
 {
-    return rtp_sess->transport.RTP.remote_port;
+    return rtp_sess->transport.RTP.sock.remote_port;
 }
 
 inline in_port_t rtp_get_srvrtcpport(rtp_session * rtp_sess)
 {
-    return rtp_sess->transport.RTCP.remote_port;
+    return rtp_sess->transport.RTCP.sock.remote_port;
 }
 
 inline int rtp_get_srvports(rtp_session * rtp_sess, in_port_t ports[2])
@@ -460,12 +460,12 @@ inline int rtp_get_srvports(rtp_session * rtp_sess, in_port_t ports[2])
 
 inline in_port_t rtp_get_clirtpport(rtp_session * rtp_sess)
 {
-    return rtp_sess->transport.RTP.local_port;
+    return rtp_sess->transport.RTP.sock.local_port;
 }
 
 inline in_port_t rtp_get_clirtcpport(rtp_session * rtp_sess)
 {
-    return rtp_sess->transport.RTCP.local_port;
+    return rtp_sess->transport.RTCP.sock.local_port;
 }
 
 inline int rtp_get_cliports(rtp_session * rtp_sess, in_port_t ports[2])

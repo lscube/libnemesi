@@ -1,5 +1,4 @@
 SUBDIRS =	bufferpool \
-		wsocket \
 		utils \
 		rtp \
 		rtcp \
@@ -25,7 +24,6 @@ libinclude_HEADERS = 	include/nemesi/bufferpool.h\
 			include/nemesi/methods.h\
 			include/nemesi/version.h\
 			include/nemesi/rtcp.h\
-			include/nemesi/wsocket.h\
 			include/nemesi/rtp.h
 
 libnemesi_la_SOURCES =
@@ -36,8 +34,8 @@ libnemesi_la_LIBADD =	rtsp/librtsp.la \
 			rtcp/librtcp.la \
 			rtp/librtp.la \
 			bufferpool/libbuffpool.la \
-			wsocket/libwsocket.la \
 			utils/libutils.la \
+		    -lnetembryo \
 			$(LIBM)
 
 pkgconfigdir = $(libdir)/pkgconfig

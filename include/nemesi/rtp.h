@@ -47,7 +47,7 @@
 #include <nemesi/bufferpool.h>
 #include <nemesi/types.h>
 #include <nemesi/utils.h>
-#include <nemesi/wsocket.h>
+#include <nemesi/transport.h>
 #include <nemesi/rtpptdefs.h>
 
 #define RTP_VERSION 2
@@ -158,7 +158,7 @@ typedef struct {
 typedef struct {
     char *spec;
     uint32 ssrc;
-    enum sock_types type;
+    sock_type type;
     enum modes { play, record } mode;
     int append;
     int layers;

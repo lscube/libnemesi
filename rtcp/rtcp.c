@@ -74,8 +74,8 @@ void *rtcp(void *args)
 
         for (rtp_sess = rtp_sess_head; rtp_sess;
              rtp_sess = rtp_sess->next) {
-            maxfd = max(rtp_sess->transport.RTCP.fd, maxfd);
-            FD_SET(rtp_sess->transport.RTCP.fd, &readset);
+            maxfd = max(rtp_sess->transport.RTCP.sock.fd, maxfd);
+            FD_SET(rtp_sess->transport.RTCP.sock.fd, &readset);
         }
 
         gettimeofday(&now, NULL);
@@ -96,7 +96,7 @@ void *rtcp(void *args)
 
         for (rtp_sess = rtp_sess_head; rtp_sess;
              rtp_sess = rtp_sess->next)
-            if (FD_ISSET(rtp_sess->transport.RTCP.fd, &readset)) {
+            if (FD_ISSET(rtp_sess->transport.RTCP.sock.fd, &readset)) {
                 if ((ret = rtcp_recv(rtp_sess)) < 0)
                     pthread_exit(NULL);
             }

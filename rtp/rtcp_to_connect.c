@@ -52,7 +52,7 @@ int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t port)
         return nms_printf(NMSML_ERR,
                   "RTCP: Cannot connect to port (%d)\n", port);
 
-    if (!addr_ntop(remoteaddr, addr, sizeof(addr))) {
+    if (!nms_addr_ntop(remoteaddr, addr, sizeof(addr))) {
         nms_printf(NMSML_WARN,
                "RTP: Cannot get address from source\n");
         stm_src->no_rtcp = 1;
@@ -66,9 +66,9 @@ int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t port)
                addr, port_str);
         stm_src->no_rtcp = 1;
     }*/
-    getsockname(stm_src->rtp_sess->transport.RTCP.fd, rtcp_to_addr.addr,
+    getsockname(stm_src->rtp_sess->transport.RTCP.sock.fd, rtcp_to_addr.addr,
             &rtcp_to_addr.addr_len);
-    sockaddrdup(&stm_src->rtcp_to, &rtcp_to_addr);
+    nms_sockaddr_dup(&stm_src->rtcp_to, &rtcp_to_addr);
 
     return 0;
 }

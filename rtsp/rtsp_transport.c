@@ -358,7 +358,7 @@ int set_transport_str_tcp(rtp_session * rtp_sess, char *buff)
 int set_transport_str(rtp_session * rtp_sess, char **str)
 {
     char buff[256];
-    enum sock_types type;
+    sock_type type;
 
     memset(buff, 0, sizeof(buff));
 

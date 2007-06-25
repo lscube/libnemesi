@@ -115,7 +115,7 @@ typedef struct {
     uint16 force_rtp_port;
     pthread_cond_t cond_busy;
     nms_transport transport;
-    enum sock_types default_rtp_proto;
+    sock_type default_rtp_proto;
     nms_rtsp_interleaved *interleaved;
     uint16 next_ilvd_ch;
     // int fd; /*!< file descriptor for reading the data coming from the server */

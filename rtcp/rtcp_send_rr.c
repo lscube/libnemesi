@@ -43,10 +43,10 @@ int rtcp_send_rr(rtp_session * rtp_sess)
     len += rtcp_build_sdes(rtp_sess, pkt, (MAX_PKT_SIZE >> 2) - len);    /* in 32 bit words */
 
     for (stm_src = rtp_sess->ssrc_queue; stm_src; stm_src = stm_src->next)
-        if ( !(stm_src->no_rtcp) && stm_src->rtp_sess->transport.RTCP.fd > 0) {
+        if ( !(stm_src->no_rtcp) && stm_src->rtp_sess->transport.RTCP.sock.fd > 0) {
             switch(stm_src->rtp_sess->transport.type) {
             case UDP:
-                if (sendto(stm_src->rtp_sess->transport.RTCP.fd,
+                if (sendto(stm_src->rtp_sess->transport.RTCP.sock.fd,
                        rr_buff, (len << 2), 0, stm_src->rtcp_from.addr,
                        stm_src->rtcp_from.addr_len) < 0)
                     nms_printf(NMSML_WARN,
@@ -57,7 +57,7 @@ int rtcp_send_rr(rtp_session * rtp_sess)
                 break;
             case SCTP:
             case TCP:
-                if (send(stm_src->rtp_sess->transport.RTCP.fd,
+                if (send(stm_src->rtp_sess->transport.RTCP.sock.fd,
                        rr_buff, (len << 2), 0) < 0)
                     nms_printf(NMSML_WARN,
                            "WARNING! Error while sending local RTCP pkt\n");

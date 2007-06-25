@@ -219,8 +219,8 @@ void *rtsp(void *rtsp_thrd)
         max_fd = 0;
 
         if (nmst_is_active(&rtsp_th->transport)) {
-            FD_SET(rtsp_th->transport.fd, &readset);
-            max_fd = max(rtsp_th->transport.fd, max_fd);
+            FD_SET(rtsp_th->transport.sock.fd, &readset);
+            max_fd = max(rtsp_th->transport.sock.fd, max_fd);
         }
 
         for (p = rtsp_th->interleaved; p; p = p->next) {
@@ -236,7 +236,7 @@ void *rtsp(void *rtsp_thrd)
        }
 
         if (nmst_is_active(&rtsp_th->transport))
-            if (FD_ISSET(rtsp_th->transport.fd, &readset)) {
+            if (FD_ISSET(rtsp_th->transport.sock.fd, &readset)) {
                 if ((n = rtsp_recv(rtsp_th)) < 0)
                     pthread_exit(NULL);
                 else if (n == 0) {
@@ -256,7 +256,7 @@ void *rtsp(void *rtsp_thrd)
 
         for (p = rtsp_th->interleaved; p; p = p->next) {
             if (p->rtcp_fd >= 0 && FD_ISSET(p->rtcp_fd, &readset)) {
-                switch (rtsp_th->transport.type) {
+                switch (rtsp_th->transport.sock.socktype) {
                 case TCP:
                     n = recv(p->rtcp_fd, buffer+4, RTSP_BUFFERSIZE-4, 0);
                     buffer[0]='$';
