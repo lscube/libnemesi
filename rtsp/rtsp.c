@@ -27,6 +27,8 @@
 #include <nemesi/utils.h>
 #include <nemesi/methods.h>
 #include <fcntl.h>
+#include <nemesi/version.h>
+
 
 /** @file rtsp.c
  * This file contains the interface functions to the rtsp packets and requests handling of the library
@@ -126,11 +128,11 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
         switch (hints->pref_rtsp_proto) {
         case SOCK_NONE:
         case TCP:
-            rtsp_th->transport.type = TCP;
+            rtsp_th->transport.sock.socktype = TCP;
             break;
 #ifdef HAVE_LIBSCTP
         case SCTP:
-            rtsp_th->transport.type = SCTP;
+            rtsp_th->transport.sock.socktype = SCTP;
             break;
 #endif
         default:
@@ -143,14 +145,14 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
             rtsp_th->default_rtp_proto = UDP;
             break;
         case TCP:
-            if (rtsp_th->transport.type == TCP)
+            if (rtsp_th->transport.sock.socktype == TCP)
                 rtsp_th->default_rtp_proto = TCP;
             else
                 RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
             break;
 #ifdef HAVE_LIBSCTP
         case SCTP:
-            if (rtsp_th->transport.type == SCTP)
+            if (rtsp_th->transport.sock.socktype == SCTP)
                 rtsp_th->default_rtp_proto = SCTP;
             else
                 RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
@@ -333,6 +335,115 @@ inline int rtsp_is_busy(rtsp_ctrl * rtsp_ctl)
 }
 
 /**
+ * Support function for rtsp_open that connects to the given host and port and gives a new file descriptor
+ * @param server string with the server address.
+ * @param port which port to connect
+ * @param sock where to save the new file descriptor
+ * @return 1 if connected, 0 if something failed
+ * @see tcp_open
+ */
+static int server_connect(char *host, char *port, int *sock, sock_type sock_type)
+{
+    int n, connect_new;
+    struct addrinfo *res, *ressave;
+    struct addrinfo hints;
+#ifdef HAVE_LIBSCTP
+    struct sctp_initmsg initparams;
+    struct sctp_event_subscribe subscribe;
+#endif
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+
+    hints.ai_flags = AI_CANONNAME;
+#ifdef IPV6
+    hints.ai_family = AF_UNSPEC;
+#else
+    hints.ai_family = AF_INET;
+#endif
+
+    switch (sock_type) {
+    case SCTP:
+#ifndef HAVE_LIBSCTP
+        return nms_printf(NMSML_ERR,
+                  "%s: SCTP protocol not compiled in\n",
+                  PROG_NAME);
+        break;
+#endif    // else go down to TCP case (SCTP and TCP are both SOCK_STREAM type)
+    case TCP:
+        hints.ai_socktype = SOCK_STREAM;
+        break;
+    case UDP:
+        hints.ai_socktype = SOCK_DGRAM;
+        break;
+    default:
+        return nms_printf(NMSML_ERR,
+                  "%s: Unknown socket type specified\n",
+                  PROG_NAME);
+        break;
+    }
+
+    if ((n = gethostinfo(&res, host, port, &hints)) != 0)
+        return nms_printf(NMSML_ERR, "%s: %s\n", PROG_NAME,
+                  gai_strerror(n));
+
+    ressave = res;
+
+    connect_new = (*sock < 0);
+
+    do {
+#ifdef HAVE_LIBSCTP
+        if (sock_type == SCTP)
+            res->ai_protocol = IPPROTO_SCTP;
+#endif // TODO: remove this code when SCTP will be supported from getaddrinfo()
+
+        if (connect_new && (*sock =
+             socket(res->ai_family, res->ai_socktype,
+                res->ai_protocol)) < 0)
+            continue;
+
+#ifdef HAVE_LIBSCTP
+        if (sock_type == SCTP) {
+            // Enable the propagation of packets headers
+            memset(&subscribe, 0, sizeof(subscribe));
+            subscribe.sctp_data_io_event = 1;
+            if (setsockopt(*sock, SOL_SCTP, SCTP_EVENTS, &subscribe,
+                    sizeof(subscribe)) < 0)
+                return nms_printf(NMSML_ERR, "setsockopts(SCTP_EVENTS) error in sctp_open.\n");
+
+            // Setup number of streams to be used for SCTP connection
+            memset(&initparams, 0, sizeof(initparams));
+            initparams.sinit_max_instreams = MAX_SCTP_STREAMS;
+            initparams.sinit_num_ostreams = MAX_SCTP_STREAMS;
+            if (setsockopt(*sock, SOL_SCTP, SCTP_INITMSG, &initparams,
+                    sizeof(initparams)) < 0)
+                return nms_printf(NMSML_ERR, "setsockopts(SCTP_INITMSG) error in sctp_open.\n");
+        }
+#endif
+
+        if (connect(*sock, res->ai_addr, res->ai_addrlen) == 0)
+            break;
+        if (connect_new) {
+            if (close(*sock) < 0)
+                return nms_printf(NMSML_ERR, "(%s) %s", PROG_NAME,
+                          strerror(errno));
+            else
+                *sock = -1;
+        }
+
+    } while ((res = res->ai_next) != NULL);
+
+    freeaddrinfo(ressave);
+
+    if (!res)
+        return nms_printf(NMSML_ERR,
+                  "Server connect error for \"%s:%s\"", host,
+                  port);
+
+    return 0;
+}
+
+
+/**
  * Sends to the controller the request to open a given url
  * @param rtsp_ctl The controller that should open the url
  * @param urlanem The path of the document to open
@@ -362,8 +473,8 @@ int rtsp_open(rtsp_ctrl * rtsp_ctl, char *urlname)
 
     urltokenize(rtsp_th->urlname, &server, NULL, NULL);
     if (server_connect
-        (server, rtsp_th->server_port, &rtsp_th->transport.fd, rtsp_th->transport.type)) {
-        rtsp_th->transport.fd = -1;
+        (server, rtsp_th->server_port, &rtsp_th->transport.sock.fd, rtsp_th->transport.sock.socktype)) {
+        rtsp_th->transport.sock.fd = -1;
         nms_printf(NMSML_ERR, "Cannot connect to the server\n");
         goto quit_function;
     }

@@ -32,7 +32,7 @@
 
 #include <pthread.h>
 #include <nemesi/cc.h>
-#include <nemesi/wsocket.h>
+#include <nemesi/transport.h>
 #include <nemesi/rtp.h>
 #include <nemesi/sdp.h>
 
@@ -63,8 +63,8 @@
 
 typedef struct {
     int32 first_rtp_port;
-    enum sock_types pref_rtsp_proto;
-    enum sock_types pref_rtp_proto;
+    sock_type pref_rtsp_proto;
+    sock_type pref_rtp_proto;
 } nms_rtsp_hints;
 
 /*!

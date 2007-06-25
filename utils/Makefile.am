@@ -15,6 +15,7 @@ libutils_la_SOURCES =	urltokenize.c \
 			uiprintf.c \
 			uierror.c \
 			nmsprint.c \
-			nms_header.c
+			nms_header.c \
+            transport.c
 
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

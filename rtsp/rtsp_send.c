@@ -27,7 +27,7 @@
 #include <nemesi/utils.h>
 #include <nemesi/version.h>
 #include <nemesi/methods.h>
-#include <nemesi/wsocket.h>
+#include <nemesi/transport.h>
 #include <nemesi/cc.h>
 
 int send_get_request(rtsp_thread * rtsp_th)
@@ -165,6 +165,48 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
     return 0;
 }
 
+static int server_create(char *host, char *port, int *sock)
+{
+    int n;
+    struct addrinfo *res, *ressave;
+    struct addrinfo hints;
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_flags = AI_PASSIVE;
+#ifdef IPV6
+    hints.ai_family = AF_UNSPEC;
+#else
+    hints.ai_family = AF_INET;
+#endif
+    hints.ai_socktype = SOCK_DGRAM;
+
+    if ((n = gethostinfo(&res, host, port, &hints)) != 0)
+        return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
+                  gai_strerror(n));
+
+    ressave = res;
+
+    do {
+        if ((*sock =
+             socket(res->ai_family, res->ai_socktype,
+                res->ai_protocol)) < 0)
+            continue;
+
+        if (bind(*sock, res->ai_addr, res->ai_addrlen) == 0)
+            break;
+
+        if (close(*sock) < 0)
+            return nms_printf(NMSML_ERR, "(%s) %s\n", PROG_NAME,
+                      strerror(errno));
+
+
+    } while ((res = res->ai_next) != NULL);
+
+    freeaddrinfo(ressave);
+
+    return res ? 0 : 1;
+}
+
 int send_setup_request(rtsp_thread * rtsp_th)
 {
 
@@ -207,21 +249,21 @@ int send_setup_request(rtsp_thread * rtsp_th)
     case UDP:
 
         sprintf(b, "%d", rnd);
-        server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTP.fd));
+        server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTP.sock.fd));
 
         sprintf(b, "%d", rnd + 1);
-        server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTCP.fd));
+        server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTCP.sock.fd));
 
         /* per sapere il numero di porta assegnato */
         /* assigned ports */
-        getsockname(rtsp_med->rtp_sess->transport.RTP.fd,
+        getsockname(rtsp_med->rtp_sess->transport.RTP.sock.fd,
                 (struct sockaddr *) &rtpaddr, &rtplen);
-        getsockname(rtsp_med->rtp_sess->transport.RTCP.fd,
+        getsockname(rtsp_med->rtp_sess->transport.RTCP.sock.fd,
                 (struct sockaddr *) &rtcpaddr, &rtcplen);
 
-        rtsp_med->rtp_sess->transport.RTP.local_port =
+        rtsp_med->rtp_sess->transport.RTP.sock.local_port =
             ntohs(sock_get_port((struct sockaddr *) &rtpaddr));
-        rtsp_med->rtp_sess->transport.RTCP.local_port =
+        rtsp_med->rtp_sess->transport.RTCP.sock.local_port =
             ntohs(sock_get_port((struct sockaddr *) &rtcpaddr));
 
         if (set_transport_str(rtsp_med->rtp_sess, &options))
@@ -259,25 +301,25 @@ int send_setup_request(rtsp_thread * rtsp_th)
             free(p);
             return 1;
         }
-        rtsp_med->rtp_sess->transport.RTP.fd = sock_pair[0];
+        rtsp_med->rtp_sess->transport.RTP.sock.fd = sock_pair[0];
         p->rtp_fd = sock_pair[1];
 
         if (socketpair(PF_UNIX, SOCK_DGRAM, 0, sock_pair) < 0) {
             nms_printf(NMSML_ERR,
                    "Unable to allocate memory for interleaved struct!\n");
-            close(rtsp_med->rtp_sess->transport.RTP.fd);
+            close(rtsp_med->rtp_sess->transport.RTP.sock.fd);
             close(p->rtp_fd);
             free(p);
             return 1;
         }
-        rtsp_med->rtp_sess->transport.RTCP.fd = sock_pair[0];
+        rtsp_med->rtp_sess->transport.RTCP.sock.fd = sock_pair[0];
         p->rtcp_fd = sock_pair[1];
 
         nms_printf(NMSML_DBG1, "Interleaved RTP local sockets: %d <-> %d\n",
-               rtsp_med->rtp_sess->transport.RTP.fd, p->rtp_fd);
+               rtsp_med->rtp_sess->transport.RTP.sock.fd, p->rtp_fd);
 
         nms_printf(NMSML_DBG1, "Interleaved RTCP local sockets: %d <-> %d\n",
-               rtsp_med->rtp_sess->transport.RTCP.fd, p->rtcp_fd);
+               rtsp_med->rtp_sess->transport.RTCP.sock.fd, p->rtcp_fd);
 
         p->next = rtsp_th->interleaved;
         rtsp_th->interleaved = p;
@@ -307,18 +349,18 @@ int send_setup_request(rtsp_thread * rtsp_th)
             free(p);
             return 1;
         }
-        rtsp_med->rtp_sess->transport.RTP.fd = sock_pair[0];
+        rtsp_med->rtp_sess->transport.RTP.sock.fd = sock_pair[0];
         p->rtp_fd = sock_pair[1];
 
         if (socketpair(PF_UNIX, SOCK_DGRAM, 0, sock_pair) < 0) {
             nms_printf(NMSML_ERR,
                    "Unable to allocate memory for interleaved struct!\n");
-            close(rtsp_med->rtp_sess->transport.RTP.fd);
+            close(rtsp_med->rtp_sess->transport.RTP.sock.fd);
             close(p->rtp_fd);
             free(p);
             return 1;
         }
-        rtsp_med->rtp_sess->transport.RTCP.fd = sock_pair[0];
+        rtsp_med->rtp_sess->transport.RTCP.sock.fd = sock_pair[0];
         p->rtcp_fd = sock_pair[1];
 
         p->next = rtsp_th->interleaved;

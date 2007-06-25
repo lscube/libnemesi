@@ -38,7 +38,7 @@
 #include <nemesi/types.h>
 #include <nemesi/comm.h>
 #include <nemesi/rtp.h>
-#include <nemesi/wsocket.h>
+#include <nemesi/transport.h>
 
 
 #define MAX_PKT_SIZE 548    /* 576 - 20 - 8 = Minimum Reassembly Buffer Size - IP datagram header -  UDP hedaer: in octects */

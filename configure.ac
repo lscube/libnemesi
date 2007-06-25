@@ -97,20 +97,24 @@ else
 	AC_MSG_WARN([IPv6 disabled: check skipped.])
 fi
 
+
+PKG_CHECK_MODULES(LIBNETEMBRYO,[libnetembryo >= 0.0.2])
+CFLAGS="$CFLAGS $LIBNETEMBRYO_CFLAGS"
+LIBS="$LIBS $LIBNETEMBRYO_LIBS"
+
 dnl Check for SCTP support
-nemesi_sctp_support="yes"
 if test "$enable_sctp" = "yes"; then
+    if test "${LIBNETEMBRYO_LIBS//sctp}" = "${LIBNETEMBRYO_LIBS}"; then
+        AC_MSG_WARN([sctp required but netembryo does not support it, rebuild netembryo first.])
+    fi
         AC_CHECK_TYPE(struct sctp_sndrcvinfo, [
          AC_CHECK_LIB(sctp,sctp_recvmsg)],
-         AC_MSG_WARN([SCTP disabled: headers not found])
-	 nemesi_sctp_support="no",
+         [enable_sctp=no,
+         AC_MSG_WARN([SCTP disabled: headers not found])],
          [#include <netinet/sctp.h>])
 else
     AC_MSG_WARN([SCTP disabled: check skipped.])
-    nemesi_sctp_support="no"
 fi
-
-AM_CONDITIONAL(HAVE_LIBSCTP, [test "$nemesi_sctp_support" = "yes"])
 
 AC_SUBST(LIBM)
 AC_SUBST(EXTRA_FLAGS)
@@ -161,7 +165,6 @@ AC_CONFIG_FILES([Makefile
                  rtcp/Makefile
                  sdp/Makefile
                  rtsp/Makefile
-                 wsocket/Makefile
                  utils/Makefile
                  example/Makefile
                  libnemesi.pc])
@@ -175,7 +178,7 @@ libnemesi version is .............. : $VERSION
 
 libnemesi Install prefix .......... : $prefix
 
-libnemesi has SCTP support ........ : $nemesi_sctp_support
+libnemesi has SCTP support ........ : $enable_sctp
 
 Byte order ..................... : this is a $BIGENDIAN machine
 

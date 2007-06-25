@@ -93,10 +93,10 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
     (*stm_src)->rtp_sess = rtp_sess;
 
     if (proto_type == RTP) {
-        sockaddrdup(&(*stm_src)->rtp_from, recfrom);
+        nms_sockaddr_dup(&(*stm_src)->rtp_from, recfrom);
         nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTP\n");
     } else if (proto_type == RTCP) {
-        sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
+        nms_sockaddr_dup(&(*stm_src)->rtcp_from, recfrom);
         nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: proto RTCP\n");
     }
 
@@ -106,18 +106,18 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
         return 0;
     }
 
-    if (sock_get_addr(recfrom->addr, &nms_address))
+    if (sockaddr_get_nms_addr(recfrom->addr, &nms_address))
         return -nms_printf(NMSML_ERR,
                    "Address of received packet not valid\n");
     if (!
         (addrcmp_err =
-         addrcmp(&nms_address, &rtp_sess->transport.RTP.u.udp.srcaddr))) {
+         nms_addr_cmp(&nms_address, &rtp_sess->transport.RTP.u.udp.srcaddr))) {
         /* If the address from which we are receiving data is the
          * same to that announced in RTSP session, then we use RTSP
          * informations to set transport address for RTCP connection */
         if (rtcp_to_connect
             (*stm_src, &rtp_sess->transport.RTP.u.udp.srcaddr,
-             (rtp_sess->transport).RTCP.remote_port) < 0)
+             (rtp_sess->transport).RTCP.sock.remote_port) < 0)
             return -1;
         nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTSP\n");
 
@@ -127,7 +127,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
          * specified in RTSP*/
         if (rtcp_to_connect
             (*stm_src, &nms_address,
-             (rtp_sess->transport).RTCP.remote_port) < 0)
+             (rtp_sess->transport).RTCP.sock.remote_port) < 0)
             return -1;
         nms_printf(NMSML_DBG2, "RTP/rtp_ssrc_init: from RTP\n");
     } else {
@@ -198,16 +198,16 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
         if (local_collision) {
 
             if (proto_type == RTP)
-                getsockname(rtp_sess->transport.RTP.fd, sock.addr,
+                getsockname(rtp_sess->transport.RTP.sock.fd, sock.addr,
                         &sock.addr_len);
             else
-                getsockname(rtp_sess->transport.RTCP.fd, sock.addr,
+                getsockname(rtp_sess->transport.RTCP.sock.fd, sock.addr,
                         &sock.addr_len);
 
         } else if (proto_type == RTP) {
 
             if (!(*stm_src)->rtp_from.addr) {
-                sockaddrdup(&(*stm_src)->rtp_from, recfrom);
+                nms_sockaddr_dup(&(*stm_src)->rtp_from, recfrom);
                 nms_printf(NMSML_DBG1, "new SSRC for RTP\n");
                 local_collision = SSRC_RTPNEW;
             }
@@ -218,7 +218,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 
 
             if (!(*stm_src)->rtcp_from.addr) {
-                sockaddrdup(&(*stm_src)->rtcp_from, recfrom);
+                nms_sockaddr_dup(&(*stm_src)->rtcp_from, recfrom);
                 nms_printf(NMSML_DBG1, "new SSRC for RTCP\n");
                 local_collision = SSRC_RTCPNEW;
             }
@@ -231,19 +231,19 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
             if (!(*stm_src)->rtcp_to.addr) {
                 nms_addr nms_address;
 
-                if (sock_get_addr(recfrom->addr, &nms_address))
+                if (sockaddr_get_nms_addr(recfrom->addr, &nms_address))
                     return -nms_printf(NMSML_ERR,
                                "Invalid address for received packet\n");
 
                 // if ( rtcp_to_connect(*stm_src, recfrom, (rtp_sess->transport).RTCP.remote_port) < 0 )
                 if (rtcp_to_connect
                     (*stm_src, &nms_address,
-                     (rtp_sess->transport).RTCP.remote_port) < 0)
+                     (rtp_sess->transport).RTCP.sock.remote_port) < 0)
                     return -1;
             }
         }
 
-        if ((rtp_sess->transport.type == UDP) && sockaddrcmp
+        if ((rtp_sess->transport.type == UDP) && sockaddr_cmp
             (sock.addr, sock.addr_len, recfrom->addr,
              recfrom->addr_len)) {
             nms_printf(NMSML_ERR,
@@ -262,7 +262,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
 
             else {
                 while (stm_conf
-                       && sockaddrcmp(stm_conf->transaddr.addr,
+                       && sockaddr_cmp(stm_conf->transaddr.addr,
                               stm_conf->transaddr.
                               addr_len, recfrom->addr,
                               recfrom->addr_len))
@@ -314,7 +314,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
                     pthread_mutex_unlock(&rtp_sess->syn);
 
                     /* New entry in SSRC rtp_conflict queue */
-                    sockaddrdup(&stm_conf->transaddr,
+                    nms_sockaddr_dup(&stm_conf->transaddr,
                             &sock);
                     stm_conf->time = time(NULL);
                     stm_conf->next = rtp_sess->conf_queue;

@@ -182,7 +182,7 @@ int full_msg_rcvd(rtsp_thread * rtsp_th)
     size_t body_len;    
 
     // is there an interleaved RTP/RTCP packet?
-    if ((rtsp_th->transport.type == TCP && rtsp_th->interleaved) && 
+    if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) && 
         in_buffer->size > 4 && in_buffer->data[0] == '$') {
 
         if ((body_len = ntohs(*((uint16 *) &(in_buffer->data[2]))) + 4)
@@ -267,7 +267,7 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 
     memset(buffer, '\0', RTSP_BUFFERSIZE);
 
-    switch(rtsp_th->transport.type) {
+    switch(rtsp_th->transport.sock.socktype) {
     case TCP:
         n = nmst_read(&rtsp_th->transport, buffer, RTSP_BUFFERSIZE, NULL);
         break;
@@ -288,7 +288,7 @@ int rtsp_recv(rtsp_thread * rtsp_th)
         nms_printf(NMSML_ERR, "Could not read from RTSP socket\n");
         return n;
     }
-    if (rtsp_th->transport.type == TCP || (rtsp_th->transport.type == SCTP && m==0)) {
+    if (rtsp_th->transport.sock.socktype == TCP || (rtsp_th->transport.sock.socktype == SCTP && m==0)) {
         if (((rtsp_th->in_buffer).size) == 0) {
             if (((rtsp_th->in_buffer).data = 
                  (char *) calloc(1, n + 1)) == NULL)
@@ -308,7 +308,7 @@ int rtsp_recv(rtsp_thread * rtsp_th)
     }
     (rtsp_th->in_buffer).size += n;
     (rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size] = '\0';
-    } else /* if (rtsp_th->transport.type == SCTP && m!=0) */ {
+    } else /* if (rtsp_th->transport.sock.socktype == SCTP && m!=0) */ {
 #ifdef HAVE_LIBSCTP
         for (p = rtsp_th->interleaved; p && !((p->proto.sctp.rtp_st == m)
             || (p->proto.sctp.rtcp_st == m)); p = p->next);
@@ -382,13 +382,13 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
             if (curr_rtsp_m == NULL) {
                 /* first medium */
                 if ((curr_rtsp_s->media_queue = curr_rtsp_m =
-                     rtsp_med_create(rtsp_th->transport.fd)) ==
+                     rtsp_med_create(rtsp_th->transport.sock.fd)) ==
                     NULL)
                     return 1;
             } else if (rtsp_th->type == CONTAINER) {
                 /* media in the same session */
                 if ((curr_rtsp_m->next =
-                     rtsp_med_create(rtsp_th->transport.fd)) ==
+                     rtsp_med_create(rtsp_th->transport.sock.fd)) ==
                     NULL)
                     return 1;
                 curr_rtsp_m->rtp_sess->next =
@@ -401,7 +401,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                     return 1;
                 curr_rtsp_s = curr_rtsp_s->next;
                 if ((curr_rtsp_s->media_queue =
-                     rtsp_med_create(rtsp_th->transport.fd)) ==
+                     rtsp_med_create(rtsp_th->transport.sock.fd)) ==
                     NULL)
                     return 1;
                 curr_rtsp_m->rtp_sess->next =
