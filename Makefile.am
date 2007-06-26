@@ -24,7 +24,8 @@ libinclude_HEADERS = 	include/nemesi/bufferpool.h\
 			include/nemesi/methods.h\
 			include/nemesi/version.h\
 			include/nemesi/rtcp.h\
-			include/nemesi/rtp.h
+			include/nemesi/rtp.h\
+			include/nemesi/transport.h
 
 libnemesi_la_SOURCES =
 
