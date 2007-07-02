@@ -366,6 +366,8 @@ int init_state(rtsp_thread * rtsp_th, short event)
  */
 int ready_state(rtsp_thread * rtsp_th, short event)
 {
+    int last_response_id;
+
     switch (event) {
     case RTSP_PLAY_RESPONSE:
         if (handle_play_response(rtsp_th))
@@ -389,22 +391,23 @@ int ready_state(rtsp_thread * rtsp_th, short event)
         if (handle_teardown_response(rtsp_th))
             return 1;
         // if (get_curr_sess(rtsp_th, NULL, NULL)) {
-        if (!get_curr_sess(GCS_NXT_MED)) {
+        //if (!get_curr_sess(GCS_NXT_MED)) {
             /* Nessun altra TEARDOWN da inviare */
             rtsp_th->status = INIT;
+            last_response_id = rtsp_th->response_id;
             rtsp_reinit(rtsp_th);
+            rtsp_th->response_id = last_response_id;
             rtsp_unbusy(rtsp_th);
-            // rtsp_th->busy = 0;
             nms_printf(NMSML_NORM,
                    "----- All Connections closed -----\n");
             /* Inizializza a NULL le variabili statiche interne */
             // get_curr_sess(NULL, NULL, NULL);
             get_curr_sess(GCS_UNINIT);
             break;
-        }
+      /*  }
         if (send_teardown_request(rtsp_th))
             return 1;
-        break;
+        break;*/
     default:
         nms_printf(NMSML_ERR,
                "Could not handle method in READY state\n");
@@ -423,6 +426,8 @@ int ready_state(rtsp_thread * rtsp_th, short event)
  */
 int playing_state(rtsp_thread * rtsp_th, short event)
 {
+    int last_response_id;
+
     switch (event) {
     case RTSP_PAUSE_RESPONSE:
         if (handle_pause_response(rtsp_th))
@@ -446,10 +451,12 @@ int playing_state(rtsp_thread * rtsp_th, short event)
         if (handle_teardown_response(rtsp_th))
             return 1;
         // if (get_curr_sess(rtsp_th, NULL, NULL)) {
-        if (!get_curr_sess(GCS_NXT_MED)) {
+        //if (!get_curr_sess(GCS_NXT_MED)) {
             /* Nessun altra TEARDOWN da inviare */
             rtsp_th->status = INIT;
+            last_response_id = rtsp_th->response_id;
             rtsp_reinit(rtsp_th);
+            rtsp_th->response_id = last_response_id;
             rtsp_unbusy(rtsp_th);
             // rtsp_th->busy = 0;
             nms_printf(NMSML_NORM,
@@ -458,10 +465,10 @@ int playing_state(rtsp_thread * rtsp_th, short event)
             // get_curr_sess(NULL, NULL, NULL);
             get_curr_sess(GCS_UNINIT);
             break;
-        }
+        /*}
         if (send_teardown_request(rtsp_th))
             return 1;
-        break;
+        break;*/
     default:
         nms_printf(NMSML_ERR,
                "Could not handle method in PLAYING state\n");

@@ -412,8 +412,8 @@ int send_teardown_request(rtsp_thread * rtsp_th)
         return 1;
 
     if (rtsp_sess->content_base != NULL)
-        sprintf(b, "%s %s/%s %s" RTSP_EL, CLOSE_TKN,
-            rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
+        sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN,
+            rtsp_sess->content_base, RTSP_VER);
     else
         sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN, rtsp_med->filename,
             RTSP_VER);
