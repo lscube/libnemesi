@@ -102,11 +102,11 @@ int main(int argc, char **argv)
     }
 
     rtsp_play(ctl, 0.0, 0.0);
+    rtsp_wait(ctl);
 
     fprintf(stderr, "\nDumping...");
 
     rtp_th = rtsp_get_rtp_th(ctl);
-
     while (!rtp_fill_buffers(rtp_th))    // Till there is something to parse
     {            // Foreach ssrc active
         for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
@@ -150,6 +150,7 @@ int main(int argc, char **argv)
     fprintf(stderr, " Complete\n");
 
     rtsp_close(ctl);
+    rtsp_wait(ctl);
 
     rtsp_uninit(ctl);
 

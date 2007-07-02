@@ -48,5 +48,6 @@ int rtp_thread_create(rtp_thread * rtp_th)
                                   fmt->pt);
     }
 
+    rtp_th->run = 1;
     return 0;
 }

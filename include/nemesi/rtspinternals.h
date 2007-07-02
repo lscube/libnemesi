@@ -208,7 +208,7 @@ int set_rtsp_sessions(rtsp_thread *, int, char *, char *);
 int set_rtsp_media(rtsp_thread *);
 rtsp_session *rtsp_sess_dup(rtsp_session *);
 rtsp_session *rtsp_sess_create(char *, char *);
-rtsp_medium *rtsp_med_create(int);
+rtsp_medium *rtsp_med_create(rtsp_thread *);
 int remove_pkt(rtsp_thread *);
 
 int init_state(rtsp_thread *, short);

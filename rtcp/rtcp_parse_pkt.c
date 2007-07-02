@@ -40,7 +40,7 @@ int rtcp_parse_pkt(rtp_ssrc * stm_src, rtcp_pkt * pkt, int len)
             rtcp_parse_rr(pkt);
             break;
         case RTCP_BYE:
-            rtcp_parse_bye(pkt);
+            rtcp_parse_bye(stm_src, pkt);
             break;
         case RTCP_APP:
             rtcp_parse_app(pkt);
