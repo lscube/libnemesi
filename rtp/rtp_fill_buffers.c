@@ -23,7 +23,8 @@
 #include <nemesi/rtp.h>
 
 /**
- * Waits for rtp thread to be ready
+ * Waits for rtp thread to be ready and reports if the stream reached the end
+ * @return 0 if the stream isn't at the end, 1 if the stream reached the end
  */
 int rtp_fill_buffers(rtp_thread * rtp_th)
 {
