@@ -13,7 +13,7 @@ m4_define([nemesi_lt_current],
 m4_define([nemesi_lt_revision], [nemesi_interface_age])
 m4_define([nemesi_lt_age], [m4_eval(nemesi_binary_age - nemesi_interface_age)])
 
-AC_INIT(libnemesi, [nemesi_version], [http://streaming.polito.it/tracker/nemesi/newticket])
+AC_INIT(libnemesi, [nemesi_version], [https://live.polito.it/roundup/lscube])
 
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_SYSTEM
@@ -25,10 +25,6 @@ AM_CONFIG_HEADER(config.h)
 AC_ARG_ENABLE(debug,
 [  --enable-debug          enable gcc dubugging flags [[default=no]]],,
 	enable_debug="no")
-AC_ARG_ENABLE(efence,
-[  --enable-efence         link against Electric Fence library to debug memory usage
-                          (this will involve --enable-debug) [[default=no]]],,
-	enable_efence="no")
 AC_ARG_ENABLE(errors,
 [  --enable-errors         make gcc warnings behave like errors: none, normal, pedantic [[default=none]]],,
 	enable_errors="none")
@@ -119,13 +115,6 @@ fi
 AC_SUBST(LIBM)
 AC_SUBST(EXTRA_FLAGS)
 
-AM_CONDITIONAL(NEMESI_EFENCE, [test "$enable_efence" = "yes"])
-if test "$enable_efence" = "yes"; then
-	AC_DEFINE(ENABLE_EFENCE, 1,[Debug enabled])
-	enable_debug=yes
-	efence_msg="   You chose to compile against Electric Fence lib"
-fi
-
 AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])
 if test "$enable_debug" = "yes"; then
 	CFLAGS="$CFLAGS -g -ggdb -Wall"
@@ -183,7 +172,6 @@ libnemesi has SCTP support ........ : $enable_sctp
 Byte order ..................... : this is a $BIGENDIAN machine
 
 $debug_msg
-$efence_msg
 
  'make' will now compile libnemesi and 'su -c make install' will install it.
  Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.
