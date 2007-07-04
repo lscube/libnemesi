@@ -116,30 +116,26 @@ int main(int argc, char **argv)
         for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
              ssrc; ssrc = rtp_next_active_ssrc(ssrc)) {
             if (!rtp_fill_buffer(ssrc, &fr, &conf)) {    // Parse the stream
-
-                if (outfd[fr.pt] ||    // Write it to a file
-                    sprintf(out, "%s.%d", base, fr.pt)
-                    && (outfd[fr.pt] = creat(out, 00644)) > 0) {
-                    if (write(outfd[fr.pt], fr.data, fr.len) < fr.len)
-                        return 1;
-                } else {
-                    return 1;
+                if (i == 200) {
+                    printf("RTP Data first byte: %d\n", fr.data[0]);
+                    i = -5;
                 }
             }
         }
 
         now = time(NULL);
-        if (now >= (before+5)) {
+        if (now >= (before+8)) {
             before = now;
-            rtsp_seek(ctl, 0, 0);
-            i = rtsp_wait(ctl);
+
+            i = rtsp_seek(ctl, 0, 0);
             printf("SEEK Result: %d\n", i);
+            i = rtsp_wait(ctl);
+            printf("SEEK Response: %d\n", i);
+
+            if (i != 200)
+                break;
         } 
     }
-
-    for (i = 0; i < 128; i++)
-        if (outfd[i])
-            close(outfd[i]);
 
     fprintf(stderr, " Complete\n");
 
