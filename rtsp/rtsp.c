@@ -588,8 +588,9 @@ int rtsp_seek(rtsp_ctrl * rtsp_ctl, double new_start, double new_end)
 
     got_error = rtsp_pause(rtsp_ctl);
     if (!got_error) {
-        rtsp_wait(rtsp_ctl);
-        got_error = rtsp_play(rtsp_ctl, new_start, new_end);
+        got_error = rtsp_wait(rtsp_ctl);
+        if (got_error == 200)
+            got_error = rtsp_play(rtsp_ctl, new_start, new_end);
     }
 
     return got_error;

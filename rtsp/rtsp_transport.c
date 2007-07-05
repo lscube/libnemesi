@@ -406,8 +406,9 @@ int set_transport_str(rtp_session * rtp_sess, char **str)
     return 0;
 }
 
-rtsp_medium *rtsp_med_create(int fd)
+rtsp_medium *rtsp_med_create(rtsp_thread * t)
 {
+    int fd = t->transport.sock.fd;
     rtsp_medium *rtsp_m;
     struct sockaddr_storage localaddr, peeraddr;
     nms_sockaddr local =
@@ -426,5 +427,6 @@ rtsp_medium *rtsp_med_create(int fd)
     if ((rtsp_m->rtp_sess = rtp_session_init(&local, &peer)) == NULL)
         return NULL;
 
+    rtsp_m->rtp_sess->owner = t;
     return rtsp_m;
 }

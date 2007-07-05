@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <time.h>
 
 #include <nemesi/rtsp.h>
 #include <nemesi/rtp.h>
@@ -44,6 +45,8 @@ int main(int argc, char **argv)
     rtp_buff conf;
     rtp_frame fr;
     nms_rtsp_hints rtsp_hints = { -1 };
+    time_t now, before;
+    
 
     if (argc < 2) {
         fprintf(stderr, "\tPlease specify at least an url.\n");
@@ -105,6 +108,7 @@ int main(int argc, char **argv)
     rtsp_wait(ctl);
 
     fprintf(stderr, "\nDumping...");
+    before = time(NULL);    
 
     rtp_th = rtsp_get_rtp_th(ctl);
     while (!rtp_fill_buffers(rtp_th))    // Till there is something to parse
@@ -112,40 +116,26 @@ int main(int argc, char **argv)
         for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
              ssrc; ssrc = rtp_next_active_ssrc(ssrc)) {
             if (!rtp_fill_buffer(ssrc, &fr, &conf)) {    // Parse the stream
-
-                if (outfd[fr.pt] ||    // Write it to a file
-                    sprintf(out, "%s.%d", base, fr.pt)
-                    && (outfd[fr.pt] = creat(out, 00644)) > 0) {
-                    if (write(outfd[fr.pt], fr.data, fr.len) < fr.len)
-                        return 1;
-                } else {
-                    return 1;
+                if (i == 200) {
+                    printf("RTP Data first byte: %d\n", fr.data[0]);
+                    i = -5;
                 }
             }
         }
 
-        switch (i++) {
-        case 0:
-            fprintf(stderr, ".");
-            break;
-        case 1:
-            fprintf(stderr, "o");
-            break;
-        case 2:
-            fprintf(stderr, "O");
-            break;
-        case 3:
-            fprintf(stderr, "o");
-            break;
-        default:
-            fprintf(stderr, "\r");
-            i = 0;
-        }
-    }
+        now = time(NULL);
+        if (now >= (before+8)) {
+            before = now;
 
-    for (i = 0; i < 128; i++)
-        if (outfd[i])
-            close(outfd[i]);
+            i = rtsp_seek(ctl, 0, 0);
+            printf("SEEK Result: %d\n", i);
+            i = rtsp_wait(ctl);
+            printf("SEEK Response: %d\n", i);
+
+            if (i != 200)
+                break;
+        } 
+    }
 
     fprintf(stderr, " Complete\n");
 

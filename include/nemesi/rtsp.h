@@ -168,6 +168,7 @@ int rtsp_stop(rtsp_ctrl *);
 
 //int rtsp_play(rtsp_ctrl *, char *);
 int rtsp_play(rtsp_ctrl *, double, double);
+int rtsp_seek(rtsp_ctrl *, double, double);
 
 int rtsp_uninit(rtsp_ctrl *);
 

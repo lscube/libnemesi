@@ -243,6 +243,7 @@ typedef int (*rtp_parser) (rtp_ssrc * stm_src, rtp_frame * fr,
 typedef int (*rtp_parser_uninit) (rtp_ssrc * stm_src, unsigned pt);
 
 typedef struct rtp_session_s {
+    void * owner; //!< rtsp_thread owning this rtp session
     uint32 local_ssrc;
     rtp_transport transport;
     struct rtp_session_stats sess_stats;
@@ -262,6 +263,8 @@ typedef struct rtp_session_s {
 } rtp_session;
 
 typedef struct {
+    int run;
+
     rtp_session *rtp_sess_head;
     // struct timeval startime;
     pthread_mutex_t syn;

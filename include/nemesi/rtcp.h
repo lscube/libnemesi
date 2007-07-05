@@ -166,7 +166,7 @@ int rtcp_parse_pkt(rtp_ssrc *, rtcp_pkt *, int);
 int rtcp_parse_sr(rtp_ssrc *, rtcp_pkt *);
 int rtcp_parse_sdes(rtp_ssrc *, rtcp_pkt *);
 int rtcp_parse_rr(rtcp_pkt *);
-int rtcp_parse_bye(rtcp_pkt *);
+int rtcp_parse_bye(rtp_ssrc *, rtcp_pkt *);
 int rtcp_parse_app(rtcp_pkt *);
 
 int rtcp_set_ssrc_sdes(rtp_ssrc *, rtcp_sdes_item_t *);

@@ -379,13 +379,13 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
             if (curr_rtsp_m == NULL) {
                 /* first medium */
                 if ((curr_rtsp_s->media_queue = curr_rtsp_m =
-                     rtsp_med_create(rtsp_th->transport.sock.fd)) ==
+                     rtsp_med_create(rtsp_th)) ==
                     NULL)
                     return 1;
             } else if (rtsp_th->type == CONTAINER) {
                 /* media in the same session */
                 if ((curr_rtsp_m->next =
-                     rtsp_med_create(rtsp_th->transport.sock.fd)) ==
+                     rtsp_med_create(rtsp_th)) ==
                     NULL)
                     return 1;
                 curr_rtsp_m->rtp_sess->next =
@@ -398,7 +398,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                     return 1;
                 curr_rtsp_s = curr_rtsp_s->next;
                 if ((curr_rtsp_s->media_queue =
-                     rtsp_med_create(rtsp_th->transport.sock.fd)) ==
+                     rtsp_med_create(rtsp_th)) ==
                     NULL)
                     return 1;
                 curr_rtsp_m->rtp_sess->next =
