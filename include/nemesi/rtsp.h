@@ -32,6 +32,7 @@
 #include <nemesi/transport.h>
 #include <nemesi/rtp.h>
 #include <nemesi/sdp.h>
+#include <netembryo/rtsp_errors.h>
 
 /** @defgroup RTSP RTSP Public Interface
  *
@@ -157,10 +158,13 @@ typedef struct {
 RTSP_COMMON_IF
 } rtsp_ctrl;
 
+extern RTSP_Error const RTSP_Ready;
+extern RTSP_Error const RTSP_Reinitialized;
+
 rtsp_ctrl *rtsp_init(nms_rtsp_hints *);
 inline int rtsp_is_busy(rtsp_ctrl *);
 
-int rtsp_wait(rtsp_ctrl *);
+RTSP_Error rtsp_wait(rtsp_ctrl *);
 int rtsp_close(rtsp_ctrl *);
 int rtsp_open(rtsp_ctrl *, char *);
 int rtsp_pause(rtsp_ctrl *);

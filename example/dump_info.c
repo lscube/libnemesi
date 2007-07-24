@@ -33,7 +33,7 @@
 int main(int argc, char **argv)
 {
 
-    int opt, reply;
+    int opt;
     char *url, *out = "nemesi.dump";
     FILE *outfile = NULL;
     rtsp_ctrl *ctl;
@@ -41,6 +41,7 @@ int main(int argc, char **argv)
     rtsp_medium *med;
     nms_rtsp_hints rtsp_hints = { -1 };
     sdp_attr *attr;
+    RTSP_Error reply;
 
     if (argc < 2) {
         fprintf(stderr, "\tPlease specify at least an url.\n");
@@ -101,7 +102,7 @@ int main(int argc, char **argv)
        
     // you must call rtsp_wait after issuing any command
     reply = rtsp_wait(ctl);
-    printf("OPEN: Received reply from server: %d\n", reply);
+    printf("OPEN: Received reply from server: %s\n", reply.message.reply_str);
 
     // Get the session information
     sess = ctl->rtsp_queue;
@@ -149,7 +150,7 @@ int main(int argc, char **argv)
 
     rtsp_close(ctl);
     reply = rtsp_wait(ctl);
-    printf("CLOSE: Received reply from server: %d\n", reply);
+    printf("CLOSE: Received reply from server: %s\n", reply.message.reply_str);
 
     /*
      * Kill the threads, dealloc everything.

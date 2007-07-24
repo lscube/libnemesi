@@ -46,6 +46,7 @@ int main(int argc, char **argv)
     rtp_frame fr;
     nms_rtsp_hints rtsp_hints = { -1 };
     time_t now, before;
+    RTSP_Error reply;
     
 
     if (argc < 2) {
@@ -129,8 +130,8 @@ int main(int argc, char **argv)
 
             i = rtsp_seek(ctl, 0, 0);
             printf("SEEK Result: %d\n", i);
-            i = rtsp_wait(ctl);
-            printf("SEEK Response: %d\n", i);
+            reply = rtsp_wait(ctl);
+            printf("SEEK Response: %s\n", reply.message.reply_str);
 
             if (i != 200)
                 break;
