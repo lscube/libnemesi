@@ -38,6 +38,9 @@
                     return NULL; \
                 } while (0)
 
+RTSP_Error const RTSP_Ready = { {0, "Nemesi Library is in Initialized state"}, 0 };
+RTSP_Error const RTSP_Reinitialized = { {-1, "Nemesi Library has been reinitialized"}, 1 };
+
 /**
  * Initialized the library and starts a thread that handles both commands to send
  * to the server and responses received from the server.
@@ -220,10 +223,10 @@ quit_function:
  * to the rtsp main loop.
  * @param rtsp_ctl The control structure for which to wait.
  * @return The last response received from the server if the server is still alive. 
- *          0 If the library has just been initialized
- *         -1 If the library has been reinitialized (connection error, server went down, etc)
+ *          RTSP_Ready If the library has just been initialized
+ *          RTSP_Reinitialized If the library has been reinitialized (connection error, server went down, etc)
  */
-int rtsp_wait(rtsp_ctrl * rtsp_ctl)
+RTSP_Error rtsp_wait(rtsp_ctrl * rtsp_ctl)
 {
     rtsp_thread *rtsp_th = (rtsp_thread *) rtsp_ctl;
 
@@ -234,7 +237,12 @@ int rtsp_wait(rtsp_ctrl * rtsp_ctl)
 
     pthread_mutex_unlock(&(rtsp_th->comm_mutex));
 
-    return rtsp_ctl->response_id;
+    if (rtsp_ctl->response_id == 0)
+        return RTSP_Ready;
+    else if (rtsp_ctl->response_id == -1)
+        return RTSP_Reinitialized;
+    else
+        return *get_RTSP_Error(rtsp_ctl->response_id);
 }
 
 /**
@@ -584,16 +592,19 @@ quit_function:
  */
 int rtsp_seek(rtsp_ctrl * rtsp_ctl, double new_start, double new_end)
 {
-    int got_error = 0;
+    int lib_error;
+    RTSP_Error rtsp_error;
 
-    got_error = rtsp_pause(rtsp_ctl);
-    if (!got_error) {
-        got_error = rtsp_wait(rtsp_ctl);
-        if (got_error == 200)
-            got_error = rtsp_play(rtsp_ctl, new_start, new_end);
+    lib_error = rtsp_pause(rtsp_ctl);
+    if (!lib_error) {
+        rtsp_error = rtsp_wait(rtsp_ctl);
+        if (rtsp_error.message.reply_code == 200)
+            lib_error = rtsp_play(rtsp_ctl, new_start, new_end);
+        else
+            lib_error = 1;
     }
 
-    return got_error;
+    return lib_error;
 }
 
 
