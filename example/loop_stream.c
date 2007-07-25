@@ -125,7 +125,7 @@ int main(int argc, char **argv)
         }
 
         now = time(NULL);
-        if (now >= (before+8)) {
+        if (now >= (before+4)) {
             before = now;
 
             i = rtsp_seek(ctl, 0, 0);
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
             reply = rtsp_wait(ctl);
             printf("SEEK Response: %s\n", reply.message.reply_str);
 
-            if (i != 200)
+            if (reply.message.reply_code != 200)
                 break;
         } 
     }
