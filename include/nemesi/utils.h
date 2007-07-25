@@ -45,9 +45,6 @@ int urltokenize(char *, char **, char **, char **);
 char *strstrcase(char *, const char *);
 int strncmpcase(const char *, const char *, size_t);
 int strcmpcase(const char *, const char *);
-#if !HAVE_STRDUP
-char *strdup(const char *s);
-#endif                /* !HAVE_STRDUP */
 uint32 random32(int);
 int timeval_subtract(struct timeval *, const struct timeval *,
              const struct timeval *);

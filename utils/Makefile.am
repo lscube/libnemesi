@@ -4,7 +4,6 @@ libnmsincludedir = $(libnmsdir)/include
 noinst_LTLIBRARIES = libutils.la
 
 libutils_la_SOURCES =	urltokenize.c \
-			strdup.c \
 			strstrcase.c \
 			strncmpcase.c \
 			strcmpcase.c \
@@ -16,6 +15,6 @@ libutils_la_SOURCES =	urltokenize.c \
 			uierror.c \
 			nmsprint.c \
 			nms_header.c \
-            transport.c
+			transport.c
 
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)
