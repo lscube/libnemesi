@@ -25,8 +25,6 @@
 
 #include "rtpparsers.h"
 
-static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
-
 /*! the parser could define an "unint function" of the type:
  * static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt);
  * and link this function to che corresponding pointer in 
@@ -34,9 +32,9 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
  * */
 
 #define RTP_PARSER(x) rtpparser rtp_parser_##x = { \
-    &served, \
+    &x##_served, \
     NULL, \
-    rtp_parse, \
+    x##_parse, \
     NULL \
 }
 
@@ -45,13 +43,11 @@ static int rtp_parse(rtp_ssrc *, rtp_frame *, rtp_buff *);
  * */
 
 #define RTP_PARSER_FULL(x) \
-    static int rtp_init_parser(rtp_session *rtp_sess, unsigned pt); \
-    static int rtp_uninit_parser(rtp_ssrc *stm_src, unsigned pt); \
     rtpparser rtp_parser_##x = {\
-        &served, \
-        rtp_init_parser, \
-        rtp_parse, \
-        rtp_uninit_parser \
+        &x##_served, \
+        x##_init_parser, \
+        x##_parse, \
+        x##_uninit_parser \
     }
 
 #endif                /*RTPPTFRAMER_H_ */

@@ -26,12 +26,10 @@
 
 #include "rtpparser.h"
 
-static rtpparser_info served = {
+static rtpparser_info mpv_served = {
     32,
     {"MPV", NULL}
 };
-
-RTP_PARSER(mpv);
 
 #define DEFAULT_MPV_DATA_FRAME 65535
 
@@ -91,7 +89,7 @@ typedef struct {
 #define RTP_MPV_TR(pkt)            (RTP_MPV_PKT(pkt)->tr_h << 8 | RTP_MPV_PKT(pkt)->tr_l)
 #endif
 
-static int rtp_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
+static int mpv_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
     rtp_mpv *mpv_priv = stm_src->privs[fr->pt];
     rtp_pkt *pkt;
@@ -162,3 +160,5 @@ static int rtp_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 
     return RTP_FILL_OK;
 }
+
+RTP_PARSER(mpv);

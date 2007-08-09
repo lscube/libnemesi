@@ -26,12 +26,11 @@
 
 #include "rtpparser.h"
 
-static rtpparser_info served = {
+static rtpparser_info mpa_served = {
     14,
     {"MPA", NULL}
 };
 
-RTP_PARSER(mpa);
 
 #define DEFAULT_MPA_DATA_FRAME 1024
 
@@ -101,111 +100,6 @@ typedef struct {
 #define RTP_MPA_DATA_LEN(pkt, pkt_size)    ((pkt && pkt_size) ? (RTP_PAYLOAD_SIZE(pkt, pkt_size)-4) : 0)
 #define RTP_MPA_FRAG_OFFSET(pkt)    ntohs(RTP_MPA_PKT(pkt)->frag_offset)
 
-// private functions
-static int mpa_sync(uint8 **, size_t * /*, mpa_frm * */ );
-static int mpa_decode_header(uint8 *, mpa_frm *);
-#ifdef ENABLE_DEBUG
-// debug function to diplay MPA header information
-static void mpa_info(mpa_frm *);
-#endif                // DEBUG
-
-static int rtp_uninit_parser(rtp_ssrc * stm_src, unsigned pt)
-{
-    rtp_mpa *mpa_priv = stm_src->privs[pt];
-
-    if (mpa_priv) {
-        nms_printf(NMSML_DBG2,
-               "[rtp_mpa] freeing private resources...\n");
-        free(mpa_priv->data);
-        free(mpa_priv);
-    }
-
-    return 0;
-}
-
-static int rtp_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
-{
-    rtp_mpa *mpa_priv = stm_src->privs[fr->pt];
-    rtp_pkt *pkt;
-    size_t pkt_len;        // size of RTP packet, rtp header included.
-    mpa_frm mpa;
-    uint8 *mpa_data;
-
-    if (!fr)
-        return RTP_IN_PRM_ERR;
-
-    // XXX should we check if payload/mime-type are compatible with parser?
-
-    if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
-        return RTP_BUFF_EMPTY;
-
-    // fr->timestamp = RTP_PKT_TS(pkt);
-
-    // discard pkt if it's fragmented and the first fragment was lost
-    while (RTP_MPA_PKT(pkt)->frag_offset) {
-        rtp_rm_pkt(stm_src);
-        if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
-            return RTP_BUFF_EMPTY;
-        else if (RTP_PKT_PT(pkt) != fr->pt)
-            return RTP_PARSE_ERROR;
-    }
-
-    mpa_data = RTP_MPA_PKT(pkt)->data;
-
-    nms_printf(NMSML_DBG3, "--- fr->len: %d-%d\n", pkt_len,
-           RTP_PAYLOAD_SIZE(pkt, pkt_len));
-    pkt_len = RTP_MPA_DATA_LEN(pkt, pkt_len);    // now pkt_len is only the payload len (excluded mpa subheader)
-    nms_printf(NMSML_DBG3, "--- fr->len: %d\n", pkt_len);
-    if (mpa_sync(&mpa_data, &pkt_len))
-        return RTP_PARSE_ERROR;
-
-    if (mpa_decode_header(mpa_data, &mpa))
-        return RTP_PARSE_ERROR;
-
-    /* XXX if the frame is not fragmented we could use directly the data contained in bufferpool 
-     * instead of memcpy the frame in a newly allocated space */
-    // init private struct if this is the first time we're called
-    if (!mpa_priv) {
-        nms_printf(NMSML_DBG3,
-               "[rtp_mpa] allocating new private struct...");
-        if (!
-            (stm_src->privs[fr->pt] = mpa_priv =
-             malloc(sizeof(rtp_mpa))))
-            return RTP_ERRALLOC;
-        mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
-        if (!(mpa_priv->data = malloc(mpa_priv->data_size)))
-            return RTP_ERRALLOC;
-        rtp_parser_set_uninit(stm_src->rtp_sess, fr->pt,
-                      rtp_uninit_parser);
-        nms_printf(NMSML_DBG3, "done\n");
-    } else if (mpa_priv->data_size < pkt_len) {
-        nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");
-        if ((mpa_priv->data = realloc(mpa_priv->data, mpa.frm_len)))
-            return RTP_ERRALLOC;
-        nms_printf(NMSML_DBG3, "done\n");
-    }
-    fr->data = mpa_priv->data;
-
-    for (fr->len = 0;
-         pkt && (fr->len < mpa.frm_len) &&
-         (fr->timestamp == RTP_PKT_TS(pkt));
-         fr->len += pkt_len,
-         rtp_rm_pkt(stm_src), (pkt =
-                   rtp_get_pkt(stm_src, &pkt_len)), pkt_len =
-         RTP_MPA_DATA_LEN(pkt, pkt_len)) {
-        // pkt consistency checks
-        if (RTP_MPA_FRAG_OFFSET(pkt) + pkt_len <= mpa_priv->data_size) {
-            nms_printf(NMSML_DBG3,
-                   "copying %d byte of data to offset: %d\n",
-                   pkt_len, RTP_MPA_FRAG_OFFSET(pkt));
-            memcpy(fr->data + RTP_MPA_FRAG_OFFSET(pkt), mpa_data,
-                   pkt_len);
-        }
-    }
-    nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
-
-    return RTP_FILL_OK;
-}
 
 // private functions
 static int mpa_sync(uint8 ** data, size_t * data_len /*, mpa_frm *mpa */ )
@@ -243,6 +137,46 @@ static int mpa_sync(uint8 ** data, size_t * data_len /*, mpa_frm *mpa */ )
 
     return (*data_len >= 4) ? 0 /*sync found */ : 1 /*sync not found */ ;
 }
+
+#ifdef ENABLE_DEBUG
+// debug function to diplay MPA header information
+static void mpa_info(mpa_frm * mpa)
+{
+    switch (mpa->id) {
+    case MPA_MPEG_1:
+        nms_printf(NMSML_DBG3, "[MPA] MPEG1\n");
+        break;
+    case MPA_MPEG_2:
+        nms_printf(NMSML_DBG3, "[MPA] MPEG2\n");
+        break;
+    case MPA_MPEG_2_5:
+        nms_printf(NMSML_DBG3, "[MPA] MPEG2.5\n");
+        break;
+    default:
+        nms_printf(NMSML_DBG3, "[MPA] MPEG reserved (bad)\n");
+        return;
+        break;
+    }
+    switch (mpa->layer) {
+    case MPA_LAYER_I:
+        nms_printf(NMSML_DBG3, "[MPA] Layer I\n");
+        break;
+    case MPA_LAYER_II:
+        nms_printf(NMSML_DBG3, "[MPA] Layer II\n");
+        break;
+    case MPA_LAYER_III:
+        nms_printf(NMSML_DBG3, "[MPA] Layer III\n");
+        break;
+    default:
+        nms_printf(NMSML_DBG3, "[MPA] Layer reserved (bad)\n");
+        return;
+        break;
+    }
+    nms_printf(NMSML_DBG3,
+           "[MPA] bitrate: %d; sample rate: %3.0f; pkt_len: %d\n",
+           mpa->bit_rate, mpa->sample_rate, mpa->frm_len);
+}
+#endif                // DEBUG
 
 static int mpa_decode_header(uint8 * buff_data, mpa_frm * mpa)
 {
@@ -331,42 +265,103 @@ static int mpa_decode_header(uint8 * buff_data, mpa_frm * mpa)
     return 0;        // count; /*return 4*/
 }
 
-#ifdef ENABLE_DEBUG
-// debug function to diplay MPA header information
-static void mpa_info(mpa_frm * mpa)
+
+static int mpa_uninit_parser(rtp_ssrc * stm_src, unsigned pt)
 {
-    switch (mpa->id) {
-    case MPA_MPEG_1:
-        nms_printf(NMSML_DBG3, "[MPA] MPEG1\n");
-        break;
-    case MPA_MPEG_2:
-        nms_printf(NMSML_DBG3, "[MPA] MPEG2\n");
-        break;
-    case MPA_MPEG_2_5:
-        nms_printf(NMSML_DBG3, "[MPA] MPEG2.5\n");
-        break;
-    default:
-        nms_printf(NMSML_DBG3, "[MPA] MPEG reserved (bad)\n");
-        return;
-        break;
+    rtp_mpa *mpa_priv = stm_src->privs[pt];
+
+    if (mpa_priv) {
+        nms_printf(NMSML_DBG2,
+               "[rtp_mpa] freeing private resources...\n");
+        free(mpa_priv->data);
+        free(mpa_priv);
     }
-    switch (mpa->layer) {
-    case MPA_LAYER_I:
-        nms_printf(NMSML_DBG3, "[MPA] Layer I\n");
-        break;
-    case MPA_LAYER_II:
-        nms_printf(NMSML_DBG3, "[MPA] Layer II\n");
-        break;
-    case MPA_LAYER_III:
-        nms_printf(NMSML_DBG3, "[MPA] Layer III\n");
-        break;
-    default:
-        nms_printf(NMSML_DBG3, "[MPA] Layer reserved (bad)\n");
-        return;
-        break;
-    }
-    nms_printf(NMSML_DBG3,
-           "[MPA] bitrate: %d; sample rate: %3.0f; pkt_len: %d\n",
-           mpa->bit_rate, mpa->sample_rate, mpa->frm_len);
+
+    return 0;
 }
-#endif                // DEBUG
+
+static int mpa_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
+{
+    rtp_mpa *mpa_priv = stm_src->privs[fr->pt];
+    rtp_pkt *pkt;
+    size_t pkt_len;        // size of RTP packet, rtp header included.
+    mpa_frm mpa;
+    uint8 *mpa_data;
+
+    if (!fr)
+        return RTP_IN_PRM_ERR;
+
+    // XXX should we check if payload/mime-type are compatible with parser?
+
+    if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
+        return RTP_BUFF_EMPTY;
+
+    // fr->timestamp = RTP_PKT_TS(pkt);
+
+    // discard pkt if it's fragmented and the first fragment was lost
+    while (RTP_MPA_PKT(pkt)->frag_offset) {
+        rtp_rm_pkt(stm_src);
+        if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
+            return RTP_BUFF_EMPTY;
+        else if (RTP_PKT_PT(pkt) != fr->pt)
+            return RTP_PARSE_ERROR;
+    }
+
+    mpa_data = RTP_MPA_PKT(pkt)->data;
+
+    nms_printf(NMSML_DBG3, "--- fr->len: %d-%d\n", pkt_len,
+           RTP_PAYLOAD_SIZE(pkt, pkt_len));
+    pkt_len = RTP_MPA_DATA_LEN(pkt, pkt_len);    // now pkt_len is only the payload len (excluded mpa subheader)
+    nms_printf(NMSML_DBG3, "--- fr->len: %d\n", pkt_len);
+    if (mpa_sync(&mpa_data, &pkt_len))
+        return RTP_PARSE_ERROR;
+
+    if (mpa_decode_header(mpa_data, &mpa))
+        return RTP_PARSE_ERROR;
+
+    /* XXX if the frame is not fragmented we could use directly the data contained in bufferpool 
+     * instead of memcpy the frame in a newly allocated space */
+    // init private struct if this is the first time we're called
+    if (!mpa_priv) {
+        nms_printf(NMSML_DBG3,
+               "[rtp_mpa] allocating new private struct...");
+        if (!
+            (stm_src->privs[fr->pt] = mpa_priv =
+             malloc(sizeof(rtp_mpa))))
+            return RTP_ERRALLOC;
+        mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
+        if (!(mpa_priv->data = malloc(mpa_priv->data_size)))
+            return RTP_ERRALLOC;
+        rtp_parser_set_uninit(stm_src->rtp_sess, fr->pt,
+                      mpa_uninit_parser);
+        nms_printf(NMSML_DBG3, "done\n");
+    } else if (mpa_priv->data_size < pkt_len) {
+        nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");
+        if ((mpa_priv->data = realloc(mpa_priv->data, mpa.frm_len)))
+            return RTP_ERRALLOC;
+        nms_printf(NMSML_DBG3, "done\n");
+    }
+    fr->data = mpa_priv->data;
+
+    for (fr->len = 0;
+         pkt && (fr->len < mpa.frm_len) &&
+         (fr->timestamp == RTP_PKT_TS(pkt));
+         fr->len += pkt_len,
+         rtp_rm_pkt(stm_src), (pkt =
+                   rtp_get_pkt(stm_src, &pkt_len)), pkt_len =
+         RTP_MPA_DATA_LEN(pkt, pkt_len)) {
+        // pkt consistency checks
+        if (RTP_MPA_FRAG_OFFSET(pkt) + pkt_len <= mpa_priv->data_size) {
+            nms_printf(NMSML_DBG3,
+                   "copying %d byte of data to offset: %d\n",
+                   pkt_len, RTP_MPA_FRAG_OFFSET(pkt));
+            memcpy(fr->data + RTP_MPA_FRAG_OFFSET(pkt), mpa_data,
+                   pkt_len);
+        }
+    }
+    nms_printf(NMSML_DBG3, "fr->len: %d\n", fr->len);
+
+    return RTP_FILL_OK;
+}
+
+RTP_PARSER(mpa);

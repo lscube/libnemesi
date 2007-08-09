@@ -26,7 +26,7 @@
 
 /**
  * @file rtp_vorbis.c
- * Vorbis depacketizer - draft 03
+ * Vorbis depacketizer - draft 06
  */
 
 /**
@@ -34,7 +34,7 @@
  * of rtp fragments and set the correct timings.
  */
 
-typedef struct vorbis_s {
+typedef struct {
     long offset;    //!< offset across an aggregate rtp packet
     int pkts;       //!< number of packets yet to process in the aggregate
     char *buf;      //!< constructed frame, fragments will be copied there 
@@ -48,12 +48,10 @@ typedef struct vorbis_s {
     long curr_bs;               //!< Internal vorbis data
 } rtp_vorbis;
 
-static rtpparser_info served = {
+static rtpparser_info vorbis_served = {
     -1,
     {"audio/vorbis", NULL}
 };
-
-RTP_PARSER_FULL(vorbis);
 
 //helpers
 static int rtp_ilog(unsigned int v)
@@ -416,7 +414,7 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
 
 
 
-static int rtp_init_parser(rtp_session * rtp_sess, unsigned pt)
+static int vorbis_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
     rtp_vorbis *vorb = malloc(sizeof(rtp_vorbis));
 
@@ -436,7 +434,7 @@ static int rtp_init_parser(rtp_session * rtp_sess, unsigned pt)
     return 0;
 }
 
-int rtp_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
+int vorbis_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 {
 
     rtp_vorbis *vorb = ssrc->privs[pt];
@@ -461,7 +459,7 @@ int rtp_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
  * or by fetching more than a single rtp packet
  */
 
-static int rtp_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
+static int vorbis_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
     size_t len;
@@ -497,3 +495,5 @@ static int rtp_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     // keep parsing the current rtp packet
     return pack_parse(vorb, pkt, fr, config, ssrc);
 }
+
+RTP_PARSER_FULL(vorbis);
