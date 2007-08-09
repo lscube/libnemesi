@@ -298,10 +298,6 @@ static int mpa_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
         return RTP_BUFF_EMPTY;
 
-    fr->timestamp = RTP_PKT_TS(pkt);
-    //XXX BOGUS!
-    fr->time_sec = (double)fr->timestamp / 90000;
-
     // discard pkt if it's fragmented and the first fragment was lost
     while (RTP_MPA_PKT(pkt)->frag_offset) {
         rtp_rm_pkt(stm_src);
