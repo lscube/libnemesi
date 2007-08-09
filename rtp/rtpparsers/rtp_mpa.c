@@ -282,7 +282,7 @@ static int mpa_uninit_parser(rtp_ssrc * stm_src, unsigned pt)
 
 static int mpa_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
-    rtp_mpa *mpa_priv = stm_src->privs[fr->pt];
+    rtp_mpa *mpa_priv;
     rtp_pkt *pkt;
     size_t pkt_len;        // size of RTP packet, rtp header included.
     mpa_frm mpa;
@@ -291,12 +291,16 @@ static int mpa_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     if (!fr)
         return RTP_IN_PRM_ERR;
 
+    mpa_priv = stm_src->privs[fr->pt];
+
     // XXX should we check if payload/mime-type are compatible with parser?
 
     if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
         return RTP_BUFF_EMPTY;
 
-    // fr->timestamp = RTP_PKT_TS(pkt);
+    fr->timestamp = RTP_PKT_TS(pkt);
+    //XXX BOGUS!
+    fr->time_sec = (double)fr->timestamp / 90000;
 
     // discard pkt if it's fragmented and the first fragment was lost
     while (RTP_MPA_PKT(pkt)->frag_offset) {
