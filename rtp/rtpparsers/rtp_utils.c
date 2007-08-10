@@ -61,7 +61,7 @@ int nms_base64_decode(uint8_t * out, const char *in, int out_length)
             }
         } 
     }
-    
+
     return (dst - out);
 }
 
