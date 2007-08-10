@@ -25,16 +25,24 @@
 
 #include <nemesi/rtp.h>
 
+/**
+ * Depayloader info
+ */
 typedef struct {
-    int16 static_pt;    // -1 terminated list of served static payload numbers (MUST be <96)
-    char *mime[];        // NULL terminated list of served mime tipes in the form "type/subtype"
+    /// -1 terminated list of served static payload numbers (MUST be <96)
+    int16 static_pt;
+    /// NULL terminated list of encoding names (usually the media subtype)"
+    char *mime[];
 } rtpparser_info;
 
+/**
+ * Depayloader class
+ */
 typedef struct {
-    rtpparser_info *served;
-    rtp_parser_init init;
-    rtp_parser parse;
-    rtp_parser_uninit uninit;
+    rtpparser_info *served;     //!< Depayloader info
+    rtp_parser_init init;       //!< Optional initialization
+    rtp_parser parse;           //!< rtp parse/depayload function
+    rtp_parser_uninit uninit;   //!< Optional deinitialization
 } rtpparser;
 
 #endif                /* RTPFRAMERS_H_ */
