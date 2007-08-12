@@ -22,6 +22,16 @@
 
 #include <nemesi/rtp.h>
 
+/**
+ *  fills the frame with depacketized data (full frame or sample group) and 
+ *  provides optional extradata if available. The structs MUST be empty and
+ *  the data delivered MUST not be freed.
+ *  @param stm_src an active ssrc
+ *  @param fr an empty frame structure
+ *  @param config an empty buffer structure
+ *  @return RTP_FILL_OK on success
+ */
+
 int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
