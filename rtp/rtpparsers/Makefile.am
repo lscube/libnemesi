@@ -16,6 +16,9 @@ librtpparsers_la_SOURCES =	\
 				rtp_mpa.c \
 				rtp_mpv.c \
 				rtp_utils.c \
-				rtp_vorbis.c
+				rtp_h264.c
+# pending update
+#	rtp_vorbis
+#	rtp_theora
 
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

@@ -27,10 +27,12 @@
 
 extern rtpparser rtp_parser_mpa;
 extern rtpparser rtp_parser_mpv;
+extern rtpparser rtp_parser_h264;
 
 rtpparser *rtpparsers[] = {
     &rtp_parser_mpa,
     &rtp_parser_mpv,
+    &rtp_parser_h264,
     NULL
 };
 
@@ -80,16 +82,12 @@ void rtp_parsers_init(void)
     memset(rtp_parsers_inits, 0, sizeof(rtp_parsers_inits));
 
     for (i = 0; rtpparsers[i]; i++) {
-        if (rtpparsers[i]->served->static_pt < 96) {
-            rtp_parsers[rtpparsers[i]->served->static_pt] =
-                rtpparsers[i]->parse;
-            rtp_parsers_inits[rtpparsers[i]->served->static_pt] =
-                rtpparsers[i]->init;
-            nms_printf(NMSML_DBG1, "Added rtp parser for pt %d\n",
-                   rtpparsers[i]->served->static_pt);
-        } else
-            nms_printf(NMSML_ERR,
-                   "rtp framer could not serve %d (>=96) payload as static... rejected\n");
+        int pt = rtpparsers[i]->served->static_pt;
+        if (pt < 96 && pt != -1) {
+            rtp_parsers[pt] = rtpparsers[i]->parse;
+            rtp_parsers_inits[pt] = rtpparsers[i]->init;
+            nms_printf(NMSML_DBG1, "Added rtp parser for pt %d\n", pt);
+        }
     }
 }
 
@@ -99,7 +97,8 @@ int rtp_parser_reg(rtp_session * rtp_sess, int16 pt, char *mime)
 
     if (pt < 96) {
         nms_printf(NMSML_ERR,
-               "cannot dinamically register an rtp parser for static payload type (%d<96)\n");
+            "cannot dinamically register an rtp parser for static payload type"
+            " (%d<96)\n");
         return RTP_REG_STATIC;
     }
 
