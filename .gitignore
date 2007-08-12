@@ -17,6 +17,7 @@ config/*
 configure
 example/dump_info
 example/dump_stream
+example/loop_stream
 libnemesi.pc
 libnemesi.pc.in
 libtool
