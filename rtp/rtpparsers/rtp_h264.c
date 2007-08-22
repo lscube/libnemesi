@@ -158,7 +158,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
     buf = RTP_PKT_DATA(pkt);
-    type = (nal & 0x1f);
+    type = (buf[0] & 0x1f);
     len = RTP_PAYLOAD_SIZE(pkt, len);
 
     if (type >= 1 && type <= 23) type = 1; // single packet
