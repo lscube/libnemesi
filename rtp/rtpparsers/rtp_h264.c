@@ -171,6 +171,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
             realloc(priv->data, sizeof(start_sequence)+len);
         memcpy(fr->data, start_sequence, sizeof(start_sequence));
         memcpy(fr->data+sizeof(start_sequence), buf, len);
+        fr->len = sizeof(start_sequence)+len;
         break;
     case 24:    // STAP-A (aggregate, output as whole or split it?)
 
