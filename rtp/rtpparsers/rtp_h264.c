@@ -150,7 +150,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
     size_t len;
-    rtp_h264 *priv = ssrc->privs[fr->pt];
+    rtp_h264 *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     uint8_t *buf;
     uint8_t nal, type;
     uint8_t start_sequence[]= {0, 0, 1};
