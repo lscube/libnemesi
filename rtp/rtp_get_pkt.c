@@ -22,6 +22,13 @@
 
 #include <nemesi/rtp.h>
 
+static int discard_pkt(rtp_ssrc * stm_src) {
+    pthread_mutex_unlock(&(stm_src->po.po_mutex));
+    rtp_rm_pkt(stm_src);
+    pthread_mutex_lock(&(stm_src->po.po_mutex));
+    return 0;
+}
+
 /*! \brief This function returns a pointer to next packet in the bufferpool for
  * given playout buffer.
  * WARNING: the pointer returned is the memory space of the slot inside buffer pool:
@@ -47,7 +54,7 @@ rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
                       stm_src->po.potail))->pt]
          &&
          /* always true - XXX be careful if bufferpool API changes -> */
-         !rtp_rm_pkt(stm_src));
+         !discard_pkt(stm_src));
     pthread_mutex_unlock(&(stm_src->po.po_mutex));
 
     if (len)

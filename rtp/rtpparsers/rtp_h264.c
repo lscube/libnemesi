@@ -141,6 +141,18 @@ static int h264_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
     return 0;
 }
 
+static rtp_pkt * h264_next_pkt(rtp_ssrc * ssrc, size_t * len, uint8_t ** buf)
+{
+        rtp_pkt * pkt;
+
+        rtp_rm_pkt(ssrc);
+        pkt = rtp_get_pkt(ssrc, len);
+        *len = RTP_PAYLOAD_SIZE(pkt, *len);
+        *buf = RTP_PKT_DATA(pkt);
+
+        return pkt;
+}
+
 /**
  * it should return a h264 frame either by unpacking an aggregate
  * or by fetching more than a single rtp packet
@@ -152,7 +164,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     size_t len;
     rtp_h264 *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     uint8_t *buf;
-    uint8_t nal, type;
+    uint8_t type;
     uint8_t start_sequence[]= {0, 0, 1};
 
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
@@ -184,9 +196,8 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     case 28:    // FU-A (fragmented nal, output frags or aggregate it) 
         for (fr->len = 0;
          pkt && (fr->timestamp == RTP_PKT_TS(pkt));
-         rtp_rm_pkt(ssrc), (pkt = rtp_get_pkt(ssrc, &len)),
-         len = RTP_PAYLOAD_SIZE(pkt, len),
-         buf = RTP_PKT_DATA(pkt)){
+         pkt = h264_next_pkt(ssrc, &len, &buf))
+        {
             uint8_t fu_indicator = *buf++;  // read the fu_indicator
             uint8_t fu_header = *buf++;     // read the fu_header.
             uint8_t start_bit = fu_header >> 7;
