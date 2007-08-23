@@ -23,9 +23,27 @@
 #include <nemesi/rtp.h>
 
 static int discard_pkt(rtp_ssrc * stm_src) {
-    pthread_mutex_unlock(&(stm_src->po.po_mutex));
-    rtp_rm_pkt(stm_src);
-    pthread_mutex_lock(&(stm_src->po.po_mutex));
+
+    buffer_pool * bp = &(stm_src->rtp_sess->bp);
+    playout_buff * po = &(stm_src->po);
+    int index = stm_src->po.potail;
+
+    if (po->pobuff[index].next != -1)
+        po->pobuff[po->pobuff[index].next].prev =
+            po->pobuff[index].prev;
+    else
+        po->potail = po->pobuff[index].prev;
+    if (po->pobuff[index].prev != -1)
+        po->pobuff[po->pobuff[index].prev].next =
+            po->pobuff[index].next;
+    else
+        po->pohead = po->pobuff[index].next;
+
+    po->pocount--;
+
+    bpfree(bp, index);
+    pthread_cond_signal(&(bp->cond_full));
+
     return 0;
 }
 
