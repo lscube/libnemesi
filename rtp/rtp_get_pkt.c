@@ -22,62 +22,41 @@
 
 #include <nemesi/rtp.h>
 
-static int discard_pkt(rtp_ssrc * stm_src) {
-
-    buffer_pool * bp = &(stm_src->rtp_sess->bp);
-    playout_buff * po = &(stm_src->po);
-    int index = stm_src->po.potail;
-
-    if (po->pobuff[index].next != -1)
-        po->pobuff[po->pobuff[index].next].prev =
-            po->pobuff[index].prev;
-    else
-        po->potail = po->pobuff[index].prev;
-    if (po->pobuff[index].prev != -1)
-        po->pobuff[po->pobuff[index].prev].next =
-            po->pobuff[index].next;
-    else
-        po->pohead = po->pobuff[index].next;
-
-    po->pocount--;
-
-    bpfree(bp, index);
-    pthread_cond_signal(&(bp->cond_full));
-
-    return 0;
-}
-
 /*! \brief This function returns a pointer to next packet in the bufferpool for
  * given playout buffer.
- * WARNING: the pointer returned is the memory space of the slot inside buffer pool:
- * Once the packet is decoded it must be removed from rtp queue using \see rtp_rm_pkt.
- * WARNING: returned pointer looks at a memory space not locked by mutex. This because
+ * WARNING: the pointer returned is the memory space of the slot inside buffer
+ * pool:
+ * Once the packet is decoded it must be removed from rtp queue using \see 
+ * rtp_rm_pkt.
+ * WARNING: returned pointer looks at a memory space not locked by mutex.
+ * This because
  * we suppose that there is only one reader for each playout buffer.
  * We lock mutex only for potail var reading.
- * \param len this is a return parameter for lenght of pkt. NULL value is allowed:
+ * \param len this is a return parameter for lenght of pkt.
+ * NULL value is allowed:
  * in this case, we understand that you are not interested about this value.
- * shawill: this function put his dirty hands on bufferpool internals!!!
- * \return the pointer to next packet in buffer or NULL if playout buffer is empty.
+ * shawill: this function put its dirty hands on bufferpool internals!!!
+ * \return the pointer to next packet in buffer or NULL if playout buffer
+ * is empty.
  * */
 rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
 {
-    pthread_mutex_lock(&(stm_src->po.po_mutex));
+    int index;
     do {
-        if (stm_src->po.potail < 0) {
-            pthread_mutex_unlock(&(stm_src->po.po_mutex));
-            return NULL;
-        }
+        pthread_mutex_lock(&(stm_src->po.po_mutex));
+        index = stm_src->po.potail;
+        pthread_mutex_unlock(&(stm_src->po.po_mutex));
+
+        if (index < 0) return NULL;
     } while (!stm_src->rtp_sess->
          ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) +
-                      stm_src->po.potail))->pt]
+                      index))->pt]
          &&
          /* always true - XXX be careful if bufferpool API changes -> */
-         !discard_pkt(stm_src));
-    pthread_mutex_unlock(&(stm_src->po.po_mutex));
+         !rtp_rm_pkt(stm_src));
 
     if (len)
-        *len = (stm_src->po.pobuff[stm_src->po.potail]).pktlen;
-//      pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
+        *len = (stm_src->po.pobuff[index]).pktlen;
 
-    return (rtp_pkt *) (*(stm_src->po.bufferpool) + stm_src->po.potail);
+    return (rtp_pkt *) (*(stm_src->po.bufferpool) + index);
 }
