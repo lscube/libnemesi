@@ -147,10 +147,26 @@ static rtp_pkt * h264_next_pkt(rtp_ssrc * ssrc, size_t * len, uint8_t ** buf)
 
         rtp_rm_pkt(ssrc);
         pkt = rtp_get_pkt(ssrc, len);
-        *len = RTP_PAYLOAD_SIZE(pkt, *len);
-        *buf = RTP_PKT_DATA(pkt);
+        if (!pkt) {
+            *len = 0;
+            *buf = NULL;
+        }
+        else {
+            *len = RTP_PAYLOAD_SIZE(pkt, *len);
+            *buf = RTP_PKT_DATA(pkt);
+        }
 
         return pkt;
+}
+
+static int h264_check_if_packet_continues(rtp_pkt * pkt, rtp_frame * fr)
+{
+    if (!pkt) return 0;
+    
+    if (fr->timestamp == RTP_PKT_TS(pkt))
+        return 1;
+
+    return 0;
 }
 
 /**
@@ -195,12 +211,12 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     case 28:    // FU-A (fragmented nal, output frags or aggregate it) 
         for (fr->len = 0;
-         pkt && (fr->timestamp == RTP_PKT_TS(pkt));
+         h264_check_if_packet_continues(pkt, fr);
          pkt = h264_next_pkt(ssrc, &len, &buf))
         {
             uint8_t fu_indicator = *buf++;  // read the fu_indicator
             uint8_t fu_header = *buf++;     // read the fu_header.
-            uint8_t start_bit = fu_header >> 7;
+            uint8_t start_bit = (fu_header & 0x80) >> 7;
             uint8_t nal_type = (fu_header & 0x1f);
             uint8_t reconstructed_nal;
 
@@ -221,13 +237,14 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 memcpy(fr->data + sizeof(start_sequence) + 1, buf, len);
                 fr->len = sizeof(start_sequence) + 1 + len;
             } else {
-                priv->data = fr->data = 
+                fr->data = 
                     realloc (priv->data, fr->len + len);
-                memcpy(pkt->data + fr->len, buf, len);
+                priv->data = fr->data;
+                memcpy(fr->data + fr->len, buf, len);
                 fr->len += len;
             }
         }
-        if (!len) return RTP_BUFF_EMPTY;
+        if (!pkt) return RTP_BUFF_EMPTY;
         break;
     case 30:                   // undefined
     case 31:                   // undefined
