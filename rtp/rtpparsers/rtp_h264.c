@@ -39,6 +39,7 @@ typedef struct {
     long len;       //!< buf length, it's the sum of the fragments length
     uint8_t *conf;
     long conf_len;
+    long timestamp;
 } rtp_h264;
 
 static rtpparser_info h264_served = {
@@ -182,6 +183,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     uint8_t *buf;
     uint8_t type;
     uint8_t start_sequence[]= {0, 0, 1};
+    int err = RTP_FILL_OK;
 
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
@@ -193,7 +195,8 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     switch (type) {
     case 0: // undefined;
-        return RTP_PKT_UNKNOWN;
+        err = RTP_PKT_UNKNOWN;
+        break;
     case 1:
         priv->data = fr->data =
             realloc(priv->data, sizeof(start_sequence)+len);
@@ -207,17 +210,16 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     case 25:    // STAP-B
     case 26:    // MTAP-16
     case 27:    // MTAP-24
-        return RTP_PKT_UNKNOWN;
+        err = RTP_PKT_UNKNOWN;
+        break;
 
     case 28:    // FU-A (fragmented nal, output frags or aggregate it) 
-        for (fr->len = 0;
-         h264_check_if_packet_continues(pkt, fr);
-         pkt = h264_next_pkt(ssrc, &len, &buf))
         {
             uint8_t fu_indicator = *buf++;  // read the fu_indicator
-            uint8_t fu_header = *buf++;     // read the fu_header.
-            uint8_t start_bit = (fu_header & 0x80) >> 7;
-            uint8_t nal_type = (fu_header & 0x1f);
+            uint8_t fu_header    = *buf++;  // read the fu_header.
+            uint8_t start_bit    = (fu_header & 0x80) >> 7;
+            uint8_t end_bit      = (fu_header & 0x40) >> 6;
+            uint8_t nal_type     = (fu_header & 0x1f);
             uint8_t reconstructed_nal;
 
             len -= 2; // skip fu indicator and header
@@ -230,26 +232,34 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
             if(start_bit) {
                 // copy in the start sequence, and the reconstructed nal....
-                priv->data = fr->data = 
+                priv->data =
                     realloc (priv->data, sizeof(start_sequence) + 1 + len);
-                memcpy(fr->data, start_sequence, sizeof(start_sequence));
-                fr->data[sizeof(start_sequence)]= reconstructed_nal;
-                memcpy(fr->data + sizeof(start_sequence) + 1, buf, len);
-                fr->len = sizeof(start_sequence) + 1 + len;
+                memcpy(priv->data, start_sequence, sizeof(start_sequence));
+                priv->data[sizeof(start_sequence)]= reconstructed_nal;
+                memcpy(priv->data + sizeof(start_sequence) + 1, buf, len);
+                priv->len = sizeof(start_sequence) + 1 + len;
+                priv->timestamp = RTP_PKT_TS(pkt);
             } else {
-                fr->data = 
-                    realloc (priv->data, fr->len + len);
-                priv->data = fr->data;
-                memcpy(fr->data + fr->len, buf, len);
-                fr->len += len;
+                if (priv->timestamp != RTP_PKT_TS(pkt)) return RTP_PKT_UNKNOWN;
+                priv->data = 
+                    realloc (priv->data, priv->len + len);
+                memcpy(priv->data + priv->len, buf, len);
+                priv->len += len;
+            }
+        
+            if (!end_bit) {
+                err = RTP_BUFF_EMPTY;
+            } else {
+                fr->data = priv->data;
+                fr->len  = priv->len;
             }
         }
-        if (!pkt) return RTP_BUFF_EMPTY;
         break;
     case 30:                   // undefined
     case 31:                   // undefined
     default:
-        return RTP_PKT_UNKNOWN;
+        err = RTP_PKT_UNKNOWN;
+        break;
     }
 
     if (priv->conf_len) {
@@ -259,7 +269,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     rtp_rm_pkt(ssrc);
 
-    return RTP_FILL_OK;
+    return err;
 }
 
 RTP_PARSER_FULL(h264);
