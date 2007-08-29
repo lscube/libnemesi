@@ -13,6 +13,7 @@ librtp_la_SOURCES =	rtp_init.c \
 			rtp_get_next_ts.c \
 			rtp_get_n_pkt.c \
 			rtp_get_pkt.c \
+			rtp_get_fps.c \
 			rtp.c \
 			rtp_thread_create.c \
 			rtp_session_init.c \

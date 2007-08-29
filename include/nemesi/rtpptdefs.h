@@ -53,7 +53,9 @@ typedef struct {
         rtp_media_type type; /*!< Media Type: (A)udio, (V)ideo,            \
                                         (A)udio(/)(V)ideo,                 \
                                         (N)ot(/)(A)pplicable */            \
-        uint32 rate; /*!< Clock Rate - in Hertz*/                          \
+        unsigned rate; /*!< Clock Rate - in Hertz*/                        \
+        unsigned fps;   /*!< Current frame per second   */                 \
+        long prev_timestamp; \
         rtp_pt_attrs attrs; /*!< fmtp attribute strings from sdp           \
                                  description */                            \
         void *priv;         /*!< private data for rtp payload type */

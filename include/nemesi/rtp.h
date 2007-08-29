@@ -98,9 +98,10 @@ typedef struct {
 
 
 typedef struct {
-    uint32 len;
-    uint32 timestamp;
+    long len;
+    long timestamp;
     double time_sec;
+    int fps;
     uint8 pt;
     char *data;
 } rtp_frame;
@@ -322,6 +323,7 @@ inline int rtp_rm_pkt(rtp_ssrc *);
 int rtp_fill_buffer(rtp_ssrc *, rtp_frame *, rtp_buff *);
 double rtp_get_next_ts(rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_ssrc *);
+int rtp_get_fps(rtp_ssrc *);
 /**
  * @}
  */
