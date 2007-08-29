@@ -35,15 +35,19 @@
 int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
+    int err;
 
-    if (!(pkt = rtp_get_pkt(stm_src, NULL)))
+    if (!(pkt = rtp_get_pkt(stm_src, NULL))) {
+        usleep(0);
         return RTP_BUFF_EMPTY;
-
+    }
     fr->pt = RTP_PKT_PT(pkt);
     fr->timestamp = RTP_PKT_TS(pkt);
     fr->time_sec =
         ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
 
-    return stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config);
+    while ((err = stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config)) 
+            == EAGAIN);
+    return err;
 }
