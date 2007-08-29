@@ -248,7 +248,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
             }
         
             if (!end_bit) {
-                err = RTP_BUFF_EMPTY;
+                err = EAGAIN;
             } else {
                 fr->data = priv->data;
                 fr->len  = priv->len;
