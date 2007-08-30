@@ -31,7 +31,7 @@
 // definitions of known payload types specified in RFC 3551
 
 /* pt  0 */ static rtp_audio pcmu =
-{ "PCMU", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "PCMU", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 
 #if 0
     /* we do not define reserved, unassigned or dynamic pt,
@@ -43,37 +43,37 @@
 #endif
 /* pt  2 = res_au (reserved audio) */
 /* pt  3 */ static rtp_audio gsm =
-{ "GSM", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "GSM", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt  4 */ static rtp_audio g723 =
-{ "G723", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "G723", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt  5 */ static rtp_audio dvi4_8000 =
-{ "DVI4", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "DVI4", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt  6 */ static rtp_audio dvi4_16000 =
-{ "DVI4", AU, 16000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "DVI4", AU, 16000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt  7 */ static rtp_audio lpc =
-{ "LPC", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "LPC", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt  8 */ static rtp_audio pcma =
-{ "PCMA", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "PCMA", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt  9 */ static rtp_audio g722 =
-{ "G722", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "G722", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt 10 */ static rtp_audio l16_2 =
-{ "L16", AU, 44100, RTP_PT_ATTRS_INITIALIZER, NULL, 2 };
+{ "L16", AU, 44100, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 2 };
 /* pt 11 */ static rtp_audio l16_1 =
-{ "L16", AU, 44100, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "L16", AU, 44100, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt 12 */ static rtp_audio qcelp =
-{ "QCELP", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "QCELP", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt 13 */ static rtp_audio cn =
-{ "CN", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "CN", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt 14 */ static rtp_audio mpa =
-{ "MPA", AU, 90000, RTP_PT_ATTRS_INITIALIZER, NULL, 0 };
+{ "MPA", AU, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 0 };
 /* pt 15 */ static rtp_audio g728 =
-{ "G728", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "G728", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt 16 */ static rtp_audio dvi4_11025 =
-{ "DVI4", AU, 11025, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "DVI4", AU, 11025, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt 17 */ static rtp_audio dvi4_22050 =
-{ "DVI4", AU, 22050, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "DVI4", AU, 22050, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 /* pt 18 */ static rtp_audio g729 =
-{ "G729", AU, 8000, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
+{ "G729", AU, 8000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 1 };
 
 /* pt 19 = res_au (reserved audio) */
 #if 0
@@ -89,24 +89,24 @@
                                                 // pt 24, 27, 29, 30
 #endif
 /* pt 25 */ static rtp_video celb =
-{ "CelB", VI, 90000, RTP_PT_ATTRS_INITIALIZER, NULL };
+{ "CelB", VI, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL };
 /* pt 26 */ static rtp_video jpeg =
-{ "JPEG", VI, 90000, RTP_PT_ATTRS_INITIALIZER, NULL };
+{ "JPEG", VI, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL };
 
 /* pt 27 = unas_v (unassigned video) */
 /* pt 28 */ static rtp_video nv =
-{ "nv", VI, 90000, RTP_PT_ATTRS_INITIALIZER, NULL };
+{ "nv", VI, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL };
 
 /* pt 29 = unas_v (unassigned video) */
 /* pt 30 = unas_v (unassigned video) */
 /* pt 31 */ static rtp_video h261 =
-{ "H261", VI, 90000, RTP_PT_ATTRS_INITIALIZER, NULL };
+{ "H261", VI, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL };
 /* pt 32 */ static rtp_video mpv =
-{ "MPV", VI, 90000, RTP_PT_ATTRS_INITIALIZER, NULL };
+{ "MPV", VI, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL };
 /* pt 33 */ static rtp_audio_video mp2t =
-{ "MP2T", AV, 90000, RTP_PT_ATTRS_INITIALIZER, NULL, 0 };
+{ "MP2T", AV, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL, 0 };
 /* pt 34 */ static rtp_video h263 =
-{ "H263", VI, 90000, RTP_PT_ATTRS_INITIALIZER, NULL };
+{ "H263", VI, 90000, 0, 0, RTP_PT_ATTRS_INITIALIZER, NULL };
 
 #if 0
     /* we do not define reserved, unassigned or dynamic pt,
