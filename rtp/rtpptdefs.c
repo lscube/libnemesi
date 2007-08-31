@@ -247,7 +247,6 @@ rtp_pt *rtp_pt_new(rtp_media_type mtype)
         return NULL;
 
     new->type = mtype;
-
     return new;
 }
 
@@ -283,7 +282,7 @@ int rtp_dynpt_encname(rtp_pt * defs[], uint8 value, char *enc_name)
     }
 
     strncpy(defs[value]->name, enc_name, sizeof(defs[value]->name));
-    defs[value]->name[sizeof(defs[value]->name)] = '\0';    // safety end-of-string
+    defs[value]->name[sizeof(defs[value]->name)-1] = '\0';    // safety end-of-string
 
     return 0;
 }

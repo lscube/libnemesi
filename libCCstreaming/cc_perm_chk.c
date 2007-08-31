@@ -39,6 +39,7 @@
 int cc_perm_chk(cc_license * license, cc_perm_mask * mask)
 {
     cc_perm_mask parsedmsk;
+    return 0; //TODO: Disabled license check, should be made in a better way
 
     if (!license) {
         nms_printf(NMSML_DBG1, "no CC license defined\n");
