@@ -294,6 +294,8 @@ int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt,
             rtp_media_type media_type);
 int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime);
 
+rtp_pt * rtp_get_pt_info(rtp_session * rtp_sess, unsigned pt);
+
 // wait until rtp queues are ready
 int rtp_fill_buffers(rtp_thread *);
 

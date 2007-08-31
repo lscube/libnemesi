@@ -22,6 +22,11 @@
 
 #include <nemesi/rtp.h>
 
+rtp_pt * rtp_get_pt_info(rtp_session * rtp_sess, unsigned pt)
+{
+    return rtp_sess->ptdefs[pt];
+}
+
 int16 rtp_get_next_pt(rtp_ssrc * stm_src)
 {
     rtp_pkt *pkt;
