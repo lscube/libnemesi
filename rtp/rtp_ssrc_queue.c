@@ -167,7 +167,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
     struct sockaddr_storage sockaddr;
     nms_sockaddr sock =
         { (struct sockaddr *) &sockaddr, sizeof(sockaddr) };
-    uint8 local_collision;
+    int local_collision;
 
 
     local_collision = (rtp_sess->local_ssrc == ssrc) ? SSRC_COLLISION : 0;
