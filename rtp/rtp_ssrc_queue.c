@@ -177,8 +177,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
          !local_collision && *stm_src && ((*stm_src)->ssrc != ssrc);
          *stm_src = (*stm_src)->next);
     if (!*stm_src && !local_collision) {
-        /* nuovo SSRC */
-        /* inserimento in testa */
+        /* new SSRC */
         pthread_mutex_lock(&rtp_sess->syn);
         nms_printf(NMSML_DBG1, "new SSRC\n");
         if (rtp_ssrc_init(rtp_sess, stm_src, ssrc, recfrom, proto_type)
@@ -295,7 +294,6 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
                         return -nms_printf(NMSML_FATAL,
                                    "Cannot allocate memory!\n");
 
-                    /* inserimento in testa */
                     /* insert at the beginning of Stream Sources queue */
                     pthread_mutex_lock(&rtp_sess->syn);
                     if (rtp_ssrc_init
