@@ -45,9 +45,9 @@ int rtp_recv(rtp_session * rtp_sess)
         return 1;
     }
 
-    if ((n =
-         recvfrom(rtp_sess->transport.RTP.sock.fd, &((rtp_sess->bp).bufferpool[slot]),
-              BP_SLOT_SIZE, 0, server.addr, &server.addr_len)) == -1) {
+    if ((n = recvfrom(rtp_sess->transport.RTP.sock.fd,
+                      &((rtp_sess->bp).bufferpool[slot]),
+                      BP_SLOT_SIZE, 0, server.addr, &server.addr_len)) == -1) {
         switch (errno) {
         case EBADF:
             nms_printf(NMSML_ERR,
@@ -58,7 +58,8 @@ int rtp_recv(rtp_session * rtp_sess)
             break;
         case EINTR:
             nms_printf(NMSML_ERR,
-                   "RTP recvfrom: The receive was interrupted by delivery of a signal\n");
+                   "RTP recvfrom: The receive was interrupted by delivery"
+                   " of a signal\n");
             break;
         case EFAULT:
             nms_printf(NMSML_ERR,
@@ -84,8 +85,8 @@ int rtp_recv(rtp_session * rtp_sess)
         return 0;
     }
 
-    switch (rtp_ssrc_check
-        (rtp_sess, RTP_PKT_SSRC(pkt), &stm_src, &server, RTP)) {
+    switch (rtp_ssrc_check (rtp_sess, RTP_PKT_SSRC(pkt),
+                            &stm_src, &server, RTP)) {
     case SSRC_KNOWN:
         if (stm_src->done_seek) {
             stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt);
@@ -98,10 +99,9 @@ int rtp_recv(rtp_session * rtp_sess)
             || !(rate = (rtp_sess->ptdefs[pkt->pt]->rate)))
             rate = RTP_DEF_CLK_RATE;
 
-        transit =
-            (uint32) (((double) now.tv_sec +
+        transit = (uint32) (((double) now.tv_sec +
                    (double) now.tv_usec / 1000000.0) *
-                  (double) rate) - ntohl(pkt->time);
+                   (double) rate) - ntohl(pkt->time);
         delta = transit - stm_src->ssrc_stats.transit;
         stm_src->ssrc_stats.transit = transit;
         if (delta < 0)

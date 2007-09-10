@@ -124,6 +124,9 @@ int main(int argc, char **argv)
             case 'V':
                 fprintf(outfile, "\tTransport %s\n",
                         med->medium_info->transport);
+                fprintf(outfile, "\tMedia Type %s\n",
+                        (med->medium_info->media_type == 'A'?
+                            "Audio" : "Video"));
                 fprintf(outfile, "\tMedia format %s\n",
                         med->medium_info->fmts);
                 break;
