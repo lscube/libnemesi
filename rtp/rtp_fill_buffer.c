@@ -49,8 +49,8 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 
     fr->fps = stm_src->rtp_sess->ptdefs[fr->pt]->fps = 
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate/
-            abs(fr->timestamp - stm_src->rtp_sess->ptdefs[fr->pt]->prev_timestamp);
-    stm_src->rtp_sess->ptdefs[fr->pt]->prev_timestamp = fr->timestamp;
+            abs(fr->timestamp - stm_src->ssrc_stats.lastts);
+    stm_src->rtp_sess->ptdefs[fr->pt]->prev_timestamp = stm_src->ssrc_stats.lastts = fr->timestamp;
 
     while ((err = stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config)) 
             == EAGAIN);

@@ -598,8 +598,17 @@ int rtsp_seek(rtsp_ctrl * rtsp_ctl, double new_start, double new_end)
     lib_error = rtsp_pause(rtsp_ctl);
     if (!lib_error) {
         rtsp_error = rtsp_wait(rtsp_ctl);
-        if (rtsp_error.message.reply_code == 200)
+        if (rtsp_error.message.reply_code == 200) {
+            rtp_ssrc *ssrc = NULL;
+            for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(rtsp_ctl));
+                 ssrc;
+                 ssrc = rtp_next_active_ssrc(ssrc)) {
+                struct rtp_ssrc_stats *stats = &(ssrc->ssrc_stats);
+                stats->max_seq = 0;
+                stats->firstts = stats->lastts;
+            }
             lib_error = rtsp_play(rtsp_ctl, new_start, new_end);
+        }
         else
             lib_error = 1;
     }

@@ -177,7 +177,8 @@ struct rtp_ssrc_stats {
     struct timeval lastrtp; //!< last RTP pkt reception time 
     struct timeval lastsr;  //!< last RTCP SR pkt reception time 
     uint32 ntplastsr[2];    //!< last RTCP SR pkt NTP reception time 
-    uint32 firstts;         //!< first pkt timestamp 
+    uint32 firstts;         //!< first pkt timestamp
+    uint32 lastts;         //!< last pkt timestamp
     struct timeval firsttv; //!< first pkt timeval 
 };
 
