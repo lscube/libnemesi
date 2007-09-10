@@ -87,6 +87,11 @@ int rtp_recv(rtp_session * rtp_sess)
     switch (rtp_ssrc_check
         (rtp_sess, RTP_PKT_SSRC(pkt), &stm_src, &server, RTP)) {
     case SSRC_KNOWN:
+        if (stm_src->done_seek) {
+            stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt);
+            stm_src->ssrc_stats.firstts = RTP_PKT_TS(pkt);
+            stm_src->done_seek = 0;
+        }
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
 
         if (!rtp_sess->ptdefs[pkt->pt]

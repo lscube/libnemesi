@@ -114,7 +114,7 @@ AC_SUBST(EXTRA_FLAGS)
 
 AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])
 if test "$enable_debug" = "yes"; then
-	CFLAGS="$CFLAGS -g -ggdb -Wall"
+	CFLAGS="-O0 -g -ggdb -Wall"
 	AC_DEFINE(ENABLE_DEBUG, 1,[Debug enabled])
 	debug_msg="
    Debuging flags enabled: welcome developer!!!"

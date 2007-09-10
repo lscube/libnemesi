@@ -604,8 +604,7 @@ int rtsp_seek(rtsp_ctrl * rtsp_ctl, double new_start, double new_end)
                  ssrc;
                  ssrc = rtp_next_active_ssrc(ssrc)) {
                 struct rtp_ssrc_stats *stats = &(ssrc->ssrc_stats);
-                stats->max_seq = 0;
-                stats->firstts = stats->lastts;
+                ssrc->done_seek = 1;
             }
             lib_error = rtsp_play(rtsp_ctl, new_start, new_end);
         }

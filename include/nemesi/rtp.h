@@ -178,7 +178,7 @@ struct rtp_ssrc_stats {
     struct timeval lastsr;  //!< last RTCP SR pkt reception time 
     uint32 ntplastsr[2];    //!< last RTCP SR pkt NTP reception time 
     uint32 firstts;         //!< first pkt timestamp
-    uint32 lastts;         //!< last pkt timestamp
+    uint32 lastts;          //!< last pkt timestamp
     struct timeval firsttv; //!< first pkt timeval 
 };
 
@@ -225,6 +225,7 @@ typedef struct rtp_ssrc_s {
     void *privs[128];                   //!< I would like to keep rtp able to manage dynamic payload changes at its best.
     struct rtp_ssrc_s *next;            //!< next known SSRC
     struct rtp_ssrc_s *next_active;     //!< next active SSRC
+    int done_seek;
     void *park;                         //!< private pointer used by the application (e.g. to hold decoder state variables)
 } rtp_ssrc;
 

@@ -117,9 +117,9 @@ int main(int argc, char **argv)
         for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
              ssrc; ssrc = rtp_next_active_ssrc(ssrc)) {
             if (!rtp_fill_buffer(ssrc, &fr, &conf)) {    // Parse the stream
-                if (i == 200) {
+                if (reply.message.reply_code == 200) {
                     printf("RTP Data first byte: %d\n", fr.data[0]);
-                    i = -5;
+                    reply.message.reply_code = 0;
                 }
             }
         }
