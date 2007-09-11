@@ -118,7 +118,7 @@ int main(int argc, char **argv)
         for (attr = sess->info->attr_list;
              attr;
              attr = attr->next) {
-            fprintf(outfile, "\t* %s\n", attr->a);
+            fprintf(outfile, "\t* %s %s\n", attr->name, attr->value);
         }
 
         med = sess->media_queue;
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
             for (attr = med->medium_info->attr_list;
                  attr;
                  attr = attr->next) {
-                fprintf(outfile, "\t* %s\n", attr->a);
+                fprintf(outfile, "\t* %s %s\n", attr->name, attr->value);
             }
 
             med = med->next;

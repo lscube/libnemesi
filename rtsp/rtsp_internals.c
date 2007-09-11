@@ -433,21 +433,21 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
 
             for (sdp_attr = sdp_m->attr_list; sdp_attr;
                  sdp_attr = sdp_attr->next) {
-                if (!strncmpcase(sdp_attr->a, "control", 7)) {
-                    tkn = sdp_attr->a + 7;    // 7 == strlen("control")
+                if (!strncmpcase(sdp_attr->name, "control", 7)) {
+                    tkn = sdp_attr->value;
                     while ((*tkn == ' ') || (*tkn == ':'))    // skip spaces and colon
                         tkn++;
                     curr_rtsp_m->filename = tkn;
                 } else
-                    if (!strncmpcase(sdp_attr->a, "rtpmap", 6))
+                    if (!strncmpcase(sdp_attr->name, "rtpmap", 6))
                 {
                     /* We assume the string in the format:
                      * rtpmap:PaloadType EncodingName/ClockRate[/Channels] */
-                    tkn = sdp_attr->a + 6;    // 6 == strlen("rtpmap")
+                    tkn = sdp_attr->value;
                     // skip spaces and colon (we should not do this!)
                     while ((*tkn == ' ') || (*tkn == ':'))
                         tkn++;
-                    if (((pt = (uint8) strtoul(tkn, &tkn, 10)) >= 96)
+                    if (((pt = strtoul(tkn, &tkn, 10)) >= 96)
                         && (pt <= 127)) {
                         while (*tkn == ' ')
                             tkn++;
@@ -483,14 +483,14 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                             "non-dynamic payload type: not permitted\n");
                     }
                 } else
-                    if (!strncmpcase(sdp_attr->a, "fmtp", 4)) {
+                    if (!strncmpcase(sdp_attr->name, "fmtp", 4)) {
                     /* We assume the string in the format:
                      * fmtp:PaloadType <format specific parameters> */
-                    tkn = sdp_attr->a + 4;    // 4 == strlen("fmtp")
+                    tkn = sdp_attr->value;    // 4 == strlen("fmtp")
                     // skip spaces and colon (we should not do this!)
                     while ((*tkn == ' ') || (*tkn == ':'))
                         tkn++;
-                    if ((pt = (uint8) strtoul(tkn, &tkn, 10)) <= 127) {
+                    if ((pt = strtoul(tkn, &tkn, 10)) <= 127) {
                         while (*tkn == ' ')
                             tkn++;
                         rtp_pt_attr_add(curr_rtsp_m->rtp_sess->ptdefs, pt, tkn);
@@ -500,11 +500,14 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                             "Warning: fmtp attribute is trying to set an"
                             "out of bounds payload type: not permitted\n");
                     }
-                } else if (!strncmpcase(sdp_attr->a, "med", 3)) {    // dirty keyword from old fenice used for dinamic payload change
+                /* dirty keyword from old fenice used for dinamic
+                 * payload change - TO BE REMOVED
+                 */
+                } else if (!strncmpcase(sdp_attr->name, "med", 3)) {
                     sdp_medium_info m_info;
                     /* We assume the string in the format:
                      * med:sdp-like m= field */
-                    tkn = sdp_attr->a + 3;    // 3 == strlen("med")
+                    tkn = sdp_attr->value;    // 3 == strlen("med")
                     // skip spaces and colon (we should not do this!)
                     while ((*tkn == ' ') || (*tkn == ':'))
                         tkn++;

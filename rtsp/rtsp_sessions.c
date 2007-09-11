@@ -160,8 +160,8 @@ int set_rtsp_sessions(rtsp_thread * rtsp_th, int content_length,
         // we look for particular attributes of session
         for (sdp_a = rtsp_th->rtsp_queue->info->attr_list; sdp_a;
              sdp_a = sdp_a->next) {
-            if (!strncmpcase(sdp_a->a, "control", 7)) {
-                tkn = sdp_a->a + 7;    // 7 == strlen("control")
+            if (!strncmpcase(sdp_a->name, "control", 7)) {
+                tkn = sdp_a->value;    // 7 == strlen("control")
                 while ((*tkn == ' ') || (*tkn == ':'))    // skip spaces and colon
                     tkn++;
                 rtsp_th->rtsp_queue->pathname = tkn;

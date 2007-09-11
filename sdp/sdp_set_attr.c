@@ -33,7 +33,9 @@ int sdp_set_attr(sdp_attr ** attr_list, char *a)
     if (!(new = (sdp_attr *) calloc(1, sizeof(sdp_attr))))
         return nms_printf(NMSML_FATAL, "Could not allocate memory\n");
 
-    new->a = a;
+    new->name = a;
+    new->value = strstr(a,":");
+    *new->value++ = '\0';
 
     for (i = attr_list; *i; i = &((*i)->next)); // search for the tail of queue
     *i = new;

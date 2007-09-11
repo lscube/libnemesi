@@ -303,7 +303,7 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
                        sdes[str - (char **) (sess->info)],
                        *str);
         for (attr = sess->info->attr_list; attr; attr = attr->next)
-            nms_printf(NMSML_ALWAYS, "%s\n", attr->a);
+            nms_printf(NMSML_ALWAYS, "%s %s\n", attr->name, attr->value);
         while (med) {
             nms_printf(NMSML_NORM,
                    "\n\t---- RTSP Medium Infos: %s ----\n",
@@ -320,7 +320,8 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
                            *str);
             for (attr = med->medium_info->attr_list; attr;
                  attr = attr->next)
-                nms_printf(NMSML_ALWAYS, "\t* %s\n", attr->a);
+                nms_printf(NMSML_ALWAYS, "\t* %s %s\n",
+                           attr->name, attr->value);
             med = med->next;
         }
         sess = sess->next;

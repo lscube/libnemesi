@@ -53,12 +53,14 @@
  * \see Medium_info
  * \see rtsp_session_info
  * */
-typedef struct _sdp_attr {
-    char *a;        /*!< Pointer to the string containig the
-                   attribute. */
-    struct _sdp_attr *next;    /*!< Pointer to the next element of attributes
-                   list. \c NULL if the current element is the
-                   last. */
+typedef struct sdp_attr_s {
+    char *name;     /*!< Attribute name */
+    char *value;    /*!< Attribute value */
+
+    /** Next element of attributes list.
+     * \c NULL if the current element is the 
+     * last. */
+    struct sdp_attr_s *next;
 } sdp_attr;
 
 #define SDP_MEDIA_FIELDS    "Multimedia Type & Transport Address", \
