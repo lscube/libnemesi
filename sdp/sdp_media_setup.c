@@ -26,7 +26,12 @@
 
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>
-
+/**
+ *  Parse SDP media informations
+ *  @param descr the body to parse
+ *  @param descr_len its length
+ *  @return NULL on failure or a newly allocated sdp_medium_info on success
+ */
 sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
 {
     sdp_medium_info *queue = NULL, *curr_sdp_m = NULL;
@@ -36,11 +41,9 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
     int pt;
     char *endtkn = NULL;
 
+    tkn = strtok(*descr, "\r\n");
+
     do {
-        if (tkn == NULL)
-            tkn = strtok(*descr, "\r\n");
-        else
-            tkn = strtok(NULL, "\r\n");
         if (tkn == NULL) {
             nms_printf(NMSML_ERR,
                    "Invalid SDP Media description section.\n");
@@ -99,13 +102,14 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
                 if (cc_set_sdplicense(curr_sdp_m->cc, tkn)) {
                     error = 1;
                     break;
-                    // return NULL;
                 }
             }
+            tkn += strlen(tkn);
             break;
         }
-    } while ((!error) && ((tkn + strlen(tkn) - *descr + 2) < descr_len));
-    *descr = tkn;
+    } while (tkn = strtok(NULL, "\r\n"));
+
+    *descr += descr_len;
 
     if (error) {        // there was an error?
         sdp_media_destroy(queue);

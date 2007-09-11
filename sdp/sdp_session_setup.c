@@ -26,6 +26,13 @@
 #include <nemesi/sdp.h>
 #include <nemesi/comm.h>
 
+/**
+ *  Parses the SDP
+ *  @param descr the text to be parsed
+ *  @param descr_len the length of the text
+ *  @return NULL on failure or a newly allocated sdp_session_info on success
+ */
+
 sdp_session_info *sdp_session_setup(char *descr, int descr_len)
 {
     sdp_session_info *new;
@@ -36,18 +43,17 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
     if (!(new = (sdp_session_info *) calloc(1, sizeof(sdp_session_info))))
         return NULL;
 
+    tkn = strtok(descr, "\r\n");
+
     do {
-        if (tkn == NULL)
-            tkn = strtok(descr, "\r\n");
-        else
-            tkn = strtok(NULL, "\r\n");
         if (tkn == NULL) {
             nms_printf(NMSML_ERR,
-                   "Invalid SDP description body... discarding\n");
+                   "Empty SDP description body... discarding\n");
             error = 1;
             break;
             // return NULL;
         }
+
         switch (*tkn) {
         case 'v':
             new->v = tkn + 2;
@@ -95,8 +101,8 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
                        "Error setting SDP session attribute\n");
                 error = 1;
                 break;
-                // return NULL;
             }
+            tkn += strlen(tkn);
             break;
         case 'm':
             tkn[strlen(tkn)] = '\n';
@@ -108,7 +114,7 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
             }
             break;
         }
-    } while ((tkn + strlen(tkn) - descr + 2) < descr_len);
+    } while (tkn = strtok(NULL, "\r\n"));
 
     if (error) {        // there was an error?
         sdp_session_destroy(new);
