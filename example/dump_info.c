@@ -115,6 +115,11 @@ int main(int argc, char **argv)
     while (sess) {        // foreach session...
         fprintf(outfile, "\tSession %s\n", sess->pathname);
         fprintf(outfile, "\tSession Duration %s\n", sess->info->t);
+        for (attr = sess->info->attr_list;
+             attr;
+             attr = attr->next) {
+            fprintf(outfile, "\t* %s\n", attr->a);
+        }
 
         med = sess->media_queue;
         while (med) {    //... foreach medium
