@@ -339,11 +339,11 @@ int init_state(rtsp_thread * rtsp_th, short event)
                           "Cannot create RTCP Thread!\n");
 
             rtsp_th->status = READY;
-            rtsp_unbusy(rtsp_th);
             // rtsp_th->busy = 0;
             /* Inizializza a NULL le variabili statiche interne */
             // get_curr_sess(NULL, NULL, NULL);
             get_curr_sess(GCS_UNINIT);
+            rtsp_unbusy(rtsp_th);
             break;
         }
         if (send_setup_request(rtsp_th))
@@ -376,12 +376,12 @@ int ready_state(rtsp_thread * rtsp_th, short event)
         if (!get_curr_sess(GCS_NXT_SESS)) {
             /* Nessun altra PLAY da inviare */
             rtsp_th->status = PLAYING;
-            rtsp_unbusy(rtsp_th);
             // rtsp_th->busy = 0;
             nms_printf(NMSML_NORM, "----- Playing... -----\n");
             /* Inizializza a NULL le variabili statiche interne */
             // get_curr_sess(NULL, NULL, NULL);
             get_curr_sess(GCS_UNINIT);
+            rtsp_unbusy(rtsp_th);
             break;
         }
         if (send_play_request(rtsp_th, ""))
@@ -397,12 +397,12 @@ int ready_state(rtsp_thread * rtsp_th, short event)
             last_response_id = rtsp_th->response_id;
             rtsp_reinit(rtsp_th);
             rtsp_th->response_id = last_response_id;
-            rtsp_unbusy(rtsp_th);
             nms_printf(NMSML_NORM,
                    "----- All Connections closed -----\n");
             /* Inizializza a NULL le variabili statiche interne */
             // get_curr_sess(NULL, NULL, NULL);
             get_curr_sess(GCS_UNINIT);
+            rtsp_unbusy(rtsp_th);
             break;
       /*  }
         if (send_teardown_request(rtsp_th))
@@ -436,12 +436,12 @@ int playing_state(rtsp_thread * rtsp_th, short event)
         if (!get_curr_sess(GCS_NXT_SESS)) {
             /* Nessun altra PLAY da inviare */
             rtsp_th->status = READY;
-            rtsp_unbusy(rtsp_th);
             // rtsp_th->busy = 0;
             nms_printf(NMSML_NORM, "----- Play paused -----\n");
             /* Inizializza a NULL le variabili statiche interne */
             // get_curr_sess(NULL, NULL, NULL);
             get_curr_sess(GCS_UNINIT);
+            rtsp_unbusy(rtsp_th);
             break;
         }
         if (send_pause_request(rtsp_th, ""))
@@ -457,13 +457,13 @@ int playing_state(rtsp_thread * rtsp_th, short event)
             last_response_id = rtsp_th->response_id;
             rtsp_reinit(rtsp_th);
             rtsp_th->response_id = last_response_id;
-            rtsp_unbusy(rtsp_th);
             // rtsp_th->busy = 0;
             nms_printf(NMSML_NORM,
                    "----- All Connections closed -----\n");
             /* Inizializza a NULL le variabili statiche interne */
             // get_curr_sess(NULL, NULL, NULL);
             get_curr_sess(GCS_UNINIT);
+            rtsp_unbusy(rtsp_th);
             break;
         /*}
         if (send_teardown_request(rtsp_th))

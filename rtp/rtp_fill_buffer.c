@@ -47,6 +47,9 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
 
+    if (fr->time_sec > 1000)
+        fprintf(stderr, "Out of sync timestamp: %ld - %u\n", fr->timestamp, stm_src->ssrc_stats.firstts);
+
     fr->fps = stm_src->rtp_sess->ptdefs[fr->pt]->fps = 
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate/
             abs(fr->timestamp - stm_src->ssrc_stats.lastts);
