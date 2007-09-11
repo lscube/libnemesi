@@ -36,10 +36,20 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
     int err;
+
+    /* If we did a seek, we must wait for seek reset and bufferpool clean up,
+     * so wait until rtp_recv receives the first new packet and resets the bufferpool
+     */
+    if (stm_src->done_seek) {
+        usleep(0);
+        return RTP_BUFF_EMPTY;
+    }
+
     if (!(pkt = rtp_get_pkt(stm_src, NULL))) {
         usleep(0);
         return RTP_BUFF_EMPTY;
     }
+
     fr->pt = RTP_PKT_PT(pkt);
     fr->timestamp = RTP_PKT_TS(pkt);
 
