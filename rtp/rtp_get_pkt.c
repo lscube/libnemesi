@@ -48,8 +48,6 @@ rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
         index = stm_src->po.potail;
         pthread_mutex_unlock(&(stm_src->po.po_mutex));
 
-        fprintf(stderr, "PKT: %p %d : %d\n", stm_src, index, ((rtp_pkt *) (*(stm_src->po.bufferpool) + index))->pt);
-
         if (index < 0) return NULL;
     } while (!stm_src->rtp_sess->
          ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) +
