@@ -89,8 +89,6 @@ int rtp_recv(rtp_session * rtp_sess)
                             &stm_src, &server, RTP)) {
     case SSRC_KNOWN:
         if (stm_src->done_seek) {
-            rtp_rm_all_pkts(stm_src);
-
             stm_src->ssrc_stats.probation = 0;
             stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt);
             stm_src->ssrc_stats.firstts = RTP_PKT_TS(pkt);
@@ -118,8 +116,8 @@ int rtp_recv(rtp_session * rtp_sess)
         stm_src->ssrc_stats.transit = transit;
 
         if (stm_src->done_seek) {
+            nms_printf(NMSML_NORM, "Seek reset performed on %u\n", stm_src->ssrc_stats.firstts);
             stm_src->done_seek = 0;
-            nms_printf(NMSML_NORM, "Seek reset performed\n");
         }
         else {
             if (delta < 0)
