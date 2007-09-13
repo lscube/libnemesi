@@ -91,10 +91,18 @@ int rtp_recv(rtp_session * rtp_sess)
         if (stm_src->done_seek) {
             rtp_rm_all_pkts(stm_src);
 
+            stm_src->ssrc_stats.probation = 0;
             stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt);
             stm_src->ssrc_stats.firstts = RTP_PKT_TS(pkt);
-            stm_src->done_seek = 0;
-            nms_printf(NMSML_NORM, "Seek reset performed\n");
+            stm_src->ssrc_stats.firsttv = now;
+            stm_src->ssrc_stats.jitter = 0;
+
+            stm_src->ssrc_stats.base_seq = RTP_PKT_SEQ(pkt) - 1;    // FIXME: in rfc 3550 it's set to seq.
+            stm_src->ssrc_stats.bad_seq = RTP_SEQ_MOD + 1;
+            stm_src->ssrc_stats.cycles = 0;
+            stm_src->ssrc_stats.received = 0;
+            stm_src->ssrc_stats.received_prior = 0;
+            stm_src->ssrc_stats.expected_prior = 1;
         }
 
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
@@ -108,10 +116,17 @@ int rtp_recv(rtp_session * rtp_sess)
                    (double) rate) - ntohl(pkt->time);
         delta = transit - stm_src->ssrc_stats.transit;
         stm_src->ssrc_stats.transit = transit;
-        if (delta < 0)
-            delta = -delta;
-        stm_src->ssrc_stats.jitter +=
-            (1. / 16.) * ((double) delta - stm_src->ssrc_stats.jitter);
+
+        if (stm_src->done_seek) {
+            stm_src->done_seek = 0;
+            nms_printf(NMSML_NORM, "Seek reset performed\n");
+        }
+        else {
+            if (delta < 0)
+                delta = -delta;
+            stm_src->ssrc_stats.jitter +=
+                (1. / 16.) * ((double) delta - stm_src->ssrc_stats.jitter);
+        }
         break;
     case SSRC_NEW:
         rtp_sess->sess_stats.senders++;
