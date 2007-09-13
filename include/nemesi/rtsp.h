@@ -60,7 +60,7 @@
 #define RTSP_BUSY    1
 
 typedef struct {
-    int32 first_rtp_port;
+    int first_rtp_port;
     sock_type pref_rtsp_proto;
     sock_type pref_rtp_proto;
 } nms_rtsp_hints;
