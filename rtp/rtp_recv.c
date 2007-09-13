@@ -91,11 +91,18 @@ int rtp_recv(rtp_session * rtp_sess)
         if (stm_src->done_seek) {
             rtp_rm_all_pkts(stm_src);
 
-            stm_src->ssrc_stats.probation = MIN_SEQUENTIAL;
-            stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt) - 1;
+            stm_src->ssrc_stats.probation = 0;
+            stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt);
             stm_src->ssrc_stats.firstts = RTP_PKT_TS(pkt);
             stm_src->ssrc_stats.firsttv = now;
             stm_src->ssrc_stats.jitter = 0;
+
+            stm_src->ssrc_stats.base_seq = RTP_PKT_SEQ(pkt) - 1;    // FIXME: in rfc 3550 it's set to seq.
+            stm_src->ssrc_stats.bad_seq = RTP_SEQ_MOD + 1;
+            stm_src->ssrc_stats.cycles = 0;
+            stm_src->ssrc_stats.received = 0;
+            stm_src->ssrc_stats.received_prior = 0;
+            stm_src->ssrc_stats.expected_prior = 1;
         }
 
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
