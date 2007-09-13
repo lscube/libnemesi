@@ -46,8 +46,9 @@ int bpget(buffer_pool * bp)
      */
 
     pthread_mutex_lock(&(bp->fl_mutex));
-    while (bp->flhead == -1)
+    while (bp->flhead == -1) {
         pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
+    }
     offset = bp->flhead;
     bp->flhead = bp->freelist[bp->flhead];
     bp->flcount++;

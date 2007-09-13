@@ -53,7 +53,7 @@
 
 /*! The number of slots consisting the Playout Buffer. */            /* #define BP_SLOT_NUM 50 */
 /* 1000ms / 20ms = Playout Buffer Size (in seconds) / Required RTP payload size (in seconds) */
-#define BP_SLOT_NUM 150        // Bigger buffer. For video needs.
+#define BP_SLOT_NUM 550        // Bigger buffer. For video needs.
 
 /*! Slot size.  Derived from <em>"Minimum Reassembly Buffer Size"</em> IPv4: the maximal dimension of non fragmented packets */
 

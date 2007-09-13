@@ -89,14 +89,14 @@ int rtp_recv(rtp_session * rtp_sess)
                             &stm_src, &server, RTP)) {
     case SSRC_KNOWN:
         if (stm_src->done_seek) {
-            while(rtp_get_pkt(stm_src, NULL))
-                rtp_rm_pkt(stm_src);
+            rtp_rm_all_pkts(stm_src);
 
             stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt);
             stm_src->ssrc_stats.firstts = RTP_PKT_TS(pkt);
             stm_src->done_seek = 0;
-            fprintf(stderr, "Seek reset performed\n");
+            nms_printf(NMSML_NORM, "Seek reset performed\n");
         }
+
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
 
         if (!rtp_sess->ptdefs[pkt->pt]

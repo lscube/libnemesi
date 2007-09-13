@@ -42,6 +42,7 @@
 rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
 {
     int index;
+
     do {
         pthread_mutex_lock(&(stm_src->po.po_mutex));
         index = stm_src->po.potail;
