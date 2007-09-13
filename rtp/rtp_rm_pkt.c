@@ -28,14 +28,43 @@ inline int rtp_rm_pkt(rtp_ssrc * stm_src)
              stm_src->po.potail);
 }
 
+static void socket_clear(rtp_ssrc * stm_src)
+{
+    rtp_session * rtp_sess = stm_src->rtp_sess;
+    char buffer[BP_SLOT_SIZE];
+    fd_set readset;
+    struct timeval timeout;
+
+    memset(&timeout, 0, sizeof(struct timeval));
+
+    while(1) {
+        FD_ZERO(&readset);
+        FD_SET(rtp_sess->transport.RTP.sock.fd, &readset);
+
+        select(rtp_sess->transport.RTP.sock.fd + 1, &readset, NULL, NULL, &timeout);
+
+        if (FD_ISSET(rtp_sess->transport.RTP.sock.fd, &readset))
+            recvfrom(rtp_sess->transport.RTP.sock.fd, buffer, BP_SLOT_SIZE, 0,
+                         NULL, NULL);
+        else
+            break;
+    }
+}
+
+/**
+  * Clears the playoutbuffer and the recv buffer for the given source
+  */
 void rtp_rm_all_pkts(rtp_ssrc * stm_src)
 {
     playout_buff * po = &(stm_src->po);
     buffer_pool * bp = &(stm_src->rtp_sess->bp);
 
+    //Clear the RECV BUFFER
+    socket_clear(stm_src);
+
+    //Clear PLAYOUTBUFFER and Bufferpool
     pthread_mutex_lock(&(po->po_mutex));
     pthread_mutex_lock(&(bp->fl_mutex));
-
     while(po->potail >= 0) {
         int index = po->potail;
 
@@ -58,7 +87,6 @@ void rtp_rm_all_pkts(rtp_ssrc * stm_src)
     }
 
     pthread_cond_signal(&(bp->cond_full));
-
     pthread_mutex_unlock(&(bp->fl_mutex));
     pthread_mutex_unlock(&(po->po_mutex));
 }

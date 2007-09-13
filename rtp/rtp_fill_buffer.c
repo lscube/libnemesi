@@ -40,12 +40,11 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     /* If we did a seek, we must wait for seek reset and bufferpool clean up,
      * so wait until rtp_recv receives the first new packet and resets the bufferpool
      */
-    fprintf(stderr, "WAITING SEEK\n");
-    while (stm_src->done_seek) {
+    if (stm_src->done_seek) {
         usleep(0);
+        return RTP_BUFF_EMPTY;
     }
 
-    fprintf(stderr, "GETTING PKT\n");
     if (!(pkt = rtp_get_pkt(stm_src, NULL))) {
         usleep(0);
         return RTP_BUFF_EMPTY;
@@ -59,7 +58,7 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
 
     if (fr->time_sec > 1000) {
-        fprintf(stderr, "Out of sync timestamp: %ld - %u\n", fr->timestamp, stm_src->ssrc_stats.firstts);
+        fprintf(stderr, "Out of sync timestamp: %u - %u\n", fr->timestamp, stm_src->ssrc_stats.firstts);
         rtp_rm_pkt(stm_src);
         return RTP_BUFF_EMPTY;
     }

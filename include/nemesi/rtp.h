@@ -99,7 +99,7 @@ typedef struct {
 
 typedef struct {
     long len;
-    long timestamp;
+    uint32 timestamp;
     double time_sec;
     int fps;
     uint8 pt;
