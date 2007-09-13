@@ -27,13 +27,13 @@ int rtp_recv(rtp_session * rtp_sess)
 {
 
     int n;
-    uint32 rate;
+    unsigned rate;
     int slot;
     rtp_pkt *pkt;
     rtp_ssrc *stm_src;
     struct timeval now;
-    uint32 transit;
-    int32 delta;
+    unsigned transit;
+    int delta;
 
     struct sockaddr_storage serveraddr;
     nms_sockaddr server =
