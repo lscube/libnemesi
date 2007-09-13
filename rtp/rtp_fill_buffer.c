@@ -41,7 +41,6 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
      * so wait until rtp_recv receives the first new packet and resets the bufferpool
      */
     if (stm_src->done_seek) {
-        rtp_rm_all_pkts(stm_src);
         usleep(0);
         return RTP_BUFF_EMPTY;
     }
@@ -58,8 +57,11 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
 
-    if (fr->time_sec > 1000)
+    if (fr->time_sec > 1000) {
         fprintf(stderr, "Out of sync timestamp: %ld - %u\n", fr->timestamp, stm_src->ssrc_stats.firstts);
+        rtp_rm_pkt(stm_src);
+        return RTP_BUFF_EMPTY;
+    }
 
     fr->fps = stm_src->rtp_sess->ptdefs[fr->pt]->fps = 
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate/
