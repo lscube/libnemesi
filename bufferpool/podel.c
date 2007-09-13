@@ -45,13 +45,11 @@ int podel(playout_buff * po, int index)
     pthread_mutex_lock(&(po->po_mutex));
 
     if (po->pobuff[index].next != -1)
-        po->pobuff[po->pobuff[index].next].prev =
-            po->pobuff[index].prev;
+        po->pobuff[po->pobuff[index].next].prev = po->pobuff[index].prev;
     else
         po->potail = po->pobuff[index].prev;
     if (po->pobuff[index].prev != -1)
-        po->pobuff[po->pobuff[index].prev].next =
-            po->pobuff[index].next;
+        po->pobuff[po->pobuff[index].prev].next = po->pobuff[index].next;
     else
         po->pohead = po->pobuff[index].next;
 
