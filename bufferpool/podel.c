@@ -41,8 +41,6 @@
 * */
 int podel(playout_buff * po, int index)
 {
-
-    fprintf(stderr, "DEL PO\n");
     pthread_mutex_lock(&(po->po_mutex));
 
     if (po->pobuff[index].next != -1)
@@ -59,7 +57,6 @@ int podel(playout_buff * po, int index)
     po->pocount--;
 
     pthread_mutex_unlock(&(po->po_mutex));
-    fprintf(stderr, "UNDEL PO\n");
 
     return 0;
 }
