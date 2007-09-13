@@ -27,3 +27,38 @@ inline int rtp_rm_pkt(rtp_ssrc * stm_src)
     return bprmv(&(stm_src->rtp_sess->bp), &(stm_src->po),
              stm_src->po.potail);
 }
+
+void rtp_rm_all_pkts(rtp_ssrc * stm_src)
+{
+    playout_buff * po = &(stm_src->po);
+    buffer_pool * bp = &(stm_src->rtp_sess->bp);
+
+    pthread_mutex_lock(&(po->po_mutex));
+    pthread_mutex_lock(&(bp->fl_mutex));
+
+    while(po->potail >= 0) {
+        int index = po->potail;
+
+        if (po->pobuff[index].next != -1)
+            po->pobuff[po->pobuff[index].next].prev =
+                po->pobuff[index].prev;
+        else
+            po->potail = po->pobuff[index].prev;
+        if (po->pobuff[index].prev != -1)
+            po->pobuff[po->pobuff[index].prev].next =
+                po->pobuff[index].next;
+        else
+            po->pohead = po->pobuff[index].next;
+
+        po->pocount--;
+
+        bp->freelist[index] = bp->flhead;
+        bp->flhead = index;
+        bp->flcount--;
+    }
+
+    pthread_cond_signal(&(bp->cond_full));
+
+    pthread_mutex_unlock(&(bp->fl_mutex));
+    pthread_mutex_unlock(&(po->po_mutex));
+}

@@ -41,7 +41,6 @@
 * */
 int podel(playout_buff * po, int index)
 {
-
     pthread_mutex_lock(&(po->po_mutex));
 
     if (po->pobuff[index].next != -1)

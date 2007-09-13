@@ -324,6 +324,8 @@ rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc);
 rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
 rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32);
 inline int rtp_rm_pkt(rtp_ssrc *);
+void rtp_rm_all_pkts(rtp_ssrc *);
+
 int rtp_fill_buffer(rtp_ssrc *, rtp_frame *, rtp_buff *);
 double rtp_get_next_ts(rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_ssrc *);
