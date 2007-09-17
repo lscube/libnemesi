@@ -216,11 +216,19 @@ static rtp_pt *rtp_pt_defs[128] = {
     NULL /* dyn */ , /* 127 */ NULL /* dyn */ ,
 };
 
+/**
+ * Initializes a new rtp payload types array with the standard one
+ */
 void rtpptdefs_new(rtp_pt * new_defs[])
 {
     memcpy(new_defs, rtp_pt_defs, sizeof(rtp_pt_defs));
 }
 
+/**
+ * Creates a new payload type for the given media type
+ * @param mtype Specifies the media type of the payload @see rtp_media_type
+ * @return A new rtp payload type or NULL
+ */
 rtp_pt *rtp_pt_new(rtp_media_type mtype)
 {
     rtp_pt *new;
@@ -251,41 +259,60 @@ rtp_pt *rtp_pt_new(rtp_media_type mtype)
     return new;
 }
 
+/**
+ * Registers a payload type structure ad the given ID
+ *
+ * @param defs The payload type array where to map the payload type to the given id
+ * @param pt The payload type
+ * @param value The ID mapped to the payload type (only ids > 96 are valid for dynamic payload types)
+ *
+ * @return RTP_OK on success, RTP_ERROR otherwise.
+ */
 int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8 value)
 {
     if (value < 96) {
         nms_printf(NMSML_ERR,
                "You tried to set a non-dynamic payload type (%u)\n",
                value);
-        return 1;
+        return RTP_ERROR;
     }
 
     free(defs[value]);
     defs[value] = pt;
 
-    return 0;
+    return RTP_OK;
 }
 
+/**
+ * Sets an encoding name for the payload type registered on the given ID
+ *
+ * @param defs The payload types array where to look up the payload type.
+ * @param value The ID for which to change the encoding name (A payload type
+ *              must be already registered at the given ID)
+ * @param enc_name The encoding name to set
+ *
+ * @return RTP_OK on succes, RTP_ERROR otherwise
+ */
 int rtp_dynpt_encname(rtp_pt * defs[], uint8 value, char *enc_name)
 {
     if (value < 96) {
         nms_printf(NMSML_ERR,
                "You tried to set encoding name for non-dynamic payload type (%u)\n",
                value);
-        return 1;
+        return RTP_ERROR;
     }
 
     if (!defs[value]) {
         nms_printf(NMSML_ERR,
                "No dynamic payload type initialized for pt %u\n",
                value);
-        return 1;
+        return RTP_ERROR;
     }
 
     strncpy(defs[value]->name, enc_name, sizeof(defs[value]->name));
     defs[value]->name[sizeof(defs[value]->name)-1] = '\0';    // safety end-of-string
 
-    return 0;
+    return RTP_OK;
 }
 
 #if 0
@@ -297,12 +324,23 @@ void rtp_pt_attrs_init(rtp_pt_attrs * attrs)
 }
 #endif
 
+/**
+ * Adds a new attribute to the given payload type ID
+ *
+ * @param defs The payload types array where to look up the payload type.
+ * @param value The ID for which to add the attribute (A payload type
+ *              must be already registered at the given ID)
+ * @param attr the name of the attribute to add
+ *
+ * @return RTP_OK on succes, RTP_ERROR if the id is out of range, 
+ *         -1 if failed to allocate the attribute.
+ */
 int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *attr)
 {
     rtp_pt_attrs *attrs;
 
     if (value > 127)
-        return 1;
+        return RTP_ERROR;
 
     attrs = &defs[value]->attrs;
 
@@ -317,24 +355,35 @@ int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *attr)
 
     attrs->size++;
 
-    return 0;
+    return RTP_OK;
 }
 
+/**
+ * Returns the payload type informations for the given ID
+ *
+ * @param rtp_sess The session owning the payload type array where
+ *                 to look up the given ID.
+ * @param pt The id to look up
+ *
+ * @return The requested payload type informations or NULL 
+ *         if no payload type is registered at the given ID.
+ */
 rtp_pt * rtp_get_pt_info(rtp_session * rtp_sess, unsigned pt)
 {
     return rtp_sess->ptdefs[pt];
 }
 
-int16 rtp_get_next_pt(rtp_ssrc * stm_src)
-{
-    rtp_pkt *pkt;
-
-    if (!(pkt = rtp_get_pkt(stm_src, NULL)))
-        return RTP_BUFF_EMPTY;
-
-    return pkt->pt;
-}
-
+/**
+ * Registers a MIME type for the given payload type id (a payload type
+ * must already be registered at the given ID)
+ *
+ * @param rtp_sess The session owning the payload type array where
+ *                 to look up the given ID.
+ * @param pt The id to look up
+ * @param mime The MIME type to register
+ *
+ * @return RTP_OK if everything was ok, RTP_ERROR otherwise
+ */
 int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime)
 {
     if (rtp_dynpt_encname(rtp_sess->ptdefs, pt, mime))
@@ -349,6 +398,17 @@ int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime)
     return RTP_OK;
 }
 
+/**
+ * Creates and registers a new payload type for a session and
+ * appends it to the announced formats list.
+ *
+ * @param rtp_sess The session owning the payload type array where
+ *                 to register the new payload type.
+ * @param pt The id to assign to the payload type
+ * @param media_type The type of media for the given payload type.
+ *
+ * @return RTP_OK if everything was ok, RTP_ERROR otherwise
+ */
 int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt,
             rtp_media_type media_type)
 {
@@ -363,6 +423,7 @@ int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt,
             return RTP_ERROR;
         rtp_dynpt_set(rtp_sess->ptdefs, rtppt, pt);
     }
+
     if (!(fmt = malloc(sizeof(rtp_fmts_list)))) {
         nms_printf(NMSML_FATAL,
                "Could not alloc memory for rtp_fmts_list\n");
