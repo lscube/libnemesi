@@ -23,6 +23,145 @@
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 
+/**
+ * Checks if the RTP header is valid for the given packet
+ *
+ * @pkt Pointer to the packet
+ * @len Length of the packet
+ *
+ * @return 0 if the header is valid, 1 otherwise
+ */
+static int rtp_hdr_val_chk(rtp_pkt * pkt, int len)
+{
+    if (RTP_PAYLOAD_SIZE(pkt, len) < 0) {
+//      if (len < 12) {
+        nms_printf(NMSML_ERR,
+               "RTP packet too small (%d: smaller than RTP header size)!!!\n",
+               len);
+        return 1;
+    }
+
+    if (pkt->ver != RTP_VERSION) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching version number!"
+               BLANK_LINE);
+        return 1;
+    }
+    if ((pkt->pt >= 200) && (pkt->pt <= 204)) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching payload type!"
+               BLANK_LINE);
+        return 1;
+    }
+    if ((pkt->pad)
+        && (*(((uint8 *) pkt) + len - 1) >
+        (len - ((uint8 *) (pkt->data) - (uint8 *) pkt)))) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching lenght!"
+               BLANK_LINE);
+        return 1;
+    }
+    if ((pkt->cc)
+        && (pkt->cc >
+        (len - ((uint8 *) (pkt->data) - (uint8 *) pkt)) -
+        ((*(((uint8 *) pkt) + len - 1)) * pkt->pad))) {
+        nms_printf(NMSML_WARN,
+               "RTP Header not valid: mismatching CSRC count!"
+               BLANK_LINE);
+        return 1;
+    }
+
+    return 0;
+}
+
+/**
+ * Initializes informations about sequence numbers for the given source
+ * using the given seq number as the first one. And appends the source
+ * to the list of active sources for the given RTP session.
+ *
+ * @stm_src The source for which to initialize the sequence numbers informations
+ * @seq The first sequence number
+ */
+static void rtp_init_seq(rtp_ssrc * stm_src, uint16 seq)
+{
+    struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
+
+    stats->base_seq = seq - 1;    // FIXME: in rfc 3550 it's set to seq.
+    stats->max_seq = seq;
+    stats->bad_seq = RTP_SEQ_MOD + 1;
+    stats->cycles = 0;
+    stats->received = 0;
+    stats->received_prior = 0;
+    stats->expected_prior = 1;
+
+    // our initializations
+    // enqueue this SSRC in active SSRCs queue of RTP session.
+    stm_src->next_active = stm_src->rtp_sess->active_ssrc_queue;
+    stm_src->rtp_sess->active_ssrc_queue = stm_src;
+
+    return;
+}
+
+/**
+ * Updates informations about sequence numbers for the given source.
+ * Sets max sequence number, initializes the sequence numbers and calls
+ * rtp_init if it is the first received sequence number, checks for
+ * misordered packets/jumps
+ *
+ * @stm_src The source for which to update the sequence numbers informations
+ * @seq The sequence number to analyze
+ */
+static void rtp_update_seq(rtp_ssrc * stm_src, uint16 seq)
+{
+    struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
+    uint16 udelta = seq - stats->max_seq;
+
+    if (stats->probation) {
+        if (seq == stats->max_seq + 1) {
+            stats->probation--;
+            stats->max_seq = seq;
+            if (stats->probation == 0) {
+                rtp_init_seq(stm_src, seq);
+                stats->received++;
+                return;
+            }
+        } else {
+            stats->probation = MIN_SEQUENTIAL - 1;
+            stats->max_seq = seq;
+        }
+        return;
+    } else if (udelta < MAX_DROPOUT) {
+        if (seq < stats->max_seq) {
+            /*
+             * Sequence number wrapped - count another 64k cycle.
+             */
+            stats->cycles += RTP_SEQ_MOD;
+        }
+        stats->max_seq = seq;
+    } else if (udelta <= RTP_SEQ_MOD - MAX_MISORDER) {
+        /* the sequence number made a very large jump */
+        if (seq == stats->bad_seq) {
+            rtp_init_seq(stm_src, seq);
+        } else {
+            stats->bad_seq = (seq + 1) & (RTP_SEQ_MOD - 1);
+            return;
+        }
+    }            /* else {
+                   duplicate or reorder packet
+                   } */
+    stats->received++;
+    return;
+}
+
+/**
+ * Reads a packet from the RTP socket. Checks if its valid,
+ * creates a new source if the sender of the packet isnt already known
+ * and appends it to the playout buffer of the source.
+ *
+ * @rtp_sess The RTP session for which to receive the packet
+ *
+ * @return 0 if the packet was correctly received, 1 otherwise.
+ */
 int rtp_recv(rtp_session * rtp_sess)
 {
 
