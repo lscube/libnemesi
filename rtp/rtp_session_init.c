@@ -28,6 +28,12 @@
                     return NULL; \
                 } while (0)
 
+/**
+ * Initializes a new rtp session with the specified endpoints
+ * @param local local endpoint
+ * @param peer remote endpoint
+ * @return a new rtp session, NULL as failure
+ */
 rtp_session *rtp_session_init(nms_sockaddr * local, nms_sockaddr * peer)
 {
     rtp_session *rtp_sess;

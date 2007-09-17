@@ -20,6 +20,10 @@
  *  
  * */
 
+/** @file rtp_payload_type.c
+ * This file contains the functions to manage payload types informations
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
