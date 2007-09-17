@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of NetEmbryo
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * NetEmbryo is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with NetEmbryo; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "rtpparser.h"
@@ -35,7 +35,7 @@
  */
 
 typedef struct {
-    char *data;     //!< constructed frame, fragments will be copied there 
+    char *data;     //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
     uint8_t *conf;
     long conf_len;
@@ -50,7 +50,7 @@ static rtpparser_info h264_served = {
 static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
     rtp_h264 *priv = malloc(sizeof(rtp_h264));
-    rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;    
+    rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
     char *value;
     int i;
 
@@ -88,8 +88,8 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
                                                 base64packet,
                                                 sizeof(decoded_packet));
                 if (packet_size) {
-                    uint8_t *dest = malloc(packet_size + 
-                                           sizeof(start_sequence) + 
+                    uint8_t *dest = malloc(packet_size +
+                                           sizeof(start_sequence) +
                                            priv->conf_len);
                     if(dest) {
                         if(priv->conf_len) {
@@ -103,8 +103,7 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
                                decoded_packet, packet_size);
 
                         priv->conf = dest;
-                        priv->conf_len += sizeof(start_sequence) + 
-                                                 packet_size;
+                        priv->conf_len += sizeof(start_sequence) + packet_size;
                     } else {
                        goto err_alloc;
                     }
@@ -162,7 +161,7 @@ static rtp_pkt * h264_next_pkt(rtp_ssrc * ssrc, size_t * len, uint8_t ** buf)
 static int h264_check_if_packet_continues(rtp_pkt * pkt, rtp_frame * fr)
 {
     if (!pkt) return 0;
-    
+
     if (fr->timestamp == RTP_PKT_TS(pkt))
         return 1;
 
@@ -212,7 +211,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         err = RTP_PKT_UNKNOWN;
         break;
 
-    case 28:    // FU-A (fragmented nal, output frags or aggregate it) 
+    case 28:    // FU-A (fragmented nal, output frags or aggregate it)
         {
             uint8_t fu_indicator = *buf++;  // read the fu_indicator
             uint8_t fu_header    = *buf++;  // read the fu_header.
@@ -240,12 +239,12 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 priv->timestamp = RTP_PKT_TS(pkt);
             } else {
                 if (priv->timestamp != RTP_PKT_TS(pkt)) return RTP_PKT_UNKNOWN;
-                priv->data = 
+                priv->data =
                     realloc (priv->data, priv->len + len);
                 memcpy(priv->data + priv->len, buf, len);
                 priv->len += len;
             }
-        
+
             if (!end_bit) {
                 err = EAGAIN;
             } else {
