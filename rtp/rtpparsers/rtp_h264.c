@@ -59,7 +59,6 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
     memset(priv, 0, sizeof(rtp_h264));
 
     for (i=0; i < attrs->size; i++){
-        printf("attr %d %s\n", i, attrs->data[i]);
         if ((value = strstr(attrs->data[i], "profile-level-id="))) {
             value+=17;
             if ((strstr(value,";")-value)==6){ /*hex string*/}
