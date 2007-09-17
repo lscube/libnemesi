@@ -27,78 +27,12 @@
 #define PO_BUFF_SIZE_MSEC 700
 
 /**
- * Allocates a new rtp_thread and initializes the parsers for rtp packets
- *
- * @return A valid rtp_thread if it was possible to allocate it or NULL
- */
-rtp_thread *rtp_init(void)
-{
-    rtp_thread *rtp_th;
-
-    if (!(rtp_th = (rtp_thread *) calloc(1, sizeof(rtp_thread)))) {
-        nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
-        return NULL;
-    }
-
-    rtp_parsers_init();
-
-    if (pthread_mutex_init(&(rtp_th->syn), NULL)) {
-        free(rtp_th);
-        return NULL;
-    }
-    /* Decoder blocked 'till buffering is complete */
-    pthread_mutex_lock(&(rtp_th->syn));
-
-    return rtp_th;
-}
-
-/**
- * Given an rtp_thread registers the main loop for the thread, binds the specific parsers
- * for the payloads announced for the thread.
- *
- * @rtp_th The newly allocated and initialized rtp thread
- *
- * @return 0 if everything was ok, 1 otherwise
- */
-int rtp_thread_create(rtp_thread * rtp_th)
-{
-    int err;
-    pthread_attr_t rtp_attr;
-    rtp_session *rtp_sess;
-    rtp_fmts_list *fmt;
-
-    pthread_attr_init(&rtp_attr);
-    if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) != 0)
-        return nms_printf(NMSML_FATAL,
-                  "Cannot set RTP Thread attributes (detach state)\n");
-
-    if ((err = pthread_create(&rtp_th->rtp_tid, 
-                              &rtp_attr, &rtp, (void *) rtp_th)) > 0)
-        return nms_printf(NMSML_FATAL, "%s\n", strerror(err));
-
-    for (rtp_sess = rtp_th->rtp_sess_head; rtp_sess;
-         rtp_sess = rtp_sess->next) {
-        for (fmt = rtp_sess->announced_fmts; fmt; fmt = fmt->next) {
-            if (rtp_sess->parsers_inits[fmt->pt]) {
-                err = rtp_sess->parsers_inits[fmt->pt] (rtp_sess, fmt->pt);
-                if (err)
-                    return nms_printf(NMSML_FATAL,
-                            "Cannot init the parser for pt %d\n", fmt->pt);
-            }
-        }
-    }
-
-    rtp_th->run = 1;
-    return 0;
-}
-
-/**
  * Given an rtp_thread deallocates the binded payload parsers, the transport informations
  * and every session of the thread.
  *
  * @thrd The thread to clean
  */
-void rtp_clean(void * thrd)
+static void rtp_clean(void * thrd)
 {
     rtp_thread *rtp_th = (rtp_thread *) thrd;
     rtp_session *rtp_sess = rtp_th->rtp_sess_head;
@@ -170,7 +104,7 @@ void rtp_clean(void * thrd)
  *
  * @args The rtp_thread for which to loop.
  */
-void *rtp(void *args)
+static void *rtp(void *args)
 {
     rtp_session *rtp_sess_head = ((rtp_thread *) args)->rtp_sess_head;
     pthread_mutex_t *syn = &((rtp_thread *) args)->syn;
@@ -238,4 +172,70 @@ void *rtp(void *args)
     }
 
     pthread_cleanup_pop(1);
+}
+
+/**
+ * Allocates a new rtp_thread and initializes the parsers for rtp packets
+ *
+ * @return A valid rtp_thread if it was possible to allocate it or NULL
+ */
+rtp_thread *rtp_init(void)
+{
+    rtp_thread *rtp_th;
+
+    if (!(rtp_th = (rtp_thread *) calloc(1, sizeof(rtp_thread)))) {
+        nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
+        return NULL;
+    }
+
+    rtp_parsers_init();
+
+    if (pthread_mutex_init(&(rtp_th->syn), NULL)) {
+        free(rtp_th);
+        return NULL;
+    }
+    /* Decoder blocked 'till buffering is complete */
+    pthread_mutex_lock(&(rtp_th->syn));
+
+    return rtp_th;
+}
+
+/**
+ * Given an rtp_thread registers the main loop for the thread, binds the specific parsers
+ * for the payloads announced for the thread.
+ *
+ * @rtp_th The newly allocated and initialized rtp thread
+ *
+ * @return 0 if everything was ok, 1 otherwise
+ */
+int rtp_thread_create(rtp_thread * rtp_th)
+{
+    int err;
+    pthread_attr_t rtp_attr;
+    rtp_session *rtp_sess;
+    rtp_fmts_list *fmt;
+
+    pthread_attr_init(&rtp_attr);
+    if (pthread_attr_setdetachstate(&rtp_attr, PTHREAD_CREATE_JOINABLE) != 0)
+        return nms_printf(NMSML_FATAL,
+                  "Cannot set RTP Thread attributes (detach state)\n");
+
+    if ((err = pthread_create(&rtp_th->rtp_tid, 
+                              &rtp_attr, &rtp, (void *) rtp_th)) > 0)
+        return nms_printf(NMSML_FATAL, "%s\n", strerror(err));
+
+    for (rtp_sess = rtp_th->rtp_sess_head; rtp_sess;
+         rtp_sess = rtp_sess->next) {
+        for (fmt = rtp_sess->announced_fmts; fmt; fmt = fmt->next) {
+            if (rtp_sess->parsers_inits[fmt->pt]) {
+                err = rtp_sess->parsers_inits[fmt->pt] (rtp_sess, fmt->pt);
+                if (err)
+                    return nms_printf(NMSML_FATAL,
+                            "Cannot init the parser for pt %d\n", fmt->pt);
+            }
+        }
+    }
+
+    rtp_th->run = 1;
+    return 0;
 }

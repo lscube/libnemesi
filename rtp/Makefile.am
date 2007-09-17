@@ -17,7 +17,6 @@ librtp_la_SOURCES =	rtp_thread.c \
 			rtp_recv.c \
 			rtp_rm_pkt.c \
 			rtp_transport.c \
-			rtpptdefs.c \
 			rtp_ssrc_queue.c \
 			rtp_payload_type.c
 

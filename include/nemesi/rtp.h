@@ -280,8 +280,6 @@ enum rtp_protos {
     RTCP
 };
 
-void *rtp(void *);
-
 rtp_thread *rtp_init(void);
 /**
  * Initializes a new rtp session with the specified endpoints
@@ -421,18 +419,9 @@ inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
 
 // rtp basic functions
 int rtp_recv(rtp_session *);
-int rtp_hdr_val_chk(rtp_pkt *, int);
 int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *,
            enum rtp_protos);
 int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,
           enum rtp_protos);
 
-// rtcp connection functions
-int rtcp_to_connect(rtp_ssrc *, nms_addr *, in_port_t);
-
-// SSRC management functions
-void rtp_init_seq(rtp_ssrc *, uint16);
-void rtp_update_seq(rtp_ssrc *, uint16);
-
-void rtp_clean(void *);
 #endif
