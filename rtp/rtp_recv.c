@@ -26,8 +26,8 @@
 /**
  * Checks if the RTP header is valid for the given packet
  *
- * @pkt Pointer to the packet
- * @len Length of the packet
+ * @param pkt Pointer to the packet
+ * @param len Length of the packet
  *
  * @return 0 if the header is valid, 1 otherwise
  */
@@ -79,8 +79,8 @@ static int rtp_hdr_val_chk(rtp_pkt * pkt, int len)
  * using the given seq number as the first one. And appends the source
  * to the list of active sources for the given RTP session.
  *
- * @stm_src The source for which to initialize the sequence numbers informations
- * @seq The first sequence number
+ * @param stm_src The source for which to initialize the sequence numbers informations
+ * @param seq The first sequence number
  */
 static void rtp_init_seq(rtp_ssrc * stm_src, uint16 seq)
 {
@@ -108,8 +108,8 @@ static void rtp_init_seq(rtp_ssrc * stm_src, uint16 seq)
  * rtp_init if it is the first received sequence number, checks for
  * misordered packets/jumps
  *
- * @stm_src The source for which to update the sequence numbers informations
- * @seq The sequence number to analyze
+ * @param stm_src The source for which to update the sequence numbers informations
+ * @param seq The sequence number to analyze
  */
 static void rtp_update_seq(rtp_ssrc * stm_src, uint16 seq)
 {
@@ -158,7 +158,7 @@ static void rtp_update_seq(rtp_ssrc * stm_src, uint16 seq)
  * creates a new source if the sender of the packet isnt already known
  * and appends it to the playout buffer of the source.
  *
- * @rtp_sess The RTP session for which to receive the packet
+ * @param rtp_sess The RTP session for which to receive the packet
  *
  * @return 0 if the packet was correctly received, 1 otherwise.
  */

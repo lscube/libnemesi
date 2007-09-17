@@ -66,10 +66,10 @@ rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc)
 /*
  * Connect local client to oremote rtcp input port in order to send our rtcp statistics.
  *
- * \param stm_src the stream source whose statistics are.
- * \param remoteaddr sockaddr of remote address.
- * \param port remote rtcp port.
- * \return 0 on OK, 1 if connection went wrong, -1 on internal fatal error.
+ * @param stm_src the stream source whose statistics are.
+ * @param remoteaddr sockaddr of remote address.
+ * @param port remote rtcp port.
+ * @return 0 on OK, 1 if connection went wrong, -1 on internal fatal error.
  * */
 static int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t port)
 {

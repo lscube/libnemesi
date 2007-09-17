@@ -30,7 +30,7 @@
  * Given an rtp_thread deallocates the binded payload parsers, the transport informations
  * and every session of the thread.
  *
- * @thrd The thread to clean
+ * @param thrd The thread to clean
  */
 static void rtp_clean(void * thrd)
 {
@@ -102,7 +102,7 @@ static void rtp_clean(void * thrd)
 /**
  * The RTP thread main loop, continuously calls rtp_recv every time there is data available.
  *
- * @args The rtp_thread for which to loop.
+ * @param args The rtp_thread for which to loop.
  */
 static void *rtp(void *args)
 {
@@ -204,7 +204,7 @@ rtp_thread *rtp_init(void)
  * Given an rtp_thread registers the main loop for the thread, binds the specific parsers
  * for the payloads announced for the thread.
  *
- * @rtp_th The newly allocated and initialized rtp thread
+ * @param rtp_th The newly allocated and initialized rtp thread
  *
  * @return 0 if everything was ok, 1 otherwise
  */
