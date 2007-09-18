@@ -36,8 +36,8 @@
  *
  * @{ */
 
-#ifndef __SDP_H
-#define __SDP_H
+#ifndef NEMESI_SDP_H
+#define NEMESI_SDP_H
 
 #include <nemesi/cc.h>
 
@@ -171,5 +171,6 @@ typedef struct {
 sdp_attr * sdp_get_attr(sdp_attr * attr_list, char * name);
 sdp_range sdp_parse_range(char * value);
 
-#endif                // __SDP_H
+#endif  /* NEMESI_SDP_H */
+
 /* @} */

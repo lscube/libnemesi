@@ -20,8 +20,9 @@
  *  
  * */
 
-#ifndef __RTP_PT_DEFS_H
-#define __RTP_PT_DEFS_H
+#ifndef NEMESI_RTP_PT_DEFS_H
+#define NEMESI_RTP_PT_DEFS_H
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -102,4 +103,4 @@ int rtp_dynpt_encname(rtp_pt * defs[], uint8 value, char *enc_name);
 //void rtp_pt_attrs_init(rtp_pt_attrs *);
 int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *);
 
-#endif
+#endif /* NEMESI_RTP_PT_DEFS_H */

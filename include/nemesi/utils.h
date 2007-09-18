@@ -20,8 +20,8 @@
  *  
  * */
 
-#ifndef __UTILS_H
-#define __UTILS_H
+#ifndef NEMESI_UTILS_H
+#define NEMESI_UTILS_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -52,4 +52,4 @@ int timeval_add(struct timeval *, const struct timeval *, const struct timeval *
 void f2time(double, struct timeval *);
 
 
-#endif
+#endif /* NEMESI_UTILS_H */

@@ -39,8 +39,8 @@
  *
  * @{ */
 
-#ifndef __BUFFERPOOL_H
-#define __BUFFERPOOL_H
+#ifndef NEMESI_BUFFERPOOL_H
+#define NEMESI_BUFFERPOOL_H
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -150,5 +150,6 @@ int bpkill(buffer_pool *);
 int bpget(buffer_pool *);
 int bpfree(buffer_pool *, int);
 int bprmv(buffer_pool *, playout_buff *, int);
-#endif
+
+#endif /* NEMESI_BUFFERPOOL_H */
 /* @} */

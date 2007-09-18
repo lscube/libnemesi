@@ -20,8 +20,8 @@
  *  
  * */
 
-#ifndef __RTCP_H
-#define __RTCP_H
+#ifndef NEMESI_RTCP_H
+#define NEMESI_RTCP_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -183,4 +183,4 @@ int rtcp_build_rr(rtp_session *, rtcp_pkt *);
 int rtcp_build_sdes(rtp_session *, rtcp_pkt *, int);
 int rtcp_send_bye(rtp_session *);
 
-#endif
+#endif /* NEMESI_RTCP_H */
