@@ -41,12 +41,13 @@
  *  
  * */
 
-/*! \file rtsp.h
- * \brief \b rtsp library definitions.
- * */
+/**
+ * @file rtsp_internals.h
+ * @brief \b rtsp internal definitions.
+ **/
 
-#ifndef __RTSP_H
-#define __RTSP_H
+#ifndef NEMESI_RTSP_INTERNALS_H
+#define NEMESI_RTSP_INTERNALS_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -224,7 +225,7 @@ int handle_pause_response(rtsp_thread *);
 int handle_teardown_response(rtsp_thread *);
 
 
-#endif
+#endif /* NEMESI_RTSP_INTERNALS_H */
 /**
  * @}
  */

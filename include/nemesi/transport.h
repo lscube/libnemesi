@@ -1,6 +1,3 @@
-#ifndef __NEMESI_TRANSPORT_H__
-#define __NEMESI_TRANSPORT_H__
-
 /* * 
  * This file is part of NetEmbryo
  *
@@ -22,6 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  *  
  * */
+
+#ifndef NEMESI_TRANSPORT_H
+#define NEMESI_TRANSPORT_H
 
 #include <netembryo/wsocket.h>
 #include <nemesi/types.h>
@@ -75,4 +75,4 @@ int nmst_write(nms_transport *, void *, size_t, void *);
 inline int nmst_is_active(nms_transport *);
 // ----------- End of Transport Layer Wrapper API ----------- //
 
-#endif
+#endif /* NEMESI_TRANSPORT_H */

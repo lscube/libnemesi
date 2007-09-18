@@ -20,8 +20,8 @@
  *  
  * */
 
-#ifndef __VERSION_H
-#define __VERSION_H
+#ifndef NEMESI_VERSION_H
+#define NEMESI_VERSION_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -36,4 +36,4 @@
 #endif
 #define PROG_NAME "NeMeSI"
 #define PROG_DESCR "NEtwork MEdia Streamer I"
-#endif
+#endif /* NEMESI_VERSION_H */

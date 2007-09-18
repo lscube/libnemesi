@@ -20,8 +20,8 @@
  *  
  * */
 
-#ifndef __METHODS_H
-#define __METHODS_H
+#ifndef NEMESI_METHODS_H
+#define NEMESI_METHODS_H
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -61,7 +61,7 @@
 #define RTSP_PLAY_METHOD    3
 #define RTSP_PAUSE_METHOD    4
 #define RTSP_SESSION_METHOD    5
-#define RTSP_HELLO_METHOD    6
+#define NEMESI_RTSP_HELLO_METHOD    6
 #define RTSP_RECORD_METHOD    7
 #define RTSP_CLOSE_METHOD    8
 #define RTSP_GET_PARAM_METHOD    9
@@ -80,7 +80,7 @@
 #define RTSP_PLAY_RESPONSE    103
 #define RTSP_PAUSE_RESPONSE    104
 #define RTSP_SESSION_RESPONSE    105
-#define RTSP_HELLO_RESPONSE    106
+#define NEMESI_RTSP_HELLO_RESPONSE    106
 #define RTSP_RECORD_RESPONSE    107
 #define RTSP_CLOSE_RESPONSE    108
 #define RTSP_GET_PARAM_RESPONSE    109
@@ -123,4 +123,4 @@
 #define RTSP_IS_CLIENT_ERROR(x) ((x>=RTSP_CLIENT_ERROR) && (x<RTSP_SERVER_ERROR))? 1 : 0
 #define RTSP_IS_SERVER_ERROR(x) (x>=RTSP_SERVER_ERROR)? 1 : 0
 
-#endif
+#endif /* NEMESI_METHODS_H */

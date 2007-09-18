@@ -24,8 +24,8 @@
  * rtsp library public interface definitions.
  */
 
-#ifndef _RTSP_H_
-#define _RTSP_H_
+#ifndef NEMESI_RTSP_H
+#define NEMESI_RTSP_H
 
 #include <pthread.h>
 #include <nemesi/cc.h>
@@ -187,4 +187,4 @@ inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl);
  * @}
  */
 
-#endif
+#endif /* NEMESI_RTSP_H */

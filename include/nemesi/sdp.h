@@ -36,8 +36,8 @@
  *
  * @{ */
 
-#ifndef __SDP_H
-#define __SDP_H
+#ifndef NEMESI_SDP_H
+#define NEMESI_SDP_H
 
 #include <nemesi/cc.h>
 
@@ -163,5 +163,5 @@ void sdp_session_destroy(sdp_session_info *);
 void sdp_media_destroy(sdp_medium_info *);
 int sdp_parse_m_descr(sdp_medium_info *, char *);
 
-#endif                // __SDP_H
+#endif  /* NEMESI_SDP_H */
 /* @} */

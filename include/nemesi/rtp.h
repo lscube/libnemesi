@@ -20,8 +20,9 @@
  *  
  * */
 
-#ifndef __RTP_H
-#define __RTP_H
+#ifndef NEMESI_RTP_H
+#define NEMESI_RTP_H
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -454,4 +455,4 @@ inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
                   rtp_parser_uninit parser_uninit);
 
 
-#endif
+#endif /* NEMESI_RTP_H */

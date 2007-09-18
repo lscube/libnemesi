@@ -20,8 +20,8 @@
  *  
  * */
 
-#ifndef _LIB_CC_STREAMING
-#define _LIB_CC_STREAMING
+#ifndef NEMESI_CC_H
+#define NEMESI_CC_H
 
 #include <string.h>
 
@@ -169,4 +169,4 @@ int cc_id3v2(cc_license *, cc_tag *);
 #undef CC_EXTERN
 #undef CC_GLOBAL_DATA
 
-#endif                // _LIB_CC_STREAMING
+#endif  /* NEMESI_CC_H */

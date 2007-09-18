@@ -20,8 +20,8 @@
  *  
  * */
 
-#ifndef __COMM_H
-#define __COMM_H
+#ifndef NEMESI_COMM_H
+#define NEMESI_COMM_H
 
 #include <stdio.h>
 
@@ -132,4 +132,4 @@ int uierror(const char *fmt, ...);
 
 inline void nms_header(void);
 
-#endif
+#endif /* NEMESI_COMM_H */
