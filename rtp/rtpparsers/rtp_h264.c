@@ -72,7 +72,7 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
             while (*value) {
                 char base64packet[1024];
                 uint8_t decoded_packet[1024];
-                uint32_t packet_size;
+                unsigned packet_size;
                 char *dst = base64packet;
 
                 while (*value && *value != ','
