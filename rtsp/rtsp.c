@@ -448,6 +448,40 @@ static int server_connect(char *host, char *port, int *sock, sock_type sock_type
     return 0;
 }
 
+static int seturlname(rtsp_thread * rtsp_th, char *urlname)
+{
+    char *server = NULL, *port = NULL, *path = NULL;
+
+    if (urltokenize(urlname, &server, &port, &path) > 0)
+        return 1;
+    if (port == NULL) {
+        if ((port = (char *) malloc(6)))
+            snprintf(port, 6, "%d", RTSP_DEFAULT_PORT);
+        else
+            return 1;
+    }
+    nms_printf(NMSML_DBG1, "server %s port %s\n", server, port);
+
+    if ((rtsp_th->urlname = malloc(strlen("rtsp://") + strlen(server) + 1 +
+                            strlen(path) + 1)) == NULL)
+        return 1;
+    strcpy(rtsp_th->urlname, "rtsp://");
+    strcat(rtsp_th->urlname, server);
+    strcat(rtsp_th->urlname, "/");
+    strcat(rtsp_th->urlname, path);
+#if 0                // port is already an allocated space => we use this without duplicating string;
+    if ((rtsp_th->server_port = (char *) malloc(strlen(port) + 1)) == NULL)
+        return 1;
+    strcpy(rtsp_th->server_port, port);
+#endif
+    rtsp_th->server_port = port;
+
+    // free no more useful memory
+    free(server);
+    free(path);
+
+    return 0;
+}
 
 /**
  * Sends to the controller the request to open a given url

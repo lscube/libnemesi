@@ -34,16 +34,6 @@
 #include <nemesi/sdp.h>
 #include <netembryo/rtsp_errors.h>
 
-/** @defgroup RTSP RTSP Public Interface
- *
- * @brief RTSP controller and management public interface
- *
- * The RTSP module requests the media streams and handles the service 
- * handshake. Once this phase is complete it behaves like a <em>remote 
- * controller</em> for the requested multimedia stream.
- *
- * @{ */
-
 /*! Default RTSP port (default setting from rfc) if not explicitly specified. */
 #define RTSP_DEFAULT_PORT 554
 
@@ -161,6 +151,23 @@ RTSP_COMMON_IF
 extern RTSP_Error const RTSP_Ready;
 extern RTSP_Error const RTSP_Reinitialized;
 
+/**
+ * RTSP Layer
+ * @defgroup RTSP_layer RTSP Layer
+ * @{
+ */
+
+
+/** @defgroup RTSP RTSP Public Interface
+ *
+ * @brief RTSP controller and management public interface
+ *
+ * The RTSP module requests the media streams and handles the service 
+ * handshake. Once this phase is complete it behaves like a <em>remote 
+ * controller</em> for the requested multimedia stream.
+ *
+ * @{ */
+
 rtsp_ctrl *rtsp_init(nms_rtsp_hints *);
 inline int rtsp_is_busy(rtsp_ctrl *);
 
@@ -170,18 +177,20 @@ int rtsp_open(rtsp_ctrl *, char *);
 int rtsp_pause(rtsp_ctrl *);
 int rtsp_stop(rtsp_ctrl *);
 
-//int rtsp_play(rtsp_ctrl *, char *);
 int rtsp_play(rtsp_ctrl *, double, double);
 int rtsp_seek(rtsp_ctrl *, double, double);
 
 int rtsp_uninit(rtsp_ctrl *);
 
-// enum states rtsp_status(rtsp_ctrl *);
 #define rtsp_status(ctrl) ctrl->status
 void rtsp_info_print(rtsp_ctrl *);
 
 inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl);
 inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl);
+
+/**
+ * @}
+ */
 
 /**
  * @}
