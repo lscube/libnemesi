@@ -84,7 +84,8 @@ static void clean_rtsp_th(rtsp_thread *rtsp_th)
 
     // Remove busy state if pending
     rtsp_unbusy(rtsp_th);
-    rtsp_th->response_id = -1;
+    if ( (rtsp_th->response_id == 200) || (rtsp_th->response_id == 0) )
+        rtsp_th->response_id = -1;
 
     // reset first RP port
     if (rtsp_th->hints
@@ -245,7 +246,7 @@ void *rtsp(void *rtsp_thrd)
                 } else {
                     while (rtsp_th->in_buffer.size > 0 && full_msg_rcvd(rtsp_th))
                         if (handle_rtsp_pkt(rtsp_th)) {
-                            nms_printf(NMSML_ERR, "\nError!\n");
+                            /*nms_printf(NMSML_ERR, "\nError!\n");*/
                             rtsp_reinit(rtsp_th);
                         }
                 } 
