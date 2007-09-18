@@ -62,7 +62,7 @@
 #include <nemesi/comm.h>
 #include <nemesi/rtsp.h>
 
-/** @defgroup RTSP_internal RTSP Internals
+/** @defgroup RTSP_layer RTSP Layer
  *
  * @brief Real Time Streaming Protocol (RTSP) implementation - rfc 2326.
  *
@@ -94,41 +94,41 @@ typedef struct nms_rtsp_interleaved_s {
 } nms_rtsp_interleaved;
 
 
-/*!
- * \brief Struct used for internal comunication
+/**
+ * @brief Struct used for internal comunication
  *
  * */
 struct command {
     char arg[256];        /*!< Possible command arguments. */
 };
 
-/*!
- * \brief RTSP Packet buffer.
+/**
+ * @brief RTSP Packet buffer.
  *
  * There the packets read from the RTSP port are composed and stored.
  * Since it's possible that the message comes fragmented in many packets
  * from the underlying transport protocol, we first check for completion and
  * then the message will be processed.
  *
- * */
+ **/
 struct rtsp_buffer {
     size_t size;        /*!< Full buffer size. */
     size_t first_pkt_size;    /*!< First packet size. */
     char *data;        /*!< Raw data. */
 };
 
-/*!
- * \brief Main structure for the RTSP module.
+/**
+ * @brief Main structure for the RTSP module.
  *
  * It contains the global data: the current state, the connection port,
  * the input buffer and the session queue.
  *
- * \note The \c type field shows the kind of media stream active, depending
+ * @note The \c type field shows the kind of media stream active, depending
  * on it RTSP has different behaviours.
  * 
- * \see rtsp_session
- * \see buffer
- * */
+ * @see rtsp_session
+ * @see buffer
+ **/
 typedef struct {
     RTSP_COMMON_IF nms_rtsp_hints *hints;
     uint16 force_rtp_port;
@@ -157,33 +157,108 @@ typedef struct {
     // |- int init_rtsp(void);
     // \- struct rtsp_ctrl *init_rtsp(void);
 
+/** 
+ * RTSP State Machine, dispatches incoming events to the
+ * corrent handler.
+ *
+ * @defgroup RTSP_state_machine RTSP State Machine
+ * @{ 
+ */
+extern int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
+
 void rtsp_unbusy(rtsp_thread *);
 int rtsp_reinit(rtsp_thread *);
 void rtsp_clean(void *);
-
-extern int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
 void *rtsp(void *);
 
+int init_state(rtsp_thread *, short);
+int ready_state(rtsp_thread *, short);
+int playing_state(rtsp_thread *, short);
+int recording_state(rtsp_thread *, short);
+/**
+ * @}
+ */
+
+/** 
+ * RTSP Response Handlers, they are used by the RTSP state machine
+ * to handle incoming responses.
+ *
+ * @defgroup RTSP_handlers RTSP Response Handlers
+ * @{ 
+ */
+int handle_rtsp_pkt(rtsp_thread *);
+int handle_get_response(rtsp_thread *);
+int handle_setup_response(rtsp_thread *);
+int handle_play_response(rtsp_thread *);
+int handle_pause_response(rtsp_thread *);
+int handle_teardown_response(rtsp_thread *);
+/**
+ * @}
+ */
+
+/** 
+ * RTSP Requests Senders, they are used by the RTSP public interface
+ * to create and send the RTSP requests through the network
+ *
+ * @defgroup RTSP_send RTSP Requests Senders
+ * @{ 
+ */
 int send_get_request(rtsp_thread *);
 int send_pause_request(rtsp_thread *, char *);
 int send_play_request(rtsp_thread *, char *);
 int send_setup_request(rtsp_thread *);
 int send_teardown_request(rtsp_thread *);
+/**
+ * @}
+ */
 
-int play_cmd(rtsp_thread *, ...);
-int pause_cmd(rtsp_thread *, ...);
-int stop_cmd(rtsp_thread *, ...);
-int open_cmd(rtsp_thread *, ...);
-int close_cmd(rtsp_thread *, ...);
 
-// RTSP packet handling/creation funcs.
-int seturlname(rtsp_thread *, char *);
-int handle_rtsp_pkt(rtsp_thread *);
+/** 
+ * RTSP Packets Handling, mainly called by the main loop to receive
+ * RTSP packets and by handlers to parse them.
+ *
+ * @defgroup RTSP_internals RTSP Packets Handling
+ * @{ 
+ */
 int full_msg_rcvd(rtsp_thread *);
 int rtsp_recv(rtsp_thread *);
 int body_exists(char *);
 int check_response(rtsp_thread *);
 int check_status(char *, rtsp_thread *);
+int remove_pkt(rtsp_thread *);
+int set_rtsp_media(rtsp_thread *);
+/**
+ * @}
+ */
+
+/** 
+ * RTSP Session Management
+ *
+ * @defgroup RTSP_sessions RTSP Sessions Management
+ * @{ 
+ */
+#define GCS_INIT 0
+#define GCS_NXT_SESS 1
+#define GCS_NXT_MED 2
+#define GCS_CUR_SESS 3
+#define GCS_CUR_MED 4
+#define GCS_UNINIT 5
+
+void *get_curr_sess(int cmd, ...);
+int set_rtsp_sessions(rtsp_thread *, int, char *, char *);
+rtsp_session *rtsp_sess_dup(rtsp_session *);
+rtsp_session *rtsp_sess_create(char *, char *);
+rtsp_medium *rtsp_med_create(rtsp_thread *);
+/**
+ * @}
+ */
+
+/** 
+ * RTSP Transport Options
+ *
+ * @defgroup RTSP_transport RTSP Transport
+ * @{ 
+ */
 int set_transport_str(rtp_session *, char **);
 int set_transport_str_udp(rtp_session *, char *);
 int set_transport_str_tcp(rtp_session *, char *);
@@ -196,33 +271,9 @@ int get_transport_str_tcp(rtp_session *, char *, char *);
 #ifdef HAVE_LIBSCTP
 int get_transport_str_sctp(rtp_session *, char *, char *);
 #endif
-
-#define GCS_INIT 0
-#define GCS_NXT_SESS 1
-#define GCS_NXT_MED 2
-#define GCS_CUR_SESS 3
-#define GCS_CUR_MED 4
-#define GCS_UNINIT 5
-void *get_curr_sess(int cmd, ...);
-// int get_curr_sess(rtsp_thread *, rtsp_session **, rtsp_medium **);
-
-int set_rtsp_sessions(rtsp_thread *, int, char *, char *);
-int set_rtsp_media(rtsp_thread *);
-rtsp_session *rtsp_sess_dup(rtsp_session *);
-rtsp_session *rtsp_sess_create(char *, char *);
-rtsp_medium *rtsp_med_create(rtsp_thread *);
-int remove_pkt(rtsp_thread *);
-
-int init_state(rtsp_thread *, short);
-int ready_state(rtsp_thread *, short);
-int playing_state(rtsp_thread *, short);
-int recording_state(rtsp_thread *, short);
-
-int handle_get_response(rtsp_thread *);
-int handle_setup_response(rtsp_thread *);
-int handle_play_response(rtsp_thread *);
-int handle_pause_response(rtsp_thread *);
-int handle_teardown_response(rtsp_thread *);
+/**
+ * @}
+ */
 
 
 #endif /* NEMESI_RTSP_INTERNALS_H */

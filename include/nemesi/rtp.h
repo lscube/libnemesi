@@ -293,6 +293,13 @@ enum rtp_protos {
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
 /**
+ * RTP Layer
+ * @defgroup rtp_layer RTP Layer
+ * @{
+ */
+
+
+/**
  * RTP Thread
  * @defgroup rtp_thread RTP Thread
  * @{
@@ -376,6 +383,10 @@ int rtp_transport_set(rtp_session *, int, void *);
 int rtp_transport_get(rtp_session *, int, void *, uint32);
 /**
  * @}
+ */
+
+/**
+ * @{
  */
 
 //************************************ internal functions
