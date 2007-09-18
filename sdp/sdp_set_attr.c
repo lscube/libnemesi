@@ -42,3 +42,44 @@ int sdp_set_attr(sdp_attr ** attr_list, char *a)
 
     return 0;
 }
+
+sdp_attr * sdp_get_attr(sdp_attr * attr_list, char * name)
+{
+    sdp_attr * cur_attr = NULL;
+
+    for (cur_attr = attr_list; cur_attr; cur_attr = cur_attr->next) {
+        if (!strcmp(cur_attr->name, name))
+            break;
+    }
+
+    return cur_attr;
+}
+
+/**
+ * Parses an SDP range attribute value
+ * (currently only NPT format is supported, the code is based on
+ *  feng's parse_play_time_range)
+ */
+sdp_range sdp_parse_range(char * value)
+{
+    sdp_range r = {0,0};
+    char tmp[5] = {0, };
+
+    if (!(value = strchr(value, '=')))
+        return r;
+
+    if (sscanf(value + 1, "%f", &r.begin) != 1) {
+        r.begin = 0;
+        if (sscanf(value + 1, "%4s", tmp) != 1 && !strcasecmp(tmp,"now-")) {
+            return r;
+        }
+    }
+
+    if (!(value = strchr(value, '-')))
+        return r;
+
+    if (sscanf(value + 1, "%f", &r.end) != 1)
+        r.end = 0;
+
+    return r;
+}

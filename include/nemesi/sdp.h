@@ -163,5 +163,13 @@ void sdp_session_destroy(sdp_session_info *);
 void sdp_media_destroy(sdp_medium_info *);
 int sdp_parse_m_descr(sdp_medium_info *, char *);
 
+typedef struct {
+    float begin;
+    float end;
+} sdp_range;
+
+sdp_attr * sdp_get_attr(sdp_attr * attr_list, char * name);
+sdp_range sdp_parse_range(char * value);
+
 #endif                // __SDP_H
 /* @} */
