@@ -20,6 +20,10 @@
  *  
  * */
 
+/** @file rtp_ssrc_queue.c
+ * This file contains the functions that manage the SSRC queue
+ */
+
 #include <nemesi/rtp.h>
 
 

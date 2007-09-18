@@ -20,6 +20,11 @@
  *  
  * */
 
+/** @file rtp_thread.c
+ * This file contains the RTP main loop function and functions to
+ * create and run a new RTP Thread.
+ */
+
 #include <nemesi/rtp.h>
 #include <nemesi/comm.h>
 

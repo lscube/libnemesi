@@ -280,29 +280,6 @@ enum rtp_protos {
     RTCP
 };
 
-rtp_thread *rtp_init(void);
-/**
- * Initializes a new rtp session with the specified endpoints
- * @param local local endpoint
- * @param peer remote endpoint
- * @return a new rtp session, NULL as failure
- */
-rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
-int rtp_thread_create(rtp_thread *);    // something like rtp_run could be better?
-
-int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt,
-            rtp_media_type media_type);
-int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime);
-
-rtp_pt * rtp_get_pt_info(rtp_session * rtp_sess, unsigned pt);
-
-// wait until rtp queues are ready
-int rtp_fill_buffers(rtp_thread *);
-
-// active ssrc list management
-rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head);
-rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc);
-
 #define RTP_FILL_OK        0
 // rtp_fill error codes
 #define RTP_BUFF_EMPTY        91
@@ -315,19 +292,76 @@ rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc);
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
 
 /**
- * RTP packet handling
- * @defgroup rtp_pkt RTP packet functions
+ * RTP Thread
+ * @defgroup rtp_thread RTP Thread
  * @{
  */
-rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32);
-inline int rtp_rm_pkt(rtp_ssrc *);
-void rtp_rm_all_pkts(rtp_ssrc *);
+rtp_thread *rtp_init(void);
+int rtp_thread_create(rtp_thread *);    // something like rtp_run could be better?
+/**
+ * @}
+ */
 
+
+/**
+ * RTP Payload Types
+ * @defgroup rtp_payload_type RTP Payload Types
+ * @{
+ */
+int rtp_announce_pt(rtp_session * rtp_sess, unsigned pt,
+            rtp_media_type media_type);
+int rtp_dynpt_reg(rtp_session * rtp_sess, unsigned pt, char *mime);
+
+rtp_pt * rtp_get_pt_info(rtp_session * rtp_sess, unsigned pt);
+/**
+ * @}
+ */
+
+
+/**
+ * RTP buffer handling
+ * @defgroup rtp_recv RTP packet handling
+ * @{
+ */
+int rtp_recv(rtp_session *);
+/**
+ * @}
+ */
+
+
+/**
+ * RTP SSRC Queue
+ * @defgroup rtp_ssrc_queue RTP SSRC Queue
+ * @{
+ */
+rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head);
+rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc);
+
+int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *,
+           enum rtp_protos);
+int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,
+          enum rtp_protos);
+/**
+ * @}
+ */
+
+
+/**
+ * RTP buffer handling
+ * @defgroup rtp_buffer RTP Buffer Access
+ * @{
+ */
+int rtp_fill_buffers(rtp_thread *);
 int rtp_fill_buffer(rtp_ssrc *, rtp_frame *, rtp_buff *);
+
 double rtp_get_next_ts(rtp_ssrc *);
 int16 rtp_get_next_pt(rtp_ssrc *);
 int rtp_get_fps(rtp_ssrc *);
+
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32);
+rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
+inline int rtp_rm_pkt(rtp_ssrc *);
+void rtp_rm_all_pkts(rtp_ssrc *);
 /**
  * @}
  */
@@ -342,6 +376,8 @@ int rtp_transport_get(rtp_session *, int, void *, uint32);
 /**
  * @}
  */
+
+//************************************ internal functions
 
 /**
  * RTP transport wrapper functions for rtp_transport_get
@@ -403,7 +439,7 @@ inline int rtp_set_rtpstream(rtp_session *, uint16);
 inline int rtp_set_rtcpstream(rtp_session *, uint16);
 inline int rtp_set_ssrc(rtp_session *, uint32);
 
-// internal functions
+rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
 
 // parsers
 #define RTP_PRSR_ERROR      -1
@@ -417,11 +453,5 @@ void rtp_parsers_new(rtp_parser * new_parsers,
 inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
                   rtp_parser_uninit parser_uninit);
 
-// rtp basic functions
-int rtp_recv(rtp_session *);
-int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *,
-           enum rtp_protos);
-int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,
-          enum rtp_protos);
 
 #endif

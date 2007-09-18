@@ -20,6 +20,10 @@
  *  
  * */
 
+/** @file rtp_recv.c
+ * This file contains the functions that perform packet reception and validity check.
+ */
+
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
 

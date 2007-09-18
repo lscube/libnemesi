@@ -45,16 +45,6 @@
  * \brief \b rtsp library definitions.
  * */
 
-/*! \defgroup RTSP RTSP Library
- *
- * \brief Real Time Streaming Protocol (RTSP) implementation - rfc 2326.
- *
- * The RTSP module requests the media streams and handles the service 
- * handshake. Once this phase is complete it behaves like a <em>remote 
- * controller</em> for the requested multimedia stream.
- *
- * @{ */
-
 #ifndef __RTSP_H
 #define __RTSP_H
 
@@ -70,6 +60,17 @@
 #include <nemesi/utils.h>
 #include <nemesi/comm.h>
 #include <nemesi/rtsp.h>
+
+/** @defgroup RTSP_internal RTSP Internals
+ *
+ * @brief Real Time Streaming Protocol (RTSP) implementation - rfc 2326.
+ *
+ * The RTSP module requests the media streams and handles the service 
+ * handshake. Once this phase is complete it behaves like a <em>remote 
+ * controller</em> for the requested multimedia stream.
+ *
+ * @{ 
+ */
 
 #ifndef RTSP_BUFFERSIZE
 #define RTSP_BUFFERSIZE 163840
@@ -224,4 +225,6 @@ int handle_teardown_response(rtsp_thread *);
 
 
 #endif
-/* @} */
+/**
+ * @}
+ */
