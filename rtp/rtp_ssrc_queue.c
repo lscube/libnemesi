@@ -121,7 +121,7 @@ static int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t 
  *
  * @return o if everything was ok, -1 on initialization errors
  */
-int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
+int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32_t ssrc,
           nms_sockaddr * recfrom, enum rtp_protos proto_type)
 {
     int addrcmp_err;
@@ -208,7 +208,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32 ssrc,
  *
  * @return SSRC_KNOWN, SSRC_NEW, SSRC_COLLISION, -1 on internal fatal error.
  * */
-int rtp_ssrc_check(rtp_session * rtp_sess, uint32 ssrc, rtp_ssrc ** stm_src,
+int rtp_ssrc_check(rtp_session * rtp_sess, uint32_t ssrc, rtp_ssrc ** stm_src,
            nms_sockaddr * recfrom, enum rtp_protos proto_type)
 {
     struct rtp_conflict *stm_conf = rtp_sess->conf_queue;

@@ -9,7 +9,6 @@ noinst_HEADERS	=	bufferpool.h \
 			rtpptdefs.h \
 			rtsp.h \
 			sdp.h \
-			types.h \
 			utils.h \
 			version.h \
             transport.h

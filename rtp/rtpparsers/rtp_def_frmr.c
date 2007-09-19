@@ -22,7 +22,7 @@
 
 #include <nemesi/rtp.h>
 
-int rtp_def_frmr(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+int rtp_def_frmr(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32_t *timestamp)
 {
     rtp_pkt *pkt;
     size_t pkt_len, dst_used=0;
@@ -41,7 +41,7 @@ int rtp_def_frmr(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *d
     return dst_used;
 }
 
-int rtp_def_frmr_nonblock(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32 *timestamp)
+int rtp_def_frmr_nonblock(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32_t *timestamp)
 {    
     rtp_pkt *pkt;
     size_t pkt_len, dst_used=0;

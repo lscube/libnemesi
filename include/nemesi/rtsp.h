@@ -98,7 +98,7 @@ typedef struct rtsp_medium_s {
  * @see rtsp_medium
  * */
 typedef struct rtsp_session_s {
-    uint64 Session_ID;    /*!< RTSP identifier. */
+    uint64_t Session_ID;    /*!< RTSP identifier. */
     int CSeq;        /*!< Last sent RTSP packet 
                    sequence number */
     char *pathname;        /*!< RTSP session identifier.

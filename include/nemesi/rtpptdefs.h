@@ -26,7 +26,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <nemesi/types.h>
+#include <stdint.h>
 
 #define RTP_DEF_CLK_RATE 8000
 
@@ -43,8 +43,8 @@ typedef enum {
 
 typedef struct {
     char **data;
-    uint32 size;
-    uint32 allocated;
+    uint32_t size;
+    uint32_t allocated;
 } rtp_pt_attrs;
 
 #define RTP_PT_ATTRS_INITIALIZER {NULL, 0, 0}
@@ -64,7 +64,7 @@ typedef struct {
 /* XXX audio and video fields must have different names, 
  * because they are used together in rtp_audio_video
  */
-#define RTP_AUDIO_FIELDS    uint8 channels;    /* Channels */
+#define RTP_AUDIO_FIELDS    uint8_t channels;    /* Channels */
 
 #define RTP_VIDEO_FIELDS
 
@@ -96,11 +96,11 @@ typedef struct _rtp_fmts_list {
 //rtp_pt **rtpptdefs_new(void);
 void rtpptdefs_new(rtp_pt *[]);
 rtp_pt *rtp_pt_new(rtp_media_type mtype);
-int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8 value);
-int rtp_dynpt_encname(rtp_pt * defs[], uint8 value, char *enc_name);
+int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8_t value);
+int rtp_dynpt_encname(rtp_pt * defs[], uint8_t value, char *enc_name);
 
 //!rtp_pt_attrs specific functions
 //void rtp_pt_attrs_init(rtp_pt_attrs *);
-int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *);
+int rtp_pt_attr_add(rtp_pt * defs[], uint8_t value, char *);
 
 #endif /* NEMESI_RTP_PT_DEFS_H */

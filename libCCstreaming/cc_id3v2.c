@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include <nemesi/cc.h>
-#include <nemesi/types.h>
 #include <nemesi/utils.h>
 
 // inspired by id3lib
@@ -57,38 +56,38 @@
 */
 
 struct id3frm {
-    uint8 id[4];
-    // uint32 size;
-    // uint8 size[sizeof(uint32)];
-    uint8 size[4];
-    uint16 flags;
-    uint8 charenc;
-    uint8 data[1];
+    uint8_t id[4];
+    // uint32_t size;
+    // uint8_t size[sizeof(uint32)];
+    uint8_t size[4];
+    uint16_t flags;
+    uint8_t charenc;
+    uint8_t data[1];
 };
 
 struct id3tag {
-    uint8 id[3];
-    uint8 major;
-    uint8 rev;
-    uint8 flags;
-    // uint8 size[sizeof(uint32)];
-    uint8 size[4];
+    uint8_t id[3];
+    uint8_t major;
+    uint8_t rev;
+    uint8_t flags;
+    // uint8_t size[sizeof(uint32)];
+    uint8_t size[4];
     // not using extended header
     struct id3frm frames[1];    // the tag MUST contain at least one frame
 };
 
-static uint8 enc_synchsafe_int(uint8 * enc_chr, uint32 num)
+static uint8_t enc_synchsafe_int(uint8_t * enc_chr, uint32_t num)
 {
-    uint32 encoded = 0;
-    // uint8 *enc_chr=(uint8 *)(&encoded);
+    uint32_t encoded = 0;
+    // uint8_t *enc_chr=(uint8_t *)(&encoded);
     const unsigned char bitsused = 7;
-    const uint32 maxval = MASK(bitsused * sizeof(uint32));
+    const uint32_t maxval = MASK(bitsused * sizeof(uint32_t));
     int i;
 
     num = min(num, maxval);
 
-    for (i = sizeof(uint32) - 1; i >= 0; i--) {
-        enc_chr[i] = (uint8) (num & MASK(bitsused));
+    for (i = sizeof(uint32_t) - 1; i >= 0; i--) {
+        enc_chr[i] = (uint8_t) (num & MASK(bitsused));
         num >>= bitsused;
     }
 
@@ -97,12 +96,12 @@ static uint8 enc_synchsafe_int(uint8 * enc_chr, uint32 num)
 
 int cc_id3v2(cc_license * license, cc_tag * tag)
 {
-    uint32 id3len = 0;
+    uint32_t id3len = 0;
     struct id3tag *id3;
     struct id3frm *frame;
     // frama lens
     int tit2 = 0, tpe1 = 0, tcop = 0;
-    uint8 *pos;
+    uint8_t *pos;
 
     // id3 length computation
     // first we calculate len of each tag
@@ -133,7 +132,7 @@ int cc_id3v2(cc_license * license, cc_tag * tag)
     id3len += ID3v2_HDRLEN;
 
     // alloc buffer for tag
-    if (!(id3 = malloc(id3len * sizeof(uint8))))
+    if (!(id3 = malloc(id3len)))
         return 1;
 
     // ID3v2 header creation
@@ -190,7 +189,7 @@ int cc_id3v2(cc_license * license, cc_tag * tag)
         frame = (struct id3frm *) (frame->data + tcop);
     }
 
-    tag->header = (int8 *) id3;
+    tag->header = (int8_t *) id3;
     tag->hdim = id3len;
 
     return 0;

@@ -208,7 +208,7 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
 
     if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) && (rtsp_th->in_buffer).data[0] == '$') {
         nms_rtsp_interleaved *p;
-        const uint8 m = ((rtsp_th->in_buffer).data[1]);
+        const uint8_t m = ((rtsp_th->in_buffer).data[1]);
 #define DATA_PTR (&((rtsp_th->in_buffer).data[4]))
 #define DATA_SIZE ((rtsp_th->in_buffer).first_pkt_size - 4)
 

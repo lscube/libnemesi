@@ -24,8 +24,7 @@
 #define NEMESI_CC_H
 
 #include <string.h>
-
-#include <nemesi/types.h>
+#include <stdint.h>
 
 /*! If CC_GLOBAL_DATA is defined, we initialize global data containing the
  * licenses
@@ -82,7 +81,7 @@ CC_EXTERN cc_perm cc_sa
 #endif                // CC_GOBAL_DATA
 ;
 
-#define CC_BITMASK_T uint8
+#define CC_BITMASK_T uint8_t
 
 typedef struct {
     char *name;
@@ -97,7 +96,7 @@ typedef struct {
  * 0001 || 0010 || 0100 || 1000
  *
  * If someday we need to select more special licenses we can "upgrade" the
- * field of bit from uint8 to uint16, or more...
+ * field of bit from uint8_t to uint16, or more...
  */
 #define CC_PD 1
 
@@ -112,7 +111,7 @@ CC_EXTERN cc_spec_license cc_spec_licenses[]
 
 /*
  * If someday we need to select more special licenses we can "upgrade" the
- * field of bit from uint8 to uint16, or more...
+ * field of bit from uint8_t to uint16, or more...
  */
 typedef struct _ccpermsmask {
     CC_BITMASK_T by:1;
@@ -148,10 +147,10 @@ typedef struct {
 } cc_license;
 
 typedef struct {
-    int8 *header;
-    uint32 hdim;
-    int8 *footer;
-    uint32 fdim;
+    int8_t *header;
+    uint32_t hdim;
+    int8_t *footer;
+    uint32_t fdim;
 } cc_tag;
 
 int issdplicense(char *sdp_a);

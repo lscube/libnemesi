@@ -29,7 +29,6 @@
 
 #include <unistd.h>
 
-#include <nemesi/types.h>
 #include <nemesi/comm.h>
 #include <nemesi/rtp.h>
 #include <nemesi/transport.h>
@@ -65,16 +64,16 @@ typedef enum {
 
 typedef struct {
 #ifdef WORDS_BIGENDIAN
-    uint32 ver:2;
-    uint32 pad:1;
-    uint32 count:5;
+    uint32_t ver:2;
+    uint32_t pad:1;
+    uint32_t count:5;
 #else
-    uint32 count:5;
-    uint32 pad:1;
-    uint32 ver:2;
+    uint32_t count:5;
+    uint32_t pad:1;
+    uint32_t ver:2;
 #endif
-    uint32 pt:8;
-    uint32 len:16;
+    uint32_t pt:8;
+    uint32_t len:16;
 
 } rtcp_common_t;
 
@@ -91,56 +90,56 @@ typedef struct {
 #endif
 
 typedef struct {
-    uint32 ssrc;
-    uint32 fraction:8;
-    int32 lost:24;
-    uint32 last_seq;
-    uint32 jitter;
-    uint32 last_sr;
-    uint32 dlsr;
+    uint32_t ssrc;
+    uint32_t fraction:8;
+    int32_t lost:24;
+    uint32_t last_seq;
+    uint32_t jitter;
+    uint32_t last_sr;
+    uint32_t dlsr;
 } rtcp_rr_t;
 
 typedef struct {
-    uint32 ntp_seq;
-    uint32 ntp_frac;
-    uint32 ntp_ts;
-    uint32 psent;
-    uint32 osent;
+    uint32_t ntp_seq;
+    uint32_t ntp_frac;
+    uint32_t ntp_ts;
+    uint32_t psent;
+    uint32_t osent;
 } rtcp_si_t;
 
 typedef struct {
-    uint8 type;
-    uint8 len;
-    uint8 data[1];
+    uint8_t type;
+    uint8_t len;
+    uint8_t data[1];
 } rtcp_sdes_item_t;
 
 typedef struct {
     rtcp_common_t common;
     union {
         struct {
-            uint32 ssrc;
+            uint32_t ssrc;
             rtcp_si_t si;
             rtcp_rr_t rr[1];
         } sr;
 
         struct {
-            uint32 ssrc;
+            uint32_t ssrc;
             rtcp_rr_t rr[1];
         } rr;
 
         struct rtcp_sdes {
-            uint32 src;
+            uint32_t src;
             rtcp_sdes_item_t item[1];
         } sdes;
 
         struct {
-            uint32 src[1];
+            uint32_t src[1];
         } bye;
 
         struct {
-            uint32 src;
+            uint32_t src;
             char name[4];
-            uint8 data[1];
+            uint8_t data[1];
         } app;
     } r;
 } rtcp_pkt;

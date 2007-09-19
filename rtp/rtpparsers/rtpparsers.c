@@ -91,7 +91,7 @@ void rtp_parsers_init(void)
     }
 }
 
-int rtp_parser_reg(rtp_session * rtp_sess, int16 pt, char *mime)
+int rtp_parser_reg(rtp_session * rtp_sess, int16_t pt, char *mime)
 {
     int i, j;
 
@@ -134,7 +134,7 @@ inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
 
 typedef struct {
     char *data;
-    uint32 data_size;
+    uint32_t data_size;
 } rtp_def_parser_s;
 
 static int rtp_def_parser(rtp_ssrc * stm_src, rtp_frame * fr,
@@ -143,7 +143,7 @@ static int rtp_def_parser(rtp_ssrc * stm_src, rtp_frame * fr,
     rtp_def_parser_s *priv = stm_src->privs[fr->pt];
     rtp_pkt *pkt;
     size_t pkt_len;
-    uint32 tot_pkts = 0;
+    uint32_t tot_pkts = 0;
 
     if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
         return RTP_BUFF_EMPTY;

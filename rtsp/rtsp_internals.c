@@ -41,11 +41,11 @@ int body_exists(char *in_buffer)
 int check_response(rtsp_thread * rtsp_th)
 {
     int wait_res;
-    uint64 wait_s_id;
+    uint64_t wait_s_id;
     int wait_cseq;
     char *str_pos, *content;
     int CSeq;
-    uint64 Session_ID = 0;
+    uint64_t Session_ID = 0;
     int opcode = 0;
 
     if ((content = strchr((rtsp_th->in_buffer).data, '\n')) == NULL) {
@@ -182,7 +182,7 @@ int full_msg_rcvd(rtsp_thread * rtsp_th)
     if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) && 
         in_buffer->size > 4 && in_buffer->data[0] == '$') {
 
-        if ((body_len = ntohs(*((uint16 *) &(in_buffer->data[2]))) + 4)
+        if ((body_len = ntohs(*((uint16_t *) &(in_buffer->data[2]))) + 4)
             <= in_buffer->size) {
             in_buffer->first_pkt_size = body_len;
             return 1;
@@ -335,7 +335,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
     sdp_medium_info *sdp_m;
     sdp_attr *sdp_attr;
     char *tkn, *ch;
-    uint8 pt;
+    uint8_t pt;
 
     switch (rtsp_th->descr_fmt) {
     case DESCRIPTION_SDP_FORMAT:

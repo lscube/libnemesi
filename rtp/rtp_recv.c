@@ -58,8 +58,8 @@ static int rtp_hdr_val_chk(rtp_pkt * pkt, int len)
         return 1;
     }
     if ((pkt->pad)
-        && (*(((uint8 *) pkt) + len - 1) >
-        (len - ((uint8 *) (pkt->data) - (uint8 *) pkt)))) {
+        && (*(((uint8_t *) pkt) + len - 1) >
+        (len - ((uint8_t *) (pkt->data) - (uint8_t *) pkt)))) {
         nms_printf(NMSML_WARN,
                "RTP Header not valid: mismatching lenght!"
                BLANK_LINE);
@@ -67,8 +67,8 @@ static int rtp_hdr_val_chk(rtp_pkt * pkt, int len)
     }
     if ((pkt->cc)
         && (pkt->cc >
-        (len - ((uint8 *) (pkt->data) - (uint8 *) pkt)) -
-        ((*(((uint8 *) pkt) + len - 1)) * pkt->pad))) {
+        (len - ((uint8_t *) (pkt->data) - (uint8_t *) pkt)) -
+        ((*(((uint8_t *) pkt) + len - 1)) * pkt->pad))) {
         nms_printf(NMSML_WARN,
                "RTP Header not valid: mismatching CSRC count!"
                BLANK_LINE);
@@ -86,7 +86,7 @@ static int rtp_hdr_val_chk(rtp_pkt * pkt, int len)
  * @param stm_src The source for which to initialize the sequence numbers informations
  * @param seq The first sequence number
  */
-static void rtp_init_seq(rtp_ssrc * stm_src, uint16 seq)
+static void rtp_init_seq(rtp_ssrc * stm_src, uint16_t seq)
 {
     struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
 
@@ -115,10 +115,10 @@ static void rtp_init_seq(rtp_ssrc * stm_src, uint16 seq)
  * @param stm_src The source for which to update the sequence numbers informations
  * @param seq The sequence number to analyze
  */
-static void rtp_update_seq(rtp_ssrc * stm_src, uint16 seq)
+static void rtp_update_seq(rtp_ssrc * stm_src, uint16_t seq)
 {
     struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
-    uint16 udelta = seq - stats->max_seq;
+    uint16_t udelta = seq - stats->max_seq;
 
     if (stats->probation) {
         if (seq == stats->max_seq + 1) {
@@ -252,7 +252,7 @@ int rtp_recv(rtp_session * rtp_sess)
             || !(rate = (rtp_sess->ptdefs[pkt->pt]->rate)))
             rate = RTP_DEF_CLK_RATE;
 
-        transit = (uint32) (((double) now.tv_sec +
+        transit = (uint32_t) (((double) now.tv_sec +
                    (double) now.tv_usec / 1000000.0) *
                    (double) rate) - ntohl(pkt->time);
         delta = transit - stm_src->ssrc_stats.transit;
@@ -280,7 +280,7 @@ int rtp_recv(rtp_session * rtp_sess)
             || !(rate = (rtp_sess->ptdefs[pkt->pt]->rate)))
             rate = RTP_DEF_CLK_RATE;
         (stm_src->ssrc_stats).transit =
-            (uint32) (((double) now.tv_sec +
+            (uint32_t) (((double) now.tv_sec +
                    (double) now.tv_usec / 1000000.0) *
                   (double) rate) - ntohl(pkt->time);
         (stm_src->ssrc_stats).jitter = 0;

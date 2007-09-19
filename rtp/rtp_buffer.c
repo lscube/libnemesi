@@ -118,7 +118,7 @@ double rtp_get_next_ts(rtp_ssrc * stm_src)
  *
  * @return The payload type id
  */
-int16 rtp_get_next_pt(rtp_ssrc * stm_src)
+int16_t rtp_get_next_pt(rtp_ssrc * stm_src)
 {
     rtp_pkt *pkt;
 
@@ -166,7 +166,7 @@ int rtp_get_fps(rtp_ssrc * stm_src)
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * @return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, int *len, uint32 n)
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, int *len, uint32_t n)
 {                // TODO complete;
     int i;
 

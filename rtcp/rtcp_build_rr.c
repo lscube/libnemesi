@@ -25,11 +25,11 @@
 int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
 {
     struct timeval now, offset;
-    uint32 linear;
+    uint32_t linear;
     rtp_ssrc *stm_src;
     rtcp_rr_t *rr;
-    uint32 expected, expected_interval, received_interval, lost_interval;
-    int32 lost;
+    uint32_t expected, expected_interval, received_interval, lost_interval;
+    int32_t lost;
 
     rr = pkt->r.rr.rr;
     pkt->common.len = 0;
@@ -61,10 +61,10 @@ int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
                 rr->fraction = 0;
             else
                 rr->fraction =
-                    (uint8) ((lost_interval << 8) /
+                    (uint8_t) ((lost_interval << 8) /
                          expected_interval);
 
-            lost = min((int32)
+            lost = min((int32_t)
                    (expected - stm_src->ssrc_stats.received -
                     1), 0x7fffff);
             lost = max(lost, -(1 << 23));
@@ -74,7 +74,7 @@ int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
                 htonl(stm_src->ssrc_stats.cycles +
                   stm_src->ssrc_stats.max_seq);
             rr->jitter =
-                htonl((uint32) stm_src->ssrc_stats.jitter);
+                htonl((uint32_t) stm_src->ssrc_stats.jitter);
             rr->last_sr =
                 htonl(((stm_src->ssrc_stats.
                     ntplastsr[0] & 0x0000ffff) << 16) |

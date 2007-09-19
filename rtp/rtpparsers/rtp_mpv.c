@@ -36,45 +36,45 @@ static rtpparser_info mpv_served = {
 typedef struct {
 //      mpa_data mpa_info;
     char *data;
-    uint32 data_size;
+    uint32_t data_size;
 } rtp_mpv;
 
 typedef struct {
 #ifdef WORDS_BIGENDIAN
-    uint32 mbz:5;
-    uint32 t:1;
-    uint32 tr:10;
-    uint32 an:1;
-    uint32 n:1;
-    uint32 s:1;
-    uint32 b:1;
-    uint32 e:1;
-    uint32 p:3;
-    uint32 fbv:1;
-    uint32 bfc:3;
-    uint32 ffv:1;
-    uint32 ffc:3;
+    uint32_t mbz:5;
+    uint32_t t:1;
+    uint32_t tr:10;
+    uint32_t an:1;
+    uint32_t n:1;
+    uint32_t s:1;
+    uint32_t b:1;
+    uint32_t e:1;
+    uint32_t p:3;
+    uint32_t fbv:1;
+    uint32_t bfc:3;
+    uint32_t ffv:1;
+    uint32_t ffc:3;
 #else
-    uint32 tr_h:2;
-    uint32 t:1;
-    uint32 mbz:5;
-    uint32 tr_l:8;
-    uint32 p:3;
-    uint32 e:1;
-    uint32 b:1;
-    uint32 s:1;
-    uint32 n:1;
-    uint32 an:1;
-    uint32 ffc:3;
-    uint32 ffv:1;
-    uint32 bfc:3;
-    uint32 fbv:1;
+    uint32_t tr_h:2;
+    uint32_t t:1;
+    uint32_t mbz:5;
+    uint32_t tr_l:8;
+    uint32_t p:3;
+    uint32_t e:1;
+    uint32_t b:1;
+    uint32_t s:1;
+    uint32_t n:1;
+    uint32_t an:1;
+    uint32_t ffc:3;
+    uint32_t ffv:1;
+    uint32_t bfc:3;
+    uint32_t fbv:1;
 #endif
     union {
-        uint8 data[1];
+        uint8_t data[1];
         struct {
-            uint32 ext_hdr;
-            uint8 data[1];
+            uint32_t ext_hdr;
+            uint8_t data[1];
         } mpeg2;
     } pt;
 } rtp_mpv_pkt;
@@ -94,7 +94,7 @@ static int mpv_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     rtp_mpv *mpv_priv = stm_src->privs[fr->pt];
     rtp_pkt *pkt;
     size_t pkt_len;
-    uint32 tot_pkts = 0;
+    uint32_t tot_pkts = 0;
 
     if (!(pkt = rtp_get_pkt(stm_src, &pkt_len)))
         return RTP_BUFF_EMPTY;

@@ -24,11 +24,11 @@
 
 int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
 {
-    int8 count = pkt->common.count;
+    int8_t count = pkt->common.count;
     rtcp_sdes_t *sdes = &(pkt->r.sdes);
     rtcp_sdes_item_t *rsp, *rspn;
     rtcp_sdes_item_t *end =
-        (rtcp_sdes_item_t *) ((uint32 *) pkt + pkt->common.len + 1);
+        (rtcp_sdes_item_t *) ((uint32_t *) pkt + pkt->common.len + 1);
 
     nms_printf(NMSML_DBG1, "Received SDES from SSRC: %u\n",
            pkt->r.sdes.src);
@@ -38,7 +38,7 @@ int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
             break;
         for (; rsp->type; rsp = rspn) {
             rspn =
-                (rtcp_sdes_item_t *) ((uint8 *) rsp + rsp->len +
+                (rtcp_sdes_item_t *) ((uint8_t *) rsp + rsp->len +
                           2);
             if (rspn >= end) {
                 rsp = rspn;
@@ -48,8 +48,8 @@ int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
                 return 1;
         }
         sdes =
-            (rtcp_sdes_t *) ((uint32 *) sdes +
-                     (((uint8 *) rsp - (uint8 *) sdes) >> 2) +
+            (rtcp_sdes_t *) ((uint32_t *) sdes +
+                     (((uint8_t *) rsp - (uint8_t *) sdes) >> 2) +
                      1);
     }
     if (count >= 0)

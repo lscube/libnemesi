@@ -26,7 +26,7 @@
 #if HAVE_LIBSCTP
 int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
     char str[256];
-    uint16 stream;
+    uint16_t stream;
     do {
         if ((tkna = strstrcase(tknb, "server_streams"))) {
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
@@ -60,7 +60,7 @@ int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             continue;
         }
         if ((tkna = strstrcase(tknb, "ssrc"))) {
-            uint32 ssrc;
+            uint32_t ssrc;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
@@ -83,7 +83,7 @@ int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
     char str[256];
     int value;
-    uint8 ilvd;
+    uint8_t ilvd;
     do {
         if ((tkna = strstrcase(tknb, "interleaved"))) {
             
@@ -98,7 +98,7 @@ int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
                        "Interleaved channel too high!\n");
                 return 1;
             }
-            ilvd = (uint8) value;
+            ilvd = (uint8_t) value;
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_ILVDRTP,
                       &ilvd);
 
@@ -113,14 +113,14 @@ int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
                        "Interleaved channel too high!\n");
                 return 1;
             }
-            ilvd = (uint8) value;
+            ilvd = (uint8_t) value;
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_ILVDRTCP,
                       &ilvd);
 
             continue;
         }
         if ((tkna = strstrcase(tknb, "ssrc"))) {
-            uint32 ssrc;
+            uint32_t ssrc;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
@@ -201,7 +201,7 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             continue;
         }
         if ((tkna = strstrcase(tknb, "ssrc"))) {
-            uint32 ssrc;
+            uint32_t ssrc;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
@@ -297,7 +297,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 #if HAVE_LIBSCTP
 int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
 {
-    uint16 streams[2];
+    uint16_t streams[2];
 
     sprintf(buff + strlen(buff), "unicast;");
 
@@ -342,7 +342,7 @@ int set_transport_str_udp(rtp_session * rtp_sess, char *buff)
 
 int set_transport_str_tcp(rtp_session * rtp_sess, char *buff)
 {
-    uint8 ilvds[2];
+    uint8_t ilvds[2];
 
     sprintf(buff + strlen(buff), "unicast;");
 

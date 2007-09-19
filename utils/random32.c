@@ -26,9 +26,9 @@
 #include <sys/utsname.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdint.h>
 #include <time.h>
 #include <byteswap.h> //XXX check in configure
-#include <nemesi/types.h>
 
 //shamelessly ripping avutils md5
 
@@ -170,21 +170,21 @@ static void av_md5_sum(uint8_t *dst, const uint8_t *src, const int len){
     av_md5_final(ctx, dst);
 }
 
-static uint32 md_32(char *string, int length)
+static uint32_t md_32(char *string, int length)
 {
     int hash[4];
     av_md5_sum(hash, string, length);
     return hash[0]^hash[1]^hash[2]^hash[3];
 }
 
-uint32 random32(int type)
+uint32_t random32(int type)
 {
     struct {
         int type;
         struct timeval tv;
         clock_t cpu;
         pid_t pid;
-        uint32 hid;
+        uint32_t hid;
         uid_t uid;
         gid_t gid;
         struct utsname name;

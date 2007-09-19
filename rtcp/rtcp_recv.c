@@ -26,7 +26,7 @@
 
 int rtcp_recv(rtp_session * rtp_sess)
 {
-    uint8 buffer[1024];
+    uint8_t buffer[1024];
     rtp_ssrc *stm_src;
 
     struct sockaddr_storage serveraddr;

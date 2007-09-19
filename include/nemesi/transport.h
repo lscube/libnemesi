@@ -24,7 +24,6 @@
 #define NEMESI_TRANSPORT_H
 
 #include <netembryo/wsocket.h>
-#include <nemesi/types.h>
 
 typedef struct {
     struct sockaddr *addr;
@@ -48,10 +47,10 @@ typedef struct {
             nms_addr dstaddr;     //!< stored in network order
         } udp;
         struct {
-            uint8 ilvd;        //!< stored in host order
+            uint8_t ilvd;        //!< stored in host order
         } tcp;
         struct {
-            uint16 stream;        //!< stored in host order
+            uint16_t stream;        //!< stored in host order
         } sctp;
     } u;
 

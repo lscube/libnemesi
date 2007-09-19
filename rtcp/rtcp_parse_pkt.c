@@ -25,7 +25,7 @@
 int rtcp_parse_pkt(rtp_ssrc * stm_src, rtcp_pkt * pkt, int len)
 {
     rtcp_pkt *end;
-    end = (rtcp_pkt *) ((uint32 *) pkt + len / 4);
+    end = (rtcp_pkt *) ((uint32_t *) pkt + len / 4);
 
     while (pkt < end) {
         switch ((pkt->common).pt) {
@@ -50,7 +50,7 @@ int rtcp_parse_pkt(rtp_ssrc * stm_src, rtcp_pkt * pkt, int len)
             return 1;
         }
         pkt =
-            (rtcp_pkt *) ((uint32 *) pkt + ntohs((pkt->common).len) +
+            (rtcp_pkt *) ((uint32_t *) pkt + ntohs((pkt->common).len) +
                   1);
     }
     return 0;

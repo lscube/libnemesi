@@ -259,7 +259,7 @@ void *rtsp(void *rtsp_thrd)
                     n = recv(p->rtcp_fd, buffer+4, RTSP_BUFFERSIZE-4, 0);
                     buffer[0]='$';
                     buffer[1]= p->proto.tcp.rtcp_ch;
-                    *((uint16 *) &buffer[2]) = htons((uint16) n);
+                    *((uint16_t *) &buffer[2]) = htons((uint16_t) n);
                     nmst_write(&rtsp_th->transport, buffer, n+4, NULL);
                     nms_printf(NMSML_DBG2,
                            "Sent RTCP packet on channel %u.\n",

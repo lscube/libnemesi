@@ -327,7 +327,7 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
             rtp_buff * config, rtp_ssrc * ssrc)
 {
 
-    uint32 len = RTP_XIPH_LEN(pkt, vorb->offset);
+    uint32_t len = RTP_XIPH_LEN(pkt, vorb->offset);
 
     if (vorb->id != RTP_XIPH_ID(pkt) ||    //not the current id
         //  !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)) || //XXX

@@ -272,7 +272,7 @@ rtp_pt *rtp_pt_new(rtp_media_type mtype)
  *
  * @return RTP_OK on success, RTP_ERROR otherwise.
  */
-int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8 value)
+int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8_t value)
 {
     if (value < 96) {
         nms_printf(NMSML_ERR,
@@ -297,7 +297,7 @@ int rtp_dynpt_set(rtp_pt * defs[], rtp_pt * pt, uint8 value)
  *
  * @return RTP_OK on succes, RTP_ERROR otherwise
  */
-int rtp_dynpt_encname(rtp_pt * defs[], uint8 value, char *enc_name)
+int rtp_dynpt_encname(rtp_pt * defs[], uint8_t value, char *enc_name)
 {
     if (value < 96) {
         nms_printf(NMSML_ERR,
@@ -339,7 +339,7 @@ void rtp_pt_attrs_init(rtp_pt_attrs * attrs)
  * @return RTP_OK on succes, RTP_ERROR if the id is out of range, 
  *         -1 if failed to allocate the attribute.
  */
-int rtp_pt_attr_add(rtp_pt * defs[], uint8 value, char *attr)
+int rtp_pt_attr_add(rtp_pt * defs[], uint8_t value, char *attr)
 {
     rtp_pt_attrs *attrs;
 

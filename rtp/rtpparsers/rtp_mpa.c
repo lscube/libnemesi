@@ -68,32 +68,32 @@ typedef struct {
     enum { MPA_MPEG_2_5 = 0, MPA_MPEG_RES, MPA_MPEG_2, MPA_MPEG_1 } id;
     enum { MPA_LAYER_RES = 0, MPA_LAYER_III, MPA_LAYER_II, MPA_LAYER_I
     } layer;
-    uint32 bit_rate;
+    uint32_t bit_rate;
     float sample_rate;    /*SamplingFrequency */
-    uint32 frame_size;
-    uint32 frm_len;
+    uint32_t frame_size;
+    uint32_t frm_len;
     // *** probably not needed ***
 #if 0
-    uint32 probed;
+    uint32_t probed;
     double time;
     // fragmentation suuport:
-    uint8 fragmented;
-    uint8 *frag_src;
-    uint32 frag_src_nbytes;
-    uint32 frag_offset;
+    uint8_t fragmented;
+    uint8_t *frag_src;
+    uint32_t frag_src_nbytes;
+    uint32_t frag_offset;
 #endif
 } mpa_frm;
 
 typedef struct {
 //      mpa_data mpa_info;
     char *data;
-    uint32 data_size;
+    uint32_t data_size;
 } rtp_mpa;
 
 typedef struct {
-    uint32 mbz:16;
-    uint32 frag_offset:16;
-    uint8 data[1];
+    uint32_t mbz:16;
+    uint32_t frag_offset:16;
+    uint8_t data[1];
 } rtp_mpa_pkt;
 
 #define RTP_MPA_PKT(pkt)        ((rtp_mpa_pkt *)(RTP_PKT_DATA(pkt)))
@@ -102,7 +102,7 @@ typedef struct {
 
 
 // private functions
-static int mpa_sync(uint8 ** data, size_t * data_len /*, mpa_frm *mpa */ )
+static int mpa_sync(uint8_t ** data, size_t * data_len /*, mpa_frm *mpa */ )
 {
 #if 0                // ID3 tag check not useful
     int ret;
@@ -178,10 +178,10 @@ static void mpa_info(mpa_frm * mpa)
 }
 #endif                // DEBUG
 
-static int mpa_decode_header(uint8 * buff_data, mpa_frm * mpa)
+static int mpa_decode_header(uint8_t * buff_data, mpa_frm * mpa)
 {
     int RowIndex, ColIndex;
-//      uint8 *buff_data = (uint8 * )&header;
+//      uint8_t *buff_data = (uint8_t * )&header;
     int padding;
     int BitrateMatrix[16][5] = BITRATEMATRIX;
     float SRateMatrix[4][3] = SRATEMATRIX;
@@ -286,7 +286,7 @@ static int mpa_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     rtp_pkt *pkt;
     size_t pkt_len;        // size of RTP packet, rtp header included.
     mpa_frm mpa;
-    uint8 *mpa_data;
+    uint8_t *mpa_data;
 
     if (!fr)
         return RTP_IN_PRM_ERR;

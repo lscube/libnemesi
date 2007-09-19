@@ -37,10 +37,10 @@
 #include <time.h>
 #include <sys/types.h>
 #include <pthread.h>
+#include <stdint.h>
 
 #include <nemesi/comm.h>
 #include <nemesi/bufferpool.h>
-#include <nemesi/types.h>
 #include <nemesi/utils.h>
 #include <nemesi/transport.h>
 #include <nemesi/rtpptdefs.h>
@@ -69,41 +69,41 @@
  */
 typedef struct {
 #ifdef WORDS_BIGENDIAN
-    uint32 ver:2;
-    uint32 pad:1;
-    uint32 ext:1;
-    uint32 cc:4;
+    uint32_t ver:2;
+    uint32_t pad:1;
+    uint32_t ext:1;
+    uint32_t cc:4;
 #else
-    uint32 cc:4;        //!< source count
-    uint32 ext:1;       //!< extension flag
-    uint32 pad:1;       //!< padding flag
-    uint32 ver:2;       //!< version
+    uint32_t cc:4;        //!< source count
+    uint32_t ext:1;       //!< extension flag
+    uint32_t pad:1;       //!< padding flag
+    uint32_t ver:2;       //!< version
 #endif
 #ifdef WORDS_BIGENDIAN
-    uint32 mark:1;
-    uint32 pt:7;
+    uint32_t mark:1;
+    uint32_t pt:7;
 #else
-    uint32 pt:7;        //!< payload type
-    uint32 mark:1;      //!< marker flag 
+    uint32_t pt:7;        //!< payload type
+    uint32_t mark:1;      //!< marker flag 
 #endif
-    uint32 seq:16;      //!< sequence number
-    uint32 time;        //!< timestamp
-    uint32 ssrc;        //!< synchronization source identifier
-    uint8 data[1];      //!< beginning of RTP data
+    uint32_t seq:16;      //!< sequence number
+    uint32_t time;        //!< timestamp
+    uint32_t ssrc;        //!< synchronization source identifier
+    uint8_t data[1];      //!< beginning of RTP data
 } rtp_pkt;
 
 typedef struct {
-    uint32 len;
+    uint32_t len;
     char *data;
 } rtp_buff;
 
 
 typedef struct {
     long len;
-    uint32 timestamp;
+    uint32_t timestamp;
     double time_sec;
     int fps;
-    uint8 pt;
+    uint8_t pt;
     char *data;
 } rtp_frame;
 
@@ -114,7 +114,7 @@ typedef struct {
 #define RTP_PKT_TS(pkt)     ntohl(pkt->time)
 #define RTP_PKT_SSRC(pkt)   ntohl(pkt->ssrc)
 #define RTP_PKT_DATA(pkt)   (pkt->data  + pkt->cc)
-#define RTP_PAYLOAD_SIZE(pkt, pkt_len)    ((pkt) ? pkt_len - ((pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+pkt_len-1)) * pkt->pad) : 0)
+#define RTP_PAYLOAD_SIZE(pkt, pkt_len)    ((pkt) ? pkt_len - ((pkt->data)-(uint8_t *)pkt) - pkt->cc - ((*(((uint8_t *)pkt)+pkt_len-1)) * pkt->pad) : 0)
 /*(pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1*/
 
 #define RTPPT_ISDYNAMIC(pt)    (pt >= 96)
@@ -153,7 +153,7 @@ typedef struct {
 
 typedef struct {
     char *spec;
-    uint32 ssrc;
+    uint32_t ssrc;
     sock_type type;
     enum modes { play, record } mode;
     int append;
@@ -165,21 +165,21 @@ typedef struct {
 } rtp_transport;
 
 struct rtp_ssrc_stats {
-    uint16 max_seq;         //!< highest seq number seen 
-    uint32 cycles;          //!< shifted count of seq number cycles 
-    uint32 base_seq;        //!< base seq number 
-    uint32 bad_seq;         //!< last 'bad' seq number + 1 
-    uint32 probation;       //!< sequ. pkts till source is valid 
-    uint32 received;        //!< RTP pkts received 
-    uint32 expected_prior;  //!< pkt expected at last interval 
-    uint32 received_prior;  //!< pkt received al last interval 
-    uint32 transit;         //!< relative trans time for prev pkt 
+    uint16_t max_seq;         //!< highest seq number seen 
+    uint32_t cycles;          //!< shifted count of seq number cycles 
+    uint32_t base_seq;        //!< base seq number 
+    uint32_t bad_seq;         //!< last 'bad' seq number + 1 
+    uint32_t probation;       //!< sequ. pkts till source is valid 
+    uint32_t received;        //!< RTP pkts received 
+    uint32_t expected_prior;  //!< pkt expected at last interval 
+    uint32_t received_prior;  //!< pkt received al last interval 
+    uint32_t transit;         //!< relative trans time for prev pkt 
     double jitter;          //!< extimated jitter 
     struct timeval lastrtp; //!< last RTP pkt reception time 
     struct timeval lastsr;  //!< last RTCP SR pkt reception time 
-    uint32 ntplastsr[2];    //!< last RTCP SR pkt NTP reception time 
-    uint32 firstts;         //!< first pkt timestamp
-    uint32 lastts;          //!< last pkt timestamp
+    uint32_t ntplastsr[2];    //!< last RTCP SR pkt NTP reception time 
+    uint32_t firstts;         //!< first pkt timestamp
+    uint32_t lastts;          //!< last pkt timestamp
     struct timeval firsttv; //!< first pkt timeval 
 };
 
@@ -198,13 +198,13 @@ struct rtp_ssrc_descr {
 struct rtp_session_stats {
     struct timeval tp;      //!< the last time an RTCP pkt was transmitted
     struct timeval tn;      //!< the next scheduled transmission time of an RTCP pkt
-    uint32 pmembers;        //!< the estimated number of session members at time tm was last recomputed
-    uint32 members;         //!< the most currente estimate for the number of the session members
-    uint32 senders;         //!< the most currente estimate for the number of senders in the session
+    uint32_t pmembers;        //!< the estimated number of session members at time tm was last recomputed
+    uint32_t members;         //!< the most currente estimate for the number of the session members
+    uint32_t senders;         //!< the most currente estimate for the number of senders in the session
     double rtcp_bw;         //!< the target RTCP bandwidth
-    uint8 we_sent;          //!< flag that is true if the app has sent data since the second previous RTCP Report was transmitted
+    uint8_t we_sent;          //!< flag that is true if the app has sent data since the second previous RTCP Report was transmitted
     double avg_rtcp_size;   //!< the average Compound RTCP pkt size, in octets, over all RTCP pkts sent and received by this partecipant
-    uint8 initial;          //!< the flag that is true if the app has not yet sent an RTCP pkt
+    uint8_t initial;          //!< the flag that is true if the app has not yet sent an RTCP pkt
 };
 
 #define SSRC_KNOWN    0
@@ -214,7 +214,7 @@ struct rtp_session_stats {
 #define SSRC_COLLISION    4
 
 typedef struct rtp_ssrc_s {
-    uint32 ssrc;
+    uint32_t ssrc;
     nms_sockaddr rtp_from;
     nms_sockaddr rtcp_from;
     nms_sockaddr rtcp_to;
@@ -248,7 +248,7 @@ typedef int (*rtp_parser_uninit) (rtp_ssrc * stm_src, unsigned pt);
 
 typedef struct rtp_session_s {
     void * owner; //!< rtsp_thread owning this rtp session
-    uint32 local_ssrc;
+    uint32_t local_ssrc;
     rtp_transport transport;
     struct rtp_session_stats sess_stats;
     rtp_ssrc *ssrc_queue;                   //!< queue of all known SSRCs
@@ -290,7 +290,7 @@ enum rtp_protos {
 #define RTP_SSRC_NOTVALID    97
 #define RTP_BUFFERING        99
 
-#define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8 *)(pkt->data)-(uint8 *)pkt) - pkt->cc - ((*(((uint8 *)pkt)+len-1)) * pkt->pad) : 0
+#define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8_t *)(pkt->data)-(uint8_t *)pkt) - pkt->cc - ((*(((uint8_t *)pkt)+len-1)) * pkt->pad) : 0
 
 /**
  * RTP Layer
@@ -345,9 +345,9 @@ int rtp_recv(rtp_session *);
 rtp_ssrc *rtp_active_ssrc_queue(rtp_session * rtp_sess_head);
 rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc);
 
-int rtp_ssrc_check(rtp_session *, uint32, rtp_ssrc **, nms_sockaddr *,
+int rtp_ssrc_check(rtp_session *, uint32_t, rtp_ssrc **, nms_sockaddr *,
            enum rtp_protos);
-int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32, nms_sockaddr *,
+int rtp_ssrc_init(rtp_session *, rtp_ssrc **, uint32_t, nms_sockaddr *,
           enum rtp_protos);
 /**
  * @}
@@ -363,10 +363,10 @@ int rtp_fill_buffers(rtp_thread *);
 int rtp_fill_buffer(rtp_ssrc *, rtp_frame *, rtp_buff *);
 
 double rtp_get_next_ts(rtp_ssrc *);
-int16 rtp_get_next_pt(rtp_ssrc *);
+int16_t rtp_get_next_pt(rtp_ssrc *);
 int rtp_get_fps(rtp_ssrc *);
 
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32);
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32_t);
 rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
 inline int rtp_rm_pkt(rtp_ssrc *);
 void rtp_rm_all_pkts(rtp_ssrc *);
@@ -380,7 +380,7 @@ void rtp_rm_all_pkts(rtp_ssrc *);
  * @{
  */
 int rtp_transport_set(rtp_session *, int, void *);
-int rtp_transport_get(rtp_session *, int, void *, uint32);
+int rtp_transport_get(rtp_session *, int, void *, uint32_t);
 /**
  * @}
  */
@@ -397,9 +397,9 @@ int rtp_transport_get(rtp_session *, int, void *, uint32);
 inline char *rtp_get_spec(rtp_session *);
 inline enum sock_types rtp_get_socktype(rtp_session *);
 inline enum deliveries rtp_get_delivery(rtp_session *);
-inline int rtp_get_srcaddrstr(rtp_session *, char *, uint32);
+inline int rtp_get_srcaddrstr(rtp_session *, char *, uint32_t);
 inline nms_addr *rtp_get_srcaddr(rtp_session *);
-inline int rtp_get_dstaddrstr(rtp_session *, char *, uint32);
+inline int rtp_get_dstaddrstr(rtp_session *, char *, uint32_t);
 inline nms_addr *rtp_get_dstaddr(rtp_session *);
 inline int rtp_get_layers(rtp_session *);
 inline enum modes rtp_get_mode(rtp_session *);
@@ -414,13 +414,13 @@ inline in_port_t rtp_get_srvrtcpport(rtp_session *);
 inline int rtp_get_cliports(rtp_session *, in_port_t[2]);
 inline in_port_t rtp_get_clirtpport(rtp_session *);
 inline in_port_t rtp_get_clirtcpport(rtp_session *);
-inline int rtp_get_interleaved(rtp_session *, uint8[2]);
-inline uint8 rtp_get_ilvdrtp(rtp_session *);
-inline uint8 rtp_get_ilvdrtcp(rtp_session *);
-inline int rtp_get_streams(rtp_session *, uint16[2]);
-inline uint16 rtp_get_rtpstream(rtp_session *);
-inline uint16 rtp_get_rtcpstream(rtp_session *);
-inline uint32 rtp_get_ssrc(rtp_session *);
+inline int rtp_get_interleaved(rtp_session *, uint8_t[2]);
+inline uint8_t rtp_get_ilvdrtp(rtp_session *);
+inline uint8_t rtp_get_ilvdrtcp(rtp_session *);
+inline int rtp_get_streams(rtp_session *, uint16_t[2]);
+inline uint16_t rtp_get_rtpstream(rtp_session *);
+inline uint16_t rtp_get_rtcpstream(rtp_session *);
+inline uint32_t rtp_get_ssrc(rtp_session *);
 
 // rtp transport wrapper functions for rtp_transport_set
 // inline char *rtp_set_spec(rtp_session *, char *); // not settable
@@ -443,13 +443,13 @@ inline int rtp_set_srvrtcpport(rtp_session *, in_port_t);
 inline int rtp_set_cliports(rtp_session *, in_port_t[2]);
 inline int rtp_set_clirtpport(rtp_session *, in_port_t);
 inline int rtp_set_clirtcpport(rtp_session *, in_port_t);
-inline int rtp_set_interleaved(rtp_session *, uint8[2]);
-inline int rtp_set_ilvdrtp(rtp_session *, uint8);
-inline int rtp_set_ilvdrtcp(rtp_session *, uint8);
-inline int rtp_set_streams(rtp_session *, uint16[2]);
-inline int rtp_set_rtpstream(rtp_session *, uint16);
-inline int rtp_set_rtcpstream(rtp_session *, uint16);
-inline int rtp_set_ssrc(rtp_session *, uint32);
+inline int rtp_set_interleaved(rtp_session *, uint8_t[2]);
+inline int rtp_set_ilvdrtp(rtp_session *, uint8_t);
+inline int rtp_set_ilvdrtcp(rtp_session *, uint8_t);
+inline int rtp_set_streams(rtp_session *, uint16_t[2]);
+inline int rtp_set_rtpstream(rtp_session *, uint16_t);
+inline int rtp_set_rtcpstream(rtp_session *, uint16_t);
+inline int rtp_set_ssrc(rtp_session *, uint32_t);
 
 rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
 
@@ -459,7 +459,7 @@ rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
 #define RTP_REG_STATIC      -3
 
 void rtp_parsers_init(void);
-int rtp_parser_reg(rtp_session *, int16, char *);
+int rtp_parser_reg(rtp_session *, int16_t, char *);
 void rtp_parsers_new(rtp_parser * new_parsers,
              rtp_parser_init * new_parsers_inits);
 inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,

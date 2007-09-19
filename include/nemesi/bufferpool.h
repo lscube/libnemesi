@@ -48,8 +48,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-
-#include <nemesi/types.h>
+#include <stdint.h>
 
 /*! The number of slots consisting the Playout Buffer. */            /* #define BP_SLOT_NUM 50 */
 /* 1000ms / 20ms = Playout Buffer Size (in seconds) / Required RTP payload size (in seconds) */
@@ -113,7 +112,7 @@ typedef struct {
     int pocount;            /*!< List members count. */
     int pohead;            /*!< List head. */
     int potail;            /*!< List tail. */
-    uint32 cycles;            /*!< Counts how many times the RTP 
+    uint32_t cycles;            /*!< Counts how many times the RTP 
                                          \c timestamp rolls over */
                                          // shawill: probably to be moved.
 } playout_buff;
@@ -143,7 +142,7 @@ typedef struct {
 #define PKT_MISORDERED    2
 
 int poinit(playout_buff *, buffer_pool *);
-int poadd(playout_buff *, int, uint32);
+int poadd(playout_buff *, int, uint32_t);
 int podel(playout_buff *, int);
 int bpinit(buffer_pool *);
 int bpkill(buffer_pool *);

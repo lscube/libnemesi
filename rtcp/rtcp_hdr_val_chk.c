@@ -36,16 +36,16 @@ int rtcp_hdr_val_chk(rtcp_pkt * pkt, int len)
         nms_printf(NMSML_DBG2,
                "RTCP Compound packet arrived (total len=%d)\n",
                len);
-        if ((*(uint16 *) pkt & RTCP_VALID_MASK) != RTCP_VALID_VALUE) {
+        if ((*(uint16_t *) pkt & RTCP_VALID_MASK) != RTCP_VALID_VALUE) {
             nms_printf(NMSML_WARN,
                    "RTCP Header not valid: first pkt of Compound is not a SR (or RR)!\n"
                    BLANK_LINE);
             return 1;
         }
-        end = (rtcp_pkt *) ((uint32 *) pkt + len / 4);
+        end = (rtcp_pkt *) ((uint32_t *) pkt + len / 4);
         do
             pkt =
-                (rtcp_pkt *) ((uint32 *) pkt +
+                (rtcp_pkt *) ((uint32_t *) pkt +
                       ntohs((pkt->common).len) + 1);
         while ((pkt < end) && ((pkt->common).ver == 2));
 
@@ -71,7 +71,7 @@ int rtcp_hdr_val_chk(rtcp_pkt * pkt, int len)
             return 1;
         }
         if (((pkt->common).pad)
-            && (*(((uint8 *) pkt) + len - 1) > (pkt->common).len * 4)) {
+            && (*(((uint8_t *) pkt) + len - 1) > (pkt->common).len * 4)) {
             nms_printf(NMSML_WARN,
                    "RTCP Header not valid: mismatching lenght!\n"
                    BLANK_LINE);

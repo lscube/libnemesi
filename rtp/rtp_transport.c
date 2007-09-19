@@ -181,33 +181,33 @@ int rtp_transport_set(rtp_session * rtp_sess, int par, void *value)
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_ILVDRTP:
-        rtp_sess->transport.RTP.u.tcp.ilvd = *(uint8 *) value;
+        rtp_sess->transport.RTP.u.tcp.ilvd = *(uint8_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_ILVDRTCP:
-        rtp_sess->transport.RTCP.u.tcp.ilvd = *(uint8 *) value;
+        rtp_sess->transport.RTCP.u.tcp.ilvd = *(uint8_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_INTERLEAVED:
-        rtp_sess->transport.RTP.u.tcp.ilvd  = ((uint8 *) value)[0];
-        rtp_sess->transport.RTCP.u.tcp.ilvd = ((uint8 *) value)[1];
+        rtp_sess->transport.RTP.u.tcp.ilvd  = ((uint8_t *) value)[0];
+        rtp_sess->transport.RTCP.u.tcp.ilvd = ((uint8_t *) value)[1];
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_STREAMRTP:
-        rtp_sess->transport.RTP.u.sctp.stream = *(uint16 *) value;
+        rtp_sess->transport.RTP.u.sctp.stream = *(uint16_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_STREAMRTCP:
-        rtp_sess->transport.RTCP.u.sctp.stream = *(uint16 *) value;
+        rtp_sess->transport.RTCP.u.sctp.stream = *(uint16_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_STREAMS:
-        rtp_sess->transport.RTP.u.sctp.stream  = ((uint16 *) value)[0];
-        rtp_sess->transport.RTCP.u.sctp.stream = ((uint16 *) value)[1];
+        rtp_sess->transport.RTP.u.sctp.stream  = ((uint16_t *) value)[0];
+        rtp_sess->transport.RTCP.u.sctp.stream = ((uint16_t *) value)[1];
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_SSRC:
-        rtp_sess->transport.ssrc = *(uint32 *) value;
+        rtp_sess->transport.ssrc = *(uint32_t *) value;
         ret = RTP_TRANSPORT_SET;
         break;
     default:
@@ -224,7 +224,7 @@ int rtp_transport_set(rtp_session * rtp_sess, int par, void *value)
  * @param value A pointer to the buffer where to save the retrieved value
  * @param len The size of the buffer where to save the retrieved value
  */
-int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
+int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32_t len)
 {
     int ret = RTP_TRANSPORT_NOTSET;
     // switch here for parameters that do NOT need value
@@ -332,33 +332,33 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32 len)
         break;
     
     case RTP_TRANSPORT_ILVDRTP:
-        *(uint8 *) value = rtp_sess->transport.RTP.u.tcp.ilvd;
+        *(uint8_t *) value = rtp_sess->transport.RTP.u.tcp.ilvd;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_ILVDRTCP:
-        *(uint8 *) value = rtp_sess->transport.RTCP.u.tcp.ilvd;
+        *(uint8_t *) value = rtp_sess->transport.RTCP.u.tcp.ilvd;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_INTERLEAVED:
-        ((uint8 *)value)[0] = rtp_sess->transport.RTP.u.tcp.ilvd;
-        ((uint8 *)value)[1] = rtp_sess->transport.RTCP.u.tcp.ilvd;
+        ((uint8_t *)value)[0] = rtp_sess->transport.RTP.u.tcp.ilvd;
+        ((uint8_t *)value)[1] = rtp_sess->transport.RTCP.u.tcp.ilvd;
         ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_STREAMRTP:
-        if ((*(uint16 *) value = rtp_sess->transport.RTP.u.sctp.stream))
+        if ((*(uint16_t *) value = rtp_sess->transport.RTP.u.sctp.stream))
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_STREAMRTCP:
-        if ((*(uint16 *) value = rtp_sess->transport.RTCP.u.sctp.stream))
+        if ((*(uint16_t *) value = rtp_sess->transport.RTCP.u.sctp.stream))
             ret = RTP_TRANSPORT_SET;
         break;
     case RTP_TRANSPORT_STREAMS:
-        if ( ( ((uint16 *)value)[0] = rtp_sess->transport.RTP.u.sctp.stream) &&
-           ( ((uint16 *)value)[1] = rtp_sess->transport.RTCP.u.sctp.stream) )
+        if ( ( ((uint16_t *)value)[0] = rtp_sess->transport.RTP.u.sctp.stream) &&
+           ( ((uint16_t *)value)[1] = rtp_sess->transport.RTCP.u.sctp.stream) )
             ret = RTP_TRANSPORT_SET;
             break;
     case RTP_TRANSPORT_SSRC:
-        if ((*(uint32 *) value = rtp_sess->transport.ssrc))
+        if ((*(uint32_t *) value = rtp_sess->transport.ssrc))
             ret = RTP_TRANSPORT_SET;
         break;
     default:
@@ -380,7 +380,7 @@ inline enum deliveries rtp_get_delivery(rtp_session * rtp_sess)
 }
 
 inline int rtp_get_srcaddrstr(rtp_session * rtp_sess, char *addrstr,
-                  uint32 strlen)
+                  uint32_t strlen)
 {
     return rtp_transport_get(rtp_sess, RTP_TRANSPORT_SRCADDRSTR, addrstr,
                  strlen);
@@ -392,7 +392,7 @@ inline nms_addr *rtp_get_srcaddr(rtp_session * rtp_sess)
 }
 
 inline int rtp_get_dstaddrstr(rtp_session * rtp_sess, char *addrstr,
-                  uint32 strlen)
+                  uint32_t strlen)
 {
     return rtp_transport_get(rtp_sess, RTP_TRANSPORT_DSTADDRSTR, addrstr,
                  strlen);
@@ -471,39 +471,39 @@ inline int rtp_get_cliports(rtp_session * rtp_sess, in_port_t ports[2])
                  sizeof(ports));
 }
 
-inline uint8 rtp_get_ilvdrtp(rtp_session * rtp_sess)
+inline uint8_t rtp_get_ilvdrtp(rtp_session * rtp_sess)
 {
     return rtp_sess->transport.RTP.u.tcp.ilvd;
 }
 
-inline uint8 rtp_get_ilvdrtcp(rtp_session * rtp_sess)
+inline uint8_t rtp_get_ilvdrtcp(rtp_session * rtp_sess)
 {
     return rtp_sess->transport.RTCP.u.tcp.ilvd;
 }
 
-inline int rtp_get_interleaved(rtp_session * rtp_sess, uint8 ilvds[2])
+inline int rtp_get_interleaved(rtp_session * rtp_sess, uint8_t ilvds[2])
 {
     return rtp_transport_get(rtp_sess, RTP_TRANSPORT_INTERLEAVED, ilvds,
                  sizeof(ilvds));
 }
 
-inline uint16 rtp_get_rtpstream(rtp_session * rtp_sess)
+inline uint16_t rtp_get_rtpstream(rtp_session * rtp_sess)
 {
     return rtp_sess->transport.RTP.u.sctp.stream;
 }
 
-inline uint16 rtp_get_rtcpstream(rtp_session * rtp_sess)
+inline uint16_t rtp_get_rtcpstream(rtp_session * rtp_sess)
 {
     return rtp_sess->transport.RTCP.u.sctp.stream;
 }
 
-inline int rtp_get_streams(rtp_session * rtp_sess, uint16 streams[2])
+inline int rtp_get_streams(rtp_session * rtp_sess, uint16_t streams[2])
 {
     return rtp_transport_get(rtp_sess, RTP_TRANSPORT_STREAMS, streams,
                  sizeof(streams));
 }
 
-inline uint32 rtp_get_ssrc(rtp_session * rtp_sess)
+inline uint32_t rtp_get_ssrc(rtp_session * rtp_sess)
 {
     return rtp_sess->transport.ssrc;
 }
@@ -599,37 +599,37 @@ inline int rtp_set_clirtcpport(rtp_session * rtp_sess, in_port_t port)
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_CLIRTCP, &port);
 }
 
-inline int rtp_set_ilvdrtp(rtp_session * rtp_sess, uint8 ilvd)
+inline int rtp_set_ilvdrtp(rtp_session * rtp_sess, uint8_t ilvd)
 {
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_ILVDRTP, &ilvd);
 }
 
-inline int rtp_set_ilvdrtcp(rtp_session * rtp_sess, uint8 ilvd)
+inline int rtp_set_ilvdrtcp(rtp_session * rtp_sess, uint8_t ilvd)
 {
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_ILVDRTCP, &ilvd);
 }
 
-inline int rtp_set_interleaved(rtp_session * rtp_sess, uint8 ilvds[2])
+inline int rtp_set_interleaved(rtp_session * rtp_sess, uint8_t ilvds[2])
 {
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_INTERLEAVED, ilvds);
 }
 
-inline int rtp_set_rtpstream(rtp_session * rtp_sess, uint16 stream)
+inline int rtp_set_rtpstream(rtp_session * rtp_sess, uint16_t stream)
 {
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_STREAMRTP, &stream);
 }
 
-inline int rtp_set_rtcpstream(rtp_session * rtp_sess, uint16 stream)
+inline int rtp_set_rtcpstream(rtp_session * rtp_sess, uint16_t stream)
 {
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_STREAMRTCP, &stream);
 }
 
-inline int rtp_set_streams(rtp_session * rtp_sess, uint16 streams[2])
+inline int rtp_set_streams(rtp_session * rtp_sess, uint16_t streams[2])
 {
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_STREAMS, streams);
 }
 
-inline int rtp_set_ssrc(rtp_session * rtp_sess, uint32 ssrc)
+inline int rtp_set_ssrc(rtp_session * rtp_sess, uint32_t ssrc)
 {
     return rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 }

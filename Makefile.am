@@ -19,7 +19,6 @@ libinclude_HEADERS = 	include/nemesi/bufferpool.h\
 			include/nemesi/rtsp.h\
 			include/nemesi/comm.h\
 			include/nemesi/sdp.h\
-			include/nemesi/types.h\
 			include/nemesi/utils.h\
 			include/nemesi/methods.h\
 			include/nemesi/version.h\

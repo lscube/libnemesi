@@ -32,11 +32,11 @@
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
+#include <stdint.h>
 #include <sys/types.h>
 #include <sys/time.h>
 
 #include <nemesi/comm.h>
-#include <nemesi/types.h>
 
 #define min(x,y) ((x) < (y) ? (x) : (y))
 #define max(x,y) ((x) > (y) ? (x) : (y))
@@ -45,7 +45,7 @@ int urltokenize(char *, char **, char **, char **);
 char *strstrcase(char *, const char *);
 int strncmpcase(const char *, const char *, size_t);
 int strcmpcase(const char *, const char *);
-uint32 random32(int);
+uint32_t random32(int);
 int timeval_subtract(struct timeval *, const struct timeval *,
              const struct timeval *);
 int timeval_add(struct timeval *, const struct timeval *, const struct timeval *);

@@ -82,12 +82,12 @@ typedef struct nms_rtsp_interleaved_s {
     int rtcp_fd; //!< output rtcp local socket
     union {
         struct {
-            uint8 rtp_ch;
-            uint8 rtcp_ch;
+            uint8_t rtp_ch;
+            uint8_t rtcp_ch;
         } tcp;
         struct {
-            uint16 rtp_st;
-            uint16 rtcp_st;
+            uint16_t rtp_st;
+            uint16_t rtcp_st;
         } sctp;
     } proto;
     struct nms_rtsp_interleaved_s *next;
@@ -131,12 +131,12 @@ struct rtsp_buffer {
  **/
 typedef struct {
     RTSP_COMMON_IF nms_rtsp_hints *hints;
-    uint16 force_rtp_port;
+    uint16_t force_rtp_port;
     pthread_cond_t cond_busy;
     nms_transport transport;
     sock_type default_rtp_proto;
     nms_rtsp_interleaved *interleaved;
-    uint16 next_ilvd_ch;
+    uint16_t next_ilvd_ch;
     // int fd; /*!< file descriptor for reading the data coming from the server */
     /*! \enum types enum possible kind of stream. */
     enum types { M_ON_DEMAND, CONTAINER } type;    /*!< Kind of active
