@@ -22,12 +22,6 @@
  * Repository of miscellaneus functions ripped from ffmpeg
  */
 
-/**
- * decodes base64
- * param order as strncpy()
- * Copyright (c) 2006 Ryan Martell. (rdm4@martellventures.com)
- */
-
 #include <stdint.h>
 
 static uint8_t map2[] =
@@ -43,6 +37,12 @@ static uint8_t map2[] =
     0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b,
     0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33
 };
+
+/**
+ * decodes base64
+ * param order as strncpy()
+ * Copyright (c) 2006 Ryan Martell. (rdm4@martellventures.com)
+ */
 
 int nms_base64_decode(uint8_t * out, const char *in, int out_length)
 {
