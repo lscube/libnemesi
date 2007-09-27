@@ -88,16 +88,8 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     PLEN = PLEN << 5;
     PLEN |= header.plen2;
 
-    if (header.p)
-        len += 2;
-
-    if (!priv)
-        priv = fr->data = calloc(1, len);
-    else
-        priv = fr->data = realloc(priv, len);
-
     if (header.p) {
-        memset(fr->data, 0, 2);
+        len += 2;
         offset += 2;
     }
 
@@ -106,6 +98,16 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     fprintf(stderr, "P: %u V: %u PLEN: %u : %u + %u ------\n", header.p, header.v, PLEN, header.plen1, header.plen2);
     start += PLEN; 
+
+    len -= start;
+
+    if (!priv)
+        priv = fr->data = calloc(1, len);
+    else
+        priv = fr->data = realloc(priv, len);
+
+    if (header.p)
+        memset(fr->data, 0, 2);
 
     memcpy(fr->data + offset, buf + start, len);
     fr->len = len;
