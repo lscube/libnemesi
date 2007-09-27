@@ -38,8 +38,11 @@
     NULL \
 }
 
-/* the <tt>rtp_parser_init</tt> function is called at rtp thread start (in <tt>rtp_thread_create</tt>)
- * for all the parsers registered for announced payload types (present in the <tt>announced_fmts</tt> list)
+/**
+ * the <tt>rtp_parser_init</tt> function is called at rtp thread start
+ * (in <tt>rtp_thread_create</tt>)
+ * for all the parsers registered for announced payload types
+ * (present in the <tt>announced_fmts</tt> list)
  * */
 
 #define RTP_PARSER_FULL(x) \
