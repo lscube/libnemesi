@@ -29,30 +29,6 @@
  * H263 depacketizer RFC 4629
  */
 
-
-typedef struct
-{
-#if BYTE_ORDER == LITTLE_ENDIAN
-    uint16_t plen1:1;       /* Length in bytes of the extra picture header */
-    uint16_t v:1;           /* Video Redundancy Coding */
-    uint16_t p:1;           /* picture/GOB/slice/EOS/EOSBS start code */
-    uint16_t rr:5;          /* Reserved. Shall be zero. */
-
-    uint16_t pebit:3;       /* Bits to ignore in the last byte of the header */
-    uint16_t plen2:5;       /* Length in bytes of the extra picture header */
-#elif BYTE_ORDER == BIG_ENDIAN
-    uint16_t rr:5;          /* Reserved. Shall be zero. */
-    uint16_t p:1;           /* picture/GOB/slice/EOS/EOSBS start code */
-    uint16_t v:1;           /* Video Redundancy Coding */
-    uint16_t plen1:1;       /* Length in bytes of the extra picture header */
-
-    uint16_t plen2:5;       /* Length in bytes of the extra picture header */
-    uint16_t pebit:3;       /* Bits to ignore in the last byte of the header */
-#else
-#error Neither big nor little
-#endif
-} h263_header;
-
 static rtpparser_info h263_served = {
     -1,
     {"H263-1998", NULL}
@@ -61,58 +37,57 @@ static rtpparser_info h263_served = {
 static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
-    h263_header header;
 
     uint8_t *buf;
-    size_t len;
-    uint8_t PLEN = 0;
+    size_t len; /* payload size, minus additional headers,
+                 * plus the 2 zeroed bytes
+                 */
 
-    size_t start = 0;
+    size_t start = 2; /* how many bytes we are going to skip from the start */
     size_t offset = 0;
 
     void *priv = ssrc->privs[fr->pt];
 
     int err = RTP_FILL_OK;
+    int marker;
 
-    if (!(pkt = rtp_get_pkt(ssrc, &len)))
-        return RTP_BUFF_EMPTY;
+    fr->len = 0;
 
-    buf = RTP_PKT_DATA(pkt);
-    len = RTP_PAYLOAD_SIZE(pkt, len);
+    do {
+        if (!(pkt = rtp_get_pkt(ssrc, &len)))
+            return RTP_BUFF_EMPTY;
 
-    memcpy(&header, buf, sizeof(h263_header));
-    start += sizeof(h263_header);
+        buf = RTP_PKT_DATA(pkt);
+        len = RTP_PAYLOAD_SIZE(pkt, len);
+        marker = RTP_PKT_MARK(pkt);
 
-    /* Splitted plen, blaaah! */
-    PLEN |= header.plen1;
-    PLEN = PLEN << 5;
-    PLEN |= header.plen2;
+        if (buf[0]&0x4) { // p bit - we overwrite the first 2 bytes with zero
+            start -= 2;
+        }
 
-    if (header.p) {
-        len += 2;
-        offset += 2;
-    }
+        if (buf[0]&0x2) // v bit - skip one more
+            ++start;
 
-    if (header.v)
-        ++start;
+    //    fprintf(stderr, "P: %u V: %u PLEN: %u : %u + %u ------\n", header.p, header.v, PLEN, header.plen1, header.plen2);
 
-    fprintf(stderr, "P: %u V: %u PLEN: %u : %u + %u ------\n", header.p, header.v, PLEN, header.plen1, header.plen2);
-    start += PLEN; 
+        start += (buf[1]>>3)|((buf[0]&0x1)<<5); // plen - skip that many bytes
 
-    len -= start;
+        len -= start;
 
-    if (!priv)
-        priv = fr->data = calloc(1, len);
-    else
-        priv = fr->data = realloc(priv, len);
+        priv = fr->data = realloc(priv, len + offset);
 
-    if (header.p)
-        memset(fr->data, 0, 2);
+        memcpy(fr->data + offset, buf + start, len);
+        if (buf[0]&0x4)
+            memset(fr->data + offset, 0, 2);
 
-    memcpy(fr->data + offset, buf + start, len);
-    fr->len = len;
+        fr->len = len + offset;
 
-    rtp_rm_pkt(ssrc);
+        offset += len;
+
+        rtp_rm_pkt(ssrc);
+    } while (!marker);
+
+    memset(config, 0, sizeof(rtp_buff));
 
     return err;
 }
