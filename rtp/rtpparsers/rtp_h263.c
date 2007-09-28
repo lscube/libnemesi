@@ -43,7 +43,7 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                  * plus the 2 zeroed bytes
                  */
 
-    size_t start = 2; /* how many bytes we are going to skip from the start */
+    size_t start; /* how many bytes we are going to skip from the start */
     size_t offset = 0;
 
     void *priv = ssrc->privs[fr->pt];
@@ -54,6 +54,7 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     fr->len = 0;
 
     do {
+        start = 2;
         if (!(pkt = rtp_get_pkt(ssrc, &len)))
             return RTP_BUFF_EMPTY;
 
