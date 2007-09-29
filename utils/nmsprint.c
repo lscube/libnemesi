@@ -26,7 +26,7 @@
 #include <config.h>
 #include <nemesi/comm.h>
 
-#if 1 //#ifndef ENABLE_DEBUG
+#ifndef ENABLE_DEBUG
 #define DEFAULT_VERBOSITY NMSML_NORM
 #else                // ENABLE_DEBUG => debug enabled
 #define DEFAULT_VERBOSITY NMSML_DBG1

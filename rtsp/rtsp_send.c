@@ -44,6 +44,8 @@ int send_get_request(rtsp_thread * rtsp_th)
 
     sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
 
+    nms_printf(NMSML_DBG2, "Sending DESCRIBE request: %s\n", buf);
+
     if (!nmst_write(&rtsp_th->transport, buf, strlen(buf), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
         rtsp_th->waiting_for[0] = '\0';
@@ -158,6 +160,8 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
 
     sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PLAY_RESPONSE,
         rtsp_sess->Session_ID, rtsp_sess->CSeq);
+
+    nms_printf(NMSML_DBG2, "Sending PLAY request: %s\n", b);
 
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send PLAY request...\n");
@@ -391,6 +395,8 @@ int send_setup_request(rtsp_thread * rtsp_th)
 
     sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE,
         rtsp_sess->CSeq);
+
+    nms_printf(NMSML_DBG2, "Sending SETUP request: %s\n", b);
 
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send SETUP request...\n");
