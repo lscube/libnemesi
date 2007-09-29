@@ -134,7 +134,7 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
     // end of CC part
 
     if (rtsp_sess->content_base != NULL)
-        if (*(rtsp_sess->pathname) != 0)
+        if ((*(rtsp_sess->pathname) != 0) && (*rtsp_sess->pathname != '*'))
             sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
                 PLAY_TKN, rtsp_sess->content_base,
                 rtsp_sess->pathname, RTSP_VER,
