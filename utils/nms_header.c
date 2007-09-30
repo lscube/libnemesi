@@ -27,17 +27,7 @@
 
 inline void nms_header(void)
 {
-    char svnrev[32] = "";
-#ifdef SVNREV
-    char *tkn;
-
-    // strcat(svnrev, SVNREV+1);
-    snprintf(svnrev, sizeof(svnrev), "- SVN %s", SVNREV + 1);
-    if ((tkn = strchr(svnrev, '$')))
-        *tkn = '\0';
-#endif
     nms_printf(NMSML_ALWAYS,
-           "\n" NMSCLR_BLUE_BOLD "%s - %s -- release %s %s(%s)\n\n"
-           NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, svnrev,
-           VERSION_NAME);
+           "\n" NMSCLR_BLUE_BOLD "%s - %s -- release %s (%s)\n\n"
+           NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
 }
