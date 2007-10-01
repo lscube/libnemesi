@@ -29,12 +29,14 @@ extern rtpparser rtp_parser_mpa;
 extern rtpparser rtp_parser_mpv;
 extern rtpparser rtp_parser_h264;
 extern rtpparser rtp_parser_h263;
+extern rtpparser rtp_parser_speex;
 
 rtpparser *rtpparsers[] = {
     &rtp_parser_mpa,
     &rtp_parser_mpv,
     &rtp_parser_h264,
     &rtp_parser_h263,
+    &rtp_parser_speex,
     NULL
 };
 

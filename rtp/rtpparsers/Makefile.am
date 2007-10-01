@@ -17,7 +17,9 @@ librtpparsers_la_SOURCES =	\
 				rtp_mpv.c \
 				rtp_utils.c \
                 rtp_h263.c \
-				rtp_h264.c
+				rtp_h264.c \
+                rtp_speex.c
+
 # pending update
 #	rtp_vorbis
 #	rtp_theora
