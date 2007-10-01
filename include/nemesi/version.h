@@ -27,13 +27,7 @@
 #include <config.h>
 #endif
 
-#ifdef NEMESI_SVN
-// #define SVNREV "$Rev$"
-#include <svnrev.h>
-#define VERSION_NAME "Yet another bug fixed (svn version)"
-#else
 #define VERSION_NAME "In itinere (change it on release)"
-#endif
-#define PROG_NAME "NeMeSI"
+#define PROG_NAME "libnemesi"
 #define PROG_DESCR "NEtwork MEdia Streamer I"
 #endif /* NEMESI_VERSION_H */
