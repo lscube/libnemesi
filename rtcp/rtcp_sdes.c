@@ -115,7 +115,7 @@ int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
  * @param rtp_sess The RTP Session for which to build the SDES
  * @param pkt The packet where to write the SDES
  * @param left Free space on the packet where the SDES will be written
- * @return Length of the built source description
+ * @return Length of the built source description (number of 32bit words)
  */
 int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
 {

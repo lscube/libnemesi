@@ -20,8 +20,20 @@
  *  
  * */
 
-#include <nemesi/rtcp.h>
+/** @file rtcp_report.c
+ * This file contains the functions that perform RTCP Receiver
+ * and Sender Reports building and parsing.
+ */
 
+#include <nemesi/rtcp.h>
+#include <nemesi/comm.h>
+
+/**
+ * Builds the Receiver Report packet
+ * @param rtp_sess The session for which to build the report
+ * @param pkt The packet where to write the report
+ * @return The Length of the generated report (number of 32bit words)
+ */
 int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
 {
     struct timeval now, offset;
@@ -103,4 +115,81 @@ int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
     pkt->r.rr.ssrc = htonl(rtp_sess->local_ssrc);
 
     return (pkt->common.count * 6 + 2);
+}
+
+/**
+ * Actually sends the Receiver Report for the given session
+ * @param rtp_sess The Session for which to generate and send
+ *                 the report packet
+ */
+int rtcp_send_rr(rtp_session * rtp_sess)
+{
+    rtcp_pkt *pkt;
+    int len;
+    uint32_t rr_buff[MAX_PKT_SIZE];
+    rtp_ssrc *stm_src;
+
+    memset(rr_buff, 0, MAX_PKT_SIZE * sizeof(uint32_t));
+    pkt = (rtcp_pkt *) rr_buff;
+
+    len = rtcp_build_rr(rtp_sess, pkt);    /* in 32 bit words */
+    pkt = (rtcp_pkt *) (rr_buff + len);
+    len += rtcp_build_sdes(rtp_sess, pkt, (MAX_PKT_SIZE >> 2) - len);    /* in 32 bit words */
+
+    for (stm_src = rtp_sess->ssrc_queue; stm_src; stm_src = stm_src->next)
+        if ( !(stm_src->no_rtcp) && stm_src->rtp_sess->transport.RTCP.sock.fd > 0) {
+            switch(stm_src->rtp_sess->transport.type) {
+            case UDP:
+                if (sendto(stm_src->rtp_sess->transport.RTCP.sock.fd,
+                       rr_buff, (len << 2), 0, stm_src->rtcp_from.addr,
+                       stm_src->rtcp_from.addr_len) < 0)
+                    nms_printf(NMSML_WARN,
+                           "WARNING! Error while sending UDP RTCP pkt\n");
+                else
+                    nms_printf(NMSML_DBG1,
+                           "RTCP RR packet sent\n");
+                break;
+            case SCTP:
+            case TCP:
+                if (send(stm_src->rtp_sess->transport.RTCP.sock.fd,
+                       rr_buff, (len << 2), 0) < 0)
+                    nms_printf(NMSML_WARN,
+                           "WARNING! Error while sending local RTCP pkt\n");
+                else
+                    nms_printf(NMSML_DBG1,
+                           "RTCP RR packet sent\n");
+                break;
+            }
+        }
+
+    return len;
+}
+
+/**
+ * Receiver Report packet handling, actually does nothing
+ */
+int rtcp_parse_rr(rtcp_pkt * pkt)
+{
+    // TODO: handle rr packet
+    nms_printf(NMSML_DBG1, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
+    return 0;
+}
+
+/**
+ * Sender Report packet handling. Sets the NTP timestamp in the
+ * the ssrc_stats of the given RTP_SSRC.
+ * @param stm_src The SSRC for which the packet was received
+ * @param pkt The packet itself
+ * @return 0
+ */
+int rtcp_parse_sr(rtp_ssrc * stm_src, rtcp_pkt * pkt)
+{
+    nms_printf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
+    gettimeofday(&(stm_src->ssrc_stats.lastsr), NULL);
+    stm_src->ssrc_stats.ntplastsr[0] = ntohl(pkt->r.sr.si.ntp_seq);
+    stm_src->ssrc_stats.ntplastsr[1] = ntohl(pkt->r.sr.si.ntp_frac);
+    /* Per ora, non ci interessa altro. */
+    /* Forse le altre informazioni possono */
+    /* servire per un monitor RTP/RTCP */
+    return 0;
 }
