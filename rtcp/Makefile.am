@@ -9,13 +9,11 @@ librtcp_la_SOURCES =	 \
 			rtcp_clean.c \
 			rtcp_deschedule.c \
 			rtcp_handle_event.c \
-			rtcp_hdr_val_chk.c \
 			rtcp_interval.c \
 			rtcp_sdes.c \
 			rtcp_report.c \
 			rtcp_parse_app.c \
 			rtcp_parse_bye.c \
-			rtcp_parse_pkt.c \
 			rtcp_recv.c \
 			rtcp_schedule.c \
 			rtcp_send_bye.c \

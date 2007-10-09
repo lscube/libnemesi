@@ -159,7 +159,7 @@ void rtcp_clean(void *);
 void rtcp_clean_events(void *);
 
 int rtcp_recv(rtp_session *);
-int rtcp_hdr_val_chk(rtcp_pkt *, int);
+//int rtcp_hdr_val_chk(rtcp_pkt *, int);
 
 int rtcp_parse_pkt(rtp_ssrc *, rtcp_pkt *, int);
 int rtcp_parse_sr(rtp_ssrc *, rtcp_pkt *);
