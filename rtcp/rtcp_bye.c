@@ -20,10 +20,23 @@
  *  
  * */
 
+/** @file rtcp_bye.c
+ * This file contains the functions that perform BYE packet
+ * handling and sending
+ */
+
 #include <nemesi/rtcp.h>
 #include <nemesi/comm.h>
 #include <nemesi/rtspinternals.h>
 
+/**
+ * BYE packet handler, when rtcp layer gets a bye packet
+ * it signals it to the rtp layer reporting the end
+ * of stream.
+ * @param ssrc The SSRC for which the packet was received
+ * @param pkt The packet itself
+ * @return 0
+ */
 int rtcp_parse_bye(rtp_ssrc * ssrc, rtcp_pkt * pkt)
 {
     rtsp_thread * rtsp_t;
@@ -34,5 +47,19 @@ int rtcp_parse_bye(rtp_ssrc * ssrc, rtcp_pkt * pkt)
 
     rtsp_t = ssrc->rtp_sess->owner;
     rtsp_t->rtp_th->run = 0;
+    return 0;
+}
+
+/**
+ * Sends the Bye packet. Actually it does nothing
+ * @param rtp_sess The session for which to send the bye packet
+ * @return 0
+ */
+int rtcp_send_bye(rtp_session * rtp_sess)
+{
+    // TODO: really send bye packet
+    nms_printf(NMSML_DBG1,
+           "SRRC %d: sending RTCP Bye. Warning! Not yet implemented!",
+           rtp_sess->local_ssrc);
     return 0;
 }
