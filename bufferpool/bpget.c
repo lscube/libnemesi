@@ -38,17 +38,20 @@ int bpget(buffer_pool * bp)
 {
     int offset;
 
-    /*
-       if (bp->flhead == -1) {
-       fprintf(stderr, "\n\tFreelist empty\n");
-       return -1;
-       }
-     */
-
     pthread_mutex_lock(&(bp->fl_mutex));
     while (bp->flhead == -1) {
-        pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
+        if(!bpenlarge(bp)) {
+            fprintf(stderr,
+               "Bufferpool reached maximum size\n");
+            pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
+            
+        }
+        else {
+            fprintf(stderr,
+                   "Bufferpool enlarged\n");
+        }
     }
+
     offset = bp->flhead;
     bp->flhead = bp->freelist[bp->flhead];
     bp->flcount++;

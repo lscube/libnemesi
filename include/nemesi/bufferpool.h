@@ -52,7 +52,7 @@
 
 /*! The number of slots consisting the Playout Buffer. */            /* #define BP_SLOT_NUM 50 */
 /* 1000ms / 20ms = Playout Buffer Size (in seconds) / Required RTP payload size (in seconds) */
-#define BP_SLOT_NUM 150        // Bigger buffer. For video needs.
+#define BP_SLOT_NUM 550        // Bigger buffer. For video needs.
 
 /*! Slot size.  Derived from <em>"Minimum Reassembly Buffer Size"</em> IPv4: the maximal dimension of non fragmented packets */
 
@@ -62,6 +62,8 @@
 /*! Buffer Pool size */
 #define BP_SIZE BP_SLOT_NUM*BP_SLOT_SIZE    /* 1 sec G.711 - 8kHz * 8bit
                            per sample */
+
+#define BP_MAX_SIZE BP_SLOT_NUM*10
 
 
 /*! \brief Network Playout Buffer Slots.
@@ -100,7 +102,7 @@ typedef struct {
     bp_slot **bufferpool;        /*!< Pointer to memory space allocated for 
                                          Bufferpool and defined elsewhere. 
                                          \see bpinit */
-    poitem pobuff[BP_SLOT_NUM]; /*!< Array that will keep the sorted
+    poitem pobuff[BP_MAX_SIZE]; /*!< Array that will keep the sorted
                                          list of slots containing arrived
                                          packets. */
     pthread_mutex_t po_mutex;   /*!< Mutex variable used for access control
@@ -133,9 +135,10 @@ typedef struct {
                                              internals. */
     pthread_cond_t cond_full;    /*!< Signals if the Bufferpool is 
                                              full */
-    int freelist[BP_SLOT_NUM];    /*!< Free slots. */
+    int *freelist; /*[BP_SLOT_NUM];*/    /*!< Free slots. */
     int flhead;                /*!< Free List head. */
     int flcount;                /*!< Free List count. */
+    int size;
 } buffer_pool;
 
 #define PKT_DUPLICATED    1
@@ -149,6 +152,7 @@ int bpkill(buffer_pool *);
 int bpget(buffer_pool *);
 int bpfree(buffer_pool *, int);
 int bprmv(buffer_pool *, playout_buff *, int);
+int bpenlarge(buffer_pool * bp);
 
 #endif /* NEMESI_BUFFERPOOL_H */
 /* @} */

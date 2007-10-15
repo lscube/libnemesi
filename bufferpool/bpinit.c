@@ -49,10 +49,16 @@ int bpinit(buffer_pool * bp)
         return 1;
     }
     memset(bp->bufferpool, 0, BP_SLOT_NUM * sizeof(bp_slot));
+
+    //RM
+    bp->freelist = calloc(BP_SLOT_NUM, sizeof(int));
+    //END_RM
+
     for (i = 0; i < BP_SLOT_NUM; bp->freelist[i] = i + 1, i++);
     bp->freelist[BP_SLOT_NUM - 1] = -1;
     bp->flhead = 0;
     bp->flcount = 0;
+    bp->size = BP_SLOT_NUM;
 
     if ((i = pthread_mutexattr_init(&mutex_attr)) > 0)
         RET_ERR(i);
@@ -73,4 +79,24 @@ int bpinit(buffer_pool * bp)
         RET_ERR(i);
 
     return 0;
+}
+
+int bpenlarge(buffer_pool * bp)
+{
+    int i;
+    int old_size = bp->size;
+
+    if (bp->size >= BP_MAX_SIZE)
+        return 0;
+
+    bp->size += BP_SLOT_NUM;
+
+    bp->bufferpool = realloc(bp->bufferpool, bp->size*sizeof(bp_slot));
+    bp->freelist = realloc(bp->freelist, bp->size*sizeof(int));
+    
+    for(i = old_size; i < bp->size; bp->freelist[i] = i + 1, i++);
+    bp->flhead = old_size;
+    bp->freelist[bp->size - 1] = -1;
+
+    return 1;
 }
