@@ -153,9 +153,8 @@ struct rtcp_event {
 
 typedef struct rtcp_sdes rtcp_sdes_t;
 
-void *rtcp(void *);
 int rtcp_thread_create(rtp_thread *);
-void rtcp_clean(void *);
+
 void rtcp_clean_events(void *);
 
 int rtcp_recv(rtp_session *);
