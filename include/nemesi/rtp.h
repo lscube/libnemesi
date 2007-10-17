@@ -48,9 +48,10 @@
 #define RTP_VERSION 2
 
 // #define RTP_AVP_UDP "RTP/AVP/UDP"
-#define RTP_AVP_UDP "RTP/AVP"           //!< Default low-trasport is UDP. See RFC2326 12.39
-#define RTP_AVP_TCP "RTP/AVP/TCP"       //!< interleaved TCP low transport.
-#define RTP_AVP_SCTP "RTP/AVP/SCTP"     //!< multistream SCTP low transport.
+#define RTP_AVP_UDP  "RTP/AVP"      //!< Default low-trasport is UDP. See RFC2326 12.39
+#define RTP_AVP_TCP  "RTP/AVP/TCP"  //!< interleaved TCP low transport.
+#define RTP_AVP_SCTP "RTP/AVP/SCTP" //!< multistream SCTP low transport.
+
 #define RTP_SEQ_MOD (1<<16)
 #define MIN_SEQUENTIAL 2
 #define MAX_DROPOUT 3000
@@ -198,20 +199,20 @@ struct rtp_ssrc_descr {
 struct rtp_session_stats {
     struct timeval tp;      //!< the last time an RTCP pkt was transmitted
     struct timeval tn;      //!< the next scheduled transmission time of an RTCP pkt
-    uint32_t pmembers;        //!< the estimated number of session members at time tm was last recomputed
-    uint32_t members;         //!< the most currente estimate for the number of the session members
-    uint32_t senders;         //!< the most currente estimate for the number of senders in the session
+    uint32_t pmembers;      //!< the estimated number of session members at time tm was last recomputed
+    uint32_t members;       //!< the most currente estimate for the number of the session members
+    uint32_t senders;       //!< the most currente estimate for the number of senders in the session
     double rtcp_bw;         //!< the target RTCP bandwidth
-    uint8_t we_sent;          //!< flag that is true if the app has sent data since the second previous RTCP Report was transmitted
+    uint8_t we_sent;        //!< flag that is true if the app has sent data since the second previous RTCP Report was transmitted
     double avg_rtcp_size;   //!< the average Compound RTCP pkt size, in octets, over all RTCP pkts sent and received by this partecipant
-    uint8_t initial;          //!< the flag that is true if the app has not yet sent an RTCP pkt
+    uint8_t initial;        //!< the flag that is true if the app has not yet sent an RTCP pkt
 };
 
-#define SSRC_KNOWN    0
-#define SSRC_NEW    1
-#define SSRC_RTPNEW    2
+#define SSRC_KNOWN      0
+#define SSRC_NEW        1
+#define SSRC_RTPNEW     2
 #define SSRC_RTCPNEW    3
-#define SSRC_COLLISION    4
+#define SSRC_COLLISION  4
 
 typedef struct rtp_ssrc_s {
     uint32_t ssrc;
@@ -281,14 +282,16 @@ enum rtp_protos {
     RTCP
 };
 
-#define RTP_FILL_OK        0
-// rtp_fill error codes
-#define RTP_BUFF_EMPTY        91
-#define RTP_PARSE_ERROR        92
+/**
+ * rtp_fill error codes
+ */
+#define RTP_FILL_OK         0
+#define RTP_BUFF_EMPTY      91
+#define RTP_PARSE_ERROR     92
 #define RTP_PKT_UNKNOWN     93
-#define RTP_IN_PRM_ERR        94
-#define RTP_SSRC_NOTVALID    97
-#define RTP_BUFFERING        99
+#define RTP_IN_PRM_ERR      94
+#define RTP_SSRC_NOTVALID   97
+#define RTP_BUFFERING       99
 
 #define RTP_PKT_DATA_LEN(pkt, len) (len > 0) ? len - ((uint8_t *)(pkt->data)-(uint8_t *)pkt) - pkt->cc - ((*(((uint8_t *)pkt)+len-1)) * pkt->pad) : 0
 

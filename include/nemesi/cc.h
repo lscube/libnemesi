@@ -113,7 +113,7 @@ CC_EXTERN cc_spec_license cc_spec_licenses[]
  * If someday we need to select more special licenses we can "upgrade" the
  * field of bit from uint8_t to uint16, or more...
  */
-typedef struct _ccpermsmask {
+typedef struct {
     CC_BITMASK_T by:1;
     CC_BITMASK_T nc:1;
     CC_BITMASK_T nd:1;

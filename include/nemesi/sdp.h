@@ -79,7 +79,7 @@ typedef struct sdp_attr_s {
  *
  * \see rtsp_session_info
  * */
-typedef struct _sdp_medium_info {
+typedef struct sdp_medium_info_s {
     char *m;        /*!< medium name and transport address */
     char *i;        /*!< medium title */
     char *c;        /*!< connection information - optional if included at session-level */
@@ -95,7 +95,7 @@ typedef struct _sdp_medium_info {
     char transport[8];    /*!< transport string */
     char *fmts;        /*!< media formats: AVP payload types for audio/video */
 
-    struct _sdp_medium_info *next;    /*!< Next medium informatioin struct */
+    struct sdp_medium_info_s *next;    /*!< Next medium informatioin struct */
 } sdp_medium_info;
 
 #define SDP_SESSION_FIELDS    "Protocol Version", \
