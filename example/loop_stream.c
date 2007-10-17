@@ -40,7 +40,6 @@ int main(int argc, char **argv)
     rtsp_ctrl *ctl;
     rtp_thread *rtp_th;
     rtsp_session *sess;
-    rtsp_medium *med;
     rtp_ssrc *ssrc;
     rtp_buff conf;
     rtp_frame fr;
