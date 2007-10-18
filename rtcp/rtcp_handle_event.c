@@ -21,7 +21,6 @@
  * */
 
 #include <nemesi/rtcp.h>
-#include <nemesi/utils.h>
 
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 {
