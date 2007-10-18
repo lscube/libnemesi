@@ -47,9 +47,9 @@ char *strstrcase(char *, const char *);
 int strncmpcase(const char *, const char *, size_t);
 int strcmpcase(const char *, const char *);
 uint32_t random32(int);
-int timeval_subtract(struct timeval *, const struct timeval *,
+int nms_timeval_subtract(struct timeval *, const struct timeval *,
              const struct timeval *);
-int timeval_add(struct timeval *, const struct timeval *, const struct timeval *);
+int nms_timeval_add(struct timeval *, const struct timeval *, const struct timeval *);
 void f2time(double, struct timeval *);
 
 

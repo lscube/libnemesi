@@ -83,7 +83,7 @@ static void *rtcp(void *args)
         tv.tv_sec = (long int) t;
         tv.tv_usec = (long int) ((t - tv.tv_sec) * 1000000);
         gettimeofday(&now, NULL);
-        timeval_add(&(rtp_sess->sess_stats.tn), &now, &tv);
+        nms_timeval_add(&(rtp_sess->sess_stats.tn), &now, &tv);
 
         if ((head =
              rtcp_schedule(head, rtp_sess, rtp_sess->sess_stats.tn,
@@ -106,7 +106,7 @@ static void *rtcp(void *args)
         }
 
         gettimeofday(&now, NULL);
-        if (timeval_subtract(&tv, &(head->tv), &now)) {
+        if (nms_timeval_subtract(&tv, &(head->tv), &now)) {
             tv.tv_sec = 0;
             tv.tv_usec = 0;
         }

@@ -44,7 +44,7 @@ struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
     if (!head)
         return new_event;
 
-    while (event && timeval_subtract(NULL, &(event->tv), &tv)) {
+    while (event && nms_timeval_subtract(NULL, &(event->tv), &tv)) {
         pevent = event;
         event = event->next;
     }

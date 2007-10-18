@@ -21,6 +21,7 @@
  * */
 
 #include <nemesi/rtcp.h>
+#include <nemesi/utils.h>
 
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 {
@@ -55,7 +56,7 @@ struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 
         tv.tv_sec = (long int) t;
         tv.tv_usec = (long int) ((t - tv.tv_sec) * 1000000);
-        timeval_add(&(event->rtp_sess->sess_stats.tn), &now, &tv);
+        nms_timeval_add(&(event->rtp_sess->sess_stats.tn), &now, &tv);
 
         event->rtp_sess->sess_stats.initial = 0;
         event->rtp_sess->sess_stats.pmembers =

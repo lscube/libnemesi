@@ -22,7 +22,7 @@
 
 #include <nemesi/utils.h>
 
-int timeval_subtract(struct timeval *res, const struct timeval *x,
+int nms_timeval_subtract(struct timeval *res, const struct timeval *x,
              const struct timeval *y)
 {
     int nsec;

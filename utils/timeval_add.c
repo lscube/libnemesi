@@ -22,14 +22,14 @@
 
 #include <nemesi/utils.h>
 
-int timeval_add(struct timeval *res, const struct timeval *x,
+int nms_timeval_add(struct timeval *res, const struct timeval *x,
         const struct timeval *y)
 {
     res->tv_sec = x->tv_sec + y->tv_sec;
 
     res->tv_usec = x->tv_usec + y->tv_usec;
 
-    while (res->tv_usec > 1000000) {
+    if (res->tv_usec > 1000000) {
         res->tv_usec -= 1000000;
         res->tv_sec++;
     }

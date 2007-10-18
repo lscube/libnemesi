@@ -95,7 +95,7 @@ int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
                    >> 16));
 
             gettimeofday(&now, NULL);
-            timeval_subtract(&offset, &now,
+            nms_timeval_subtract(&offset, &now,
                      &(stm_src->ssrc_stats.lastsr));
             linear =
                 (offset.tv_sec +
