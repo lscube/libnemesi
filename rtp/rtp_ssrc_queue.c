@@ -119,7 +119,7 @@ static int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t 
  * @param recfrom The link from which to receive the data for the source
  * @param proto_type The protocol type for the source
  *
- * @return o if everything was ok, -1 on initialization errors
+ * @return 0 if everything was ok, -1 on initialization errors
  */
 int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32_t ssrc,
           nms_sockaddr * recfrom, enum rtp_protos proto_type)
@@ -129,6 +129,8 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32_t ssrc,
 
     if (((*stm_src) = (rtp_ssrc *) calloc(1, sizeof(rtp_ssrc))) == NULL)
         return -nms_printf(NMSML_FATAL, "Cannot allocate memory\n");
+
+    (*stm_src)->po = calloc(1, sizeof(playout_buff));
 
     (*stm_src)->next = rtp_sess->ssrc_queue;
     rtp_sess->ssrc_queue = *stm_src;
@@ -235,7 +237,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32_t ssrc, rtp_ssrc ** stm_src,
                        "Error while setting new Stream Source\n");
         }
 
-        poinit(&((*stm_src)->po), &(rtp_sess->bp));
+        poinit((*stm_src)->po, rtp_sess->bp);
         pthread_mutex_unlock(&rtp_sess->syn);
         return SSRC_NEW;
     } else {
@@ -352,8 +354,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32_t ssrc, rtp_ssrc ** stm_src,
                         return -nms_printf(NMSML_ERR,
                                    "Error while setting new Stream Source\n");
                     }
-                    poinit(&((*stm_src)->po),
-                           &(rtp_sess->bp));
+                    poinit((*stm_src)->po, rtp_sess->bp);
                     pthread_mutex_unlock(&rtp_sess->syn);
 
                     /* New entry in SSRC rtp_conflict queue */

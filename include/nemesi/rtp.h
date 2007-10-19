@@ -222,7 +222,7 @@ typedef struct rtp_ssrc_s {
     int no_rtcp;
     struct rtp_ssrc_stats ssrc_stats;
     struct rtp_ssrc_descr ssrc_sdes;
-    playout_buff po;
+    playout_buff * po;
     struct rtp_session_s *rtp_sess;     //!< RTP session SSRC belogns to.
     void *privs[128];                   //!< I would like to keep rtp able to manage dynamic payload changes at its best.
     struct rtp_ssrc_s *next;            //!< next known SSRC
@@ -255,7 +255,7 @@ typedef struct rtp_session_s {
     rtp_ssrc *ssrc_queue;                   //!< queue of all known SSRCs
     rtp_ssrc *active_ssrc_queue;            //!< queue of active SSRCs
     struct rtp_conflict *conf_queue;
-    buffer_pool bp;
+    buffer_pool * bp;
     struct rtp_session_s *next;
     pthread_mutex_t syn;
     rtp_pt *ptdefs[128];                    //!< payload type definitions for the session (included dynamically defined)
@@ -369,7 +369,7 @@ double rtp_get_next_ts(rtp_ssrc *);
 int16_t rtp_get_next_pt(rtp_ssrc *);
 int rtp_get_fps(rtp_ssrc *);
 
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, int *, uint32_t);
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, unsigned int *, uint32_t);
 rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
 inline int rtp_rm_pkt(rtp_ssrc *);
 void rtp_rm_all_pkts(rtp_ssrc *);

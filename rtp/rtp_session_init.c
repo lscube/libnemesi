@@ -45,6 +45,8 @@ rtp_session *rtp_session_init(nms_sockaddr * local, nms_sockaddr * peer)
         return NULL;
     }
 
+    rtp_sess->bp = (buffer_pool*)calloc(1, sizeof(buffer_pool));
+
     rtp_sess->transport.RTP.sock.fd = -1;
     rtp_sess->transport.RTCP.sock.fd = -1;
     rtp_sess->local_ssrc = random32(0);

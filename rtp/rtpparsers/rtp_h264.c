@@ -49,14 +49,14 @@ static rtpparser_info h264_served = {
 
 static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
-    rtp_h264 *priv = malloc(sizeof(rtp_h264));
+    rtp_h264 *priv = calloc(1, sizeof(rtp_h264));
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
     char *value;
     int i;
 
     if (!priv) return RTP_ERRALLOC;
 
-    memset(priv, 0, sizeof(rtp_h264));
+    //memset(priv, 0, sizeof(rtp_h264));
 
     for (i=0; i < attrs->size; i++){
         if ((value = strstr(attrs->data[i], "profile-level-id="))) {
@@ -88,7 +88,7 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
                                                 base64packet,
                                                 sizeof(decoded_packet));
                 if (packet_size) {
-                    uint8_t *dest = malloc(packet_size +
+                    uint8_t *dest = calloc(1, packet_size +
                                            sizeof(start_sequence) +
                                            priv->conf_len);
                     if(dest) {
@@ -140,7 +140,7 @@ static int h264_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
     return 0;
 }
 
-static rtp_pkt * h264_next_pkt(rtp_ssrc * ssrc, size_t * len, uint8_t ** buf)
+/*static rtp_pkt * h264_next_pkt(rtp_ssrc * ssrc, size_t * len, uint8_t ** buf)
 {
         rtp_pkt * pkt;
 
@@ -166,7 +166,7 @@ static int h264_check_if_packet_continues(rtp_pkt * pkt, rtp_frame * fr)
         return 1;
 
     return 0;
-}
+}*/
 
 /**
  * it should return a h264 frame either by unpacking an aggregate
@@ -233,7 +233,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 priv->data =
                     realloc (priv->data, sizeof(start_sequence) + 1 + len);
                 memcpy(priv->data, start_sequence, sizeof(start_sequence));
-                priv->data[sizeof(start_sequence)]= reconstructed_nal;
+                priv->data[sizeof(start_sequence)] = reconstructed_nal;
                 memcpy(priv->data + sizeof(start_sequence) + 1, buf, len);
                 priv->len = sizeof(start_sequence) + 1 + len;
                 priv->timestamp = RTP_PKT_TS(pkt);
@@ -261,7 +261,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     }
 
     if (priv->conf_len) {
-        config->data = priv->conf;
+        config->data = (char*)priv->conf;
         config->len = priv->conf_len;
     }
 

@@ -182,14 +182,14 @@ int rtp_recv(rtp_session * rtp_sess)
     nms_sockaddr server =
         { (struct sockaddr *) &serveraddr, sizeof(serveraddr) };
 
-    if ((slot = bpget(&(rtp_sess->bp))) < 0) {
+    if ((slot = bpget(rtp_sess->bp)) < 0) {
         nms_printf(NMSML_VERB,
                "No more space in Playout Buffer!" BLANK_LINE);
         return 1;
     }
 
     if ((n = recvfrom(rtp_sess->transport.RTP.sock.fd,
-                      &((rtp_sess->bp).bufferpool[slot]),
+                      &(rtp_sess->bp->bufferpool[slot]),
                       BP_SLOT_SIZE, 0, server.addr, &server.addr_len)) == -1) {
         switch (errno) {
         case EBADF:
@@ -220,11 +220,11 @@ int rtp_recv(rtp_session * rtp_sess)
     }
     gettimeofday(&now, NULL);
 
-    pkt = (rtp_pkt *) & ((rtp_sess->bp).bufferpool[slot]);
+    pkt = (rtp_pkt *)(&rtp_sess->bp->bufferpool[slot]);
 
     if (rtp_hdr_val_chk(pkt, n)) {
         nms_printf(NMSML_NORM, "RTP header validity check FAILED!\n");
-        bpfree(&(rtp_sess->bp), slot);
+        bpfree(rtp_sess->bp, slot);
         return 0;
     }
 
@@ -273,8 +273,8 @@ int rtp_recv(rtp_session * rtp_sess)
         rtp_sess->sess_stats.senders++;
         rtp_sess->sess_stats.members++;
     case SSRC_RTPNEW:
-        (stm_src->ssrc_stats).probation = MIN_SEQUENTIAL;
-        (stm_src->ssrc_stats).max_seq = RTP_PKT_SEQ(pkt) - 1;
+        stm_src->ssrc_stats.probation = MIN_SEQUENTIAL;
+        stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt) - 1;
 
         if (!rtp_sess->ptdefs[pkt->pt]
             || !(rate = (rtp_sess->ptdefs[pkt->pt]->rate)))
@@ -290,7 +290,7 @@ int rtp_recv(rtp_session * rtp_sess)
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
         break;
     case SSRC_COLLISION:
-        bprmv(&(rtp_sess->bp), &(stm_src->po), slot);
+        bprmv(rtp_sess->bp, stm_src->po, slot);
         return 0;
         break;
     case -1:
@@ -300,11 +300,11 @@ int rtp_recv(rtp_session * rtp_sess)
         break;
     }
 
-    switch (poadd(&(stm_src->po), slot, (stm_src->ssrc_stats).cycles)) {
+    switch (poadd(stm_src->po, slot, stm_src->ssrc_stats.cycles)) {
     case PKT_DUPLICATED:
         nms_printf(NMSML_VERB,
                "WARNING: Duplicate pkt found... discarded\n");
-        bpfree(&(rtp_sess->bp), slot);
+        bpfree(rtp_sess->bp, slot);
         return 0;
         break;
     case PKT_MISORDERED:
@@ -315,7 +315,7 @@ int rtp_recv(rtp_session * rtp_sess)
         break;
     }
 
-    ((stm_src->po).pobuff[slot]).pktlen = n;
+    stm_src->po->pobuff[slot].pktlen = n;
 
     return 0;
 }

@@ -70,7 +70,7 @@ static void rtp_clean(void * thrd)
                     rtp_sess->parsers_uninits[i] (psrc, i);
             free(psrc);
         }
-        bpkill(&(rtp_sess->bp));
+        bpkill(rtp_sess->bp);
 
         // transport allocs
         free((rtp_sess->transport).spec);
@@ -121,7 +121,7 @@ static void *rtp(void *args)
     char buffering = 1;
 
     for (rtp_sess = rtp_sess_head; rtp_sess; rtp_sess = rtp_sess->next)
-        bpinit(&(rtp_sess->bp));
+        bpinit(rtp_sess->bp);
 
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -152,16 +152,14 @@ static void *rtp(void *args)
              rtp_sess = rtp_sess->next)
             if (FD_ISSET(rtp_sess->transport.RTP.sock.fd, &readset)) {
                 if (buffering) {
-                    if (rtp_sess->bp.flcount >
-                        BP_SLOT_NUM / 2) {
+                    if (rtp_sess->bp->flcount > BP_SLOT_NUM / 2) {
                         pthread_mutex_unlock(syn);
                         buffering = 0;
                     } else {    // TODO: buffering based on rtp jitter
                         nms_printf(NMSML_DBG1,
                                "\rBuffering (%d)%\t",
                                (100 *
-                                rtp_sess->bp.
-                                flcount) /
+                                rtp_sess->bp->flcount) /
                                (BP_SLOT_NUM / 2));
                     }
                 }

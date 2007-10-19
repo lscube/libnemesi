@@ -159,6 +159,9 @@ int rtcp_send_rr(rtp_session * rtp_sess)
                     nms_printf(NMSML_DBG1,
                            "RTCP RR packet sent\n");
                 break;
+            default:
+                nms_printf(NMSML_WARN, "Unsupported transport type on send_rr\n");
+                break;
             }
         }
 
