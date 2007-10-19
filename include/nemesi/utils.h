@@ -20,6 +20,12 @@
  *  
  * */
 
+/**
+ * @file utils.h
+ * Miscellaneus private utility functions
+ * Most of them should be inlined.
+ */
+
 #ifndef NEMESI_UTILS_H
 #define NEMESI_UTILS_H
 
@@ -43,14 +49,35 @@
 #define max(x,y) ((x) > (y) ? (x) : (y))
 
 int urltokenize(char *, char **, char **, char **);
+
+/**
+ * @defgroup missingos Non posix but widespread functions
+ * Currnetly just caseless string comparison
+ * @{
+ */
+
 char *strstrcase(char *, const char *);
 int strncmpcase(const char *, const char *, size_t);
 int strcmpcase(const char *, const char *);
+
+/**
+ * @}
+ */
+
+
 uint32_t random32(int);
+
+/**
+ * @defgroup timeval Timeval arithmetic functions
+ *
+ * @{
+ */
 int nms_timeval_subtract(struct timeval *, const struct timeval *,
              const struct timeval *);
 int nms_timeval_add(struct timeval *, const struct timeval *, const struct timeval *);
 void f2time(double, struct timeval *);
-
+/**
+ * @}
+ */
 
 #endif /* NEMESI_UTILS_H */
