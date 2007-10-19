@@ -25,7 +25,7 @@
  */
 
 #include <nemesi/rtp.h>
-
+#include <nemesi/bufferpool.h>
 
 /**
  * Gets the queue of active sources

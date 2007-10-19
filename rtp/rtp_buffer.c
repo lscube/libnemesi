@@ -28,6 +28,7 @@
 
 #include <nemesi/rtp.h>
 #include <nemesi/rtpptdefs.h>
+#include <nemesi/bufferpool.h>
 
 /**
  * Waits for rtp thread to be ready and reports if the stream reached the end

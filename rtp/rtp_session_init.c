@@ -21,6 +21,7 @@
  * */
 
 #include <nemesi/rtp.h>
+#include <nemesi/bufferpool.h>
 
 #define RET_ERR(err_level, ...)    do { \
                     nms_printf(err_level, __VA_ARGS__ ); \

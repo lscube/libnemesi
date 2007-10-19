@@ -27,6 +27,7 @@
 
 #include <nemesi/rtp.h>
 #include <nemesi/comm.h>
+#include <nemesi/bufferpool.h>
 
 #define PO_BUFF_SIZE_SEC 0
 #define PO_BUFF_SIZE_MSEC 700
@@ -68,9 +69,11 @@ static void rtp_clean(void * thrd)
             for (i = 0; i < 128; i++)
                 if (rtp_sess->parsers_uninits[i])
                     rtp_sess->parsers_uninits[i] (psrc, i);
+            free(psrc->po);
             free(psrc);
         }
         bpkill(rtp_sess->bp);
+        free(rtp_sess->bp);
 
         // transport allocs
         free((rtp_sess->transport).spec);
