@@ -45,7 +45,6 @@
 #include <stdint.h>
 
 #include <nemesi/comm.h>
-#include <nemesi/bufferpool.h>
 #include <nemesi/utils.h>
 #include <nemesi/transport.h>
 #include <nemesi/rtpptdefs.h>
@@ -226,7 +225,7 @@ typedef struct rtp_ssrc_s {
     int no_rtcp;
     struct rtp_ssrc_stats ssrc_stats;
     struct rtp_ssrc_descr ssrc_sdes;
-    playout_buff * po;
+    struct playout_buff_t * po;
     struct rtp_session_s *rtp_sess;     //!< RTP session SSRC belogns to.
     void *privs[128];                   //!< I would like to keep rtp able to manage dynamic payload changes at its best.
     struct rtp_ssrc_s *next;            //!< next known SSRC
@@ -259,7 +258,7 @@ typedef struct rtp_session_s {
     rtp_ssrc *ssrc_queue;                   //!< queue of all known SSRCs
     rtp_ssrc *active_ssrc_queue;            //!< queue of active SSRCs
     struct rtp_conflict *conf_queue;
-    buffer_pool * bp;
+    struct buffer_pool_t * bp;
     struct rtp_session_s *next;
     pthread_mutex_t syn;
     rtp_pt *ptdefs[128];                    //!< payload type definitions for the session (included dynamically defined)

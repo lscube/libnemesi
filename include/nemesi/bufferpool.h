@@ -98,7 +98,7 @@ typedef struct {
  * \see poadd
  * \see podel
  * */
-typedef struct {
+typedef struct playout_buff_t {
     bp_slot **bufferpool;        /*!< Pointer to memory space allocated for 
                                          Bufferpool and defined elsewhere. 
                                          \see bpinit */
@@ -128,7 +128,7 @@ typedef struct {
 * \see bpfree
 * \see bprmv
 * */
-typedef struct {
+typedef struct buffer_pool_t {
     bp_slot *bufferpool;            /*!< Pointer to the Bufferpool memory.
                                             \see bpinit */
     pthread_mutex_t fl_mutex;    /*!< Mutex to access the Bufferpool
