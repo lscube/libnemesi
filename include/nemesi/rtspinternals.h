@@ -52,6 +52,53 @@
  * @{ 
  */
 
+//RTSP commands tokens
+#define SETUP_TKN       "SETUP"
+#define REDIRECT_TKN    "REDIRECT"
+#define PLAY_TKN        "PLAY"
+#define PAUSE_TKN       "PAUSE"
+#define SESSION_TKN     "SESSION"
+#define RECORD_TKN      "RECORD"
+#define EXT_METHOD_TKN  "EXT-"
+#define HTTP_GET        "GET"    /* http get */    // not used
+
+#define HELLO_TKN       "OPTIONS"
+#define GET_TKN         "DESCRIBE"
+#define GET_PARAM_TKN   "GET_PARAMETER"
+#define SET_PARAM_TKN   "SET_PARAMETER"
+#define CLOSE_TKN       "TEARDOWN"
+
+/*
+ * method response codes.  These are 100 greater than their
+ * associated method values.  This allows for simplified
+ * creation of event codes that get used in event_handler()
+ */
+#define RTSP_SETUP_RESPONSE         100
+#define RTSP_GET_RESPONSE           101
+#define RTSP_REDIRECT_RESPONSE      102
+#define RTSP_PLAY_RESPONSE          103
+#define RTSP_PAUSE_RESPONSE         104
+#define RTSP_SESSION_RESPONSE       105
+#define NEMESI_RTSP_HELLO_RESPONSE  106
+#define RTSP_RECORD_RESPONSE        107
+#define RTSP_CLOSE_RESPONSE         108
+#define RTSP_GET_PARAM_RESPONSE     109
+#define RTSP_SET_PARAM_RESPONSE     110
+#define RTSP_EXTENSION_RESPONSE     111
+
+#define DESCRIPTION_NONE_FORMAT     0
+#define DESCRIPTION_SDP_FORMAT      1
+#define DESCRIPTION_MH_FORMAT       2
+
+//Codes not yet in NetEmbryo
+#define RTSP_FOUND                  302
+
+//RTSP Checks
+#define RTSP_IS_SUCCESS(x) ((x>=200 /*RTSP_SUCCESS*/) && (x<300 /*RTSP_REDIRECT*/))? 1 : 0
+#define RTSP_IS_REDIRECT(x) ((x>=300 /*RTSP_REDIRECT*/) && (x<400 /*RTSP_CLIENT_ERROR*/))? 1 : 0
+#define RTSP_IS_CLIENT_ERROR(x) ((x>=400 /*RTSP_CLIENT_ERROR*/) && (x<500 /*RTSP_SERVER_ERROR*/))? 1 : 0
+#define RTSP_IS_SERVER_ERROR(x) (x>=500 /*RTSP_SERVER_ERROR*/)? 1 : 0
+
 #ifndef RTSP_BUFFERSIZE
 #define RTSP_BUFFERSIZE 163840
 #endif
