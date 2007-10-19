@@ -27,18 +27,6 @@
 
 #define NMS_COLOURED
 
-// #define USE_UIPRINTF
-#undef USE_UIPRINTF
-
-#ifdef USE_UIPRINTF
-
-extern int uipipe[2];
-
-#define UIINPUT_FILENO uipipe[0]
-#define UIERROR_FILENO uipipe[1]
-
-#endif                // USE_UIPRINTF
-
 /***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
 #define BLANK_LINE "                                                                                \n"
 /***** BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * BLANK LINE * *****/
@@ -123,12 +111,6 @@ int nms_verbosity_set(int);
 int nms_verbosity_get(void);
 extern int (*nms_printf) (int level, const char *fmt, ...);
 extern int (*nms_statusprintf) (int cmd, const char *fmt, ...);
-
-#ifdef USE_UIPRINTF
-int uiprintf(const char *fmt, ...);
-int uierror(const char *fmt, ...);
-
-#endif                // USE_UIPRINTF
 
 inline void nms_header(void);
 

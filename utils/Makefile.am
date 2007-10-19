@@ -11,8 +11,6 @@ libutils_la_SOURCES =	urltokenize.c \
 			f2time.c \
 			timeval_subtract.c \
 			timeval_add.c \
-			uiprintf.c \
-			uierror.c \
 			nmsprint.c \
 			nms_header.c \
 			transport.c
