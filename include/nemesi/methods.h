@@ -101,7 +101,7 @@
 #define RTSP_INVALID_RANGE          457 //!< The Range value given is out of bounds
 #define RTSP_READONLY_PARAMETER     458 //!< The parameter to be set by SET_PARAMETER can be read but not modified
 #define RTSP_NOT_AGGREGATE          459 //!< The method may not be applied on the URL since it is aggregate ctrl
-#define RTSP_Only_Aggregate         460 //!< The method may not be applied on the URL since it is not aggregate ctrl
+#define RTSP_ONLY_AGGREGATE         460 //!< The method may not be applied on the URL since it is not aggregate ctrl
 #define RTSP_UNSUPP_TRANSPORT       461 //!< The Transport field did not contain a supported transport specification
 #define RTSP_DEST_UNREACHABLE       462 //!< The client address could not be reached.
 #define RTSP_SERVER_ERROR           500

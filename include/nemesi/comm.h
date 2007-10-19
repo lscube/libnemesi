@@ -107,7 +107,7 @@ int nms_printf_default(int level, const char *fmt, ...);
 #define BUFFERS_STATUS_VERBOSITY NMSML_VERB
 int nms_status_printf_default(int cmd, const char *fmt, ...);
 
-int nms_verbosity_set(int);
+int nms_verbosity_set(int level);
 int nms_verbosity_get(void);
 extern int (*nms_printf) (int level, const char *fmt, ...);
 extern int (*nms_statusprintf) (int cmd, const char *fmt, ...);
