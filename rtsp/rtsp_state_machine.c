@@ -21,8 +21,6 @@
  * */
 
 #include <nemesi/rtspinternals.h>
-#include <nemesi/methods.h>
-
 #include <nemesi/version.h>
 #include <stdarg.h>
 #include <fcntl.h>

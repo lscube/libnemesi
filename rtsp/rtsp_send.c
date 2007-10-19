@@ -23,7 +23,6 @@
 #include <nemesi/rtspinternals.h>
 #include <nemesi/utils.h>
 #include <nemesi/version.h>
-#include <nemesi/methods.h>
 #include <nemesi/transport.h>
 #include <nemesi/cc.h>
 

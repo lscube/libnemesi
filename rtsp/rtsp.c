@@ -22,7 +22,6 @@
 
 #include <nemesi/rtspinternals.h>
 #include <nemesi/utils.h>
-#include <nemesi/methods.h>
 #include <fcntl.h>
 #include <nemesi/version.h>
 
