@@ -238,7 +238,10 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 priv->len = sizeof(start_sequence) + 1 + len;
                 priv->timestamp = RTP_PKT_TS(pkt);
             } else {
-                if (priv->timestamp != RTP_PKT_TS(pkt)) return RTP_PKT_UNKNOWN;
+                if (priv->timestamp != RTP_PKT_TS(pkt)) {
+                    rtp_rm_pkt(ssrc);    
+                    return RTP_PKT_UNKNOWN;
+                }
                 priv->data =
                     realloc (priv->data, priv->len + len);
                 memcpy(priv->data + priv->len, buf, len);
