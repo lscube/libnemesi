@@ -9,3 +9,18 @@ Rules:
 
 In short the code should match the FFmpeg coding style.
 
+Namespaces:
+
+Public functions currently use layer specific namespace:
+
+- rtp related functions should use the "rtp_" namespace.
+- rtsp related functions should use the "rtsp_" namespace.
+- sdp related functions should use the "sdp_" namespace.
+
+Private functions should ALL use nms_ if they are shared across modules, 
+exception to this rule:
+
+- static functions
+- inline functions
+
+
