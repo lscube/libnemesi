@@ -20,6 +20,11 @@
  *  
  * */
 
+/**
+ * @file rtp.h
+ * RTP layer public header
+ */
+
 #ifndef NEMESI_RTP_H
 #define NEMESI_RTP_H
 
@@ -57,7 +62,7 @@
 #define MAX_DROPOUT 3000
 #define MAX_MISORDER 100
 
-#define BANDWIDTH 16000        /* bytes-per-second */
+#define BANDWIDTH 16000     //!< bytes-per-second
 
 #define RTP_OK           0
 // general error codes. other, specific, error codes below
@@ -116,7 +121,6 @@ typedef struct {
 #define RTP_PKT_SSRC(pkt)   ntohl(pkt->ssrc)
 #define RTP_PKT_DATA(pkt)   (pkt->data  + pkt->cc)
 #define RTP_PAYLOAD_SIZE(pkt, pkt_len)    ((pkt) ? pkt_len - ((pkt->data)-(uint8_t *)pkt) - pkt->cc - ((*(((uint8_t *)pkt)+pkt_len-1)) * pkt->pad) : 0)
-/*(pkt_len-sizeof(rtp_pkt)+1)  // note: sizeof(rtp_pkt) is size of rtp header + 1*/
 
 #define RTPPT_ISDYNAMIC(pt)    (pt >= 96)
 
@@ -467,6 +471,5 @@ void rtp_parsers_new(rtp_parser * new_parsers,
              rtp_parser_init * new_parsers_inits);
 inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
                   rtp_parser_uninit parser_uninit);
-
 
 #endif /* NEMESI_RTP_H */
