@@ -1,25 +1,4 @@
 /* * 
- *  This file is part of NeMeSI
- *
- *  NeMeSI -- NEtwork MEdia Streamer I
- *
- *  Copyright (C) 2006 by
- *      
- *      Giampaolo "mancho" Mancini - manchoz@inwind.it
- *    Francesco "shawill" Varano - shawill@infinto.it
- *
- *  NeMeSI is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  NeMeSI is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with NeMeSI; if not, write to the Free Software
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
