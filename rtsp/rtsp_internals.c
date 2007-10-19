@@ -21,7 +21,6 @@
  * */
 
 #include <nemesi/rtspinternals.h>
-#include <nemesi/methods.h>
 #include <nemesi/utils.h>
 
 int body_exists(char *in_buffer)

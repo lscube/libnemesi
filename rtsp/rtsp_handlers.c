@@ -22,7 +22,6 @@
 
 #include <nemesi/rtspinternals.h>
 #include <nemesi/utils.h>
-#include <nemesi/methods.h>
 
 int handle_setup_response(rtsp_thread * rtsp_th)
 {

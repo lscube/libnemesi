@@ -22,7 +22,6 @@
 
 #include <nemesi/rtspinternals.h>
 #include <nemesi/utils.h>
-#include <nemesi/methods.h>
 #include <stdarg.h>
 
 void *get_curr_sess(int cmd, ...)
