@@ -3,7 +3,6 @@ nemesiincludedir =	$(includedir)/nemesi
 noinst_HEADERS	=	bufferpool.h \
 			cc.h \
 			comm.h \
-			methods.h \
 			rtcp.h \
 			rtp.h \
 			rtpptdefs.h \
