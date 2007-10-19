@@ -107,7 +107,7 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
             tkn += strlen(tkn);
             break;
         }
-    } while (tkn = strtok(NULL, "\r\n"));
+    } while ( (tkn = strtok(NULL, "\r\n")) );
 
     *descr += descr_len;
 

@@ -166,27 +166,27 @@ int rtp_get_fps(rtp_ssrc * stm_src)
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * @return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, int *len, uint32_t n)
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, unsigned int *len, uint32_t n)
 {                // TODO complete;
     int i;
 
-    pthread_mutex_lock(&(stm_src->po.po_mutex));
-    i = stm_src->po.potail;
+    pthread_mutex_lock(&(stm_src->po->po_mutex));
+    i = stm_src->po->potail;
     while ((i >= 0) && (n-- > 0)) {
-        i = stm_src->po.pobuff[i].next;
+        i = stm_src->po->pobuff[i].next;
     }
     if (i < 0) {
-        pthread_mutex_unlock(&(stm_src->po.po_mutex));
+        pthread_mutex_unlock(&(stm_src->po->po_mutex));
         return NULL;
     }
-    pthread_mutex_unlock(&(stm_src->po.po_mutex));
+    pthread_mutex_unlock(&(stm_src->po->po_mutex));
 
 
     if (len)
-        *len = (stm_src->po.pobuff[i]).pktlen;
-//      pthread_mutex_unlock(&(stm_src->po.po_mutex)); moved up
+        *len = (stm_src->po->pobuff[i]).pktlen;
+//      pthread_mutex_unlock(&(stm_src->po->po_mutex)); moved up
 
-    return (rtp_pkt *) (*(stm_src->po.bufferpool) + i);
+    return (rtp_pkt *) (*(stm_src->po->bufferpool) + i);
 }
 
 /** Returns a pointer to next packet in the bufferpool for given playout buffer.
@@ -211,22 +211,22 @@ rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
     int index;
 
     do {
-        pthread_mutex_lock(&(stm_src->po.po_mutex));
-        index = stm_src->po.potail;
-        pthread_mutex_unlock(&(stm_src->po.po_mutex));
+        pthread_mutex_lock(&(stm_src->po->po_mutex));
+        index = stm_src->po->potail;
+        pthread_mutex_unlock(&(stm_src->po->po_mutex));
 
         if (index < 0) return NULL;
     } while (!stm_src->rtp_sess->
-         ptdefs[((rtp_pkt *) (*(stm_src->po.bufferpool) +
+         ptdefs[((rtp_pkt *) (*(stm_src->po->bufferpool) +
                       index))->pt]
          &&
          /* always true - XXX be careful if bufferpool API changes -> */
          !rtp_rm_pkt(stm_src));
 
     if (len)
-        *len = (stm_src->po.pobuff[index]).pktlen;
+        *len = (stm_src->po->pobuff[index]).pktlen;
 
-    return (rtp_pkt *) (*(stm_src->po.bufferpool) + index);
+    return (rtp_pkt *) (*(stm_src->po->bufferpool) + index);
 }
 
 /**
@@ -236,8 +236,8 @@ rtp_pkt *rtp_get_pkt(rtp_ssrc * stm_src, size_t * len)
  */
 inline int rtp_rm_pkt(rtp_ssrc * stm_src)
 {
-    return bprmv(&(stm_src->rtp_sess->bp), &(stm_src->po),
-             stm_src->po.potail);
+    return bprmv(stm_src->rtp_sess->bp, stm_src->po,
+             stm_src->po->potail);
 }
 
 /**
@@ -273,8 +273,8 @@ static void socket_clear(rtp_ssrc * stm_src)
  */
 void rtp_rm_all_pkts(rtp_ssrc * stm_src)
 {
-    playout_buff * po = &(stm_src->po);
-    buffer_pool * bp = &(stm_src->rtp_sess->bp);
+    playout_buff * po = stm_src->po;
+    buffer_pool * bp = stm_src->rtp_sess->bp;
 
     //Clear the RECV BUFFER
     socket_clear(stm_src);

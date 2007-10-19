@@ -114,7 +114,7 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
             }
             break;
         }
-    } while (tkn = strtok(NULL, "\r\n"));
+    } while ( (tkn = strtok(NULL, "\r\n")) );
 
     if (error) {        // there was an error?
         sdp_session_destroy(new);
