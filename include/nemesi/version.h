@@ -27,7 +27,7 @@
 #include <config.h>
 #endif
 
-#define VERSION_NAME "In itinere (change it on release)"
+#define VERSION_NAME "Walking far away (change it on release)"
 #define PROG_NAME "libnemesi"
 #define PROG_DESCR "NEtwork MEdia Streamer I"
 #endif /* NEMESI_VERSION_H */
