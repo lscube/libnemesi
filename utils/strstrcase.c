@@ -22,30 +22,26 @@
 
 #include <nemesi/utils.h>
 
+/**
+ * Case insensitive strstr
+ */
+
 char *strstrcase(char *haystack, const char *needle)
 {
-    char *str1, *str2;
-    char *ret;
-    unsigned int i;
+    char *ptr;
+    unsigned len;
 
-    if ((str1 = strdup(haystack)) == NULL)
-        return NULL;
+    if (haystack == NULL) return NULL;
+    if (needle == NULL) return NULL;
 
-    if ((str2 = strdup(needle)) == NULL)
-        return NULL;
+    len = strlen(needle);
+    if (len > strlen(haystack))
+            return NULL;
 
-    for (i = 0; i < strlen(str1); i++)
-        str1[i] = tolower(str1[i]);
+    if (len == 0) return haystack;
 
-    for (i = 0; i < strlen(str2); i++)
-        str2[i] = tolower(str2[i]);
+    for (ptr = haystack; *(ptr + len - 1) != '\0'; ptr++)
+        if (!strncasecmp (ptr, needle, len)) return ptr;
 
-    if ((ret = strstr(str1, str2)) != NULL)
-        ret = haystack + (ret - str1);
-
-    free(str1);
-    free(str2);
-
-    return ret;
-
+    return NULL;
 }
