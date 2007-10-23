@@ -304,13 +304,13 @@ int rtp_recv(rtp_session * rtp_sess)
     switch (poadd(stm_src->po, slot, stm_src->ssrc_stats.cycles)) {
     case PKT_DUPLICATED:
         nms_printf(NMSML_VERB,
-               "WARNING: Duplicate pkt found... discarded\n");
+               "WARNING: Duplicate packet found... discarded\n");
         bpfree(rtp_sess->bp, slot);
         return 0;
         break;
     case PKT_MISORDERED:
         nms_printf(NMSML_VERB,
-               "WARNING: Misordered pkt found... reordered\n");
+               "WARNING: Misordered packet found... reordered\n");
         break;
     default:
         break;
