@@ -20,7 +20,42 @@
  *  
  * */
 
+//XXX get a saner implementation.
+
+/**
+ * @file timeval.c
+ * timeval manipulation
+ */
 #include <nemesi/utils.h>
+
+/**
+ * timeval addition
+ * @param x first value
+ * @param y second value
+ * @param res sum of y and x
+ */
+
+int nms_timeval_add(struct timeval *res, const struct timeval *x,
+        const struct timeval *y)
+{
+    res->tv_sec = x->tv_sec + y->tv_sec;
+
+    res->tv_usec = x->tv_usec + y->tv_usec;
+
+    if (res->tv_usec > 1000000) {
+        res->tv_usec -= 1000000;
+        res->tv_sec++;
+    }
+
+    return 0;
+}
+
+/**
+ * timeval subtraction
+ * @param x first value
+ * @param y second value
+ * @param res difference between x and y
+ */
 
 int nms_timeval_subtract(struct timeval *res, const struct timeval *x,
              const struct timeval *y)
@@ -50,4 +85,14 @@ int nms_timeval_subtract(struct timeval *res, const struct timeval *x,
     /* Return 1 if result is negative (x < y).  */
     return ((x->tv_sec < z.tv_sec)
         || ((x->tv_sec == z.tv_sec) && (x->tv_usec < z.tv_usec)));
+}
+
+/*
+ * Convert a float value (seconds) to a timeval
+ */
+
+void f2time(double ftime, struct timeval *time)
+{
+    time->tv_sec = (long) ftime;
+    time->tv_usec = (long) ((ftime - time->tv_sec) * 1000000);
 }
