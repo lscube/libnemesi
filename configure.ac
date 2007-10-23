@@ -147,7 +147,7 @@ AC_CONFIG_FILES([Makefile
                  bufferpool/Makefile
                  libCCstreaming/Makefile
                  rtp/Makefile
-                 rtp/rtpparsers/Makefile
+                 parsers/Makefile
                  rtcp/Makefile
                  sdp/Makefile
                  rtsp/Makefile

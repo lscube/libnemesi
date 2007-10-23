@@ -1,5 +1,3 @@
-SUBDIRS = rtpparsers
-
 libnmsdir = $(top_srcdir)
 libnmsincludedir = $(libnmsdir)/include
 # nemesiincludedir = $(top_srcdir)/include
@@ -14,5 +12,4 @@ librtp_la_SOURCES =	rtp_thread.c \
 			rtp_ssrc_queue.c \
 			rtp_payload_type.c
 
-librtp_la_LIBADD = rtpparsers/librtpparsers.la
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

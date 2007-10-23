@@ -34,13 +34,13 @@ libnemesi_la_LIBADD =	rtsp/librtsp.la \
 			rtp/librtp.la \
 			bufferpool/libbuffpool.la \
 			utils/libutils.la \
-		    -lnetembryo \
+			parsers/librtpparsers.la \
+			-lnetembryo \
 			$(LIBM)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnemesi.pc
 
-#fixme use VERSION
 libnemesi_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 EXTRA_DIST = 	config \
