@@ -39,7 +39,7 @@ int cc_set_sdplicense(cc_license * cc, char *sdp_l)
 
     // shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
     for (i = 0; i < sizeof(cclicenses) / sizeof(*cclicenses); i++) {
-        if (!strncmpcase
+        if (!strncasecmp
             (sdp_l, cclicenses[i][CC_ATTR_NAME],
              strlen(cclicenses[i][CC_ATTR_NAME]))) {
             // XXX: we do not duplicate the string!!! Do we have to do that?

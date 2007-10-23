@@ -55,12 +55,12 @@ int handle_setup_response(rtsp_thread * rtsp_th)
         prev_tkn = tkn;
 
         /* get_transport_str calls strtok itself, that's why we need a strtok_r */
-        if (!strncmpcase(prev_tkn, "Transport", 9)) {
+        if (!strncasecmp(prev_tkn, "Transport", 9)) {
             prev_tkn += 9;
             get_transport_str(rtsp_med->rtp_sess, prev_tkn);
         }
 
-        if (!strncmpcase(prev_tkn, "Session", 7)) {
+        if (!strncasecmp(prev_tkn, "Session", 7)) {
             prev_tkn += 7;
             sscanf(prev_tkn, " : %"SCNu64" ; ",
                    &(rtsp_sess->Session_ID));
@@ -98,20 +98,20 @@ int handle_get_response(rtsp_thread * rtsp_th)
         if (((tkn - prev_tkn) == 2) && (*prev_tkn == '\r'))
             break;
         prev_tkn = tkn;
-        if (!strncmpcase(prev_tkn, "Content-Length", 14)) {
+        if (!strncasecmp(prev_tkn, "Content-Length", 14)) {
             prev_tkn += 14;
             while ((*(prev_tkn) == ' ') || (*(prev_tkn) == ':'))
                 prev_tkn++;
             sscanf(prev_tkn, "%d", &content_length);
-        } else if (!strncmpcase(prev_tkn, "Content-Type", 12)) {
+        } else if (!strncasecmp(prev_tkn, "Content-Type", 12)) {
             prev_tkn += 12;
             while ((*(prev_tkn) == ' ') || (*(prev_tkn) == ':'))
                 prev_tkn++;
-            if (!strncmpcase(prev_tkn, "application/sdp", 15))
+            if (!strncasecmp(prev_tkn, "application/sdp", 15))
                 rtsp_th->descr_fmt = DESCRIPTION_SDP_FORMAT;
             // description_format=DESCRIPTION_SDP_FORMAT;
             /* 
-               else if ( !strncmpcase(prev_tkn, "application/x-rtsp-mh", 21) )
+               else if ( !strncasecmp(prev_tkn, "application/x-rtsp-mh", 21) )
                description_format=DESCRIPTION_MH_FORMAT;
              */
             else {
@@ -119,7 +119,7 @@ int handle_get_response(rtsp_thread * rtsp_th)
                        "Content-Type %s not recognized\n",
                        prev_tkn);
             }
-        } else if (!strncmpcase(prev_tkn, "Content-Base", 12)) {
+        } else if (!strncasecmp(prev_tkn, "Content-Base", 12)) {
             prev_tkn += 12;
             while ((*(prev_tkn) == ' ') || (*(prev_tkn) == ':'))
                 prev_tkn++;

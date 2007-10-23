@@ -50,20 +50,7 @@
 
 int urltokenize(char *, char **, char **, char **);
 
-/**
- * @defgroup missingos Non posix but widespread functions
- * Currnetly just caseless string comparison
- * @{
- */
-
 char *strstrcase(char *, const char *);
-int strncmpcase(const char *, const char *, size_t);
-int strcmpcase(const char *, const char *);
-
-/**
- * @}
- */
-
 
 uint32_t random32(int);
 

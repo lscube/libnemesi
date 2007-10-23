@@ -108,7 +108,7 @@ int rtp_parser_reg(rtp_session * rtp_sess, int16_t pt, char *mime)
 
     for (i = 0; rtpparsers[i]; i++) {
         for (j = 0; rtpparsers[i]->served->mime[j]; j++) {
-            if (!strcmpcase(rtpparsers[i]->served->mime[j], mime)) {
+            if (!strcasecmp(rtpparsers[i]->served->mime[j], mime)) {
                 rtp_sess->parsers[pt] = rtpparsers[i]->parse;
                 rtp_sess->parsers_inits[pt] =
                     rtpparsers[i]->init;

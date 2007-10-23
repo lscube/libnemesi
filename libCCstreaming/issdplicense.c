@@ -32,7 +32,7 @@ int issdplicense(char *sdp_a)
 
     // shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
     for (i = 0; i < sizeof(cclicenses) / sizeof(*cclicenses); i++) {
-        if (!strncmpcase
+        if (!strncasecmp
             (sdp_a, cclicenses[i][CC_ATTR_NAME],
              strlen(cclicenses[i][CC_ATTR_NAME]))) {
             nms_printf(NMSML_DBG1,

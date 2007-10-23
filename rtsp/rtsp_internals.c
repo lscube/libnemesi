@@ -140,7 +140,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
                 if (((tkn - prev_tkn) == 2)
                     && (*prev_tkn == '\r'))
                     break;
-                if (!strncmpcase(prev_tkn, "Location", 8)) {
+                if (!strncasecmp(prev_tkn, "Location", 8)) {
                     prev_tkn += 8;
                     while ((*(prev_tkn) == ' ')
                            || (*(prev_tkn) == ':'))
@@ -397,13 +397,13 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
 
             for (sdp_attr = sdp_m->attr_list; sdp_attr;
                  sdp_attr = sdp_attr->next) {
-                if (!strncmpcase(sdp_attr->name, "control", 7)) {
+                if (!strncasecmp(sdp_attr->name, "control", 7)) {
                     tkn = sdp_attr->value;
                     while ((*tkn == ' ') || (*tkn == ':'))    // skip spaces and colon
                         tkn++;
                     curr_rtsp_m->filename = tkn;
                 } else
-                    if (!strncmpcase(sdp_attr->name, "rtpmap", 6))
+                    if (!strncasecmp(sdp_attr->name, "rtpmap", 6))
                 {
                     /* We assume the string in the format:
                      * rtpmap:PaloadType EncodingName/ClockRate[/Channels] */
@@ -447,7 +447,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                             "non-dynamic payload type: not permitted\n");
                     }
                 } else
-                    if (!strncmpcase(sdp_attr->name, "fmtp", 4)) {
+                    if (!strncasecmp(sdp_attr->name, "fmtp", 4)) {
                     /* We assume the string in the format:
                      * fmtp:PaloadType <format specific parameters> */
                     tkn = sdp_attr->value;    // 4 == strlen("fmtp")
@@ -467,7 +467,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                 /* dirty keyword from old fenice used for dinamic
                  * payload change - TO BE REMOVED
                  */
-                } else if (!strncmpcase(sdp_attr->name, "med", 3)) {
+                } else if (!strncasecmp(sdp_attr->name, "med", 3)) {
                     sdp_medium_info m_info;
                     /* We assume the string in the format:
                      * med:sdp-like m= field */
@@ -490,7 +490,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                     }
                     switch (sdp_m->media_type) {
                     case 'A':
-                        if (strncmpcase
+                        if (strncasecmp
                             (tkn, "audio ", 6)) {
                             nms_printf(NMSML_ERR,
                                 "a=med; attribute defined a different media"
@@ -503,7 +503,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                             return 1;
                         break;
                     case 'V':
-                        if (strncmpcase
+                        if (strncasecmp
                             (tkn, "video ", 6)) {
                             nms_printf(NMSML_ERR,
                                 "a=med; attribute defined a different media"

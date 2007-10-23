@@ -5,8 +5,6 @@ noinst_LTLIBRARIES = libutils.la
 
 libutils_la_SOURCES =	urltokenize.c \
 			strstrcase.c \
-			strncmpcase.c \
-			strcmpcase.c \
 			random32.c \
 			timeval.c \
 			nmsprint.c \
