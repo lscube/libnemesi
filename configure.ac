@@ -145,7 +145,7 @@ AC_SUBST(LT_AGE)
 
 AC_CONFIG_FILES([Makefile
                  bufferpool/Makefile
-                 libCCstreaming/Makefile
+                 creativecommons/Makefile
                  rtp/Makefile
                  parsers/Makefile
                  rtcp/Makefile

@@ -2,7 +2,7 @@ SUBDIRS =	bufferpool \
 		utils \
 		rtp \
 		rtcp \
-		libCCstreaming \
+		creativecommons \
 		sdp \
 		rtsp \
 		. \
@@ -29,7 +29,7 @@ libnemesi_la_SOURCES =
 
 libnemesi_la_LIBADD =	rtsp/librtsp.la \
 			sdp/libsdp.la \
-			libCCstreaming/libCCstreaming.la \
+			creativecommons/libcc.la \
 			rtcp/librtcp.la \
 			rtp/librtp.la \
 			bufferpool/libbuffpool.la \
