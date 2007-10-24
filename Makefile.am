@@ -5,6 +5,7 @@ SUBDIRS =	bufferpool \
 		libCCstreaming \
 		sdp \
 		rtsp \
+		parsers \
 		. \
 		example
 
