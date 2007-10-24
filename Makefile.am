@@ -5,6 +5,7 @@ SUBDIRS =	bufferpool \
 		creativecommons \
 		sdp \
 		rtsp \
+		parsers \
 		. \
 		example
 

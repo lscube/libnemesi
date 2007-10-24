@@ -22,6 +22,36 @@
 
 #include <nemesi/rtcp.h>
 
+/** @file rtcp_events.c
+ * This file contains the RTCP Layer events handling functions.
+ * rtcp_events are the way the libNemesi uses to notify its
+ * RTCP Layer that it has to do something on client side.
+ */
+
+//TODO: Actually comment event handling functions
+struct rtcp_event *rtcp_deschedule(struct rtcp_event *head)
+{
+    struct rtcp_event *phead = head;
+
+    head = head->next;
+    free(phead);
+
+    return head;
+}
+
+void rtcp_clean_events(void *events)
+{
+    struct rtcp_event *event = *(struct rtcp_event **) events;
+    struct rtcp_event *free_event;
+
+    while (event) {
+        // fprintf(stderr, "\n\n\nfreeing rtcp event\n\n\n");
+        free_event = event;
+        event = event->next;
+        free(free_event);
+    }
+}
+
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 {
 
@@ -79,3 +109,41 @@ struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
     }
     return event;
 }
+
+struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
+                 rtp_session * rtp_sess, struct timeval tv,
+                 rtcp_type_t type)
+{
+    struct rtcp_event *new_event;
+    struct rtcp_event *pevent = head;
+    struct rtcp_event *event = head;
+
+    if ((new_event =
+         (struct rtcp_event *) malloc(sizeof(struct rtcp_event))) ==
+        NULL) {
+        nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
+        return NULL;
+    }
+    new_event->rtp_sess = rtp_sess;
+    new_event->tv = tv;
+    new_event->type = type;
+    new_event->next = NULL;
+
+    if (!head)
+        return new_event;
+
+    while (event && nms_timeval_subtract(NULL, &(event->tv), &tv)) {
+        pevent = event;
+        event = event->next;
+    }
+    if (pevent == head) {
+        new_event->next = head;
+        return new_event;
+    }
+    pevent->next = new_event;
+    new_event->next = event;
+
+    return head;
+}
+
+

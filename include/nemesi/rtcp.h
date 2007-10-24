@@ -37,11 +37,6 @@
 #define MAX_PKT_SIZE 548    /* 576 - 20 - 8 = Minimum Reassembly Buffer Size - IP datagram header -  UDP hedaer: in octects */
 #define MAX_SDES_LEN 255    /* in octects */
 
-#define RTCP_MIN_TIME 5.0
-#define RTCP_SENDER_BW_FRACTION 0.25
-#define RTCP_RCVR_BW_FRACTION 0.75
-#define COMPENSATION 1.21828    /* e - 1.5 */
-
 typedef enum {
     RTCP_SR = 200,
     RTCP_RR = 201,
