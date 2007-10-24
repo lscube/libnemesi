@@ -20,9 +20,18 @@
  *  
  * */
 
+/** @file rtcp_app.c
+ * This file contains functions to parse application dependant packets
+ */
+
 #include <nemesi/rtcp.h>
 #include <nemesi/comm.h>
 
+/**
+ * Parse application packet
+ * @param pkt The packet itself
+ * @return 0
+ */
 int rtcp_parse_app(rtcp_pkt * pkt)
 {
     // TODO: handle app packet
