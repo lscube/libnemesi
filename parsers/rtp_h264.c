@@ -123,50 +123,17 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
 
 static int h264_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 {
-    rtp_h264 *priv = ssrc->privs[pt];
+    rtp_h264 *priv = ssrc->rtp_sess->ptdefs[pt]->priv;
 
     if (priv && priv->data)
         free(priv->data);
     if (priv)
         free(priv);
 
-    priv = ssrc->rtp_sess->ptdefs[pt]->priv;
-
     ssrc->rtp_sess->ptdefs[pt]->priv = NULL;
 
-    if (priv)
-        free(priv);
-
     return 0;
 }
-
-/*static rtp_pkt * h264_next_pkt(rtp_ssrc * ssrc, size_t * len, uint8_t ** buf)
-{
-        rtp_pkt * pkt;
-
-        rtp_rm_pkt(ssrc);
-        pkt = rtp_get_pkt(ssrc, len);
-        if (!pkt) {
-            *len = 0;
-            *buf = NULL;
-        }
-        else {
-            *len = RTP_PAYLOAD_SIZE(pkt, *len);
-            *buf = RTP_PKT_DATA(pkt);
-        }
-
-        return pkt;
-}
-
-static int h264_check_if_packet_continues(rtp_pkt * pkt, rtp_frame * fr)
-{
-    if (!pkt) return 0;
-
-    if (fr->timestamp == RTP_PKT_TS(pkt))
-        return 1;
-
-    return 0;
-}*/
 
 /**
  * it should return a h264 frame either by unpacking an aggregate

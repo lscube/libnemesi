@@ -91,8 +91,12 @@ static void rtp_clean(void * thrd)
              fmtlist->next, free(pfmtlist));
         // rtp payload types definitions attributes
         for (i = 0; i < 128; i++)
-            if (rtp_sess->ptdefs[i])
+            if (rtp_sess->ptdefs[i]) {
+                int j;
+                for (j = 0; j< rtp_sess->ptdefs[i]->attrs.size; j++)
+                    free(rtp_sess->ptdefs[i]->attrs.data[j]);
                 free(rtp_sess->ptdefs[i]->attrs.data);
+            }
         // rtp payload types dynamic definitions
         for (i = 96; i < 128; free(rtp_sess->ptdefs[i++]));
 
@@ -103,7 +107,7 @@ static void rtp_clean(void * thrd)
     rtp_th->rtp_sess_head = NULL;
 
 //      pthread_mutex_unlock(&rtp_th->syn);
-
+    free(rtp_th);
     nms_printf(NMSML_DBG1, "RTP Thread R.I.P.\n");
 }
 

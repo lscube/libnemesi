@@ -148,6 +148,8 @@ int main(int argc, char **argv)
 
     fprintf(stderr, " Complete\n");
 
+    free(out);
+
     rtsp_close(ctl);
     rtsp_wait(ctl);
 
