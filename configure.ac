@@ -93,7 +93,7 @@ fi
 
 PKG_CHECK_MODULES(LIBNETEMBRYO,[libnetembryo >= 0.0.4])
 CFLAGS="$CFLAGS $LIBNETEMBRYO_CFLAGS"
-LIBS="$LIBS $LIBNETEMBRYO_LIBS"
+LIBS="$LIBS $LIBM $LIBNETEMBRYO_LIBS"
 
 dnl Check for SCTP support
 if test "$enable_sctp" = "yes"; then
@@ -109,7 +109,6 @@ else
     AC_MSG_WARN([SCTP disabled: check skipped.])
 fi
 
-AC_SUBST(LIBM)
 AC_SUBST(EXTRA_FLAGS)
 
 AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])

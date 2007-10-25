@@ -35,9 +35,7 @@ libnemesi_la_LIBADD =	rtsp/librtsp.la \
 			rtp/librtp.la \
 			bufferpool/libbuffpool.la \
 			utils/libutils.la \
-			parsers/librtpparsers.la \
-			-lnetembryo \
-			$(LIBM)
+			parsers/librtpparsers.la
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnemesi.pc
