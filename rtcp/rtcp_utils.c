@@ -24,7 +24,7 @@
  * This file contains the utility functions for RTCP Layer
  */
 
-#include <nemesi/rtcp.h>
+#include "rtcp.h"
 
 #define RTCP_MIN_TIME 5.0
 #define RTCP_SENDER_BW_FRACTION 0.25

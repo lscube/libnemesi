@@ -20,11 +20,11 @@
  *  
  * */
 
-#include <nemesi/rtspinternals.h>
-#include <nemesi/utils.h>
-#include <nemesi/version.h>
-#include <nemesi/transport.h>
-#include <nemesi/cc.h>
+#include "rtspinternals.h"
+#include "utils.h"
+#include "version.h"
+#include "transport.h"
+#include "cc.h"
 
 int send_get_request(rtsp_thread * rtsp_th)
 {

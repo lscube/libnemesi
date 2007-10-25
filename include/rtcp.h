@@ -29,9 +29,9 @@
 
 #include <unistd.h>
 
-#include <nemesi/comm.h>
-#include <nemesi/rtp.h>
-#include <nemesi/transport.h>
+#include "comm.h"
+#include "rtp.h"
+#include "transport.h"
 
 
 #define MAX_PKT_SIZE 548    /* 576 - 20 - 8 = Minimum Reassembly Buffer Size - IP datagram header -  UDP hedaer: in octects */

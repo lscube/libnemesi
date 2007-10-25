@@ -23,8 +23,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <nemesi/sdp.h>
-#include <nemesi/comm.h>
+#include "sdp.h"
+#include "comm.h"
 
 /**
  *  Parses the SDP

@@ -20,9 +20,9 @@
  *  
  * */
 
-#include <nemesi/utils.h>
-#include <nemesi/rtp.h>
-#include <nemesi/comm.h>
+#include "utils.h"
+#include "rtp.h"
+#include "comm.h"
 #include <errno.h>
 
 /**

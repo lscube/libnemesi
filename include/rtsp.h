@@ -28,10 +28,10 @@
 #define NEMESI_RTSP_H
 
 #include <pthread.h>
-#include <nemesi/cc.h>
-#include <nemesi/transport.h>
-#include <nemesi/rtp.h>
-#include <nemesi/sdp.h>
+#include "cc.h"
+#include "transport.h"
+#include "rtp.h"
+#include "sdp.h"
 #include <netembryo/rtsp_errors.h>
 
 /*! Default RTSP port (default setting from rfc) if not explicitly specified. */

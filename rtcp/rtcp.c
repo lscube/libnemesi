@@ -25,7 +25,7 @@
  * create and run an RTCP loop for an RTP Thread.
  */
 
-#include <nemesi/rtcp.h>
+#include "rtcp.h"
 
 /**
  * RTCP Layer clean up is demanded to RTP layer (rtp_clean)

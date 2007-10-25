@@ -20,7 +20,7 @@
  *  
  * */
 
-#include <nemesi/bufferpool.h>
+#include "bufferpool.h"
 
 /*!
 * \brief Rimuove un elemento dal Buffer di Playout.

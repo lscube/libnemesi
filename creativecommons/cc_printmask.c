@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/cc.h>
-#include <nemesi/comm.h>
+#include "cc.h"
+#include "comm.h"
 
 void cc_printmask(cc_perm_mask mask)
 {

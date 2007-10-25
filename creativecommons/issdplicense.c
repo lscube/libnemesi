@@ -20,10 +20,10 @@
  *  
  * */
 
-#include <nemesi/cc.h>
-#include <nemesi/utils.h>
+#include "cc.h"
+#include "utils.h"
 
-#include <nemesi/comm.h>
+#include "comm.h"
 
 int issdplicense(char *sdp_a)
 {

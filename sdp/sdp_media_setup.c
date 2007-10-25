@@ -24,8 +24,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <nemesi/sdp.h>
-#include <nemesi/comm.h>
+#include "sdp.h"
+#include "comm.h"
 /**
  *  Parse SDP media informations
  *  @param descr the body to parse

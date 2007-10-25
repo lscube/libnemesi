@@ -25,8 +25,8 @@
  * Description packets parsing and building
  */
 
-#include <nemesi/rtcp.h>
-#include <nemesi/version.h>
+#include "rtcp.h"
+#include "version.h"
 #include <pwd.h>
 
 /**

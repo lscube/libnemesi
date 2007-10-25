@@ -20,10 +20,10 @@
  *  
  * */
 
-#include <nemesi/rtspinternals.h>
-#include <nemesi/utils.h>
+#include "rtspinternals.h"
+#include "utils.h"
 #include <fcntl.h>
-#include <nemesi/version.h>
+#include "version.h"
 
 
 /** @file rtsp.c

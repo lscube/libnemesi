@@ -20,7 +20,7 @@
  *  
  * */
 
-#include <nemesi/rtp.h>
+#include "rtp.h"
 
 int rtp_def_frmr(struct rtp_session *rtp_sess, struct rtp_ssrc *stm_src, char *dst, size_t dst_size, uint32_t *timestamp)
 {

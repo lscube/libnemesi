@@ -20,7 +20,7 @@
  *  
  * */
 
-#include <nemesi/rtcp.h>
+#include "rtcp.h"
 
 double rtcp_interval(int members, int senders, double rtcp_bw, int we_sent,
              double avg_rtcp_size, int initial)

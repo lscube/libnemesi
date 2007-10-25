@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 
-#include <nemesi/cc.h>
+#include "cc.h"
 
 cc_license *cc_newlicense(void)
 {

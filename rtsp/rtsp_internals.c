@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/rtspinternals.h>
-#include <nemesi/utils.h>
+#include "rtspinternals.h"
+#include "utils.h"
 
 int body_exists(char *in_buffer)
 {

@@ -39,7 +39,7 @@
 #ifndef NEMESI_SDP_H
 #define NEMESI_SDP_H
 
-#include <nemesi/cc.h>
+#include "cc.h"
 
 /*!
  * \brief SDP attributes list basic element.

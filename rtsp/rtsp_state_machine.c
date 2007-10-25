@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/rtspinternals.h>
-#include <nemesi/version.h>
+#include "rtspinternals.h"
+#include "version.h"
 #include <stdarg.h>
 #include <fcntl.h>
 

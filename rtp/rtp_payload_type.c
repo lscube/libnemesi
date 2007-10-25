@@ -28,10 +28,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <nemesi/rtpptdefs.h>
-#include <nemesi/utils.h>
-#include <nemesi/comm.h>
-#include <nemesi/rtp.h>
+#include "rtpptdefs.h"
+#include "utils.h"
+#include "comm.h"
+#include "rtp.h"
 
 // definitions of known payload types specified in RFC 3551
 

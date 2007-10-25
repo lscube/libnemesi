@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/rtspinternals.h>
-#include <nemesi/utils.h>
+#include "rtspinternals.h"
+#include "utils.h"
 #include <stdarg.h>
 
 void *get_curr_sess(int cmd, ...)

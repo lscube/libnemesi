@@ -24,9 +24,9 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include <nemesi/cc.h>
-#include <nemesi/comm.h>
-#include <nemesi/utils.h>
+#include "cc.h"
+#include "comm.h"
+#include "utils.h"
 
 #define CC_PT_MPA 14
 

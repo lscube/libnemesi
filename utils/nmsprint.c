@@ -24,7 +24,7 @@
 #include <stdarg.h>
 
 #include <config.h>
-#include <nemesi/comm.h>
+#include "comm.h"
 
 #ifndef ENABLE_DEBUG
 #define DEFAULT_VERBOSITY NMSML_NORM

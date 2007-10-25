@@ -26,9 +26,9 @@
 #include <string.h>
 #include <fcntl.h>
 
-#include <nemesi/rtsp.h>
-#include <nemesi/rtp.h>
-#include <nemesi/sdp.h>
+#include "rtsp.h"
+#include "rtp.h"
+#include "sdp.h"
 
 
 int main(int argc, char **argv)

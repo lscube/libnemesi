@@ -25,9 +25,9 @@
  * create and run a new RTP Thread.
  */
 
-#include <nemesi/rtp.h>
-#include <nemesi/comm.h>
-#include <nemesi/bufferpool.h>
+#include "rtp.h"
+#include "comm.h"
+#include "bufferpool.h"
 
 #define PO_BUFF_SIZE_SEC 0
 #define PO_BUFF_SIZE_MSEC 700

@@ -26,7 +26,7 @@
  */
 
 #include <errno.h>
-#include <nemesi/rtcp.h>
+#include "rtcp.h"
 
 /**
  * Checks if an RTCP packet has a valid header

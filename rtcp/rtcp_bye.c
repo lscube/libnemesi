@@ -25,9 +25,9 @@
  * handling and sending
  */
 
-#include <nemesi/rtcp.h>
-#include <nemesi/comm.h>
-#include <nemesi/rtspinternals.h>
+#include "rtcp.h"
+#include "comm.h"
+#include "rtspinternals.h"
 
 /**
  * BYE packet handler, when rtcp layer gets a bye packet

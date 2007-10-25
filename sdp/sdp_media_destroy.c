@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 
-#include <nemesi/sdp.h>
+#include "sdp.h"
 
 void sdp_media_destroy(sdp_medium_info * media_queue)
 {

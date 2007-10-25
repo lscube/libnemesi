@@ -25,8 +25,8 @@
  * and Sender Reports building and parsing.
  */
 
-#include <nemesi/rtcp.h>
-#include <nemesi/comm.h>
+#include "rtcp.h"
+#include "comm.h"
 
 /**
  * Builds the Receiver Report packet

@@ -26,9 +26,9 @@
  * possible to access packets pending on the buffer.
  */
 
-#include <nemesi/rtp.h>
-#include <nemesi/rtpptdefs.h>
-#include <nemesi/bufferpool.h>
+#include "rtp.h"
+#include "rtpptdefs.h"
+#include "bufferpool.h"
 
 /**
  * Waits for rtp thread to be ready and reports if the stream reached the end

@@ -24,9 +24,9 @@
  * This file contains the functions that perform packet reception and validity check.
  */
 
-#include <nemesi/rtp.h>
-#include <nemesi/rtpptdefs.h>
-#include <nemesi/bufferpool.h>
+#include "rtp.h"
+#include "rtpptdefs.h"
+#include "bufferpool.h"
 
 /**
  * Checks if the RTP header is valid for the given packet

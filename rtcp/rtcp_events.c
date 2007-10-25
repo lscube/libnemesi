@@ -20,7 +20,7 @@
  *  
  * */
 
-#include <nemesi/rtcp.h>
+#include "rtcp.h"
 
 /** @file rtcp_events.c
  * This file contains the RTCP Layer events handling functions.

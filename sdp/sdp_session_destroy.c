@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 
-#include <nemesi/sdp.h>
+#include "sdp.h"
 
 void sdp_session_destroy(sdp_session_info * session)
 {

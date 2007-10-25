@@ -36,10 +36,10 @@
 #include <netdb.h>
 #include <string.h>
 
-#include <nemesi/rtcp.h>
-#include <nemesi/utils.h>
-#include <nemesi/comm.h>
-#include <nemesi/rtsp.h>
+#include "rtcp.h"
+#include "utils.h"
+#include "comm.h"
+#include "rtsp.h"
 
 /** @defgroup RTSP_layer RTSP Layer
  *

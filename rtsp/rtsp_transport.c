@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/rtspinternals.h>
-#include <nemesi/utils.h>
+#include "rtspinternals.h"
+#include "utils.h"
 
 #if HAVE_LIBSCTP
 int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {

@@ -20,7 +20,7 @@
  *  
  * */
 
-#include <nemesi/bufferpool.h>
+#include "bufferpool.h"
 
 #define RET_ERR(x)    do {\
                 free(bp->bufferpool); \

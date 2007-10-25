@@ -24,8 +24,8 @@
  * This file contains functions to parse application dependant packets
  */
 
-#include <nemesi/rtcp.h>
-#include <nemesi/comm.h>
+#include "rtcp.h"
+#include "comm.h"
 
 /**
  * Parse application packet

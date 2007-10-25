@@ -23,8 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <nemesi/cc.h>
-#include <nemesi/utils.h>
+#include "cc.h"
+#include "utils.h"
 
 // inspired by id3lib
 #define MASK(bits) ((1 << (bits)) - 1)

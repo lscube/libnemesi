@@ -23,8 +23,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <nemesi/sdp.h>
-#include <nemesi/comm.h>
+#include "sdp.h"
+#include "comm.h"
 
 int sdp_parse_m_descr(sdp_medium_info * m_info, char *m_descr)
 {

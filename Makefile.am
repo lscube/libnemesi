@@ -14,17 +14,17 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libnemesi.la
 
 libincludedir = $(includedir)/nemesi
-libinclude_HEADERS = 	include/nemesi/bufferpool.h\
-			include/nemesi/rtpptdefs.h\
-			include/nemesi/cc.h\
-			include/nemesi/rtsp.h\
-			include/nemesi/comm.h\
-			include/nemesi/sdp.h\
-			include/nemesi/utils.h\
-			include/nemesi/version.h\
-			include/nemesi/rtcp.h\
-			include/nemesi/rtp.h\
-			include/nemesi/transport.h
+libinclude_HEADERS = 	include/bufferpool.h\
+			include/rtpptdefs.h\
+			include/cc.h\
+			include/rtsp.h\
+			include/comm.h\
+			include/sdp.h\
+			include/utils.h\
+			include/version.h\
+			include/rtcp.h\
+			include/rtp.h\
+			include/transport.h
 
 libnemesi_la_SOURCES =
 

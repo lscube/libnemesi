@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/comm.h>
-#include <nemesi/utils.h>
+#include "comm.h"
+#include "utils.h"
 
 #include "rtpparsers.h"
 

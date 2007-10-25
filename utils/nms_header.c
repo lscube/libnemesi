@@ -22,8 +22,8 @@
 
 #include <string.h>
 
-#include <nemesi/version.h>
-#include <nemesi/comm.h>
+#include "version.h"
+#include "comm.h"
 
 inline void nms_header(void)
 {

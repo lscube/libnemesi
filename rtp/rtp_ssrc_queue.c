@@ -24,8 +24,8 @@
  * This file contains the functions that manage the SSRC queue
  */
 
-#include <nemesi/rtp.h>
-#include <nemesi/bufferpool.h>
+#include "rtp.h"
+#include "bufferpool.h"
 
 /**
  * Gets the queue of active sources

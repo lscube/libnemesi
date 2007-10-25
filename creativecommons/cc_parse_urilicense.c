@@ -22,8 +22,8 @@
 
 //! This define will make global initialization in cc.h header
 #define CC_GLOBAL_DATA
-#include <nemesi/cc.h>
-#include <nemesi/utils.h>
+#include "cc.h"
+#include "utils.h"
 
 /*! \brief Parses Licenes URI and fills cc_perms data structure.
  *

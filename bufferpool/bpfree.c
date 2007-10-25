@@ -20,7 +20,7 @@
  *  
  * */
 
-#include <nemesi/bufferpool.h>
+#include "bufferpool.h"
 
 /*!
 * \brief Restituisce uno slot alla Free List.

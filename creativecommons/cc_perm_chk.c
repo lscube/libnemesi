@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/cc.h>
-#include <nemesi/comm.h>
+#include "cc.h"
+#include "comm.h"
 
 /*! \brief License permissions checking function.
  *

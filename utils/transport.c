@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/transport.h>
-#include <nemesi/comm.h>
+#include "transport.h"
+#include "comm.h"
 
 #ifdef    HAVE_SOCKADDR_DL_STRUCT
 # include    <net/if_dl.h>

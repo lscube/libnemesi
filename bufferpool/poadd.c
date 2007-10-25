@@ -20,8 +20,8 @@
  *  
  * */
 
-#include <nemesi/rtp.h>
-#include <nemesi/bufferpool.h>
+#include "rtp.h"
+#include "bufferpool.h"
 
 /*!
 * \brief Inserisce un elemento nel Buffer di Playout.

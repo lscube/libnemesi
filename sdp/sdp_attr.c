@@ -22,8 +22,8 @@
 
 #include <stdlib.h>
 
-#include <nemesi/sdp.h>
-#include <nemesi/comm.h>
+#include "sdp.h"
+#include "comm.h"
 
 int sdp_set_attr(sdp_attr ** attr_list, char *a)
 {

@@ -44,10 +44,10 @@
 #include <pthread.h>
 #include <stdint.h>
 
-#include <nemesi/comm.h>
-#include <nemesi/utils.h>
-#include <nemesi/transport.h>
-#include <nemesi/rtpptdefs.h>
+#include "comm.h"
+#include "utils.h"
+#include "transport.h"
+#include "rtpptdefs.h"
 
 #define RTP_VERSION 2
 

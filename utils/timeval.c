@@ -26,7 +26,7 @@
  * @file timeval.c
  * timeval manipulation
  */
-#include <nemesi/utils.h>
+#include "utils.h"
 
 /**
  * timeval addition

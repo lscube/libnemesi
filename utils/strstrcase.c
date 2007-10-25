@@ -20,7 +20,7 @@
  *  
  * */
 
-#include <nemesi/utils.h>
+#include "utils.h"
 
 /**
  * Case insensitive strstr
