@@ -164,19 +164,20 @@ int rtp_get_fps(rtp_ssrc * stm_src)
  * @param stm_src The source for which to get the packet
  * @param len this is a return parameter for lenght of pkt. NULL value is allowed:
  * in this case, we understand that you are not interested about this value.
+ * @param pkt_num The index of the packet we want to get.
  * shawill: this function put his dirty hands on bufferpool internals!!!
  * @return the pointer to next packet in buffer or NULL if playout buffer is empty.
  * */
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, unsigned int *len, uint32_t n)
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, unsigned int *len, unsigned int pkt_num)
 {                // TODO complete;
-    int i;
+    int buffer_index;
 
     pthread_mutex_lock(&(stm_src->po->po_mutex));
-    i = stm_src->po->potail;
-    while ((i >= 0) && (n-- > 0)) {
-        i = stm_src->po->pobuff[i].next;
+    buffer_index = stm_src->po->potail;
+    while ((buffer_index >= 0) && (pkt_num-- > 0)) {
+        buffer_index = stm_src->po->pobuff[buffer_index].next;
     }
-    if (i < 0) {
+    if (buffer_index < 0) {
         pthread_mutex_unlock(&(stm_src->po->po_mutex));
         return NULL;
     }
@@ -184,10 +185,10 @@ rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, unsigned int *len, uint32_t n)
 
 
     if (len)
-        *len = (stm_src->po->pobuff[i]).pktlen;
+        *len = (stm_src->po->pobuff[buffer_index]).pktlen;
 //      pthread_mutex_unlock(&(stm_src->po->po_mutex)); moved up
 
-    return (rtp_pkt *) (*(stm_src->po->bufferpool) + i);
+    return (rtp_pkt *) (*(stm_src->po->bufferpool) + buffer_index);
 }
 
 /** Returns a pointer to next packet in the bufferpool for given playout buffer.

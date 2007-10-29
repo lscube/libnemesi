@@ -22,6 +22,7 @@
 
 #include "rtp.h"
 #include "bufferpool.h"
+#include "rtsp.h"
 
 #define RET_ERR(err_level, ...)    do { \
                     nms_printf(err_level, __VA_ARGS__ ); \
@@ -101,4 +102,25 @@ rtp_session *rtp_session_init(nms_sockaddr * local, nms_sockaddr * peer)
     rtp_parsers_new(rtp_sess->parsers, rtp_sess->parsers_inits);
 
     return rtp_sess;
+}
+
+/**
+ * Gets the active SSRC for the given RTP Session
+ * @param sess The session for which to get the SSRC
+ * @param ctl The RTSP Controller
+ * @return The SSRC itself or NULL if there is no active SSRC
+ */
+rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, rtsp_ctrl *ctl)
+{
+    rtp_ssrc * ssrc;
+
+    rtp_fill_buffers(rtsp_get_rtp_th(ctl));
+    for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
+            ssrc;
+            ssrc = rtp_next_active_ssrc(ssrc)) {
+        if (ssrc->rtp_sess == sess)
+            return ssrc;
+    }
+
+    return NULL;
 }

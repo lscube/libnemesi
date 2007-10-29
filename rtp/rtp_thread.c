@@ -159,7 +159,7 @@ static void *rtp(void *args)
              rtp_sess = rtp_sess->next)
             if (FD_ISSET(rtp_sess->transport.RTP.sock.fd, &readset)) {
                 if (buffering) {
-                    if (rtp_sess->bp->flcount > BP_SLOT_NUM / 2) {
+                    if (rtp_sess->bp->flcount >= 0 /* BP_SLOT_NUM / 2*/) {
                         pthread_mutex_unlock(syn);
                         buffering = 0;
                     } else {    // TODO: buffering based on rtp jitter

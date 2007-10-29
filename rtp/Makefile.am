@@ -6,7 +6,7 @@ noinst_LTLIBRARIES = librtp.la
 
 librtp_la_SOURCES =	rtp_thread.c \
 			rtp_buffer.c \
-			rtp_session_init.c \
+			rtp_session.c \
 			rtp_recv.c \
 			rtp_transport.c \
 			rtp_ssrc_queue.c \
