@@ -392,6 +392,17 @@ int rtp_transport_get(rtp_session *, int, void *, uint32_t);
  */
 
 /**
+ * RTP session functions
+ * @defgroup rtp_session RTP session functions
+ * @{
+ */
+rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
+rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, rtsp_ctrl *ctl);
+/**
+ * @}
+ */
+
+/**
  * @{
  */
 
@@ -456,8 +467,6 @@ inline int rtp_set_streams(rtp_session *, uint16_t[2]);
 inline int rtp_set_rtpstream(rtp_session *, uint16_t);
 inline int rtp_set_rtcpstream(rtp_session *, uint16_t);
 inline int rtp_set_ssrc(rtp_session *, uint32_t);
-
-rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
 
 // parsers
 #define RTP_PRSR_ERROR      -1
