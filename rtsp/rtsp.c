@@ -94,17 +94,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
     nmst_init(&rtsp_th->transport);
     rtsp_th->default_rtp_proto = UDP;
     rtsp_th->status = INIT;
-#if 0                // we do not need to initilize to zero because of calloc usage
-    rtsp_th->descr_fmt = 0;
-    memset(rtsp_th->waiting_for, '\0', sizeof(rtsp_th->waiting_for));
-    rtsp_th->busy = 0;
-    rtsp_th->urlname = NULL;
-    (rtsp_th->in_buffer).size = 0;
-    (rtsp_th->in_buffer).first_pkt_size = 0;
-    (rtsp_th->in_buffer).data = NULL;
-    rtsp_th->rtsp_queue = NULL;
-    rtsp_th->force_rtp_port = 0;
-#endif
+
     CC_ACCEPT_ALL(rtsp_th->accepted_CC);
 
     rtsp_th->hints = hints;
