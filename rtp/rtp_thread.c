@@ -118,8 +118,9 @@ static void rtp_clean(void * thrd)
  */
 static void *rtp(void *args)
 {
-    rtp_session *rtp_sess_head = ((rtp_thread *) args)->rtp_sess_head;
-    pthread_mutex_t *syn = &((rtp_thread *) args)->syn;
+    rtp_thread *thread = args;
+    rtp_session *rtp_sess_head = thread->rtp_sess_head;
+    pthread_mutex_t *syn = &thread->syn;
     rtp_session *rtp_sess;
     struct timespec ts;
     int maxfd = 0;
@@ -133,7 +134,7 @@ static void *rtp(void *args)
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 /*    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); */
-    pthread_cleanup_push(rtp_clean, (void *) args);
+    pthread_cleanup_push(rtp_clean, args);
 
     /* Playout Buffer Size */
     /*
