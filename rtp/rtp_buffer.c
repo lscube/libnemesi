@@ -174,19 +174,15 @@ rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, unsigned int *len, unsigned int pkt_n
 
     pthread_mutex_lock(&(stm_src->po->po_mutex));
     buffer_index = stm_src->po->potail;
-    while ((buffer_index >= 0) && (pkt_num-- > 0)) {
+    while ((buffer_index >= 0) && (pkt_num-- > 0))
         buffer_index = stm_src->po->pobuff[buffer_index].next;
-    }
-    if (buffer_index < 0) {
-        pthread_mutex_unlock(&(stm_src->po->po_mutex));
-        return NULL;
-    }
     pthread_mutex_unlock(&(stm_src->po->po_mutex));
 
+    if (buffer_index < 0)
+        return NULL;
 
     if (len)
         *len = (stm_src->po->pobuff[buffer_index]).pktlen;
-//      pthread_mutex_unlock(&(stm_src->po->po_mutex)); moved up
 
     return (rtp_pkt *) (*(stm_src->po->bufferpool) + buffer_index);
 }

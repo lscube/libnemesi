@@ -284,10 +284,11 @@ int rtp_recv(rtp_session * rtp_sess)
             (uint32_t) (((double) now.tv_sec +
                    (double) now.tv_usec / 1000000.0) *
                   (double) rate) - ntohl(pkt->time);
+
         (stm_src->ssrc_stats).jitter = 0;
-        (stm_src->ssrc_stats).firstts = ntohl(pkt->time);
+        (stm_src->ssrc_stats).firstts = RTP_PKT_TS(pkt);
         (stm_src->ssrc_stats).firsttv = now;
-        // rtp_init_seq(stm_src, RTP_PKT_SEQ(pkt));
+
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
         break;
     case SSRC_COLLISION:
