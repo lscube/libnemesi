@@ -397,7 +397,8 @@ int rtp_transport_get(rtp_session *, int, void *, uint32_t);
  * @{
  */
 rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
-rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, rtsp_ctrl *ctl);
+struct rtsp_ctrl_t;
+rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, struct rtsp_ctrl_t *ctl);
 /**
  * @}
  */

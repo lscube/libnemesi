@@ -144,7 +144,7 @@ enum states { INIT, READY, PLAYING, RECORDING, STATES_NUM };
             cc_perm_mask accepted_CC;    /* accepted CC licenses */ \
             int response_id; /*!< Last received response from the server */
 
-typedef struct {
+typedef struct rtsp_ctrl_t {
 RTSP_COMMON_IF
 } rtsp_ctrl;
 

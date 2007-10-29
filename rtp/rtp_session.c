@@ -110,7 +110,7 @@ rtp_session *rtp_session_init(nms_sockaddr * local, nms_sockaddr * peer)
  * @param ctl The RTSP Controller
  * @return The SSRC itself or NULL if there is no active SSRC
  */
-rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, rtsp_ctrl *ctl)
+rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, struct rtsp_ctrl_t *ctl)
 {
     rtp_ssrc * ssrc;
 
