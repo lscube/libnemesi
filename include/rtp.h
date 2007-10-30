@@ -274,7 +274,10 @@ typedef struct {
     int run;
 
     rtp_session *rtp_sess_head;
+
     // struct timeval startime;
+    unsigned int prebuffer_size;
+
     pthread_mutex_t syn;
     pthread_t rtp_tid;
     pthread_t rtcp_tid;

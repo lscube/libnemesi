@@ -24,7 +24,7 @@
 #include "utils.h"
 #include <fcntl.h>
 #include "version.h"
-
+#include "bufferpool.h"
 
 /** @file rtsp.c
  * This file contains the interface functions to the rtsp packets and requests handling of the library
@@ -97,6 +97,13 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 
     CC_ACCEPT_ALL(rtsp_th->accepted_CC);
 
+    // hook to rtp lib
+    if (!(rtsp_th->rtp_th = rtp_init()))
+        RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n");
+
+    // use a safe default
+    rtsp_th->rtp_th->prebuffer_size = BP_SLOT_NUM / 2;
+
     rtsp_th->hints = hints;
     // check for the exactness of values hinted
     if (hints) {        // hints given
@@ -113,6 +120,10 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
             nms_printf(NMSML_WARN,
                    "RTP ports forced by user (not randomly generated)\n");
         }
+        // prebuffer size
+        if (hints->prebuffer_size >= 0)
+            rtsp_th->rtp_th->prebuffer_size = hints->prebuffer_size;
+
         //force RTSP protocol
         switch (hints->pref_rtsp_proto) {
         case SOCK_NONE:
@@ -151,9 +162,6 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
             RET_ERR(NMSML_ERR, "RTP protocol not supported!\n");
         }
     }
-    // hook to rtp lib
-    if (!(rtsp_th->rtp_th = rtp_init()))
-        RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n");
 
     state_machine[0] = init_state;
     state_machine[1] = ready_state;

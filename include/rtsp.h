@@ -51,6 +51,7 @@
 
 typedef struct {
     int first_rtp_port;
+    int prebuffer_size;
     sock_type pref_rtsp_proto;
     sock_type pref_rtp_proto;
 } nms_rtsp_hints;
