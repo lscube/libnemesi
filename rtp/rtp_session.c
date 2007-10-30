@@ -114,7 +114,6 @@ rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, struct rtsp_ctrl_t *ctl)
 {
     rtp_ssrc * ssrc;
 
-    rtp_fill_buffers(rtsp_get_rtp_th(ctl));
     for (ssrc = rtp_active_ssrc_queue(rtsp_get_rtp_queue(ctl));
             ssrc;
             ssrc = rtp_next_active_ssrc(ssrc)) {
