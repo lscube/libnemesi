@@ -37,6 +37,7 @@
 typedef struct {
     char *data;     //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
+    long timestamp;
 } rtp_h263;
 
 static rtpparser_info h263_served = {
@@ -83,18 +84,18 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                  * plus the 2 zeroed bytes
                  */
     size_t start = 2; /* how many bytes we are going to skip from the start */
-
-
-
     int err = RTP_FILL_OK;
-    int marker;
 
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
 
     buf = RTP_PKT_DATA(pkt);
     len = RTP_PAYLOAD_SIZE(pkt, len);
-    marker = RTP_PKT_MARK(pkt);
+
+    if (priv->len && (RTP_PKT_TS(pkt) != priv->timestamp)) { //incomplete packet with missing end fragment
+        priv->len = 0;
+        return RTP_PKT_UNKNOWN;
+    }
 
     if (buf[0]&0x4) { // p bit - we overwrite the first 2 bytes with zero
         start = 0;
@@ -115,7 +116,8 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     priv->len += len;
 
-    if (!marker) {
+    if (!RTP_PKT_MARK(pkt)) {
+        priv->timestamp = RTP_PKT_TS(pkt);
         err = EAGAIN;
     } else {
         fr->data = priv->data;
