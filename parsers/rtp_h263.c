@@ -29,69 +29,104 @@
  * H263 depacketizer RFC 4629
  */
 
+/**
+ * Local structure, contains data necessary to compose a h263 frame out
+ * of rtp fragments.
+ */
+
+typedef struct {
+    char *data;     //!< constructed frame, fragments will be copied there
+    long len;       //!< buf length, it's the sum of the fragments length
+} rtp_h263;
+
 static rtpparser_info h263_served = {
     -1,
     {"H263-1998", NULL}
 };
 
+static int h263_init_parser(rtp_session * rtp_sess, unsigned pt)
+{
+    rtp_h263 *priv = calloc(1, sizeof(rtp_h263));
+
+    if (!priv)
+        return RTP_ERRALLOC;
+
+    rtp_sess->ptdefs[pt]->priv = priv;
+
+    return 0;
+}
+
+static int h263_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
+{
+    rtp_h263 *priv = ssrc->rtp_sess->ptdefs[pt]->priv;
+
+    if (priv && priv->data)
+        free(priv->data);
+    if (priv)
+        free(priv);
+
+    ssrc->rtp_sess->ptdefs[pt]->priv = NULL;
+
+    return 0;
+}
+
+/**
+ * it should return a h263 frame by fetching one or more than a single rtp packet
+ */
+
 static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
-
     uint8_t *buf;
+    rtp_h263 *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     size_t len; /* payload size, minus additional headers,
                  * plus the 2 zeroed bytes
                  */
+    size_t start = 2; /* how many bytes we are going to skip from the start */
 
-    size_t start; /* how many bytes we are going to skip from the start */
-    size_t offset = 0;
 
-    void *priv = ssrc->privs[fr->pt];
 
     int err = RTP_FILL_OK;
     int marker;
 
-    fr->len = 0;
+    if (!(pkt = rtp_get_pkt(ssrc, &len)))
+        return RTP_BUFF_EMPTY;
 
-    do {
-        start = 2;
-        if (!(pkt = rtp_get_pkt(ssrc, &len)))
-            return RTP_BUFF_EMPTY;
+    buf = RTP_PKT_DATA(pkt);
+    len = RTP_PAYLOAD_SIZE(pkt, len);
+    marker = RTP_PKT_MARK(pkt);
 
-        buf = RTP_PKT_DATA(pkt);
-        len = RTP_PAYLOAD_SIZE(pkt, len);
-        marker = RTP_PKT_MARK(pkt);
+    if (buf[0]&0x4) { // p bit - we overwrite the first 2 bytes with zero
+        start = 0;
+    }
 
-        if (buf[0]&0x4) { // p bit - we overwrite the first 2 bytes with zero
-            start -= 2;
-        }
+    if (buf[0]&0x2) // v bit - skip one more
+        ++start;
 
-        if (buf[0]&0x2) // v bit - skip one more
-            ++start;
+    start += (buf[1]>>3)|((buf[0]&0x1)<<5); // plen - skip that many bytes
 
-    //    fprintf(stderr, "P: %u V: %u PLEN: %u : %u + %u ------\n", header.p, header.v, PLEN, header.plen1, header.plen2);
+    len -= start;
 
-        start += (buf[1]>>3)|((buf[0]&0x1)<<5); // plen - skip that many bytes
+    priv->data = realloc(priv->data, len + priv->len);
 
-        len -= start;
+    memcpy(priv->data + priv->len, buf + start, len);
+    if (buf[0]&0x4) // p bit - we overwrite the first 2 bytes with zero
+        memset(priv->data + priv->len, 0, 2);
 
-        priv = fr->data = realloc(priv, len + offset);
+    priv->len += len;
 
-        memcpy(fr->data + offset, buf + start, len);
-        if (buf[0]&0x4)
-            memset(fr->data + offset, 0, 2);
-
-        fr->len = len + offset;
-
-        offset += len;
-
-        rtp_rm_pkt(ssrc);
-    } while (!marker);
+    if (!marker) {
+        err = EAGAIN;
+    } else {
+        fr->data = priv->data;
+        fr->len  = priv->len;
+        priv->len = 0;
+    }
 
     memset(config, 0, sizeof(rtp_buff));
 
+    rtp_rm_pkt(ssrc);
     return err;
 }
 
-RTP_PARSER(h263);
-
+RTP_PARSER_FULL(h263);
