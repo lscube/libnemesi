@@ -85,6 +85,7 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                  */
     size_t start = 2; /* how many bytes we are going to skip from the start */
     int err = RTP_FILL_OK;
+    int p_bit;
 
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
@@ -92,13 +93,22 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     buf = RTP_PKT_DATA(pkt);
     len = RTP_PAYLOAD_SIZE(pkt, len);
 
-    if (priv->len && (RTP_PKT_TS(pkt) != priv->timestamp)) { //incomplete packet with missing end fragment
+    if (priv->len && (RTP_PKT_TS(pkt) != priv->timestamp)) {
+        //incomplete packet without final fragment
         priv->len = 0;
         return RTP_PKT_UNKNOWN;
     }
 
-    if (buf[0]&0x4) { // p bit - we overwrite the first 2 bytes with zero
+    p_bit = buf[0] & 0x4;
+
+    if (p_bit) { // p bit - we overwrite the first 2 bytes with zero
         start = 0;
+    }
+
+    if (!priv->len && !p_bit) {
+        //incomplete packet without initial fragment
+        rtp_rm_pkt(ssrc);
+        return RTP_PKT_UNKNOWN;
     }
 
     if (buf[0]&0x2) // v bit - skip one more
@@ -111,7 +121,7 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     priv->data = realloc(priv->data, len + priv->len);
 
     memcpy(priv->data + priv->len, buf + start, len);
-    if (buf[0]&0x4) // p bit - we overwrite the first 2 bytes with zero
+    if (p_bit) // p bit - we overwrite the first 2 bytes with zero
         memset(priv->data + priv->len, 0, 2);
 
     priv->len += len;
