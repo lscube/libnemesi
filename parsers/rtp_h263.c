@@ -37,7 +37,8 @@
 typedef struct {
     char *data;     //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
-    long timestamp;
+    long data_size; //!< allocated bytes for data
+    long timestamp; //!< timestamp of progressive frame
 } rtp_h263;
 
 static rtpparser_info h263_served = {
@@ -118,7 +119,12 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     len -= start;
 
-    priv->data = realloc(priv->data, len + priv->len);
+    if (priv->data_size < len + priv->len) {
+        if (!(priv->data = realloc(priv->data, len + priv->len))) {
+            return RTP_ERRALLOC;
+        }
+        priv->data_size = len + priv->len;
+    }
 
     memcpy(priv->data + priv->len, buf + start, len);
     if (p_bit) // p bit - we overwrite the first 2 bytes with zero
