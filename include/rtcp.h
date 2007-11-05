@@ -148,13 +148,23 @@ struct rtcp_event {
 
 typedef struct rtcp_sdes rtcp_sdes_t;
 
+/**
+ * RTCP Layer
+ * @defgroup rtcp_layer RTCP Layer
+ * @{
+ */
+
 int rtcp_thread_create(rtp_thread *th);
-
-void rtcp_clean_events(void *events);
-
 int rtcp_recv(rtp_session *sess);
-//int rtcp_hdr_val_chk(rtcp_pkt *, int);
+double rtcp_interval(int members, int senders,
+                     double bw, int sent,
+                     double avg_rtcp_size, int initial);
 
+/**
+ * RTCP Packets Handling
+ * @defgroup rtcp_packets RTCP Packets Handling
+ * @{
+ */
 int rtcp_parse_pkt(rtp_ssrc *ssrc, rtcp_pkt *pkt, int len);
 int rtcp_parse_sr(rtp_ssrc *ssrc, rtcp_pkt *pkt);
 int rtcp_parse_sdes(rtp_ssrc *ssrc, rtcp_pkt *pkt);
@@ -162,11 +172,21 @@ int rtcp_parse_rr(rtcp_pkt *pkt);
 int rtcp_parse_bye(rtp_ssrc *ssrc, rtcp_pkt *pkt);
 int rtcp_parse_app(rtcp_pkt *pkt);
 
-//int rtcp_set_ssrc_sdes(rtp_ssrc *, rtcp_sdes_item_t *);
+int rtcp_send_rr(rtp_session *sess);
+int rtcp_build_rr(rtp_session *sess, rtcp_pkt *pkt);
+int rtcp_build_sdes(rtp_session *sess, rtcp_pkt *pkt, int left);
+int rtcp_send_bye(rtp_session *sess);
+/**
+ * @}
+ */
 
-double rtcp_interval(int members, int senders,
-                     double bw, int sent,
-                     double avg_rtcp_size, int initial);
+
+/**
+ * RTCP Events
+ * @defgroup rtcp_events RTCP Events Loop
+ * @{
+ */
+void rtcp_clean_events(void *events);
 
 struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
                                  rtp_session *sess,
@@ -175,9 +195,12 @@ struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
 struct rtcp_event *rtcp_deschedule(struct rtcp_event *event);
 
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *event);
-int rtcp_send_rr(rtp_session *sess);
-int rtcp_build_rr(rtp_session *sess, rtcp_pkt *pkt);
-int rtcp_build_sdes(rtp_session *sess, rtcp_pkt *pkt, int left);
-int rtcp_send_bye(rtp_session *sess);
+/**
+ * @}
+ */
+
+/**
+ * @}
+ */
 
 #endif /* NEMESI_RTCP_H */
