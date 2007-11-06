@@ -248,6 +248,7 @@ int rtp_recv(rtp_session * rtp_sess)
         }
 
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
+        rtp_update_fps(stm_src, RTP_PKT_TS(pkt), RTP_PKT_PT(pkt));
 
         if (!rtp_sess->ptdefs[pkt->pt]
             || !(rate = (rtp_sess->ptdefs[pkt->pt]->rate)))
@@ -290,6 +291,7 @@ int rtp_recv(rtp_session * rtp_sess)
         (stm_src->ssrc_stats).firsttv = now;
 
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
+        rtp_update_fps(stm_src, RTP_PKT_TS(pkt), RTP_PKT_PT(pkt));
         break;
     case SSRC_COLLISION:
         bprmv(rtp_sess->bp, stm_src->po, slot);

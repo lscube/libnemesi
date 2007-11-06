@@ -268,6 +268,7 @@ typedef struct rtp_session_s {
     rtp_parser parsers[128];
     rtp_parser_uninit parsers_uninits[128];
     void *park;                             //!< private pointer used by the application (e.g. to hold decoder state variables)
+    float fps;				    //!< current frame per second 
 } rtp_session;
 
 typedef struct {
@@ -373,7 +374,8 @@ int rtp_fill_buffer(rtp_ssrc *, rtp_frame *, rtp_buff *);
 
 double rtp_get_next_ts(rtp_ssrc *);
 int16_t rtp_get_next_pt(rtp_ssrc *);
-int rtp_get_fps(rtp_ssrc *);
+void rtp_update_fps(rtp_ssrc * stm_src, uint32_t, unsigned);
+float rtp_get_fps(rtp_ssrc *);
 
 rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, unsigned int *, uint32_t);
 rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);

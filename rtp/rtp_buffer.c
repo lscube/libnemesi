@@ -82,7 +82,7 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         return RTP_BUFF_EMPTY;
     }
 
-    fr->fps = stm_src->rtp_sess->ptdefs[fr->pt]->fps = 
+    fr->fps = stm_src->rtp_sess->fps =
         (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate/
             abs(fr->timestamp - stm_src->ssrc_stats.lastts);
     stm_src->rtp_sess->ptdefs[fr->pt]->prev_timestamp =
@@ -130,28 +130,28 @@ int16_t rtp_get_next_pt(rtp_ssrc * stm_src)
 }
 
 /**
+ *  Guess the fps based on timestamps of incoming packets.
+ *  @param stm_src an active ssrc
+ *  @param timestamp the time stamp of the last received packet
+ */
+void rtp_update_fps(rtp_ssrc * stm_src, uint32_t timestamp, unsigned pt) {
+        if (timestamp <= stm_src->rtp_sess->ptdefs[pt]->prev_timestamp) {
+            return;
+        }
+        stm_src->rtp_sess->fps =
+        (double) stm_src->rtp_sess->ptdefs[pt]->rate/
+        abs(timestamp - stm_src->rtp_sess->ptdefs[pt]->prev_timestamp);
+        stm_src->rtp_sess->ptdefs[pt]->prev_timestamp = timestamp;
+}
+
+/**
  *  Guess the fps based on what is available on the buffer.
  *  @param stm_src an active ssrc
  *  @return fps
  */
-int rtp_get_fps(rtp_ssrc * stm_src)
+float rtp_get_fps(rtp_ssrc * stm_src)
 {
-    int i, pt, fps = 0;
-    unsigned len;
-    rtp_pkt *pkt = rtp_get_pkt(stm_src, &len);
-    long timestamp;
-
-    for (i = 0; pkt ; pkt = rtp_get_n_pkt(stm_src, &len, ++i)) {
-        pt = RTP_PKT_PT(pkt);
-        timestamp = RTP_PKT_TS(pkt);
-
-        fps = stm_src->rtp_sess->ptdefs[pt]->fps = 
-        (double) stm_src->rtp_sess->ptdefs[pt]->rate/
-            abs(timestamp - stm_src->rtp_sess->ptdefs[pt]->prev_timestamp);
-        stm_src->rtp_sess->ptdefs[pt]->prev_timestamp = timestamp;
-    }
-
-    return fps;
+    return stm_src->rtp_sess->fps;
 }
 
 /**
