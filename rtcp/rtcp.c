@@ -26,6 +26,7 @@
  */
 
 #include "rtcp.h"
+#include "utils.h"
 
 /**
  * RTCP Layer clean up is demanded to RTP layer (rtp_clean)

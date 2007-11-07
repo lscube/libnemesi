@@ -26,6 +26,7 @@
 
 #include "rtp.h"
 #include "bufferpool.h"
+#include "utils.h"
 
 /**
  * Gets the queue of active sources

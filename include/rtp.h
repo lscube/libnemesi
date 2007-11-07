@@ -45,7 +45,6 @@
 #include <stdint.h>
 
 #include "comm.h"
-#include "utils.h"
 #include "transport.h"
 #include "rtpptdefs.h"
 

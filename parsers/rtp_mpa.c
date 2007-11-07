@@ -25,6 +25,7 @@
 #endif
 
 #include "rtpparser.h"
+#include "utils.h"
 
 static rtpparser_info mpa_served = {
     14,
