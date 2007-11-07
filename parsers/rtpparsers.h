@@ -45,4 +45,16 @@ typedef struct {
     rtp_parser_uninit uninit;   //!< Optional deinitialization
 } rtpparser;
 
+// parsers
+#define RTP_PRSR_ERROR      -1
+#define RTP_DST_TOO_SMALL   -2
+#define RTP_REG_STATIC      -3
+
+void rtp_parsers_init(void);
+int rtp_parser_reg(rtp_session *, int16_t, char *);
+void rtp_parsers_new(rtp_parser * new_parsers,
+             rtp_parser_init * new_parsers_inits);
+inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
+                  rtp_parser_uninit parser_uninit);
+
 #endif                /* RTPFRAMERS_H_ */

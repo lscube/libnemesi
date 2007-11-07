@@ -392,27 +392,6 @@ void rtp_rm_all_pkts(rtp_ssrc *);
  */
 int rtp_transport_set(rtp_session *, int, void *);
 int rtp_transport_get(rtp_session *, int, void *, uint32_t);
-/**
- * @}
- */
-
-/**
- * RTP session functions
- * @defgroup rtp_session RTP session functions
- * @{
- */
-rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
-struct rtsp_ctrl_t;
-rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, struct rtsp_ctrl_t *ctl);
-/**
- * @}
- */
-
-/**
- * @{
- */
-
-//************************************ internal functions
 
 /**
  * RTP transport wrapper functions for rtp_transport_get
@@ -445,8 +424,9 @@ inline uint16_t rtp_get_rtpstream(rtp_session *);
 inline uint16_t rtp_get_rtcpstream(rtp_session *);
 inline uint32_t rtp_get_ssrc(rtp_session *);
 
-// rtp transport wrapper functions for rtp_transport_set
-// inline char *rtp_set_spec(rtp_session *, char *); // not settable
+/**
+ * RTP transport wrapper functions for rtp_transport_set
+ */
 inline int rtp_set_delivery(rtp_session *, enum deliveries);
 inline int rtp_set_socktype(rtp_session *, enum sock_types);
 inline int rtp_set_srcaddrstr(rtp_session *, char *);
@@ -473,17 +453,24 @@ inline int rtp_set_streams(rtp_session *, uint16_t[2]);
 inline int rtp_set_rtpstream(rtp_session *, uint16_t);
 inline int rtp_set_rtcpstream(rtp_session *, uint16_t);
 inline int rtp_set_ssrc(rtp_session *, uint32_t);
+/**
+ * @}
+ */
 
-// parsers
-#define RTP_PRSR_ERROR      -1
-#define RTP_DST_TOO_SMALL   -2
-#define RTP_REG_STATIC      -3
+/**
+ * RTP session functions
+ * @defgroup rtp_session RTP session functions
+ * @{
+ */
+rtp_session *rtp_session_init(nms_sockaddr *local, nms_sockaddr *peer);
+struct rtsp_ctrl_t;
+rtp_ssrc * rtp_session_get_ssrc(rtp_session *sess, struct rtsp_ctrl_t *ctl);
+/**
+ * @}
+ */
 
-void rtp_parsers_init(void);
-int rtp_parser_reg(rtp_session *, int16_t, char *);
-void rtp_parsers_new(rtp_parser * new_parsers,
-             rtp_parser_init * new_parsers_inits);
-inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
-                  rtp_parser_uninit parser_uninit);
+/**
+ * @}
+ */
 
 #endif /* NEMESI_RTP_H */
