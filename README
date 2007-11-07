@@ -1,9 +1,12 @@
-libNeMeSI -- NEtwork MEdia Streamer I
+libNeMeSI -- the RTSP/RTP client library
 
-Copyright (C) 2006 by
+Libnemesi let you add multimedia streaming playback in your applications in a quick and straightforward way. This software, derived from the experience matured with NeMeSi is fully compliant with IETF's standards for real-time streaming of multimedia contents over Internet. libnemesi implements RTSP – Real-Time Streaming Protocol (RFC2326) and RTP/RTCP – Real-Time Transport Protocol/RTP Control Protocol (RFC3550) supporting the RTP Profile for Audio and Video Conferences with Minimal Control (RFC3551).
 
-	Giampaolo "mancho" Mancini -- manchoz@inwind.it
-	Francesco "shawill" Varano -- shawill@infinto.it
+The library provides two different API:
 
-RTSP client library, please refer to INSTALL to install issues and to the 
-doxygenerated documentation and the headers for usage.
+    * high level: the simplest abstraction to get the demuxed streams out of a resource uri
+    * low level: provides access to all the rtp, rtcp, rtsp primitives in order to develop advanced applications.
+
+Libnemesi leverages the netembryo network support and provides hooks to register custom depacketizers (rtp parsers) to have a good compromises between ease of use and flexibility.
+
+Please refer to INSTALL to install issues and to the doxygenerated documentation and the headers for usage.
