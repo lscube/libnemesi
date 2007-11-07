@@ -19,4 +19,4 @@
  */
 
 int nms_base64_decode(uint8_t * out, const char *in, int out_length);
-
+int nms_hex_decode(uint8_t * out, const char *in, int out_length);

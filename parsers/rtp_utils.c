@@ -65,3 +65,31 @@ int nms_base64_decode(uint8_t * out, const char *in, int out_length)
     return (dst - out);
 }
 
+/**
+ * decodes hex strings
+ * param order as strncpy()
+ */
+
+int nms_hex_decode(uint8_t * out, const char *in, int out_length)
+{
+    int i, c = 0;
+    uint8_t *dst = out;
+
+    for (i = 0; in[i]; i++) {
+        if (in[i] >= '0' && in[i] <= '9')
+            c += in[i] - '0';
+        else if (in[i] >= 'a' && in[i] <= 'f')
+            c += in[i] - 'a' + 10;
+        else if (in[i] >= 'A' && in[i] <= 'F')
+            c += in[i] - 'A' + 10;
+        else
+            return -1;
+
+        if (i % 2 && (dst - out < out_length)) {
+            *dst++ = c;
+        }
+        c = c << 4 & 0xFF;
+    }
+
+    return (dst - out);
+}

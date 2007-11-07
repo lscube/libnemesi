@@ -15,10 +15,11 @@ librtpparsers_la_SOURCES =	\
 				rtpparsers.c \
 				rtp_mpa.c \
 				rtp_mpv.c \
+				rtp_m4v.c \
 				rtp_utils.c \
-                rtp_h263.c \
+				rtp_h263.c \
 				rtp_h264.c \
-                rtp_speex.c
+				rtp_speex.c
 
 # pending update
 #	rtp_vorbis
