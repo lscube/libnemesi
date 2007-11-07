@@ -82,11 +82,8 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         return RTP_BUFF_EMPTY;
     }
 
-    fr->fps = stm_src->rtp_sess->fps =
-        (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate/
-            abs(fr->timestamp - stm_src->ssrc_stats.lastts);
-    stm_src->rtp_sess->ptdefs[fr->pt]->prev_timestamp =
-        stm_src->ssrc_stats.lastts = fr->timestamp;
+    fr->fps = stm_src->rtp_sess->fps;
+    stm_src->ssrc_stats.lastts = fr->timestamp;
 
     while ((err = stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config)) 
             == EAGAIN);
@@ -135,13 +132,12 @@ int16_t rtp_get_next_pt(rtp_ssrc * stm_src)
  *  @param timestamp the time stamp of the last received packet
  */
 void rtp_update_fps(rtp_ssrc * stm_src, uint32_t timestamp, unsigned pt) {
-        if (timestamp <= stm_src->rtp_sess->ptdefs[pt]->prev_timestamp) {
-            return;
-        }
+    if (timestamp != stm_src->rtp_sess->ptdefs[pt]->prev_timestamp) {
         stm_src->rtp_sess->fps =
         (double) stm_src->rtp_sess->ptdefs[pt]->rate/
         abs(timestamp - stm_src->rtp_sess->ptdefs[pt]->prev_timestamp);
         stm_src->rtp_sess->ptdefs[pt]->prev_timestamp = timestamp;
+    }
 }
 
 /**
