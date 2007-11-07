@@ -21,6 +21,7 @@
  * */
 
 #include "rtcp.h"
+#include "utils.h"
 
 
 /** @file rtcp_events.c
@@ -29,7 +30,11 @@
  * RTCP Layer that it has to do something on client side.
  */
 
-//TODO: Actually comment event handling functions
+/**
+ * Removes the first element of the event queue
+ * @param head The head of the event queue
+ * @return The new head of the event queue
+ */
 struct rtcp_event *rtcp_deschedule(struct rtcp_event *head)
 {
     struct rtcp_event *phead = head;
@@ -40,9 +45,14 @@ struct rtcp_event *rtcp_deschedule(struct rtcp_event *head)
     return head;
 }
 
+/**
+ * Removes all the pending events from the event queue
+ * @param events The pointer to the event queue head pointer
+ */
 void rtcp_clean_events(void *events)
 {
-    struct rtcp_event *event = *(struct rtcp_event **) events;
+    struct rtcp_event **events_queue = (struct rtcp_event **) events;
+    struct rtcp_event *event = *events_queue;
     struct rtcp_event *free_event;
 
     while (event) {
@@ -51,8 +61,18 @@ void rtcp_clean_events(void *events)
         event = event->next;
         free(free_event);
     }
+
+    *events_queue = NULL;
 }
 
+double rtcp_interval(int members, int senders,
+                     double bw, int sent,
+                     double avg_rtcp_size, int initial);
+/**
+ * Handles an RTCP event
+ * @param event The event to handle
+ * @return The new events queue head
+ */
 struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 {
 
@@ -111,6 +131,14 @@ struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
     return event;
 }
 
+/**
+ * Schedules an event to be handled
+ * @param head The event queue on which to schedule it
+ * @param rtp_sess The session for which to schedule it
+ * @param tv When to dispatch it
+ * @param type The event type (@see rtcp.h)
+ * @return The new event queue head
+ */
 struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
                  rtp_session * rtp_sess, struct timeval tv,
                  rtcp_type_t type)

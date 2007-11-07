@@ -23,6 +23,8 @@
 #include "rtp.h"
 #include "bufferpool.h"
 #include "rtsp.h"
+#include "parsers/rtpparsers.h"
+#include "utils.h"
 
 #define RET_ERR(err_level, ...)    do { \
                     nms_printf(err_level, __VA_ARGS__ ); \

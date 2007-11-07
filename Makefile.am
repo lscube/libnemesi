@@ -20,7 +20,6 @@ libinclude_HEADERS = 	include/bufferpool.h\
 			include/rtsp.h\
 			include/comm.h\
 			include/sdp.h\
-			include/utils.h\
 			include/version.h\
 			include/rtcp.h\
 			include/rtp.h\

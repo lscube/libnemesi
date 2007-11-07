@@ -310,7 +310,7 @@ int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
 
 int set_transport_str_udp(rtp_session * rtp_sess, char *buff)
 {
-    char addr[128];        /* Unix domain is largest */
+    //char addr[128];        /* Unix domain is largest */
     in_port_t ports[2];
 
     if (rtp_get_delivery(rtp_sess) == multicast)
