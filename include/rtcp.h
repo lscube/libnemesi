@@ -156,9 +156,6 @@ typedef struct rtcp_sdes rtcp_sdes_t;
 
 int rtcp_thread_create(rtp_thread *th);
 int rtcp_recv(rtp_session *sess);
-double rtcp_interval(int members, int senders,
-                     double bw, int sent,
-                     double avg_rtcp_size, int initial);
 
 /**
  * RTCP Packets Handling

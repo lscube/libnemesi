@@ -49,6 +49,10 @@ static void rtcp_clean(void *args)
     nms_printf(NMSML_DBG1, "RTCP Thread R.I.P.\n");
 }
 
+double rtcp_interval(int members, int senders,
+                     double bw, int sent,
+                     double avg_rtcp_size, int initial);
+
 /**
  * The RTCP thread main loop, continuously calls rctp_recv every time there is data available
  * or handles pending events if no data is available
