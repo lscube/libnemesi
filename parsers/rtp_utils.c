@@ -139,16 +139,4 @@ uint16_t nms_consume_2(void ** buff)
     return v;
 }
 
-uint8_t nms_consume_1(void ** buff)
-{
-    uint8_t v = 0;
-    char * buff_p = *buff;
-   
-    v = (buff_p[0]);
-    *buff += 1;
-
-    return v;
-}
-
-
 
