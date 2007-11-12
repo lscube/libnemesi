@@ -21,9 +21,9 @@
 int nms_base64_decode(uint8_t * out, const char *in, int out_length);
 int nms_hex_decode(uint8_t * out, const char *in, int out_length);
 
-inline uint64_t nms_consume(void ** buff, uint8_t n_bytes);
-inline uint32_t nms_consume_4(void ** buff);
-inline uint32_t nms_consume_3(void ** buff);
-inline uint16_t nms_consume_2(void ** buff);
-#define nms_consume_1(buff) *((char*)(*(buff))++)
+inline uint64_t nms_consume(uint8_t ** buff, uint8_t n_bytes);
+inline uint32_t nms_consume_4(uint8_t ** buff);
+inline uint32_t nms_consume_3(uint8_t ** buff);
+inline uint16_t nms_consume_2(uint8_t ** buff);
+#define nms_consume_1(buff) *((uint8_t*)(*(buff))++)
 
