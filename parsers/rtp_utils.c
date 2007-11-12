@@ -93,3 +93,62 @@ int nms_hex_decode(uint8_t * out, const char *in, int out_length)
 
     return (dst - out);
 }
+
+uint64_t nms_consume(void ** buff, uint8_t n_bytes)
+{
+    uint64_t v = 0;
+    uint8_t left = n_bytes;
+
+    while (left)
+        v |= *((char*)(*buff)++) << ((n_bytes - (left--))*8);
+
+    return v;    
+}
+
+uint32_t nms_consume_4(void ** buff)
+{
+    uint32_t v = 0;
+    char * buff_p = *buff;
+   
+    v = (buff_p[0])|(buff_p[1] << 8)|(buff_p[2] << 16)|(buff_p[3] << 24);
+    *buff += 4;
+
+    return v;
+}
+
+uint32_t nms_consume_3(void ** buff)
+{
+    uint32_t v = 0;
+    char * buff_p = *buff;
+   
+    v = (buff_p[0])|(buff_p[1] << 8)|(buff_p[2] << 16);
+    *buff += 3;
+
+    return v;
+}
+
+
+uint16_t nms_consume_2(void ** buff)
+{
+    uint16_t v = 0;
+    char * buff_p = *buff;
+   
+    v = (buff_p[0])|(buff_p[1] << 8);
+    *buff += 2;
+
+    return v;
+}
+
+uint8_t nms_consume_1(void ** buff)
+{
+    uint8_t v = 0;
+    char * buff_p = *buff;
+   
+    v = (buff_p[0]);
+    *buff += 1;
+
+    return v;
+}
+
+
+
