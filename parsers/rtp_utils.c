@@ -94,6 +94,26 @@ int nms_hex_decode(uint8_t * out, const char *in, int out_length)
     return (dst - out);
 }
 
+/*
+ * xiph/mkv variable length encoder
+ * @param s destination
+ * @param v value
+ * @return the number of byte written
+ */
+unsigned int nms_xiphlacing(unsigned char *s, unsigned int v)
+{
+    unsigned int n = 0;
+
+    while(v >= 0xff) {
+        *s++ = 0xff;
+        v -= 0xff;
+        n++;
+    }
+    *s = v;
+    n++;
+    return n;
+}
+
 uint64_t nms_consume(void ** buff, uint8_t n_bytes)
 {
     uint64_t v = 0;
