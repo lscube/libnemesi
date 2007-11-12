@@ -108,7 +108,7 @@ typedef struct {
     double time_sec;
     int fps;
     uint8_t pt;
-    char *data;
+    uint8_t *data;
 } rtp_frame;
 
 #define RTP_PKT_CC(pkt)     (pkt->cc)

@@ -139,7 +139,7 @@ inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
 #define DEFAULT_PRSR_DATA_FRAME 65535
 
 typedef struct {
-    char *data;
+    uint8_t *data;
     uint32_t data_size;
 } rtp_def_parser_s;
 

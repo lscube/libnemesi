@@ -20,6 +20,7 @@
 
 int nms_base64_decode(uint8_t * out, const char *in, int out_length);
 int nms_hex_decode(uint8_t * out, const char *in, int out_length);
+unsigned int nms_xiphlacing(unsigned char *s, unsigned int v);
 
 inline uint64_t nms_consume(uint8_t ** buff, uint8_t n_bytes);
 inline uint32_t nms_consume_4(uint8_t ** buff);
