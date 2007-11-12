@@ -35,6 +35,16 @@
 #define RTP_XIPH_DATA(pkt,off)  (RTP_PKT_DATA(pkt)+off+2)
 
 /*
+ * Generic configuration holder
+ */
+
+typedef struct {
+    int id;     //!< Identification
+    uint8_t *conf; //!< Configuration buffer
+    long len;   //!< length
+} rtp_xiph_conf;
+
+/*
  * Bit I/O code from libogg
  */
 
