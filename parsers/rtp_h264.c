@@ -180,8 +180,8 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     case 28:    // FU-A (fragmented nal, output frags or aggregate it)
         {
-            uint8_t fu_indicator = *buf++;  // read the fu_indicator
-            uint8_t fu_header    = *buf++;  // read the fu_header.
+            uint8_t fu_indicator = nms_consume_1(&buf);  // read the fu_indicator
+            uint8_t fu_header    = nms_consume_1(&buf);  // read the fu_header.
             uint8_t start_bit    = (fu_header & 0x80) >> 7;
             uint8_t end_bit      = (fu_header & 0x40) >> 6;
             uint8_t nal_type     = (fu_header & 0x1f);
