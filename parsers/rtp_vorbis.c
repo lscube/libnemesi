@@ -53,7 +53,7 @@ typedef struct {
 
 static rtpparser_info vorbis_served = {
     -1,
-    {"audio/vorbis", NULL}
+    {"vorbis", NULL}
 };
 
 //helpers
@@ -314,6 +314,8 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
     if (RTP_XIPH_T(pkt) == 1)
         return -1; //cfg_fixup(vorb, fr, config, RTP_XIPH_ID(pkt));
     else {
+        config->data = vorb->conf[0].conf;
+        config->len  = vorb->conf[0].len;
         vorb->curr_bs = pkt_blocksize(vorb, fr);
         if (vorb->prev_bs)
             fr->timestamp += (vorb->curr_bs + vorb->prev_bs) / 4;
@@ -336,7 +338,7 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
 {
     int len, err = 0;
 
-    switch (RTP_XIPH_T(pkt)) {
+    switch (RTP_XIPH_F(pkt)) {
     case 1:
         vorb->len = 0;
     case 2:
@@ -361,6 +363,8 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
         if (RTP_XIPH_T(pkt) == 1)
             err = -1;//cfg_fixup(vorb, fr, config, RTP_XIPH_ID(pkt));
         else {
+            config->data = vorb->conf[0].conf;
+            config->len  = vorb->conf[0].len;
             vorb->curr_bs = pkt_blocksize(vorb, fr);
             if (vorb->prev_bs)
                 fr->timestamp +=
@@ -399,19 +403,23 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
     int err = 1, i, count, offset = 1, off = 0, val;
     if (len) {
         // convert the format
-        count = 1 + get_v(&cur, len);
-        if (count != 3) {
+        count = get_v(&cur, len);
+        fprintf(stderr,"count %d\n", count);
+        if (count != 2) {
             // corrupted packet?
             return RTP_PARSE_ERROR;
         }
         conf = malloc(len + len/255 + 64);
-        for (i=0; i< count; i++) {
+        for (i=0; i < count; i++) {
             val = get_v(&cur, len);
+            fprintf(stderr,"val %d", val);
             off += val;                          // offset to the setup header
-            offset += nms_xiphlacing(conf +i, val); // offset in configuration
+            offset += nms_xiphlacing(conf + i + 1, val); // offset in configuration
+            fprintf(stderr," off %d offset %d\n", off, offset);
         }
         len -= cur - value; // raw configuration length
-        conf[0] = count; // XXX
+        fprintf(stderr,"len %d\n",len);
+        conf[0] = count;
         memcpy(conf + offset, cur, len);
         // parse it
         err = cfg_parse(vorb, cur, len, off);
@@ -434,17 +442,16 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     int size = nms_base64_decode(buff, value, len);
     int count, i, id;
     if (size == 0) return 1;
-    count = ntohl(*(uint32_t *)buff);
-    cur += 4;
+    count = nms_consume_4(&cur);
     size -= 4;
     for (i = 0; i < count && size > 0; i++) {
-        id = cur[0]|cur[1]<<8|cur[2]<<16;
-        cur += 3;
-        len = ntohs(*(uint16_t *)cur);
-        cur += 2;
+        id  = nms_consume_3(&cur);
+        len = nms_consume_2(&cur);
+        fprintf(stderr,"id %d len %d\n",id, len);        
         if (xiphrtp_to_mkv(vorb, cur, len, id)) return 1;
         size -= len + 3 + 2;
     }
+    fprintf(stderr,"vivo!\n");
     return 0;
 }
 
@@ -467,7 +474,7 @@ static int vorbis_init_parser(rtp_session * rtp_sess, unsigned pt)
             value+=14;
             len = strstr(value,";")-value;
             if (len <= 0) continue;
-                err = unpack_config(vorb, value, len);            
+                err = unpack_config(vorb, value, len);
         }
         // other ways are disregarded for now.
         if (!err) break;
@@ -475,6 +482,7 @@ static int vorbis_init_parser(rtp_session * rtp_sess, unsigned pt)
 
     if (err) {
         free(vorb);
+        fprintf (stderr,"aiuto!!!\n");
         return RTP_PARSE_ERROR;
     }
 
@@ -514,14 +522,11 @@ static int vorbis_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     rtp_pkt *pkt;
     size_t len;
 
-    rtp_vorbis *vorb = ssrc->privs[fr->pt];
+    rtp_vorbis *vorb = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
 
-    if (!vorb) {
-        vorb = ssrc->privs[fr->pt] = malloc(sizeof(rtp_vorbis));
-        vorb =
-            memcpy(vorb, ssrc->rtp_sess->ptdefs[fr->pt]->priv,
-               sizeof(rtp_vorbis));
-    }
+    config->data = vorb->conf[0].conf;
+    config->len  = vorb->conf[0].len;
+
     // get the current packet
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
