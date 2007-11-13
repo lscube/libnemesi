@@ -336,7 +336,7 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
 {
     int len, err = 0;
 
-    switch (RTP_XIPH_T(pkt)) {
+    switch (RTP_XIPH_F(pkt)) {
     case 1:
         vorb->len = 0;
     case 2:
