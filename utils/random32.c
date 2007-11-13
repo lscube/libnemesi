@@ -152,11 +152,11 @@ static void av_md5_final(AVMD5 *ctx, uint8_t *dst){
     int i;
     uint64_t finalcount= le2me_64(ctx->len<<3);
 
-    av_md5_update(ctx, "\200", 1);
+    av_md5_update(ctx, (uint8_t *)"\200", 1);
     while((ctx->len & 63)<56)
-        av_md5_update(ctx, "", 1);
+        av_md5_update(ctx, (uint8_t *)"", 1);
 
-    av_md5_update(ctx, &finalcount, 8);
+    av_md5_update(ctx, (uint8_t *)&finalcount, 8);
 
     for(i=0; i<4; i++)
         ((uint32_t*)dst)[i]= le2me_32(ctx->ABCD[3-i]);
@@ -173,7 +173,7 @@ static void av_md5_sum(uint8_t *dst, const uint8_t *src, const int len){
 static uint32_t md_32(char *string, int length)
 {
     int hash[4];
-    av_md5_sum(hash, string, length);
+    av_md5_sum((uint8_t *)hash, (uint8_t *) string, length);
     return hash[0]^hash[1]^hash[2]^hash[3];
 }
 

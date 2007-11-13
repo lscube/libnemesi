@@ -98,7 +98,7 @@ typedef struct {
 
 typedef struct {
     uint32_t len;
-    char *data;
+    uint8_t *data;
 } rtp_buff;
 
 

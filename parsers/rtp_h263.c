@@ -35,7 +35,7 @@
  */
 
 typedef struct {
-    char *data;     //!< constructed frame, fragments will be copied there
+    uint8_t *data;     //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
     long data_size; //!< allocated bytes for data
     long timestamp; //!< timestamp of progressive frame

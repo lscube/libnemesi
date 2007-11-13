@@ -87,8 +87,8 @@ typedef struct {
 
 typedef struct {
 //      mpa_data mpa_info;
-    char *data;
-    uint32_t data_size;
+    uint8_t *data;
+    long data_size;
 } rtp_mpa;
 
 typedef struct {

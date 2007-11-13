@@ -35,7 +35,7 @@
  */
 
 typedef struct {
-    char *data;     //!< constructed frame, fragments will be copied there
+    uint8_t *data;     //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
     uint8_t *conf;
     long conf_len;
@@ -231,7 +231,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     }
 
     if (priv->conf_len) {
-        config->data = (char*)priv->conf;
+        config->data = priv->conf;
         config->len = priv->conf_len;
     }
 
