@@ -38,7 +38,7 @@
 typedef struct {
     long offset;    //!< offset across an aggregate rtp packet
     int pkts;       //!< number of packets yet to process in the aggregate
-    char *buf;      //!< constructed frame, fragments will be copied there 
+    uint8_t *buf;   //!< constructed frame, fragments will be copied there 
     long len;       //!< buf length, it's the sum of the fragments length
     long timestamp; //!< calculated timestamp
     int id;         //!< Vorbis id, it could change across packets.
@@ -292,24 +292,26 @@ static long pkt_blocksize(rtp_vorbis * vorb, rtp_frame * fr)
 static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
             rtp_buff * config, rtp_ssrc * ssrc)
 {
+    uint8_t * this_pkt = RTP_PKT_DATA(pkt) + vorb->offset;
+    unsigned len = nms_consume_2(&this_pkt);
 
-    uint32_t len = RTP_XIPH_LEN(pkt, vorb->offset);
-
-    if (vorb->id != RTP_XIPH_ID(pkt) ||    //not the current id
+    if (vorb->id != RTP_XIPH_ID(pkt) &&    //not the current id
         //  !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)) || //XXX
-        RTP_XIPH_T(pkt) != 1    //not a config packet
-        )
+        (RTP_XIPH_T(pkt) != 1)    //not a config packet
+       )
         return RTP_PARSE_ERROR;
 
-    if (len > fr->len) {
-        fr->data = realloc(fr->data, len);
-        fr->len = len;
-    }
 
-    memcpy(fr->data, RTP_XIPH_DATA(pkt, vorb->offset), fr->len);
+
+    fr->data = vorb->buf = realloc(vorb->buf, len);
+    fr->len = vorb->len = len;
+
+    memcpy(fr->data, this_pkt, fr->len);
     vorb->pkts--;
-    if (vorb->pkts == 0)
+    if (vorb->pkts == 0) {
+        /*fprintf(stderr, "RIMUOVO PKT\n");*/
         rtp_rm_pkt(ssrc);
+    }
 
     if (RTP_XIPH_T(pkt) == 1)
         return -1; //cfg_fixup(vorb, fr, config, RTP_XIPH_ID(pkt));
@@ -322,14 +324,6 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
         vorb->prev_bs = vorb->curr_bs;
     }
 
-    return 0;
-}
-
-static int pack_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
-              rtp_buff * config, rtp_ssrc * ssrc)
-{
-    single_parse(vorb, pkt, fr, config, ssrc);
-    vorb->offset += fr->len + 2;
     return 0;
 }
 
@@ -382,6 +376,14 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
     return err;
 }
 
+static int pack_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
+              rtp_buff * config, rtp_ssrc * ssrc)
+{
+    single_parse(vorb, pkt, fr, config, ssrc);
+    vorb->offset += fr->len + 2;
+    return 0;
+}
+
 static uint64_t get_v(uint8_t **cur, int len)
 {
     uint64_t val = 0;
@@ -404,7 +406,7 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
     if (len) {
         // convert the format
         count = get_v(&cur, len);
-        fprintf(stderr,"count %d\n", count);
+        /*fprintf(stderr,"count %d\n", count);*/
         if (count != 2) {
             // corrupted packet?
             return RTP_PARSE_ERROR;
@@ -412,13 +414,13 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
         conf = malloc(len + len/255 + 64);
         for (i=0; i < count; i++) {
             val = get_v(&cur, len);
-            fprintf(stderr,"val %d", val);
+            /*fprintf(stderr,"val %d", val);*/
             off += val;                          // offset to the setup header
             offset += nms_xiphlacing(conf + i + 1, val); // offset in configuration
-            fprintf(stderr," off %d offset %d\n", off, offset);
+            /*fprintf(stderr," off %d offset %d\n", off, offset);*/
         }
         len -= cur - value; // raw configuration length
-        fprintf(stderr,"len %d\n",len);
+        /*fprintf(stderr,"len %d\n",len);*/
         conf[0] = count;
         memcpy(conf + offset, cur, len);
         // parse it
@@ -447,11 +449,13 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     for (i = 0; i < count && size > 0; i++) {
         id  = nms_consume_3(&cur);
         len = nms_consume_2(&cur);
-        fprintf(stderr,"id %d len %d\n",id, len);        
+        /*fprintf(stderr,"id %d len %d\n",id, len);        */
         if (xiphrtp_to_mkv(vorb, cur, len, id)) return 1;
         size -= len + 3 + 2;
     }
-    fprintf(stderr,"vivo!\n");
+
+    vorb->id = id;
+    /*fprintf(stderr,"vivo!\n");*/
     return 0;
 }
 
@@ -482,7 +486,7 @@ static int vorbis_init_parser(rtp_session * rtp_sess, unsigned pt)
 
     if (err) {
         free(vorb);
-        fprintf (stderr,"aiuto!!!\n");
+        /*fprintf (stderr,"aiuto!!!\n");*/
         return RTP_PARSE_ERROR;
     }
 
@@ -530,24 +534,32 @@ static int vorbis_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     // get the current packet
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
-
+    /*fprintf(stderr, "ID: %d, Type: %d, Off: %d\n", RTP_XIPH_ID(pkt), RTP_XIPH_T(pkt), vorb->offset);*/
     // if I don't have previous work
     if (!vorb->pkts) {
+
         // get the number of packets stuffed in the rtp
         vorb->pkts = RTP_XIPH_PKTS(pkt);
-
+        /*fprintf(stderr, "Pkt: %d\n", vorb->pkts);*/
         // some error checking
-        if (vorb->pkts > 0 && (RTP_XIPH_F(pkt) || !RTP_XIPH_T(pkt)))
+        if (vorb->pkts > 0 && ( (RTP_XIPH_F(pkt)) || (RTP_XIPH_T(pkt) !=0) )) {
+            /*fprintf(stderr, "ERRORE\n");*/
             return RTP_PARSE_ERROR;
+        }
 
         if (RTP_XIPH_F(pkt))
             return frag_parse(vorb, pkt, fr, config, ssrc);
-        // single packet, easy case
-        if (vorb->pkts == 1)
-            return single_parse(vorb, pkt, fr, config, ssrc);
+
         vorb->offset = 4;
+
+        // single packet, easy case
+        if (vorb->pkts == 1) {
+            /*fprintf(stderr, "SINGL\n");*/
+            return single_parse(vorb, pkt, fr, config, ssrc);
+        }       
     }
     // keep parsing the current rtp packet
+    /*fprintf(stderr, "PACK\n");*/
     return pack_parse(vorb, pkt, fr, config, ssrc);
 }
 

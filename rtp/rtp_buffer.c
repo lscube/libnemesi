@@ -72,10 +72,6 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     fr->pt = RTP_PKT_PT(pkt);
     fr->timestamp = RTP_PKT_TS(pkt);
 
-    fr->time_sec =
-        ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
-        (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
-
     if (fr->time_sec > 1000) {
         fprintf(stderr, "Out of sync timestamp: %u - %u\n", fr->timestamp, stm_src->ssrc_stats.firstts);
         rtp_rm_pkt(stm_src);
@@ -87,6 +83,13 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 
     while ((err = stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config)) 
             == EAGAIN);
+    /*
+     * The parser can set the timestamp on its own
+     */
+    fr->time_sec =
+        ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
+        (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
+
     return err;
 }
 
