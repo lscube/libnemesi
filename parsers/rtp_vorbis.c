@@ -68,7 +68,6 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
     memcpy(fr->data, this_pkt, fr->len);
     vorb->pkts--;
     if (vorb->pkts == 0) {
-        /*fprintf(stderr, "RIMUOVO PKT\n");*/
         rtp_rm_pkt(ssrc);
     }
 
@@ -95,7 +94,6 @@ static int frag_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
         vorb->buf = realloc(vorb->buf, vorb->len + len);
         memcpy(vorb->buf + vorb->len, RTP_XIPH_DATA(pkt, 4), len);
         vorb->len += len;
-        //FIXME return value
         break;
     case 3:
         len = RTP_XIPH_LEN(pkt, 4);
@@ -157,7 +155,6 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
     if (len) {
         // convert the format
         count = get_v(&cur, len);
-        /*fprintf(stderr,"count %d\n", count);*/
         if (count != 2) {
             // corrupted packet?
             return RTP_PARSE_ERROR;
@@ -165,13 +162,10 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
         conf = malloc(len + len/255 + 64);
         for (i=0; i < count; i++) {
             val = get_v(&cur, len);
-            /*fprintf(stderr,"val %d", val);*/
             off += val;                          // offset to the setup header
             offset += nms_xiphlacing(conf + i + 1, val); // offset in configuration
-            /*fprintf(stderr," off %d offset %d\n", off, offset);*/
         }
         len -= cur - value; // raw configuration length
-        /*fprintf(stderr,"len %d\n",len);*/
         conf[0] = count;
         memcpy(conf + offset, cur, len);
         // append to the list
@@ -198,13 +192,38 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     for (i = 0; i < count && size > 0; i++) {
         id  = nms_consume_3(&cur);
         len = nms_consume_2(&cur);
-        /*fprintf(stderr,"id %d len %d\n",id, len);        */
         if (xiphrtp_to_mkv(vorb, cur, len, id)) return 1;
         size -= len + 3 + 2;
     }
 
-    vorb->id = id;
-    /*fprintf(stderr,"vivo!\n");*/
+    return 0;
+}
+
+static void cleanup (rtp_vorbis *vorb)
+{
+    int i;
+    if (vorb->buf)
+        free(vorb->buf);
+    if (vorb->conf) {
+        for (i = 0; i < vorb->conf_len; i++)
+            if (vorb->conf[i].conf)
+                free(vorb->conf[i].conf);
+        free(vorb->conf);
+    }
+
+    free(vorb);
+}
+
+static int vorbis_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
+{
+    rtp_vorbis *vorb = ssrc->rtp_sess->ptdefs[pt]->priv;
+
+    if (!vorb) return 0;
+
+    cleanup(vorb);
+
+    ssrc->rtp_sess->ptdefs[pt]->priv = NULL;
+
     return 0;
 }
 
@@ -234,33 +253,14 @@ static int vorbis_init_parser(rtp_session * rtp_sess, unsigned pt)
     }
 
     if (err) {
-        free(vorb);
-        /*fprintf (stderr,"aiuto!!!\n");*/
+        cleanup(vorb);
         return RTP_PARSE_ERROR;
     }
 
-// associate it to the right payload
+    // We start with the first codebook set
+    vorb->id = vorb->conf[0].id;
+
     rtp_sess->ptdefs[pt]->priv = vorb;
-
-    return 0;
-}
-
-int vorbis_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
-{
-
-    rtp_vorbis *vorb = ssrc->privs[pt];
-
-    if (vorb && vorb->buf)
-        free(vorb->buf);
-    if (vorb)
-        free(vorb);
-
-    vorb = ssrc->rtp_sess->ptdefs[pt]->priv;
-
-    ssrc->rtp_sess->ptdefs[pt]->priv = NULL;
-
-    if (vorb)
-        free(vorb);
 
     return 0;
 }
