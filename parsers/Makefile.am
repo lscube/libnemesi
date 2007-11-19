@@ -16,6 +16,7 @@ librtpparsers_la_SOURCES =	\
 				rtp_mpa.c \
 				rtp_mpv.c \
 				rtp_m4v.c \
+				rtp_aac.c \
 				rtp_utils.c \
 				rtp_h263.c \
 				rtp_h264.c \
