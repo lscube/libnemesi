@@ -26,7 +26,7 @@
 
 /**
  * @file rtp_aac.c
- * MPEG 4 Part 2 depacketizer RFC 3016
+ * MPEG 4 Part 3 depacketizer RFC 3640
  */
 
 /**
@@ -46,7 +46,7 @@ typedef struct {
 
 static rtpparser_info aac_served = {
     -1,
-    {"MP4V-ES", NULL}
+    {"MPEG4-GENERIC", NULL}
 };
 
 static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
@@ -147,9 +147,9 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         priv->data_size = len + priv->len;
     }
 
-    memcpy(priv->data + priv->len, buf, len);
+    memcpy(priv->data + priv->len, buf + 4, len - 4);
 
-    priv->len += len;
+    priv->len += len - 4;
 
     if (!RTP_PKT_MARK(pkt)) {
         priv->timestamp = RTP_PKT_TS(pkt);
