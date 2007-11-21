@@ -186,7 +186,7 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     uint8_t *cur = buff;
     int size = nms_base64_decode(buff, value, len);
     int count, i, id;
-    if (size == 0) return 1;
+    if (size <= 0) return 1;
     count = nms_consume_4(&cur);
     size -= 4;
     for (i = 0; i < count && size > 0; i++) {
