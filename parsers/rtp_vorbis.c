@@ -194,6 +194,7 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
         len = nms_consume_2(&cur);
         if (xiphrtp_to_mkv(vorb, cur, len, id)) return 1;
         size -= len + 3 + 2;
+        cur += len;
     }
 
     return 0;
