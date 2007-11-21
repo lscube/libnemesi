@@ -171,9 +171,11 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 #endif
 
     if (priv->len && (RTP_PKT_TS(pkt) != priv->timestamp)) {
-        //incomplete packet without final fragment
+        //incomplete packet without final fragment -> flush
+        fr->data = priv->data;
+        fr->len  = priv->len;
         priv->len = 0;
-        return RTP_PKT_UNKNOWN;
+        return RTP_FILL_OK;
     }
 
     if (priv->data_size < len + priv->len) {
