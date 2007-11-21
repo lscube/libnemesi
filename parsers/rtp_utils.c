@@ -167,12 +167,19 @@ uint16_t nms_consume_2(uint8_t ** buff)
 
 char *nms_get_attr_value(char *attr, const char *param, int *v_len )
 {
-    char *value;
+    char *value, *tmp;
+    int trash;
+    if (!v_len)
+        v_len = &trash;
     if ((value = strstr(attr, param)) &&
         (*(value += strlen(param)) == '=')) {
             value++;
-            *v_len = strstr(value,";") - value;
-            value[*v_len] = '\0';
+            if ((tmp = strstr(value,";"))) {
+                *v_len = tmp - value;
+                value[*v_len] = '\0';
+            } else {
+                *v_len = strlen(value);
+            }
         return value;
     }
     return NULL;
