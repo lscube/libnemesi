@@ -220,10 +220,13 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         priv->data_size = priv->len + priv->head->len;
     }
 
-    memcpy(priv->data + priv->len, priv->head->data, priv->head->len);
-    priv->len += priv->head->len;
-    cur = priv->head = priv->head->next;
-    free(cur);
+    if (priv->head) {
+        memcpy(priv->data + priv->len, priv->head->data, priv->head->len);
+        priv->len += priv->head->len;
+        cur = priv->head;
+        priv->head = priv->head->next;
+        free(cur);
+    }
 
     if (!RTP_PKT_MARK(pkt)) {
         priv->timestamp = RTP_PKT_TS(pkt);
