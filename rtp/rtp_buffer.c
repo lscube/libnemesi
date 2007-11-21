@@ -60,12 +60,12 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
      * so wait until rtp_recv receives the first new packet and resets the bufferpool
      */
     if (stm_src->done_seek) {
-        usleep(0);
+        usleep(1000);
         return RTP_BUFF_EMPTY;
     }
 
     if (!(pkt = rtp_get_pkt(stm_src, NULL))) {
-        usleep(0);
+        usleep(1000);
         return RTP_BUFF_EMPTY;
     }
 
