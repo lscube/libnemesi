@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "rtpparser.h"
@@ -38,7 +38,7 @@
 typedef struct {
     long offset;    //!< offset across an aggregate rtp packet
     int pkts;       //!< number of packets yet to process in the aggregate
-    uint8_t *buf;   //!< constructed frame, fragments will be copied there 
+    uint8_t *buf;   //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
     int id;         //!< Vorbis id, it could change across packets.
     rtp_xiph_conf *conf;        //!< configuration list
@@ -303,7 +303,7 @@ static int vorbis_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         if (vorb->pkts == 1) {
             /*fprintf(stderr, "SINGL\n");*/
             return single_parse(vorb, pkt, fr, config, ssrc);
-        }       
+        }
     }
     // keep parsing the current rtp packet
     /*fprintf(stderr, "PACK\n");*/
