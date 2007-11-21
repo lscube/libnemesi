@@ -186,7 +186,7 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     uint8_t *cur = buff;
     int size = nms_base64_decode(buff, value, len);
     int count, i, id;
-    if (size == 0) return 1;
+    if (size <= 0) return 1;
     count = nms_consume_4(&cur);
     size -= 4;
     for (i = 0; i < count && size > 0; i++) {
@@ -242,11 +242,9 @@ static int vorbis_init_parser(rtp_session * rtp_sess, unsigned pt)
 
 // parse the sdp to get the first configuration
     for (i=0; i < attrs->size; i++) {
-        if ((value = strstr(attrs->data[i], "configuration="))) {
-            value+=14;
-            len = strstr(value,";")-value;
-            if (len <= 0) continue;
-                err = unpack_config(vorb, value, len);
+        if ((value = nms_get_attr_value(attrs->data[i], "configuration",
+             &len))) {
+            err = unpack_config(vorb, value, len);
         }
         // other ways are disregarded for now.
         if (!err) break;
