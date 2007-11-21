@@ -147,7 +147,7 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     uint8_t *buf;
     rtp_aac *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     size_t len;
-    int header_len, frame_len, frame_index; //XXX 16bit max so far
+    int header_len; //frame_len, frame_index; //XXX 16bit max so far
 
     int err = RTP_FILL_OK;
 
@@ -158,6 +158,8 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     len = RTP_PAYLOAD_SIZE(pkt, len);
     header_len = ((buf[0]<<8)+buf[1]+7)/8; // the value in bits, little endian
 
+#if 0
+    //XXX: This part is required only for video on mpeg4-generic!
     if (header_len != 2) {
         nms_printf(NMSML_WARN, "AAC Header size (%d) not supported yet\n", header_len);
         //rtp_rm_pkt(ssrc);
@@ -166,7 +168,7 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     frame_len = (buf[2] << 5) + (buf[1]>>3); //XXX get size_len bits
     frame_index = buf[3] & 0x03;             //XXX get index_len bits
-
+#endif
 
     if (priv->len && (RTP_PKT_TS(pkt) != priv->timestamp)) {
         //incomplete packet without final fragment
