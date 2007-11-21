@@ -39,9 +39,11 @@ typedef struct {
     long len;       //!< buf length, it's the sum of the fragments length
     long data_size; //!< allocated bytes for data
     long timestamp; //!< timestamp of progressive frame
-    uint8_t *conf;
-    long conf_len;
-    int configured;
+    uint8_t *conf;  //!< extradata
+    long conf_len;  //!< extradata length 
+    int size_len;   //!< Number of bits in the AU header for fragment size
+    int index_len;  //!< Number of bits in the AU header for the index
+    int delta_len;  //!< Number of bits in the AU header for the delta index
 } rtp_aac;
 
 static rtpparser_info aac_served = {
@@ -55,23 +57,55 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
     char *value;
     uint8_t buffer[1024];
-    int i, v_len, len;
+    int i, v_len, len, err = RTP_ERRALLOC;
 
     if (!priv)
         return RTP_ERRALLOC;
 
     for (i=0; i < attrs->size; i++){
-        if ((value = strstr(attrs->data[i], "config="))) {
-            value+=7;
-            if (!((v_len = (strstr(value,";") - value)) % 2) && v_len > 0){
-                /*hex string*/
-                *(value + v_len) = '\0';
+        if ((value = nms_get_attr_value(attrs->data[i], "config", &v_len))) {
+            if (!(v_len % 2) && v_len > 0) {
                 if ((len = nms_hex_decode(buffer, value, sizeof(buffer))) < 0)
                     goto err_alloc;
                 if (!(priv->conf = realloc(priv->conf, priv->conf_len + len)))
                     goto err_alloc;
                 memcpy(priv->conf + priv->conf_len, buffer, len);
                 priv->conf_len += len;
+            }
+        }
+        if ((value = nms_get_attr_value(attrs->data[i], "mode", &v_len))) {
+            if (strcmp(value,"AAC-hbr")) {
+                nms_printf(NMSML_ERR, "Mode %s not supported\n",
+                           value);
+                err = RTP_PARSE_ERROR;
+                goto err_alloc;
+            }
+        }
+        if ((value = nms_get_attr_value(attrs->data[i], "sizeLength",
+                &v_len))) {
+            if ((priv->size_len = strtol(value, NULL, 0)) != 13) {
+                nms_printf(NMSML_ERR, "Size Length %d not supported\n",
+                           priv->size_len);
+                err = RTP_PARSE_ERROR;
+                goto err_alloc;
+            }
+        }
+        if ((value = nms_get_attr_value(attrs->data[i], "indexLength",
+                &v_len))) {
+            if ((priv->index_len = strtol(value, NULL, 0)) != 3) {
+                nms_printf(NMSML_ERR, "Index Length %d not supported\n",
+                           priv->index_len);
+                err = RTP_PARSE_ERROR;
+                goto err_alloc;
+            }
+        }
+        if ((value = nms_get_attr_value(attrs->data[i], "indexDeltaLength",
+                &v_len))) {
+            if ((priv->delta_len = strtol(value, NULL, 0)) != 3) {
+                nms_printf(NMSML_ERR, "Index Delta Length %d not supported\n",
+                           priv->index_len);
+                err = RTP_PARSE_ERROR;
+                goto err_alloc;
             }
         }
     }
@@ -84,7 +118,7 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
     if (priv->data)
         free(priv->data);
     free(priv);
-    return RTP_ERRALLOC;
+    return err;
 }
 
 static int aac_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
