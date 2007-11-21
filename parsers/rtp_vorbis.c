@@ -242,11 +242,9 @@ static int vorbis_init_parser(rtp_session * rtp_sess, unsigned pt)
 
 // parse the sdp to get the first configuration
     for (i=0; i < attrs->size; i++) {
-        if ((value = strstr(attrs->data[i], "configuration="))) {
-            value+=14;
-            len = strstr(value,";")-value;
-            if (len <= 0) continue;
-                err = unpack_config(vorb, value, len);
+        if ((value = nms_get_attr_value(attrs->data[i], "configuration",
+             &len))) {
+            err = unpack_config(vorb, value, len);
         }
         // other ways are disregarded for now.
         if (!err) break;
