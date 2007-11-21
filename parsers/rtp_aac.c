@@ -147,6 +147,7 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     uint8_t *buf;
     rtp_aac *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     size_t len;
+    int header_len, frame_len, frame_index; //XXX 16bit max so far
 
     int err = RTP_FILL_OK;
 
@@ -155,24 +156,20 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     buf = RTP_PKT_DATA(pkt);
     len = RTP_PAYLOAD_SIZE(pkt, len);
+    header_len = ((buf[0]<<8)+buf[1]+7)/8; // the value in bits, little endian
+    if (header_len != 2) {
+        nms_printf(NMSML_ERR, "%d size not supported yet\n", header_len);
+        return RTP_PARSE_ERROR;
+    }
+    frame_len = (buf[2] << 5) + (buf[1]>>3); //XXX get size_len bits
+    frame_index = buf[3] & 0x03;             //XXX get index_len bits
+
 
     if (priv->len && (RTP_PKT_TS(pkt) != priv->timestamp)) {
         //incomplete packet without final fragment
         priv->len = 0;
         return RTP_PKT_UNKNOWN;
     }
-
-    // For the codec to work correctly, it may need a 'VOL Header' to be
-    // inserted at the front of the data stream.
-/*    if (!priv->configured && !priv->len && priv->conf_len) {
-        if (!(priv->data = realloc(priv->data, priv->conf_len))) {
-            return RTP_ERRALLOC;
-        }
-        priv->data_size = len;
-        memcpy(priv->data, priv->conf, priv->conf_len);
-        priv->len = priv->conf_len;
-        priv->configured = 1;
-    } */
 
     if (priv->data_size < len + priv->len) {
         if (!(priv->data = realloc(priv->data, len + priv->len))) {
