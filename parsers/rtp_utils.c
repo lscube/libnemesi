@@ -23,6 +23,7 @@
  */
 
 #include <stdint.h>
+#include <string.h>
 
 static uint8_t map2[] =
 {
@@ -159,4 +160,20 @@ uint16_t nms_consume_2(uint8_t ** buff)
     return v;
 }
 
+/**
+ * Looks for the value of a parameter within the attribute string
+ * returns the pointer to the value and its size
+ */
 
+char *nms_get_attr_value(char *attr, const char *param, int *v_len )
+{
+    char *value;
+    if ((value = strstr(attr, param)) &&
+        (*(value += strlen(param)) == '=')) {
+            value++;
+            *v_len = strstr(value,";") - value;
+            value[*v_len] = '\0';
+        return value;
+    }
+    return NULL;
+}
