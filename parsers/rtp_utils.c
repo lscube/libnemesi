@@ -121,7 +121,7 @@ uint64_t nms_consume(uint8_t ** buff, uint8_t n_bytes)
     uint8_t left = n_bytes;
 
     while (left)
-        v |= *((uint8_t*)(*buff)++) << (--left)*8);
+        v |= *((uint8_t*)(*buff)++) << ((--left)*8);
 
     return v;    
 }
