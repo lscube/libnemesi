@@ -115,7 +115,7 @@ unsigned int nms_xiphlacing(unsigned char *s, unsigned int v)
     return n;
 }
 
-uint64_t nms_consume(uint8_t ** buff, uint8_t n_bytes)
+uint64_t nms_consume_BE(uint8_t ** buff, uint8_t n_bytes)
 {
     uint64_t v = 0;
     uint8_t left = n_bytes;
@@ -126,7 +126,7 @@ uint64_t nms_consume(uint8_t ** buff, uint8_t n_bytes)
     return v;    
 }
 
-uint32_t nms_consume_4(uint8_t ** buff)
+uint32_t nms_consume_BE4(uint8_t ** buff)
 {
     uint32_t v = 0;
     uint8_t * buff_p = *buff;
@@ -137,7 +137,7 @@ uint32_t nms_consume_4(uint8_t ** buff)
     return v;
 }
 
-uint32_t nms_consume_3(uint8_t ** buff)
+uint32_t nms_consume_BE3(uint8_t ** buff)
 {
     uint32_t v = 0;
     uint8_t * buff_p = *buff;
@@ -149,7 +149,7 @@ uint32_t nms_consume_3(uint8_t ** buff)
 }
 
 
-uint16_t nms_consume_2(uint8_t ** buff)
+uint16_t nms_consume_BE2(uint8_t ** buff)
 {
     uint16_t v = 0;
     uint8_t * buff_p = *buff;

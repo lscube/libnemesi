@@ -21,6 +21,7 @@
  * */
 
 #include "bufferpool.h"
+#include "comm.h"
 
 /*!
 * \brief Restituisce uno slot di memoria libero dal Buffer Pool.
@@ -41,14 +42,11 @@ int bpget(buffer_pool * bp)
     pthread_mutex_lock(&(bp->fl_mutex));
     while (bp->flhead == -1) {
         if(!bpenlarge(bp)) {
-            fprintf(stderr,
-               "Bufferpool reached maximum size\n");
+            nms_printf(NMSML_WARN, "Bufferpool reached maximum size\n");
             pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
-            
         }
         else {
-            fprintf(stderr,
-                   "Bufferpool enlarged\n");
+            nms_printf(NMSML_DBG1, "Bufferpool enlarged\n");
         }
     }
 

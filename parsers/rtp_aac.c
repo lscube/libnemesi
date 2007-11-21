@@ -30,10 +30,18 @@
  */
 
 /**
+ * List element, contains aac frames recovered from an aggregated rtp packet.
+ */
+typedef struct aac_elem_s {
+    uint8_t *data;
+    long len;
+    struct aac_elem_s *next;
+} aac_elem;
+
+/**
  * Local structure, contains data necessary to compose a aac frame out
  * of rtp fragments.
  */
-
 typedef struct {
     uint8_t *data;  //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
@@ -44,7 +52,10 @@ typedef struct {
     int size_len;   //!< Number of bits in the AU header for fragment size
     int index_len;  //!< Number of bits in the AU header for the index
     int delta_len;  //!< Number of bits in the AU header for the delta index
+    aac_elem *head; //!< Head of aac frame list
 } rtp_aac;
+
+
 
 static rtpparser_info aac_served = {
     -1,
@@ -144,48 +155,78 @@ static int aac_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
-    uint8_t *buf;
+    uint8_t *buf, *payload;
+    aac_elem *cur = NULL;
     rtp_aac *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     size_t len;
-    int header_len; //frame_len, frame_index; //XXX 16bit max so far
+    int i, buf_index;
+    int header_len, header_len_bytes, headers_num, frame_len, frame_index;
 
     int err = RTP_FILL_OK;
 
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
 
-    buf = RTP_PKT_DATA(pkt);
+    payload = buf = RTP_PKT_DATA(pkt);
     len = RTP_PAYLOAD_SIZE(pkt, len);
-    header_len = ((buf[0]<<8)+buf[1]+7)/8; // the value in bits, little endian
-
-#if 0
-    //XXX: This part is required only for video on mpeg4-generic!
-    if (header_len != 2) {
-        nms_printf(NMSML_WARN, "AAC Header size (%d) not supported yet\n", header_len);
-        //rtp_rm_pkt(ssrc);
-        //return RTP_PARSE_ERROR;
-    }
-
-    frame_len = (buf[2] << 5) + (buf[1]>>3); //XXX get size_len bits
-    frame_index = buf[3] & 0x03;             //XXX get index_len bits
-#endif
 
     if (priv->len && (RTP_PKT_TS(pkt) != priv->timestamp)) {
-        //incomplete packet without final fragment
+        //incomplete packet without final fragment -> flush
+        fr->data = priv->data;
+        fr->len  = priv->len;
         priv->len = 0;
-        return RTP_PKT_UNKNOWN;
+        return RTP_FILL_OK;
     }
 
-    if (priv->data_size < len + priv->len) {
+    if (!priv->head) {
+        header_len = (buf[0] << 8) | buf[1]; // the value in bits, little endian
+        header_len_bytes = (header_len + 7) / 8;
+        headers_num = header_len / 16; //ripped from gstreamer
+
+        payload += 2;
+        buf_index = 2 + header_len_bytes;
+
+        for (i = 0; i < headers_num; i++) {
+            frame_len = ((payload[0] << 8) | payload[1]) >> 3;
+            frame_index = payload[1] & 0x7;
+            payload += 2;
+
+            if (!cur) {
+                cur = priv->head = calloc(1, sizeof(aac_elem));
+            } else {
+                cur->next = calloc(1, sizeof(aac_elem));
+                cur = cur->next;
+            }
+
+            if (!cur)
+                return RTP_ERRALLOC;
+
+            cur->data = malloc(frame_len);
+
+            if (!cur->data)
+                return RTP_ERRALLOC;
+
+            memcpy(cur->data, buf + buf_index, frame_len);
+
+            cur->len = frame_len;
+            buf_index += frame_len;
+        }
+    }
+
+    if (priv->data_size < priv->len + priv->head->len) {
         if (!(priv->data = realloc(priv->data, len + priv->len))) {
             return RTP_ERRALLOC;
         }
-        priv->data_size = len + priv->len;
+        priv->data_size = priv->len + priv->head->len;
     }
 
-    memcpy(priv->data + priv->len, buf + (header_len + 2), len - (header_len + 2));
-
-    priv->len += len - (header_len + 2);
+    if (priv->head) {
+        memcpy(priv->data + priv->len, priv->head->data, priv->head->len);
+        priv->len += priv->head->len;
+        cur = priv->head;
+        priv->head = priv->head->next;
+        free(cur);
+    }
 
     if (!RTP_PKT_MARK(pkt)) {
         priv->timestamp = RTP_PKT_TS(pkt);
@@ -201,7 +242,10 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         config->len = priv->conf_len;
     }
 
-    rtp_rm_pkt(ssrc);
+    if (!priv->head) {
+        rtp_rm_pkt(ssrc);
+    }
+
     return err;
 }
 
