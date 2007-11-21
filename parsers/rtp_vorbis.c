@@ -54,7 +54,7 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
             rtp_buff * config, rtp_ssrc * ssrc)
 {
     uint8_t * this_pkt = RTP_PKT_DATA(pkt) + vorb->offset;
-    unsigned len = nms_consume_2(&this_pkt);
+    unsigned len = nms_consume_BE2(&this_pkt);
 
     if (vorb->id != RTP_XIPH_ID(pkt) &&    //not the current id
         //  !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)) || //XXX
@@ -180,6 +180,7 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
     return 0;
 }
 
+
 static int unpack_config(rtp_vorbis *vorb, char *value, int len)
 {
     uint8_t buff[len];
@@ -187,11 +188,13 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     int size = nms_base64_decode(buff, value, len);
     int count, i, id;
     if (size <= 0) return 1;
-    count = nms_consume_4(&cur);
+
+    count = nms_consume_BE4(&cur);
     size -= 4;
+
     for (i = 0; i < count && size > 0; i++) {
-        id  = nms_consume_3(&cur);
-        len = nms_consume_2(&cur);
+        id  = nms_consume_BE3(&cur);
+        len = nms_consume_BE2(&cur);
         if (xiphrtp_to_mkv(vorb, cur, len, id)) return 1;
         size -= len + 3 + 2;
         cur += len;

@@ -22,10 +22,11 @@ int nms_base64_decode(uint8_t * out, const char *in, int out_length);
 int nms_hex_decode(uint8_t * out, const char *in, int out_length);
 unsigned int nms_xiphlacing(unsigned char *s, unsigned int v);
 
-inline uint64_t nms_consume(uint8_t ** buff, uint8_t n_bytes);
-inline uint32_t nms_consume_4(uint8_t ** buff);
-inline uint32_t nms_consume_3(uint8_t ** buff);
-inline uint16_t nms_consume_2(uint8_t ** buff);
+inline uint64_t nms_consume_BE(uint8_t ** buff, uint8_t n_bytes);
+inline uint32_t nms_consume_BE4(uint8_t ** buff);
+inline uint32_t nms_consume_BE3(uint8_t ** buff);
+inline uint16_t nms_consume_BE2(uint8_t ** buff);
+
 #define nms_consume_1(buff) *((uint8_t*)(*(buff))++)
 char *nms_get_attr_value(char *attr, const char *param, int *v_len );
 
