@@ -151,7 +151,7 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
 {
     uint8_t *cur = value, *conf;
     rtp_xiph_conf *tmp;
-    int i, count, offset = 1, off = 0, val;
+    int i, count, offset = 1, val;
     if (len) {
         // convert the format
         count = get_v(&cur, len);
@@ -162,10 +162,8 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
         conf = malloc(len + len/255 + 64);
         for (i=0; i < count; i++) {
             val = get_v(&cur, len);
-            off += val;                          // offset to the setup header
-            offset += nms_xiphlacing(conf + i + 1, val); // offset in configuration
+            offset += nms_xiphlacing(conf + offset, val);
         }
-        len -= cur - value; // raw configuration length
         conf[0] = count;
         memcpy(conf + offset, cur, len);
         // append to the list
@@ -195,7 +193,7 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     for (i = 0; i < count && size > 0; i++) {
         id  = nms_consume_BE3(&cur);
         len = nms_consume_BE2(&cur);
-        if (xiphrtp_to_mkv(vorb, cur, len, id)) return 1;
+        if (xiphrtp_to_mkv(vorb, cur, len, size, id)) return 1;
         size -= len + 3 + 2;
         cur += len;
     }
