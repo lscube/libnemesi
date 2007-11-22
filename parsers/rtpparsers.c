@@ -96,7 +96,6 @@ void rtp_parsers_init(void)
         if (pt < 96 && pt != -1) {
             rtp_parsers[pt] = rtpparsers[i]->parse;
             rtp_parsers_inits[pt] = rtpparsers[i]->init;
-            nms_printf(NMSML_DBG1, "Added rtp parser for pt %d\n", pt);
         }
     }
 }
