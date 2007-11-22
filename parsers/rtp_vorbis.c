@@ -59,8 +59,11 @@ static int single_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
     if (vorb->id != RTP_XIPH_ID(pkt) &&    //not the current id
         //  !cfg_cache_find(vorb,RTP_XIPH_ID(pkt)) || //XXX
         (RTP_XIPH_T(pkt) != 1)    //not a config packet
-       )
+       ) {
+        nms_printf(NMSML_ERR, "Id %0x unknown, expected %0x\n",
+                   (unsigned)RTP_XIPH_ID(pkt), (unsigned)vorb->id);
         return RTP_PARSE_ERROR;
+    }
 
     fr->data = vorb->buf = realloc(vorb->buf, len);
     fr->len = vorb->len = len;
@@ -133,39 +136,50 @@ static int pack_parse(rtp_vorbis * vorb, rtp_pkt * pkt, rtp_frame * fr,
     return 0;
 }
 
-static uint64_t get_v(uint8_t **cur, int len)
+static uint64_t get_v(uint8_t **cur, int *len)
 {
     uint64_t val = 0;
     uint8_t *cursor = *cur;
     int tmp = 128, i;
-    for (i = 0; i<len && tmp&128; i++)
+    for (i = 0; i<*len && tmp&128; i++)
     {
         tmp = *cursor++;
         val= (val<<7) + (tmp&127);
     }
     *cur = cursor;
+    *len -= i;
     return val;
 }
 
-static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t *value, int len, int id)
+static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t **value, int *size)
 {
-    uint8_t *cur = value, *conf;
+    uint8_t *conf;
     rtp_xiph_conf *tmp;
     int i, count, offset = 1, val;
+    int id  = nms_consume_BE3(value);
+    int len = nms_consume_BE2(value);
+
+    //XXX check len
+
     if (len) {
         // convert the format
-        count = get_v(&cur, len);
+        count = get_v(value, size);
         if (count != 2) {
             // corrupted packet?
             return RTP_PARSE_ERROR;
         }
         conf = malloc(len + len/255 + 64);
-        for (i=0; i < count; i++) {
-            val = get_v(&cur, len);
+        for (i=0; i < count && size > 0 && offset < len; i++) {
+            val = get_v(value, size);
             offset += nms_xiphlacing(conf + offset, val);
         }
+        if (len > *size) {
+            free(conf);
+            return RTP_PARSE_ERROR;
+        }
         conf[0] = count;
-        memcpy(conf + offset, cur, len);
+        memcpy(conf + offset, *value, len);
+        *value += len;
         // append to the list
         vorb->conf_len++;
         vorb->conf = realloc(vorb->conf,
@@ -184,18 +198,14 @@ static int unpack_config(rtp_vorbis *vorb, char *value, int len)
     uint8_t buff[len];
     uint8_t *cur = buff;
     int size = nms_base64_decode(buff, value, len);
-    int count, i, id;
+    int count, i;
     if (size <= 0) return 1;
 
     count = nms_consume_BE4(&cur);
     size -= 4;
 
     for (i = 0; i < count && size > 0; i++) {
-        id  = nms_consume_BE3(&cur);
-        len = nms_consume_BE2(&cur);
-        if (xiphrtp_to_mkv(vorb, cur, len, size, id)) return 1;
-        size -= len + 3 + 2;
-        cur += len;
+        if (xiphrtp_to_mkv(vorb, &cur, &size)) return 1;
     }
 
     return 0;
