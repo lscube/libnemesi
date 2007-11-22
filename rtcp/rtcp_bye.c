@@ -42,7 +42,7 @@ int rtcp_parse_bye(rtp_ssrc * ssrc, rtcp_pkt * pkt)
     rtsp_thread * rtsp_t;
     int i;
     for (i = 0; i < pkt->common.count; i++)
-        nms_printf(NMSML_DBG1, "Received BYE from SSRC: %u\n",
+        nms_printf(NMSML_DBG3, "Received BYE from SSRC: %u\n",
             pkt->r.bye.src[i]);
 
     rtsp_t = ssrc->rtp_sess->owner;

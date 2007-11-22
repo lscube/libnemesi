@@ -80,7 +80,7 @@ int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
     rtcp_sdes_item_t *end =
         (rtcp_sdes_item_t *) ((uint32_t *) pkt + pkt->common.len + 1);
 
-    nms_printf(NMSML_DBG1, "Received SDES from SSRC: %u\n",
+    nms_printf(NMSML_DBG3, "Received SDES from SSRC: %u\n",
            pkt->r.sdes.src);
     while (--count >= 0) {
         rsp = &(sdes->item[0]);

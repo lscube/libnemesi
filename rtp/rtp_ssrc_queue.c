@@ -230,7 +230,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32_t ssrc, rtp_ssrc ** stm_src,
     if (!*stm_src && !local_collision) {
         /* new SSRC */
         pthread_mutex_lock(&rtp_sess->syn);
-        nms_printf(NMSML_DBG1, "new SSRC\n");
+        nms_printf(NMSML_DBG3, "new SSRC\n");
         if (rtp_ssrc_init(rtp_sess, stm_src, ssrc, recfrom, proto_type)
             < 0) {
             pthread_mutex_unlock(&rtp_sess->syn);
@@ -255,7 +255,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32_t ssrc, rtp_ssrc ** stm_src,
 
             if (!(*stm_src)->rtp_from.addr) {
                 nms_sockaddr_dup(&(*stm_src)->rtp_from, recfrom);
-                nms_printf(NMSML_DBG1, "new SSRC for RTP\n");
+                nms_printf(NMSML_DBG3, "new SSRC for RTP\n");
                 local_collision = SSRC_RTPNEW;
             }
             sock.addr = (*stm_src)->rtp_from.addr;
@@ -266,7 +266,7 @@ int rtp_ssrc_check(rtp_session * rtp_sess, uint32_t ssrc, rtp_ssrc ** stm_src,
 
             if (!(*stm_src)->rtcp_from.addr) {
                 nms_sockaddr_dup(&(*stm_src)->rtcp_from, recfrom);
-                nms_printf(NMSML_DBG1, "new SSRC for RTCP\n");
+                nms_printf(NMSML_DBG3, "new SSRC for RTCP\n");
                 local_collision = SSRC_RTCPNEW;
             }
             sock.addr = (*stm_src)->rtcp_from.addr;

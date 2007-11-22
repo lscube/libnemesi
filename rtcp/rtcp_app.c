@@ -35,6 +35,6 @@
 int rtcp_parse_app(rtcp_pkt * pkt)
 {
     // TODO: handle app packet
-    nms_printf(NMSML_DBG1, "Received APP from SSRC: %u\n", pkt->r.app.src);
+    nms_printf(NMSML_DBG3, "Received APP from SSRC: %u\n", pkt->r.app.src);
     return 0;
 }

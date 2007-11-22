@@ -147,7 +147,7 @@ int rtcp_send_rr(rtp_session * rtp_sess)
                     nms_printf(NMSML_WARN,
                            "WARNING! Error while sending UDP RTCP pkt\n");
                 else
-                    nms_printf(NMSML_DBG1,
+                    nms_printf(NMSML_DBG3,
                            "RTCP RR packet sent\n");
                 break;
             case SCTP:
@@ -157,7 +157,7 @@ int rtcp_send_rr(rtp_session * rtp_sess)
                     nms_printf(NMSML_WARN,
                            "WARNING! Error while sending local RTCP pkt\n");
                 else
-                    nms_printf(NMSML_DBG1,
+                    nms_printf(NMSML_DBG3,
                            "RTCP RR packet sent\n");
                 break;
             default:
@@ -175,7 +175,7 @@ int rtcp_send_rr(rtp_session * rtp_sess)
 int rtcp_parse_rr(rtcp_pkt * pkt)
 {
     // TODO: handle rr packet
-    nms_printf(NMSML_DBG1, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
+    nms_printf(NMSML_DBG3, "Received RR from SSRC: %u\n", pkt->r.rr.ssrc);
     return 0;
 }
 
@@ -188,7 +188,7 @@ int rtcp_parse_rr(rtcp_pkt * pkt)
  */
 int rtcp_parse_sr(rtp_ssrc * stm_src, rtcp_pkt * pkt)
 {
-    nms_printf(NMSML_DBG1, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
+    nms_printf(NMSML_DBG3, "Received SR from SSRC: %u\n", pkt->r.sr.ssrc);
     gettimeofday(&(stm_src->ssrc_stats.lastsr), NULL);
     stm_src->ssrc_stats.ntplastsr[0] = ntohl(pkt->r.sr.si.ntp_seq);
     stm_src->ssrc_stats.ntplastsr[1] = ntohl(pkt->r.sr.si.ntp_frac);
