@@ -30,6 +30,7 @@ extern rtpparser rtp_parser_mpv;
 extern rtpparser rtp_parser_h264;
 extern rtpparser rtp_parser_h263;
 extern rtpparser rtp_parser_speex;
+extern rtpparser rtp_parser_theora;
 extern rtpparser rtp_parser_vorbis;
 extern rtpparser rtp_parser_m4v;
 extern rtpparser rtp_parser_aac;
@@ -40,6 +41,7 @@ rtpparser *rtpparsers[] = {
     &rtp_parser_h264,
     &rtp_parser_h263,
     &rtp_parser_speex,
+    &rtp_parser_theora,
     &rtp_parser_vorbis,
     &rtp_parser_m4v,
     &rtp_parser_aac,
