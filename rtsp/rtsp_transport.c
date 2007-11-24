@@ -69,7 +69,7 @@ int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             strncpy(str, tkna, tknb - tkna);
             str[tknb++ - tkna] = '\0';
 
-            ssrc = strtoul(str, NULL, 10);
+            ssrc = strtoul(str, NULL, 16);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 
             continue;
@@ -129,7 +129,7 @@ int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             strncpy(str, tkna, tknb - tkna);
             str[tknb++ - tkna] = '\0';
 
-            ssrc = strtoul(str, NULL, 10);
+            ssrc = strtoul(str, NULL, 16);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 
             continue;
@@ -210,7 +210,7 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             strncpy(str, tkna, tknb - tkna);
             str[tknb++ - tkna] = '\0';
 
-            ssrc = strtoul(str, NULL, 10);
+            ssrc = strtoul(str, NULL, 16);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 
             continue;
@@ -392,7 +392,7 @@ int set_transport_str(rtp_session * rtp_sess, char **str)
     if (rtp_get_append(rtp_sess))
         sprintf(buff + strlen(buff), "append;");
     if (rtp_get_ssrc(rtp_sess))
-        sprintf(buff + strlen(buff), "ssrc=%u;",
+        sprintf(buff + strlen(buff), "ssrc=%8X;",
             rtp_get_ssrc(rtp_sess));
 
     /* eliminiamo l'ultimo ; */
