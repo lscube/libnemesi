@@ -392,7 +392,7 @@ int set_transport_str(rtp_session * rtp_sess, char **str)
     if (rtp_get_append(rtp_sess))
         sprintf(buff + strlen(buff), "append;");
     if (rtp_get_ssrc(rtp_sess))
-        sprintf(buff + strlen(buff), "ssrc=%8X;",
+        sprintf(buff + strlen(buff), "ssrc=%08X;",
             rtp_get_ssrc(rtp_sess));
 
     /* eliminiamo l'ultimo ; */
