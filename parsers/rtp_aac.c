@@ -134,14 +134,23 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
 
 static int aac_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 {
+    aac_elem *tmp;
     rtp_aac *priv = ssrc->rtp_sess->ptdefs[pt]->priv;
 
-    if (priv && priv->data)
-        free(priv->data);
-    if (priv && priv->conf)
-        free(priv->conf);
-    if (priv)
+    if (priv) {
+        if (priv->data)
+            free(priv->data);
+        if (priv->conf)
+            free(priv->conf);
+        while (priv->head) {
+            tmp = priv->head;
+            priv->head = priv->head->next;
+            if (tmp->data)
+                free(tmp->data);
+            free(tmp);
+        }
         free(priv);
+    }
 
     ssrc->rtp_sess->ptdefs[pt]->priv = NULL;
 
@@ -225,6 +234,8 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         priv->len += priv->head->len;
         cur = priv->head;
         priv->head = priv->head->next;
+        if (cur->data)
+            free(cur->data);
         free(cur);
     }
 
