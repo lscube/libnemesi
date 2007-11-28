@@ -1,8 +1,11 @@
 -- Api stabilization
+- decide if the namespace is fine as is now
+- do we have enough accessors?
+- the structs are sane?
 
--- add more parsers
-
--- complete the xiph sdp parser
+-- parsers
+- complete the current ones (corner cases and such)
+- add more
 
 -- logo
 
