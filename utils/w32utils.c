@@ -177,4 +177,19 @@ int inet_pton(int af, const char *src, void *dst)
         return 0;
 }
 
+//strtok is supposed to be reetrant on win32
+char * strtok_r(char * str, const char *delim, char **saveptr)
+{
+ return strtok(str, delim);
+}
 
+//mingw misses the real implementation...
+char * WSAAPI gai_strerrorA(int eid)
+{
+     return "Unknown";
+}
+
+double drand48(void)
+{
+ return ((double)rand())/RAND_MAX;
+}
