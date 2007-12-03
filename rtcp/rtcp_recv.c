@@ -121,9 +121,11 @@ int rtcp_recv(rtp_session * rtp_sess)
             nms_printf(NMSML_ERR,
                    "RTCP recvfrom: invalid descriptor\n");
             break;
+#ifndef WIN32
         case ENOTSOCK:
             nms_printf(NMSML_ERR, "RTCP recvfrom: not a socket\n");
             break;
+#endif
         case EINTR:
             nms_printf(NMSML_ERR,
                    "RTCP recvfrom: The receive was interrupted by delivery of a signal\n");
