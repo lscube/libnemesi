@@ -27,7 +27,10 @@
 
 #include "rtcp.h"
 #include "version.h"
-#include <pwd.h>
+
+#ifndef WIN32
+#       include <pwd.h>
+#endif
 
 /**
  * Actually gets the source description inside the RTCP SDES packet
@@ -119,7 +122,15 @@ int rtcp_parse_sdes(rtp_ssrc * stm_src, rtcp_pkt * pkt)
  */
 int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
 {
+#ifndef WIN32
     struct passwd *pwitem = getpwuid(getuid());
+    char * user = pwitem->pw_name;
+    char * real_name = pwitem->pw_gecos;
+#else
+    char * user = "guest";
+    char * real_name = "";
+#endif
+
     rtcp_sdes_item_t *item;
     char str[MAX_SDES_LEN] = "";
     int len, pad;
@@ -130,7 +141,7 @@ int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
     /* SDES CNAME: username@ipaddress */
     // if ( sock_ntop_host(rtp_sess->transport.dstaddr.addr, rtp_sess->transport.dstaddr.addr_len, addr, sizeof(addr)) ) {
     if (nms_addr_ntop(&rtp_sess->transport.RTP.u.udp.dstaddr, addr, sizeof(addr))) {
-        strcpy(str, pwitem->pw_name);
+        strcpy(str, user);
         strcat(str, "@");
         strcat(str, addr);
     }
@@ -157,7 +168,7 @@ int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
     item = (rtcp_sdes_item_t *) ((char *) item + strlen((char *) item));
 
     /* SDES NAME: real name, if it exists */
-    if (strlen(strcpy(str, pwitem->pw_gecos))) {
+    if (strlen(strcpy(str, real_name))) {
         if (((strlen(str) + sizeof(rtcp_sdes_item_t) - 1 +
               sizeof(rtcp_common_t) + 1) >> 2) > (unsigned int) left) {
             /* No space left in UDP pkt */
