@@ -67,3 +67,9 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
     return 0;
 }
 
+int usleep(unsigned t)
+{
+    Sleep((t) / 1000);
+    return 0;
+}
+
