@@ -27,7 +27,9 @@
 #include <config.h>
 #endif
 
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 #include "comm.h"
 #include "rtp.h"

@@ -23,11 +23,13 @@
 #include "transport.h"
 #include "comm.h"
 
+#ifndef WIN32
 #ifdef    HAVE_SOCKADDR_DL_STRUCT
 # include    <net/if_dl.h>
 #endif
 #ifdef    AF_UNIX
 #include <sys/un.h>
+#endif
 #endif
 
 /**
@@ -87,7 +89,7 @@ static int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2)
         break;
 #endif
 
-#ifdef    AF_UNIX
+#if !defined(WIN32) && defined(AF_UNIX)
     case AF_UNIX:
         return (strcmp
             (((struct sockaddr_un *) sa1)->sun_path,

@@ -21,7 +21,6 @@
  */
 
 
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -51,6 +50,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
+#ifndef WIN32
     while ((opt = getopt(argc, argv, "df:p:v:")) != -1) {
         switch (opt) {
 
@@ -76,6 +76,7 @@ int main(int argc, char **argv)
             return 1;
         }
     }
+#endif
 
     outfile = fopen(out, "rb");
     if (outfile == NULL)

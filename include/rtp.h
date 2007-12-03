@@ -33,14 +33,18 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+
+#ifndef WIN32
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#include <time.h>
 #include <sys/types.h>
+#endif
+
+#include <time.h>
 #include <pthread.h>
 #include <stdint.h>
 
@@ -376,7 +380,7 @@ int16_t rtp_get_next_pt(rtp_ssrc *);
 void rtp_update_fps(rtp_ssrc * stm_src, uint32_t, unsigned);
 float rtp_get_fps(rtp_ssrc *);
 
-rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, unsigned int *, uint32_t);
+rtp_pkt *rtp_get_n_pkt(rtp_ssrc *, unsigned int *, unsigned);
 rtp_pkt *rtp_get_pkt(rtp_ssrc *, size_t *);
 inline int rtp_rm_pkt(rtp_ssrc *);
 void rtp_rm_all_pkts(rtp_ssrc *);

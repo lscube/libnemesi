@@ -40,13 +40,18 @@
 #include <ctype.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <sys/types.h>
-#include <sys/time.h>
+
+
+#ifndef WIN32
+#	include <sys/types.h>
+#	include <sys/time.h>
+#	define min(x,y) ((x) < (y) ? (x) : (y))
+#	define max(x,y) ((x) > (y) ? (x) : (y))
+#else
+#	include <winsock2.h>
+#endif
 
 #include "comm.h"
-
-#define min(x,y) ((x) < (y) ? (x) : (y))
-#define max(x,y) ((x) > (y) ? (x) : (y))
 
 int urltokenize(char *, char **, char **, char **);
 
