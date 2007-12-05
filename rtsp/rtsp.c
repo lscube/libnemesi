@@ -51,6 +51,10 @@ RTSP_Error const RTSP_Reinitialized = { {-1, "Nemesi Library has been reinitiali
  */
 rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
 {
+#ifdef WIN32
+    WSADATA wsaData;
+#endif
+
     rtsp_thread *rtsp_th;
     pthread_attr_t rtsp_attr;
     pthread_mutexattr_t mutex_attr;
@@ -75,6 +79,14 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
         return NULL;
 #endif
 #endif
+
+#ifdef WIN32
+    if ( WSAStartup(0x0202, &wsaData) ) {
+         nms_printf(NMSML_FATAL, "Could not initialize windows sockets!\n");
+         return NULL;
+    }
+#endif
+
     if ((n = pthread_mutex_init(&(rtsp_th->comm_mutex), &mutex_attr)) > 0)
         RET_ERR(NMSML_FATAL, "Could not init mutex\n");
 
@@ -385,9 +397,11 @@ static int server_connect(char *host, char *port, int *sock, sock_type sock_type
         break;
     }
 
-    if ((n = gethostinfo(&res, host, port, &hints)) != 0)
+    if ((n = gethostinfo(&res, host, port, &hints)) != 0) {
+       fprintf(stderr, "N: %u\n", n);
         return nms_printf(NMSML_ERR, "%s: %s\n", PROG_NAME,
                   gai_strerror(n));
+       }
 
     ressave = res;
 
@@ -720,6 +734,10 @@ int rtsp_uninit(rtsp_ctrl * rtsp_ctl)
 
     free(rtsp_ctl->comm);
     free(rtsp_ctl);
+
+#ifdef WIN32
+    WSACleanup();
+#endif
 
     return 0;
 }
