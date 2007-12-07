@@ -63,7 +63,7 @@
 #define BP_SIZE BP_SLOT_NUM*BP_SLOT_SIZE    /* 1 sec G.711 - 8kHz * 8bit
                            per sample */
 
-#define BP_MAX_SIZE BP_SLOT_NUM*10
+#define BP_MAX_SIZE BP_SLOT_NUM*50
 
 
 /*! \brief Network Playout Buffer Slots.
