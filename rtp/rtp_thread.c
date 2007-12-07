@@ -165,12 +165,11 @@ static void *rtp(void *args)
                     if (rtp_sess->bp->flcount >= thread->prebuffer_size) {
                         pthread_mutex_unlock(syn);
                         buffering = 0;
+                        nms_printf(NMSML_NORM, "\rPrebuffer complete.\n");
                     } else {    // TODO: buffering based on rtp jitter
-                        nms_printf(NMSML_DBG1,
-                               "\rBuffering (%d)%\t",
-                               (100 *
-                                rtp_sess->bp->flcount) /
-                               (BP_SLOT_NUM / 2));
+                        nms_printf(NMSML_NORM, "\rBuffering (%d%%)\t",
+                               (100 * rtp_sess->bp->flcount) /
+                               thread->prebuffer_size);
                     }
                 }
                 if (rtp_recv(rtp_sess)) {
@@ -194,7 +193,7 @@ static void *rtp(void *args)
  */
 rtp_thread *rtp_init(void)
 {
-    rtp_thread *rtp_th;
+    rtp_thread *rtp_th = NULL;
 
     if (!(rtp_th = (rtp_thread *) calloc(1, sizeof(rtp_thread)))) {
         nms_printf(NMSML_FATAL, "Could not alloc memory!\n");
@@ -207,6 +206,10 @@ rtp_thread *rtp_init(void)
         free(rtp_th);
         return NULL;
     }
+
+    // use a safe default
+    rtp_th->prebuffer_size = BP_SLOT_NUM / 2;
+
     /* Decoder blocked 'till buffering is complete */
     pthread_mutex_lock(&(rtp_th->syn));
 

@@ -113,9 +113,6 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
     if (!(rtsp_th->rtp_th = rtp_init()))
         RET_ERR(NMSML_ERR, "Cannot initialize RTP structs\n");
 
-    // use a safe default
-    rtsp_th->rtp_th->prebuffer_size = BP_SLOT_NUM / 2;
-
     rtsp_th->hints = hints;
     // check for the exactness of values hinted
     if (hints) {        // hints given
@@ -133,7 +130,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
                    "RTP ports forced by user (not randomly generated)\n");
         }
         // prebuffer size
-        if (hints->prebuffer_size >= 0)
+        if (hints->prebuffer_size > 0)
             rtsp_th->rtp_th->prebuffer_size = hints->prebuffer_size;
 
         //force RTSP protocol
