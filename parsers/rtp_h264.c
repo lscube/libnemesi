@@ -36,10 +36,11 @@
 
 typedef struct {
     uint8_t *data;     //!< constructed frame, fragments will be copied there
-    long len;       //!< buf length, it's the sum of the fragments length
+    long len;          //!< buf length, it's the sum of the fragments length
     uint8_t *conf;
     long conf_len;
     long timestamp;
+    long index;
 } rtp_h264;
 
 static rtpparser_info h264_served = {
@@ -147,7 +148,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     rtp_h264 *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     uint8_t *buf;
     uint8_t type;
-    uint8_t start_sequence[]= {0, 0, 1};
+    uint8_t start_sequence[]= {0, 0, 0, 1};
     int err = RTP_FILL_OK;
 
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
@@ -157,6 +158,11 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     len = RTP_PAYLOAD_SIZE(pkt, len);
 
     if (type >= 1 && type <= 23) type = 1; // single packet
+
+    if (priv->conf_len) {
+        config->data = priv->conf;
+        config->len = priv->conf_len;
+    }
 
     switch (type) {
     case 0: // undefined;
@@ -170,11 +176,101 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         fr->len = sizeof(start_sequence)+len;
         break;
     case 24:    // STAP-A (aggregate, output as whole or split it?)
+        nms_printf (NMSML_WARN,"STAP-A\n");
+        #if 0
+        {
+            size_t frame_len;
+            buf += priv->index + 1; // skip the nal
+            frame_len = nms_consume_BE2(&buf);
+            if (!frame_len) {
+                nms_printf (NMSML_WARN,"Empty frame\n");
+                err = RTP_PARSE_ERROR;
+                break;
+            }
 
+            nms_printf(NMSML_WARN, "NAL: %d", *buf & 0x1f);
+
+            if (frame_len + priv->index < len) {
+                nms_printf (NMSML_WARN,"Packet size %d\n",frame_len);
+
+                priv->data = fr->data = realloc(priv->data,
+                                                sizeof(start_sequence)
+                                                + frame_len);
+                memcpy(fr->data, start_sequence, sizeof(start_sequence));
+                memcpy(fr->data + sizeof(start_sequence), buf, frame_len);
+                fr->len = sizeof(start_sequence) + frame_len;
+                priv->index += 2 + frame_len;
+                if ( priv->index + 1 < len) return err; // more to output
+                else priv->index = 0; // get a new packet
+            } else {
+                nms_printf (NMSML_ERR,"STAP-A corrupted\n");
+                err = RTP_PARSE_ERROR;
+            }
+        }
+        break;
+        #else 
+        buf++;
+        len--;
+        // ffmpeg way
+        {
+            int pass = 0;
+            int total_length = 0;
+            uint8_t *dst = NULL;
+
+            for(pass= 0; pass<2; pass++) {
+                uint8_t *src = buf;
+                int src_len = len;
+                do {
+                    uint16_t nal_size = nms_consume_BE2(&src);
+                    src_len -= 2;
+
+                    if (nal_size <= src_len) {
+                        if(pass==0) {
+                            total_length += sizeof(start_sequence) + nal_size;
+                        } else {
+                            memcpy(dst, start_sequence, sizeof(start_sequence));
+                            dst+= sizeof(start_sequence);
+                            memcpy(dst, src, nal_size);
+                            dst+= nal_size;
+                            nms_printf(NMSML_WARN,
+                                       "NAL: %d - size %d \n",
+                                       *src & 0x1f, nal_size);
+                        }
+                    } else {
+                        nms_printf(NMSML_ERR,
+                                   "nal size exceeds length: %d %d\n",
+                                   nal_size, src_len);
+                    }
+
+                    src += nal_size;
+                    src_len -= nal_size;
+
+                    if (src_len < 0)
+                        nms_printf(NMSML_ERR,
+                                   "Consumed more bytes than we got! (%d)\n",
+                                   src_len);
+                } while (src_len > 2);  // because there could be rtp padding..
+
+                if(pass==0) {
+                    dst = priv->data = fr->data =
+                        realloc(priv->data, total_length);
+                    fr->len = total_length;
+                }
+            }
+        }
+        break;
+        #endif
         /* Unsupported for now */
     case 25:    // STAP-B
+        err = RTP_PKT_UNKNOWN;
+        nms_printf (NMSML_WARN,"STAP-B\n");
+        break;
     case 26:    // MTAP-16
+        err = RTP_PKT_UNKNOWN;
+        nms_printf (NMSML_WARN,"MTAP-16\n");
+        break;
     case 27:    // MTAP-24
+        nms_printf (NMSML_WARN,"MTAP-24\n");
         err = RTP_PKT_UNKNOWN;
         break;
 
@@ -192,7 +288,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
             // reconstruct this packet's true nal; only the data follows..
             // the original nal forbidden bit and NRI are stored in
             // this packet's nal;
-            reconstructed_nal = fu_indicator & (0xe0);
+            reconstructed_nal = fu_indicator & 0xe0;
             reconstructed_nal |= nal_type;
 
             if(start_bit) {
@@ -228,11 +324,6 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     default:
         err = RTP_PKT_UNKNOWN;
         break;
-    }
-
-    if (priv->conf_len) {
-        config->data = priv->conf;
-        config->len = priv->conf_len;
     }
 
     rtp_rm_pkt(ssrc);
