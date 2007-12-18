@@ -158,7 +158,8 @@ static int aac_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 }
 
 /**
- * it should return a aac frame by fetching one or more than a single rtp packet
+ * it should return an aac frame by fetching one or more than
+ * a single rtp packet
  */
 
 static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
@@ -188,7 +189,7 @@ static int aac_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     }
 
     if (!priv->head) {
-        header_len = (buf[0] << 8) | buf[1]; // the value in bits, little endian
+        header_len = (buf[0] << 8) | buf[1]; // the value in bits
         header_len_bytes = (header_len + 7) / 8;
         headers_num = header_len / 16; //ripped from gstreamer
 
