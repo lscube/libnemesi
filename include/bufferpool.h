@@ -129,15 +129,13 @@ typedef struct playout_buff_t {
 * \see bprmv
 * */
 typedef struct buffer_pool_t {
-    bp_slot *bufferpool;            /*!< Pointer to the Bufferpool memory.
+    bp_slot *bufferpool;       /*!< Pointer to the Bufferpool memory.
                                             \see bpinit */
-    pthread_mutex_t fl_mutex;    /*!< Mutex to access the Bufferpool
-                                             internals. */
-    pthread_cond_t cond_full;    /*!< Signals if the Bufferpool is 
-                                             full */
-    int *freelist; /*[BP_SLOT_NUM];*/    /*!< Free slots. */
+    pthread_mutex_t fl_mutex;  /*!< Mutex to access the Bufferpool internals. */
+    pthread_cond_t cond_full;  /*!< Advertise availability of free slots. */
+    int *freelist;             /*!< Free slot indexes vector. */
     int flhead;                /*!< Free List head. */
-    int flcount;                /*!< Free List count. */
+    int flcount;               /*!< Free List count. */
     int size;
 } buffer_pool;
 

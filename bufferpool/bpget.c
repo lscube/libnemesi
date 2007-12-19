@@ -41,11 +41,10 @@ int bpget(buffer_pool * bp)
 
     pthread_mutex_lock(&(bp->fl_mutex));
     while (bp->flhead == -1) {
-        if(!bpenlarge(bp)) {
+        if(bpenlarge(bp)) {
             nms_printf(NMSML_WARN, "Bufferpool reached maximum size\n");
             pthread_cond_wait(&(bp->cond_full), &(bp->fl_mutex));
-        }
-        else {
+        } else {
             nms_printf(NMSML_DBG1, "Bufferpool enlarged\n");
         }
     }
