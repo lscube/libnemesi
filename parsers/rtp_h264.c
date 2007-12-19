@@ -323,7 +323,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
             reconstructed_nal = fu_indicator & 0xe0;
             reconstructed_nal |= nal_type;
 
-            if(start_bit) {
+            if(start_bit && !priv->len) {
                 if (priv->data_size < len + 1 + sizeof(start_sequence) + priv->len) {
                     if (!(priv->data = realloc(priv->data, len +
                                        sizeof(start_sequence) + priv->len))) {
@@ -343,6 +343,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 if (priv->timestamp != RTP_PKT_TS(pkt)) {
                     fr->data = priv->data;
                     fr->len = priv->len;
+                    fr->timestamp = priv->timestamp;
                     priv->len = 0;
                     return RTP_FILL_OK;
                 }
