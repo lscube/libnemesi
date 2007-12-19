@@ -46,12 +46,12 @@ int main(int argc, char **argv)
 
     if (argc < 2) {
         fprintf(stderr, "\tPlease specify at least an url.\n");
-        fprintf(stderr, "\tUsage: %s [-f basename ][-p port] url\n",
+        fprintf(stderr, "\tUsage: %s [-f basename ][-p port][-t][-s] url\n",
             argv[0]);
         exit(1);
     }
 
-    while ((opt = getopt(argc, argv, "f:p:")) != -1) {
+    while ((opt = getopt(argc, argv, "f:p:ts")) != -1) {
         switch (opt) {
             /*  Set output file  */
         case 'f':
@@ -61,6 +61,16 @@ int main(int argc, char **argv)
             /*  Set rtp port  */
         case 'p':
             rtsp_hints.first_rtp_port = atoi(optarg);
+            break;
+            /* Force TCP interleaved */
+        case 't':
+            rtsp_hints.pref_rtsp_proto = TCP;
+            rtsp_hints.pref_rtp_proto = TCP;
+            break;
+            /* Force SCTP */
+        case 's':
+            rtsp_hints.pref_rtsp_proto = SCTP;
+            rtsp_hints.pref_rtp_proto = SCTP;
             break;
             /* Unknown option  */
         case '?':
