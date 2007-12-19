@@ -60,7 +60,7 @@ typedef struct {
                                         (A)udio(/)(V)ideo,                 \
                                         (N)ot(/)(A)pplicable */            \
         unsigned rate; /*!< Clock Rate - in Hertz*/                        \
-        long prev_timestamp; \
+        unsigned long prev_timestamp;                                      \
         rtp_pt_attrs attrs; /*!< fmtp attribute strings from sdp           \
                                  description */                            \
         void *priv;         /*!< private data for rtp payload type */
