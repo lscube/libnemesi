@@ -38,7 +38,7 @@ typedef struct {
     uint8_t *data;  //!< constructed frame, fragments will be copied there
     long len;       //!< buf length, it's the sum of the fragments length
     long data_size; //!< allocated bytes for data
-    long timestamp; //!< timestamp of progressive frame
+    unsigned long timestamp; //!< timestamp of progressive frame
     uint8_t *conf;
     long conf_len;
     int configured;
@@ -128,8 +128,8 @@ static int m4v_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         return RTP_PKT_UNKNOWN;
     }
 
-    // For the codec to work correctly, it may need a 'VOL Header' to be
-    // inserted at the front of the data stream.
+    // In order to produce a compliant bitstream, a 'VOL Header' should prefix
+    // the data stream.
     if (!priv->configured && !priv->len && priv->conf_len) {
         if (!(priv->data = realloc(priv->data, priv->conf_len))) {
             return RTP_ERRALLOC;

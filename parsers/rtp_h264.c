@@ -37,10 +37,11 @@
 typedef struct {
     uint8_t *data;     //!< constructed frame, fragments will be copied there
     long len;          //!< buf length, it's the sum of the fragments length
+    long data_size;    //!< allocated bytes for data
+    unsigned long timestamp;    //!< timestamp of progressive frame
     uint8_t *conf;
     long conf_len;
-    long timestamp;
-    long index;
+    int configured;
 } rtp_h264;
 
 static rtpparser_info h264_served = {
@@ -66,7 +67,7 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
         }
         if ((value = strstr(attrs->data[i], "sprop-parameter-sets="))) {
         //shamelessly ripped from ffmpeg
-            uint8_t start_sequence[]= { 0, 0, 1 };
+            uint32_t start_sequence = ntohl(1);
             priv->conf_len = 0;
             priv->conf = NULL;
             value+=21;
@@ -98,7 +99,7 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
                             free(priv->conf);
                         }
 
-                        memcpy(dest+priv->conf_len, start_sequence,
+                        memcpy(dest+priv->conf_len, &start_sequence,
                                sizeof(start_sequence));
                         memcpy(dest + priv->conf_len +  sizeof(start_sequence),
                                decoded_packet, packet_size);
@@ -128,6 +129,8 @@ static int h264_uninit_parser(rtp_ssrc * ssrc, unsigned pt)
 
     if (priv && priv->data)
         free(priv->data);
+    if (priv && priv->conf)
+        free(priv->conf);
     if (priv)
         free(priv);
 
@@ -148,14 +151,27 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
     rtp_h264 *priv = ssrc->rtp_sess->ptdefs[fr->pt]->priv;
     uint8_t *buf;
     uint8_t type;
-    uint8_t start_sequence[]= {0, 0, 0, 1};
+    uint32_t start_sequence = ntohl(1);
     int err = RTP_FILL_OK;
 
     if (!(pkt = rtp_get_pkt(ssrc, &len)))
         return RTP_BUFF_EMPTY;
+
     buf = RTP_PKT_DATA(pkt);
-    type = (buf[0] & 0x1f);
     len = RTP_PAYLOAD_SIZE(pkt, len);
+    type = (buf[0] & 0x1f);
+
+    // In order to produce a compliant bitstream, a PPS NALU should prefix
+    // the data stream.
+    if (!priv->configured && !priv->len && priv->conf_len) {
+        if (!(priv->data = realloc(priv->data, priv->conf_len))) {
+            return RTP_ERRALLOC;
+        }
+        priv->data_size = len;
+        memcpy(priv->data, priv->conf, priv->conf_len);
+        priv->len = priv->conf_len;
+        priv->configured = 1;
+    }
 
     if (type >= 1 && type <= 23) type = 1; // single packet
 
@@ -169,14 +185,22 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         err = RTP_PKT_UNKNOWN;
         break;
     case 1:
-        priv->data = fr->data =
-            realloc(priv->data, sizeof(start_sequence)+len);
-        memcpy(fr->data, start_sequence, sizeof(start_sequence));
-        memcpy(fr->data+sizeof(start_sequence), buf, len);
-        fr->len = sizeof(start_sequence)+len;
+        if (priv->data_size < len + sizeof(start_sequence) + priv->len) {
+            if (!(priv->data = realloc(priv->data, len +
+                                       sizeof(start_sequence) + priv->len))) {
+                return RTP_ERRALLOC;
+            }
+            priv->data_size = len + sizeof(start_sequence) + priv->len;
+        }
+        memcpy(priv->data + priv->len, &start_sequence, sizeof(start_sequence));
+        priv->len += sizeof(start_sequence);
+        memcpy(priv->data + priv->len, buf, len);
+        fr->data = priv->data;
+        fr->len = priv->len + len;
+        priv->len = 0;
         break;
     case 24:    // STAP-A (aggregate, output as whole or split it?)
-        nms_printf (NMSML_WARN,"STAP-A\n");
+        nms_printf (NMSML_WARN,"STAP-A - len: %u \n", len);
         #if 0
         {
             size_t frame_len;
@@ -196,7 +220,7 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 priv->data = fr->data = realloc(priv->data,
                                                 sizeof(start_sequence)
                                                 + frame_len);
-                memcpy(fr->data, start_sequence, sizeof(start_sequence));
+                memcpy(fr->data, &start_sequence, sizeof(start_sequence));
                 memcpy(fr->data + sizeof(start_sequence), buf, frame_len);
                 fr->len = sizeof(start_sequence) + frame_len;
                 priv->index += 2 + frame_len;
@@ -208,14 +232,14 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
             }
         }
         break;
-        #else 
+        #else
+        // trim stap-a nalu header
         buf++;
         len--;
         // ffmpeg way
         {
             int pass = 0;
             int total_length = 0;
-            uint8_t *dst = NULL;
 
             for(pass= 0; pass<2; pass++) {
                 uint8_t *src = buf;
@@ -228,10 +252,10 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                         if(pass==0) {
                             total_length += sizeof(start_sequence) + nal_size;
                         } else {
-                            memcpy(dst, start_sequence, sizeof(start_sequence));
-                            dst+= sizeof(start_sequence);
-                            memcpy(dst, src, nal_size);
-                            dst+= nal_size;
+                            memcpy(priv->data + priv->len, &start_sequence, sizeof(start_sequence));
+                            priv->len += sizeof(start_sequence);
+                            memcpy(priv->data + priv->len, src, nal_size);
+                            priv->len += nal_size;
                             nms_printf(NMSML_WARN,
                                        "NAL: %d - size %d \n",
                                        *src & 0x1f, nal_size);
@@ -252,12 +276,20 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 } while (src_len > 2);  // because there could be rtp padding..
 
                 if(pass==0) {
-                    dst = priv->data = fr->data =
-                        realloc(priv->data, total_length);
-                    fr->len = total_length;
+                    nms_printf (NMSML_WARN,"STAP-A - tot: %d \n", total_length);
+                    if (priv->data_size < total_length + priv->len) {
+                        if (!(priv->data = realloc(priv->data, total_length +
+                                                   priv->len))) {
+                            return RTP_ERRALLOC;
+                        }
+                    priv->data_size = total_length + priv->len;
+                    }
                 }
             }
         }
+        fr->data = priv->data;
+        fr->len = priv->len;
+        priv->len = 0;
         break;
         #endif
         /* Unsupported for now */
@@ -292,21 +324,34 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
             reconstructed_nal |= nal_type;
 
             if(start_bit) {
+                if (priv->data_size < len + 1 + sizeof(start_sequence) + priv->len) {
+                    if (!(priv->data = realloc(priv->data, len +
+                                       sizeof(start_sequence) + priv->len))) {
+                        return RTP_ERRALLOC;
+                    }
+                priv->data_size = len + 1 + sizeof(start_sequence) + priv->len;
+                }
                 // copy in the start sequence, and the reconstructed nal....
-                priv->data =
-                    realloc (priv->data, sizeof(start_sequence) + 1 + len);
-                memcpy(priv->data, start_sequence, sizeof(start_sequence));
-                priv->data[sizeof(start_sequence)] = reconstructed_nal;
-                memcpy(priv->data + sizeof(start_sequence) + 1, buf, len);
-                priv->len = sizeof(start_sequence) + 1 + len;
+                memcpy(priv->data + priv->len, &start_sequence, sizeof(start_sequence));
+                priv->len += sizeof(start_sequence);
+                *(priv->data + priv->len) = reconstructed_nal;
+                priv->len += 1;
+                memcpy(priv->data + priv->len, buf, len);
+                priv->len += len;
                 priv->timestamp = RTP_PKT_TS(pkt);
             } else {
                 if (priv->timestamp != RTP_PKT_TS(pkt)) {
-                    rtp_rm_pkt(ssrc);    
-                    return RTP_PKT_UNKNOWN;
+                    fr->data = priv->data;
+                    fr->len = priv->len;
+                    priv->len = 0;
+                    return RTP_FILL_OK;
                 }
-                priv->data =
-                    realloc (priv->data, priv->len + len);
+                if (priv->data_size < len + priv->len) {
+                    if (!(priv->data = realloc(priv->data, len + priv->len))) {
+                        return RTP_ERRALLOC;
+                    }
+                priv->data_size = len + priv->len;
+                }
                 memcpy(priv->data + priv->len, buf, len);
                 priv->len += len;
             }
@@ -315,7 +360,8 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 err = EAGAIN;
             } else {
                 fr->data = priv->data;
-                fr->len  = priv->len;
+                fr->len = priv->len;
+                priv->len = 0;
             }
         }
         break;
