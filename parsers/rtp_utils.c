@@ -22,6 +22,7 @@
  * Repository of miscellaneus functions ripped from ffmpeg
  */
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -183,4 +184,26 @@ char *nms_get_attr_value(char *attr, const char *param, int *v_len )
         return value;
     }
     return NULL;
+}
+
+/**
+ * Auxiliar temporary buffer allocation procedures
+ */
+int nms_alloc_data(uint8_t **buf, long *cur_len, long new_len) {
+    if (buf && cur_len && *cur_len < new_len) {
+        if (!(*buf = realloc(*buf, new_len))) {
+            return -1;
+        }
+        *cur_len = new_len;
+    }
+    return 0;
+}
+
+void nms_append_data(uint8_t *dst, long offset, uint8_t *src, long len) {
+    memcpy(dst + offset, src, len);
+}
+
+inline void nms_append_incr(uint8_t *dst, long *offset, uint8_t *src, long len) {
+    nms_append_data(dst, *offset, src, len);
+    *offset += len;
 }
