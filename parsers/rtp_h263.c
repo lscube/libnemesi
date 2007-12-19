@@ -119,14 +119,11 @@ static int h263_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
 
     len -= start;
 
-    if (priv->data_size < len + priv->len) {
-        if (!(priv->data = realloc(priv->data, len + priv->len))) {
-            return RTP_ERRALLOC;
-        }
-        priv->data_size = len + priv->len;
+    if (nms_alloc_data(&priv->data, &priv->data_size, len + priv->len)) {
+        return RTP_ERRALLOC;
     }
+    nms_append_data(priv->data, priv->len, buf + start, len);
 
-    memcpy(priv->data + priv->len, buf + start, len);
     if (p_bit) // p bit - we overwrite the first 2 bytes with zero
         memset(priv->data + priv->len, 0, 2);
 
