@@ -75,7 +75,7 @@ int bpenlarge(buffer_pool * bp)
     int old_size = bp->size;
 
     if (bp->size >= BP_MAX_SIZE)
-        return 0;
+        return 1;
 
     bp->size += BP_SLOT_NUM;
 
@@ -88,5 +88,5 @@ int bpenlarge(buffer_pool * bp)
     bp->flhead = old_size;
 
 
-    return 1;
+    return 0;
 }
