@@ -79,12 +79,14 @@ int bpenlarge(buffer_pool * bp)
 
     bp->size += BP_SLOT_NUM;
 
-    bp->bufferpool = realloc(bp->bufferpool, bp->size*sizeof(bp_slot));
-    bp->freelist = realloc(bp->freelist, bp->size*sizeof(int));
-    
+    bp->bufferpool = realloc(bp->bufferpool, bp->size * sizeof(bp_slot));
+    memset(bp->bufferpool + old_size, 0, (bp->size - old_size) * sizeof(bp_slot));
+    bp->freelist = realloc(bp->freelist, bp->size * sizeof(int));
+
     for(i = old_size; i < bp->size; bp->freelist[i] = i + 1, i++);
-    bp->flhead = old_size;
     bp->freelist[bp->size - 1] = -1;
+    bp->flhead = old_size;
+
 
     return 1;
 }

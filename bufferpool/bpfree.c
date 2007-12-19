@@ -40,6 +40,7 @@ int bpfree(buffer_pool * bp, int index)
     bp->freelist[index] = bp->flhead;
     bp->flhead = index;
     bp->flcount--;
+    memset(bp->bufferpool + index, 0, sizeof(bp_slot));
     pthread_mutex_unlock(&(bp->fl_mutex));
 
     return 0;
