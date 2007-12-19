@@ -88,7 +88,7 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
      */
     fr->time_sec =
         ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
-        (double) stm_src->rtp_sess->ptdefs[pkt->pt]->rate;
+        (double) stm_src->rtp_sess->ptdefs[fr->pt]->rate;
 
     return err;
 }
