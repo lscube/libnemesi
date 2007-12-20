@@ -55,15 +55,15 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
     char *value;
     int i;
+    int len;
 
     if (!priv) return RTP_ERRALLOC;
 
-    //memset(priv, 0, sizeof(rtp_h264));
+    for (i=0; i < attrs->size; i++) {
 
-    for (i=0; i < attrs->size; i++){
-        if ((value = strstr(attrs->data[i], "profile-level-id="))) {
-            value+=17;
-            if ((strstr(value,";")-value)==6){ /*hex string*/}
+        if ((value = nms_get_attr_value(attrs->data[i], "profile-level-id=",
+            &len))) {
+            if (len==6){ /*hex string*/}
         }
         if ((value = strstr(attrs->data[i], "sprop-parameter-sets="))) {
         //shamelessly ripped from ffmpeg
