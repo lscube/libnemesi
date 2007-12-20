@@ -65,6 +65,11 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
             &len))) {
             if (len==6){ /*hex string*/}
         }
+        if ((value = nms_get_attr_value(attrs->data[i], "packetization-mode",
+            &len))) {
+            // We do not support anything else.
+            if (len != 1 && atoi(value) < 2) return RTP_PARSE_ERROR;
+        }
         if ((value = strstr(attrs->data[i], "sprop-parameter-sets="))) {
         //shamelessly ripped from ffmpeg
             uint32_t start_seq = ntohl(1);
