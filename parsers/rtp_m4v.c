@@ -60,10 +60,9 @@ static int m4v_init_parser(rtp_session * rtp_sess, unsigned pt)
     if (!priv)
         return RTP_ERRALLOC;
 
-    for (i=0; i < attrs->size; i++){
-        if ((value = strstr(attrs->data[i], "config="))) {
-            value+=7;
-            if (!((v_len = (strstr(value,";") - value)) % 2) && v_len > 0){
+    for (i=0; i < attrs->size; i++) {
+        if ((value = nms_get_attr_value(attrs->data[i], "config", &v_len))) {
+            if (!(v_len % 2) && v_len > 0) {
                 /*hex string*/
                 *(value + v_len) = '\0';
                 if ((len = nms_hex_decode(buffer, value, sizeof(buffer))) < 0)

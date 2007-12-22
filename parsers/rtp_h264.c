@@ -55,15 +55,24 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
     char *value;
     int i;
+    int len;
 
     if (!priv) return RTP_ERRALLOC;
 
-    //memset(priv, 0, sizeof(rtp_h264));
+    for (i=0; i < attrs->size; i++) {
 
-    for (i=0; i < attrs->size; i++){
-        if ((value = strstr(attrs->data[i], "profile-level-id="))) {
-            value+=17;
-            if ((strstr(value,";")-value)==6){ /*hex string*/}
+        if ((value = nms_get_attr_value(attrs->data[i], "profile-level-id=",
+            &len))) {
+            if (len==6){ /*hex string*/}
+        }
+        if ((value = nms_get_attr_value(attrs->data[i], "packetization-mode",
+            &len))) {
+            // We do not support anything else.
+            if (len != 1 || atoi(value) >= 2) {
+                nms_printf(NMSML_ERR,
+                           "Unsupported H.264 packetization mode %s\n", value);
+                return RTP_PARSE_ERROR;
+            }
         }
         if ((value = strstr(attrs->data[i], "sprop-parameter-sets="))) {
         //shamelessly ripped from ffmpeg
