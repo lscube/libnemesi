@@ -49,12 +49,12 @@ int handle_setup_response(rtsp_thread * rtsp_th)
         return 1;
     }
 
-    while (((tkn = strtok_r(NULL, "\n", &step)) != NULL) && ((tkn - prev_tkn) > 1)) {
+    while (((tkn = strtok_r(NULL, "\n", &step)) != NULL)
+           && ((tkn - prev_tkn) > 1)) {
         if (((tkn - prev_tkn) == 2) && (*prev_tkn == '\r'))
             break;
         prev_tkn = tkn;
 
-        /* get_transport_str calls strtok itself, that's why we need a strtok_r */
         if (!strncasecmp(prev_tkn, "Transport", 9)) {
             prev_tkn += 9;
             get_transport_str(rtsp_med->rtp_sess, prev_tkn);
@@ -68,9 +68,10 @@ int handle_setup_response(rtsp_thread * rtsp_th)
     }
     while ((tkn != NULL)
            && ((*tkn == '\r') || (*tkn == '\n') || (*tkn == '\0')))
-        tkn = strtok_r(NULL, "\n", &step);    /* cerco l'inizio del body o, eventualmente, del prossimo pkt */
+    /* looking for body or next pkt start */
+        tkn = strtok_r(NULL, "\n", &step);
     if (tkn != NULL)
-        tkn[strlen(tkn)] = '\n';    /* rimetto a posto il \n modificato dalla strtok */
+        tkn[strlen(tkn)] = '\n'; /* restore terminator */
 
     remove_pkt(rtsp_th);
     memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
@@ -79,9 +80,10 @@ int handle_setup_response(rtsp_thread * rtsp_th)
 
 int handle_get_response(rtsp_thread * rtsp_th)
 {
-    char *tkn;        /* contains an RTSP description line */
-    char *prev_tkn;        /* addresses first the previous token in order to check the end of RTSP header 
-                   and then the all the components of command line */
+    char *tkn;      /* contains an RTSP description line */
+    char *prev_tkn; /* addresses first the previous token
+                     * in order to check the end of RTSP header 
+                     * and then the all the components of command line */
     int content_length;
     char *content_base = NULL;
 
@@ -130,11 +132,12 @@ int handle_get_response(rtsp_thread * rtsp_th)
                 content_base[strlen(content_base) - 1] = '\0';
         }
     }
+    // XXX refactor
     while ((tkn != NULL)
            && ((*tkn == '\r') || (*tkn == '\n') || (*tkn == '\0')))
-        tkn = strtok(NULL, "\n");    /* cerco l'inizio del body o, eventualmente del prossimo pkt */
+        tkn = strtok(NULL, "\n");
     if (tkn != NULL)
-        tkn[strlen(tkn)] = '\n';    /* rimetto a posto il \n modificato dalla strtok */
+        tkn[strlen(tkn)] = '\n';
     // if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn, description_format) ) {
     if (set_rtsp_sessions(rtsp_th, content_length, content_base, tkn))
         return 1;
@@ -202,7 +205,8 @@ int handle_play_response(rtsp_thread * rtsp_th)
 
 /**
  * Handles any incoming rtsp packet, it is called by the main loop.
- * It then calls the correct handling function depending on the current state of the thread
+ * It then calls the correct handling function depending on the current state
+ * of the thread
  * @param rtsp_th The thread for which to handle the pending packets
  * @return 0 or 1 on invalid or unexpected packet
  */
@@ -211,7 +215,8 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
     char ver[32];
     int opcode;
 
-    if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) && (rtsp_th->in_buffer).data[0] == '$') {
+    if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) 
+        && (rtsp_th->in_buffer).data[0] == '$') {
         nms_rtsp_interleaved *p;
         const uint8_t m = ((rtsp_th->in_buffer).data[1]);
 #define DATA_PTR (&((rtsp_th->in_buffer).data[4]))
@@ -222,12 +227,14 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
         if (p) {
             if (p->proto.tcp.rtcp_ch == m) {
                 nms_printf(NMSML_DBG2,
-                       "Interleaved RTCP data (%u bytes: channel %d -> sd %d)\n",
+                           "Interleaved RTCP data "
+                           "(%u bytes: channel %d -> sd %d)\n",
                        DATA_SIZE, m, p->rtcp_fd);
                 send(p->rtcp_fd, DATA_PTR, DATA_SIZE, 0);
             } else {
                 nms_printf(NMSML_DBG2,
-                       "Interleaved RTP data (%u bytes: channel %d -> sd %d)\n",
+                           "Interleaved RTP data "
+                           "(%u bytes: channel %d -> sd %d)\n",
                        DATA_SIZE, m, p->rtp_fd);
                 send(p->rtp_fd, DATA_PTR, DATA_SIZE, 0);
             }
@@ -237,7 +244,7 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
         return 0; /* received rtp interleaved data handled correctly */
     }
 
-    if (sscanf((rtsp_th->in_buffer).data, "%31s", ver) < 1) {
+    if (sscanf(rtsp_th->in_buffer.data, "%31s", ver) < 1) {
         nms_printf(NMSML_ERR,"Invalid RTSP message received\n");
         return 1;
     }
