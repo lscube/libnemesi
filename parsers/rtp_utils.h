@@ -28,7 +28,7 @@ inline uint32_t nms_consume_BE3(uint8_t ** buff);
 inline uint16_t nms_consume_BE2(uint8_t ** buff);
 
 #define nms_consume_1(buff) *((uint8_t*)(*(buff))++)
-char *nms_get_attr_value(char *attr, const char *param, int *v_len );
+int nms_get_attr_value(char *attr, const char *param, char *v, int v_len );
 
 int nms_alloc_data(uint8_t **buf, long *cur_len, long new_len);
 void nms_append_data(uint8_t *dst, long offset, uint8_t *src, long len);

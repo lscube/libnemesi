@@ -53,7 +53,7 @@ static int m4v_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
     rtp_m4v *priv = calloc(1, sizeof(rtp_m4v));
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
-    char *value;
+    char value[1024];
     uint8_t buffer[1024];
     int i, v_len, len;
 
@@ -61,7 +61,7 @@ static int m4v_init_parser(rtp_session * rtp_sess, unsigned pt)
         return RTP_ERRALLOC;
 
     for (i=0; i < attrs->size; i++) {
-        if ((value = nms_get_attr_value(attrs->data[i], "config", &v_len))) {
+        if ((v_len = nms_get_attr_value(attrs->data[i], "config", value, sizeof(value)))) {
             if (!(v_len % 2) && v_len > 0) {
                 /*hex string*/
                 *(value + v_len) = '\0';
