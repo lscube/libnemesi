@@ -37,7 +37,7 @@ int sdp_set_attr(sdp_attr ** attr_list, char *a)
     new->value = strstr(a,":");
     if (!new->value) {
         free(new);
-        return 1;
+        return 0;
     }
     *new->value++ = '\0';
 
