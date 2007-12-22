@@ -47,7 +47,7 @@ int check_response(rtsp_thread * rtsp_th)
     uint64_t Session_ID = 0;
     int opcode = 0;
 
-    if ((content = strchr((rtsp_th->in_buffer).data, '\n')) == NULL) {
+    if ((content = strchr(rtsp_th->in_buffer.data, '\n')) == NULL) {
         nms_printf(NMSML_ERR,
                "ERROR: CANNOT find end of line in server response.\n");
         return -1;
@@ -129,7 +129,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
         switch (res_state) {
         case RTSP_FOUND:
             if ((prev_tkn =
-                 strtok((rtsp_th->in_buffer).data +
+                 strtok(rtsp_th->in_buffer.data +
                     strlen(status_line) + 1, "\n")) == NULL) {
                 nms_printf(NMSML_ERR,
                        "Could not find \"Location\" so... were I'll redirect you?\n");
@@ -172,7 +172,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
 
 int full_msg_rcvd(rtsp_thread * rtsp_th)
 {
-    struct rtsp_buffer *in_buffer = &(rtsp_th->in_buffer);
+    struct rtsp_buffer *in_buffer = &rtsp_th->in_buffer;
     char *back_n;        /* pointer to newline */
     char *head_end;        /* pointer to header end */
     size_t body_len;    
@@ -285,25 +285,25 @@ int rtsp_recv(rtsp_thread * rtsp_th)
         return n;
     }
     if (rtsp_th->transport.sock.socktype == TCP || (rtsp_th->transport.sock.socktype == SCTP && m==0)) {
-        if (((rtsp_th->in_buffer).size) == 0) {
-            if (((rtsp_th->in_buffer).data = 
+        if ((rtsp_th->in_buffer.size) == 0) {
+            if ((rtsp_th->in_buffer.data = 
                  (char *) calloc(1, n + 1)) == NULL)
                 return nms_printf(NMSML_FATAL,
                   "Cannot alloc memory space for received RTSP data\n");
 
-            memcpy((rtsp_th->in_buffer).data, buffer, n);
+            memcpy(rtsp_th->in_buffer.data, buffer, n);
         } else {
-            if (((rtsp_th->in_buffer).data =
-                 (char *) realloc((rtsp_th->in_buffer).data,
-                n + (rtsp_th->in_buffer).size + 1)) ==
+            if ((rtsp_th->in_buffer.data =
+                 (char *) realloc(rtsp_th->in_buffer.data,
+                n + rtsp_th->in_buffer.size + 1)) ==
                 NULL)
                 return nms_printf(NMSML_FATAL,
                   "Cannot alloc memory space for received RTSP data\n");
 
-            memcpy((rtsp_th->in_buffer).data + (rtsp_th->in_buffer).size, buffer, n);
+            memcpy(rtsp_th->in_buffer.data + rtsp_th->in_buffer.size, buffer, n);
     }
-    (rtsp_th->in_buffer).size += n;
-    (rtsp_th->in_buffer).data[(rtsp_th->in_buffer).size] = '\0';
+    rtsp_th->in_buffer.size += n;
+    rtsp_th->in_buffer.data[rtsp_th->in_buffer.size] = '\0';
     } else /* if (rtsp_th->transport.sock.socktype == SCTP && m!=0) */ {
 #ifdef HAVE_LIBSCTP
         for (p = rtsp_th->interleaved; p && !((p->proto.sctp.rtp_st == m)
