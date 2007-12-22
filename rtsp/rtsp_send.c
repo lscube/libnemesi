@@ -26,11 +26,21 @@
 #include "transport.h"
 #include "cc.h"
 
+static inline int allocate_buffer(char ** b, char * content_base,
+                                     size_t urlname_len) {
+    int len = 256 + (content_base ? max(strlen(content_base), urlname_len):
+                urlname_len);
+    if (!(*b = calloc(1, len))) {
+        return 0;
+    }
+    return len;
+}
+
 int send_get_request(rtsp_thread * rtsp_th)
 {
     char *buf = malloc(strlen(rtsp_th->urlname)+256); //XXX use vla
 
-        if (buf == NULL) return 1;
+    if (buf == NULL) return 1;
 
     /* save the url string for future use in setup request. */
     sprintf(buf, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
@@ -48,46 +58,51 @@ int send_get_request(rtsp_thread * rtsp_th)
     if (!nmst_write(&rtsp_th->transport, buf, strlen(buf), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
         rtsp_th->waiting_for[0] = '\0';
-                free(buf);
+        free(buf);
         return 1;
     }
 
-        free(buf);
+    free(buf);
     return 0;
 }
 
 
 int send_pause_request(rtsp_thread * rtsp_th, char *range)
 {
-    char b[256+strlen(rtsp_th->urlname)];
+    char *b = NULL;
+    int b_size;
     rtsp_session *rtsp_sess;
 
-    // get_curr_sess(NULL, &rtsp_sess, NULL);
     rtsp_sess = get_curr_sess(GCS_CUR_SESS);
+
+    if (!(b_size = allocate_buffer(&b, rtsp_sess->content_base,
+        strlen(rtsp_th->urlname)))) {
+        nms_printf(NMSML_ERR, "Unable to allocate memory for send buffer!\n");
+        return 1;
+    }
 
     if (rtsp_sess->content_base != NULL)
         if (*(rtsp_sess->pathname) != 0)
-            sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
-                PAUSE_TKN, rtsp_sess->content_base,
-                rtsp_sess->pathname, RTSP_VER,
-                ++(rtsp_sess->CSeq));
+            snprintf(b, b_size, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+                PAUSE_TKN, rtsp_sess->content_base, rtsp_sess->pathname,
+                RTSP_VER, ++(rtsp_sess->CSeq));
         else
-            sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+            snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
                 PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
                 ++(rtsp_sess->CSeq));
     else
-        sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
+        snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
             rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 
     if (rtsp_sess->Session_ID != 0)    /* must add session ID? */
-        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
             rtsp_sess->Session_ID);
     if (range && *range)
-        sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
+        snprintf(b + strlen(b), b_size - strlen(b), "Range: %s" RTSP_EL, range);
     else
-        sprintf(b + strlen(b), "Range: time=0-" RTSP_EL);
+        snprintf(b + strlen(b), b_size - strlen(b), "Range: time=0-" RTSP_EL);
 
-    strcat(b, RTSP_EL);
+    strncat(b, RTSP_EL, b_size - 1);
 
     sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PAUSE_RESPONSE,
         rtsp_sess->Session_ID, rtsp_sess->CSeq);
@@ -95,15 +110,18 @@ int send_pause_request(rtsp_thread * rtsp_th, char *range)
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send PAUSE request...\n");
         rtsp_th->waiting_for[0] = '\0';
+        free(b);
         return 1;
     }
 
+    free(b);
     return 0;
 }
 
 int send_play_request(rtsp_thread * rtsp_th, char *range)
 {
-    char b[256+strlen(rtsp_th->urlname)];
+    char *b = NULL;
+    int b_size;
     rtsp_session *rtsp_sess;
     rtsp_medium *rtsp_med;
     cc_perm_mask cc_mask, cc_conflict;
@@ -111,6 +129,12 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
     // get_curr_sess(NULL, &rtsp_sess, NULL);
     if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS)))
         return 1;
+
+    if (!(b_size = allocate_buffer(&b, rtsp_sess->content_base,
+        strlen(rtsp_th->urlname)))) {
+        nms_printf(NMSML_ERR, "Unable to allocate memory for send buffer!\n");
+        return 1;
+    }
 
     // CC License check
 
@@ -128,34 +152,35 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
         nms_printf(NMSML_ERR,
                "You didn't accept some requested conditions of license:\n");
         cc_printmask(cc_conflict);
+        free(b);
         return 1;
     }
     // end of CC part
 
     if (rtsp_sess->content_base != NULL)
         if ((*(rtsp_sess->pathname) != 0) && (*rtsp_sess->pathname != '*'))
-            sprintf(b, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+            snprintf(b, b_size, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
                 PLAY_TKN, rtsp_sess->content_base,
                 rtsp_sess->pathname, RTSP_VER,
                 ++(rtsp_sess->CSeq));
         else
-            sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
+            snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
                 PLAY_TKN, rtsp_sess->content_base, RTSP_VER,
                 ++(rtsp_sess->CSeq));
     else
-        sprintf(b, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN,
+        snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN,
             rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 
     if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
-        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
             rtsp_sess->Session_ID);
 
     if (range && *range)
-        sprintf(b + strlen(b), "Range: %s" RTSP_EL, range);
+        snprintf(b + strlen(b), b_size - strlen(b), "Range: %s" RTSP_EL, range);
     else
-        sprintf(b + strlen(b), "Range: time=0-" RTSP_EL);
+        snprintf(b + strlen(b), b_size - strlen(b), "Range: time=0-" RTSP_EL);
 
-    strcat(b, RTSP_EL);
+    strncat(b, RTSP_EL, b_size - 1);
 
     sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PLAY_RESPONSE,
         rtsp_sess->Session_ID, rtsp_sess->CSeq);
@@ -165,12 +190,14 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send PLAY request...\n");
         rtsp_th->waiting_for[0] = '\0';
+        free(b);
         return 1;
     }
 
+    free(b);
     return 0;
 }
-
+#if 0
 static int server_create(char *host, char *port, int *sock)
 {
     int n;
@@ -212,11 +239,11 @@ static int server_create(char *host, char *port, int *sock)
 
     return res ? 0 : 1;
 }
-
+#endif
 int send_setup_request(rtsp_thread * rtsp_th)
 {
-
-    char b[256 + strlen(rtsp_th->urlname)]; //XXX doublecheck
+    char *b = NULL;
+    int b_size;
     char *options = NULL;
     rtsp_session *rtsp_sess;
     rtsp_medium *rtsp_med;
@@ -226,12 +253,19 @@ int send_setup_request(rtsp_thread * rtsp_th)
     int sock_pair[2];
     unsigned int rnd;
 
-    memset(b, 0, 256 + strlen(rtsp_th->urlname));
-
     // if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
     if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
-        || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
+        || !(rtsp_med = get_curr_sess(GCS_CUR_MED))) {
+        nms_printf(NMSML_ERR,
+            "Unable to locate current session!\n");
         return 1;
+    }
+
+    if (!(b_size = allocate_buffer(&b, rtsp_sess->content_base,
+        strlen(rtsp_th->urlname)))) {
+        nms_printf(NMSML_ERR, "Unable to allocate memory for send buffer!\n");
+        return 1;
+    }
 
     if (!rtsp_th->force_rtp_port) {
         // default behaviour: random port number generation.
@@ -254,11 +288,12 @@ int send_setup_request(rtsp_thread * rtsp_th)
     switch (rtsp_med->rtp_sess->transport.type) {
     case UDP:
 
+#warning Finish port to netembryo!!!
         sprintf(b, "%d", rnd);
-        server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTP.sock.fd));
+        sock_bind(NULL, b, &(rtsp_med->rtp_sess->transport.RTP.sock.fd), UDP);
 
         sprintf(b, "%d", rnd + 1);
-        server_create(NULL, b, &(rtsp_med->rtp_sess->transport.RTCP.sock.fd));
+        sock_bind(NULL, b, &(rtsp_med->rtp_sess->transport.RTCP.sock.fd), UDP);
 
         /* per sapere il numero di porta assegnato */
         /* assigned ports */
@@ -273,7 +308,7 @@ int send_setup_request(rtsp_thread * rtsp_th)
             ntohs(sock_get_port((struct sockaddr *) &rtcpaddr));
 
         if (set_transport_str(rtsp_med->rtp_sess, &options))
-            return 1;
+            goto err_handle;
 
         // next rtp port forces
         if (rtsp_th->force_rtp_port) {
@@ -291,21 +326,21 @@ int send_setup_request(rtsp_thread * rtsp_th)
             (rtsp_th->next_ilvd_ch)++;
 
         if (set_transport_str(rtsp_med->rtp_sess, &options))
-            return 1;
+            goto err_handle;
 
         if (!(p = calloc(1, sizeof(nms_rtsp_interleaved)))) {
             nms_printf(NMSML_ERR,
                    "Unable to allocate memory for interleaved struct!\n");
-            return 1;
+            goto err_handle;
         }
         p->proto.tcp.rtp_ch = rtsp_med->rtp_sess->transport.RTP.u.tcp.ilvd;
         p->proto.tcp.rtcp_ch = rtsp_med->rtp_sess->transport.RTCP.u.tcp.ilvd;
-        
+
         if (socketpair(PF_UNIX, SOCK_DGRAM, 0, sock_pair) < 0) {
             nms_printf(NMSML_ERR,
                    "Unable to allocate memory for interleaved struct!\n");
             free(p);
-            return 1;
+            goto err_handle;
         }
         rtsp_med->rtp_sess->transport.RTP.sock.fd = sock_pair[0];
         p->rtp_fd = sock_pair[1];
@@ -316,7 +351,7 @@ int send_setup_request(rtsp_thread * rtsp_th)
             close(rtsp_med->rtp_sess->transport.RTP.sock.fd);
             close(p->rtp_fd);
             free(p);
-            return 1;
+            goto err_handle;
         }
         rtsp_med->rtp_sess->transport.RTCP.sock.fd = sock_pair[0];
         p->rtcp_fd = sock_pair[1];
@@ -339,12 +374,12 @@ int send_setup_request(rtsp_thread * rtsp_th)
             ++(rtsp_th->next_ilvd_ch);
 
         if (set_transport_str(rtsp_med->rtp_sess, &options))
-            return 1;
+            goto err_handle;
 
         if (!(p = calloc(1, sizeof(nms_rtsp_interleaved)))) {
             nms_printf(NMSML_ERR,
                    "Unable to allocate memory for interleaved struct!\n");
-            return 1;
+            goto err_handle;
         }
         p->proto.sctp.rtp_st = rtsp_med->rtp_sess->transport.RTP.u.sctp.stream;
         p->proto.sctp.rtcp_st = rtsp_med->rtp_sess->transport.RTCP.u.sctp.stream;
@@ -353,7 +388,7 @@ int send_setup_request(rtsp_thread * rtsp_th)
             nms_printf(NMSML_ERR,
                    "Unable to allocate memory for interleaved struct!\n");
             free(p);
-            return 1;
+            goto err_handle;
         }
         rtsp_med->rtp_sess->transport.RTP.sock.fd = sock_pair[0];
         p->rtp_fd = sock_pair[1];
@@ -364,7 +399,7 @@ int send_setup_request(rtsp_thread * rtsp_th)
             close(rtsp_med->rtp_sess->transport.RTP.sock.fd);
             close(p->rtp_fd);
             free(p);
-            return 1;
+            goto err_handle;
         }
         rtsp_med->rtp_sess->transport.RTCP.sock.fd = sock_pair[0];
         p->rtcp_fd = sock_pair[1];
@@ -374,23 +409,24 @@ int send_setup_request(rtsp_thread * rtsp_th)
 
         break;
     default:
-        return 1;
+        goto err_handle;
     }
 
     if (rtsp_sess->content_base != NULL)
-        sprintf(b, "%s %s/%s %s" RTSP_EL, SETUP_TKN,
+        snprintf(b, b_size, "%s %s/%s %s" RTSP_EL, SETUP_TKN,
             rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
     else
-        sprintf(b, "%s %s %s" RTSP_EL, SETUP_TKN, rtsp_med->filename,
+        snprintf(b, b_size, "%s %s %s" RTSP_EL, SETUP_TKN, rtsp_med->filename,
             RTSP_VER);
-    sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
-    sprintf(b + strlen(b), "Transport: %s" RTSP_EL, options);
+    snprintf(b + strlen(b), b_size - strlen(b), "CSeq: %d" RTSP_EL,
+        ++(rtsp_sess->CSeq));
+    snprintf(b + strlen(b), b_size - strlen(b), "Transport: %s" RTSP_EL, options);
 
     if (rtsp_sess->Session_ID)    //Caso di controllo aggregato: � gi� stato definito un numero per la sessione corrente.
-        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
         rtsp_sess->Session_ID);
 
-    strcat(b, RTSP_EL);
+    strncat(b, RTSP_EL, b_size - 1);
 
     sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE,
         rtsp_sess->CSeq);
@@ -399,45 +435,54 @@ int send_setup_request(rtsp_thread * rtsp_th)
 
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send SETUP request...\n");
-        free(options);
         rtsp_th->waiting_for[0] = '\0';
-        return 1;
+        goto err_handle;
     }
 
 
 
-
+    free(b);
     free(options);
-
     return 0;
+
+err_handle:
+    if (b) free(b);
+    if (options) free(options);
+    return 1;
 }
 
 int send_teardown_request(rtsp_thread * rtsp_th)
 {
 
-    char b[256 + strlen(rtsp_th->urlname)];
+    char *b = NULL;
+    int b_size;
     rtsp_session *rtsp_sess;
     rtsp_medium *rtsp_med;
-
-    memset(b, 0, 256 + strlen(rtsp_th->urlname));
 
     // if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
     if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
         || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
         return 1;
 
+    if (!(b_size = allocate_buffer(&b, rtsp_sess->content_base,
+        strlen(rtsp_th->urlname)))) {
+        nms_printf(NMSML_ERR, "Unable to allocate memory for send buffer!\n");
+        return 1;
+    }
+
     if (rtsp_sess->content_base != NULL)
-        sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN,
+        snprintf(b, b_size, "%s %s %s" RTSP_EL, CLOSE_TKN,
             rtsp_sess->content_base, RTSP_VER);
     else
-        sprintf(b, "%s %s %s" RTSP_EL, CLOSE_TKN, rtsp_med->filename,
+        snprintf(b, b_size, "%s %s %s" RTSP_EL, CLOSE_TKN, rtsp_med->filename,
             RTSP_VER);
 
-    sprintf(b + strlen(b), "CSeq: %d" RTSP_EL, ++(rtsp_sess->CSeq));
+    snprintf(b + strlen(b), b_size - strlen(b), "CSeq: %d" RTSP_EL,
+             ++(rtsp_sess->CSeq));
     if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
-        sprintf(b + strlen(b), "Session: %"SCNu64 RTSP_EL,
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
             rtsp_sess->Session_ID);
-    strcat(b, RTSP_EL);
+    strncat(b, RTSP_EL, b_size - 1);
 
     sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_CLOSE_RESPONSE,
         rtsp_sess->Session_ID, rtsp_sess->CSeq);
@@ -445,11 +490,10 @@ int send_teardown_request(rtsp_thread * rtsp_th)
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
         rtsp_th->waiting_for[0] = '\0';
+        free(b);
         return 1;
     }
 
-
+    free(b);
     return 0;
 }
-
-
