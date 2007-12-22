@@ -37,9 +37,9 @@ int handle_setup_response(rtsp_thread * rtsp_th)
         || !(rtsp_med = get_curr_sess(GCS_CUR_MED)))
         return 1;
 
-    nms_printf(NMSML_DBG2, "Got SETUP reply: %s\n", (rtsp_th->in_buffer).data);
+    nms_printf(NMSML_DBG2, "Got SETUP reply: %s\n", rtsp_th->in_buffer.data);
 
-    if ((prev_tkn = strtok_r((rtsp_th->in_buffer).data, "\n", &step)) == NULL) {
+    if ((prev_tkn = strtok_r(rtsp_th->in_buffer.data, "\n", &step)) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-SETUP response\n");
         return 1;
     }
@@ -87,7 +87,7 @@ int handle_get_response(rtsp_thread * rtsp_th)
     int content_length;
     char *content_base = NULL;
 
-    if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
+    if ((prev_tkn = strtok(rtsp_th->in_buffer.data, "\n")) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-DESCRIBE response\n");
         return 1;
     }
@@ -150,7 +150,7 @@ int handle_teardown_response(rtsp_thread * rtsp_th)
 {
     char *prev_tkn;
 
-    if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
+    if ((prev_tkn = strtok(rtsp_th->in_buffer.data, "\n")) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-TEARDOWN response\n");
         return 1;
     }
@@ -170,7 +170,7 @@ int handle_pause_response(rtsp_thread * rtsp_th)
 {
     char *prev_tkn;
 
-    if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
+    if ((prev_tkn = strtok(rtsp_th->in_buffer.data, "\n")) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-PAUSE response\n");
         return 1;
     }
@@ -188,7 +188,7 @@ int handle_play_response(rtsp_thread * rtsp_th)
 {
     char *prev_tkn;
 
-    if ((prev_tkn = strtok((rtsp_th->in_buffer).data, "\n")) == NULL) {
+    if ((prev_tkn = strtok(rtsp_th->in_buffer.data, "\n")) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-PLAY response\n");
         return 1;
     }
@@ -216,11 +216,11 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
     int opcode;
 
     if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) 
-        && (rtsp_th->in_buffer).data[0] == '$') {
+        && rtsp_th->in_buffer.data[0] == '$') {
         nms_rtsp_interleaved *p;
-        const uint8_t m = ((rtsp_th->in_buffer).data[1]);
-#define DATA_PTR (&((rtsp_th->in_buffer).data[4]))
-#define DATA_SIZE ((rtsp_th->in_buffer).first_pkt_size - 4)
+        const uint8_t m = (rtsp_th->in_buffer.data[1]);
+#define DATA_PTR (&(rtsp_th->in_buffer.data[4]))
+#define DATA_SIZE (rtsp_th->in_buffer.first_pkt_size - 4)
 
         for (p = rtsp_th->interleaved; p && !((p->proto.tcp.rtp_ch == m)
             || (p->proto.tcp.rtcp_ch == m)); p = p->next);
