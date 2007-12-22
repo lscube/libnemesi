@@ -241,7 +241,7 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
         nms_printf(NMSML_ERR,"Invalid RTSP message received\n");
         return 1;
     }
-    if (strncmp(ver, "RTSP", 4) && strncmp(ver, "rtsp", 4)) {
+    if (strncmp(ver, "RTSP/1.0", 8) && strncmp(ver, "rtsp/1.0", 8)) {
         nms_printf(NMSML_ERR,"Invalid RTSP message received\n");
         return 1;
     }
