@@ -36,14 +36,14 @@
 sdp_session_info *sdp_session_setup(char *descr, int descr_len)
 {
     sdp_session_info *new;
-    char *tkn = NULL;
+    char *tkn = NULL, *step;
     char error = 0;        // error flag
 
     // we use calloc, so it's all already initialized to NULL
     if (!(new = (sdp_session_info *) calloc(1, sizeof(sdp_session_info))))
         return NULL;
 
-    tkn = strtok(descr, "\r\n");
+    tkn = strtok_r(descr, "\r\n", &step);
 
     do {
         if (tkn == NULL) {
@@ -114,7 +114,7 @@ sdp_session_info *sdp_session_setup(char *descr, int descr_len)
             }
             break;
         }
-    } while ( (tkn = strtok(NULL, "\r\n")) );
+    } while ( (tkn = strtok_r(NULL, "\r\n", &step)) );
 
     if (error) {        // there was an error?
         sdp_session_destroy(new);

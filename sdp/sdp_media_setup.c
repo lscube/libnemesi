@@ -35,13 +35,13 @@
 sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
 {
     sdp_medium_info *queue = NULL, *curr_sdp_m = NULL;
-    char *tkn = NULL;
+    char *tkn = NULL, *step;
     char error = 0;        // error flag
     // for cc tagging
     int pt;
     char *endtkn = NULL;
 
-    tkn = strtok(*descr, "\r\n");
+    tkn = strtok_r(*descr, "\r\n", &step);
 
     do {
         if (tkn == NULL) {
@@ -107,7 +107,7 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len)
             tkn += strlen(tkn);
             break;
         }
-    } while ( (tkn = strtok(NULL, "\r\n")) );
+    } while ( (tkn = strtok_r(NULL, "\r\n", &step)) );
 
     *descr += descr_len;
 
