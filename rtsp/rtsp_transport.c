@@ -24,7 +24,7 @@
 #include "utils.h"
 
 #if HAVE_LIBSCTP
-int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
+static int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb, char ** tokptr) {
     char str[256];
     uint16_t stream;
     do {
@@ -33,9 +33,13 @@ int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-');
                  tknb++);
 
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb - tkna] = '\0';
-            if ((stream = atoi(str)) > MAX_SCTP_STREAMS) {
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            if ((stream = atoi(str)) >= MAX_SCTP_STREAMS) {
                 nms_printf(NMSML_ERR,
                        "SCTP stream too high!\n");
                 return 1;
@@ -47,9 +51,14 @@ int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tkna = tknb; (*tkna != '\0') && (*tkna != '\r')
                  && (*tkna != '\n'); tkna++);
-            strncpy(str, tknb, tkna - tknb);
-            str[tkna++ - tknb] = '\0';
-            if ((stream = atoi(str)) > MAX_SCTP_STREAMS) {
+            strncpy(str, tknb, sizeof(str));
+            if (sizeof(str) <= tkna - tknb) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tkna - tknb] = '\0';
+            }
+            tkna++;
+            if ((stream = atoi(str)) >= MAX_SCTP_STREAMS) {
                 nms_printf(NMSML_ERR,
                        "SCTP stream too high!\n");
                 return 1;
@@ -66,33 +75,40 @@ int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
                  && (*tknb != '\n'); tknb++);
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb++ - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            tknb++;
 
             ssrc = strtoul(str, NULL, 16);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 
             continue;
         }
-    } while ((tknb = strtok(NULL, ";")));
+    } while ((tknb = strtok_r(NULL, ";", tokptr)));
     return 0;
 }
 #endif
 
-
-int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
+static int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb, char ** tokptr) {
     char str[256];
     int value;
     uint8_t ilvd;
     do {
         if ((tkna = strstrcase(tknb, "interleaved"))) {
-            
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
             for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-');
                  tknb++);
 
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
             if ((value = atoi(str)) > 255) {
                 nms_printf(NMSML_ERR,
                        "Interleaved channel too high!\n");
@@ -106,8 +122,13 @@ int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tkna = tknb; (*tkna != '\0') && (*tkna != '\r')
                  && (*tkna != '\n'); tkna++);
-            strncpy(str, tknb, tkna - tknb);
-            str[tkna++ - tknb] = '\0';
+            strncpy(str, tknb, sizeof(str));
+            if (sizeof(str) <= tkna - tknb) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tkna - tknb] = '\0';
+            }
+            tkna++;
             if ((value = atoi(str)) > 255) {
                 nms_printf(NMSML_ERR,
                        "Interleaved channel too high!\n");
@@ -126,19 +147,24 @@ int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
                  && (*tknb != '\n'); tknb++);
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb++ - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            tknb++;
 
             ssrc = strtoul(str, NULL, 16);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
 
             continue;
         }
-    } while ((tknb = strtok(NULL, ";")));
+    } while ((tknb = strtok_r(NULL, ";", tokptr)));
     return 0;
 }
 
-int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
+static int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb, char ** tokptr) {
     char str[256];
     in_port_t port;
     do {
@@ -150,8 +176,12 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-');
                  tknb++);
 
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
             port = atoi(str);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTP,
                       &port);
@@ -160,8 +190,13 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tkna = tknb; (*tkna != '\0') && (*tkna != '\r')
                  && (*tkna != '\n'); tkna++);
-            strncpy(str, tknb, tkna - tknb);
-            str[tkna++ - tknb] = '\0';
+            strncpy(str, tknb, sizeof(str));
+            if (sizeof(str) <= tkna - tknb) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tkna - tknb] = '\0';
+            }
+            tkna++;
             port = atoi(str);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SRVRTCP,
                       &port);
@@ -173,8 +208,13 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
                  && (*tknb != '\n'); tknb++);
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb++ - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            tknb++;
 
             if (rtp_transport_set
                 (rtp_sess, RTP_TRANSPORT_SRCADDRSTR, str)) {
@@ -189,8 +229,13 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
                  && (*tknb != '\n'); tknb++);
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb++ - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            tknb++;
 
             if (rtp_transport_set
                 (rtp_sess, RTP_TRANSPORT_DSTADDRSTR, str)) {
@@ -207,8 +252,13 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
                  && (*tknb != '\n'); tknb++);
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb++ - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            tknb++;
 
             ssrc = strtoul(str, NULL, 16);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_SSRC, &ssrc);
@@ -222,8 +272,13 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
                  && (*tknb != '\n'); tknb++);
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb++ - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            tknb++;
 
             ttl = atoi(str);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_TTL, &ttl);
@@ -237,8 +292,13 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
                  && (*tknb != '\n'); tknb++);
-            strncpy(str, tkna, tknb - tkna);
-            str[tknb++ - tkna] = '\0';
+            strncpy(str, tkna, sizeof(str));
+            if (sizeof(str) <= tknb - tkna) {
+                str[sizeof(str) - 1] = '\0';
+            } else {
+                str[tknb - tkna] = '\0';
+            }
+            tknb++;
 
             layers = atoi(str);
             rtp_transport_set(rtp_sess, RTP_TRANSPORT_LAYERS,
@@ -247,13 +307,13 @@ int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tknb) {
             continue;
         }
 
-    } while ((tknb = strtok(NULL, ";"))); 
+    } while ((tknb = strtok_r(NULL, ";", tokptr)));
     return 0;
 }
 
 int get_transport_str(rtp_session * rtp_sess, char *buff)
 {
-    char str[256];
+    char str[256], *tokptr = NULL;
     char *tkna = str, *tknb = str;
     int n = 1;
     // char addr[128];              /* Unix domain is largest */
@@ -271,19 +331,19 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
     else
         return n;
 
-    for (tknb = strtok(buff, ";"); (*tknb == ' ') || (*tknb == ':');
+    for (tknb = strtok_r(buff, ";", &tokptr); (*tknb == ' ') || (*tknb == ':');
          tknb++);
 
     switch (rtp_sess->transport.type) {
     case UDP:
-        n = get_transport_str_udp(rtp_sess, tkna, tknb);
+        n = get_transport_str_udp(rtp_sess, tkna, tknb, &tokptr);
         break;
     case TCP:
-        n = get_transport_str_tcp(rtp_sess, tkna, tknb);
+        n = get_transport_str_tcp(rtp_sess, tkna, tknb, &tokptr);
         break;
     case SCTP:
 #ifdef HAVE_LIBSCTP
-        n = get_transport_str_sctp(rtp_sess, tkna, tknb);
+        n = get_transport_str_sctp(rtp_sess, tkna, tknb, &tokptr);
 #endif
         break;
     default:
@@ -295,7 +355,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
 
 #if HAVE_LIBSCTP
-int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
+static int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
 {
     uint16_t streams[2];
 
@@ -308,7 +368,7 @@ int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
 }
 #endif
 
-int set_transport_str_udp(rtp_session * rtp_sess, char *buff)
+static int set_transport_str_udp(rtp_session * rtp_sess, char *buff)
 {
     //char addr[128];        /* Unix domain is largest */
     in_port_t ports[2];
@@ -340,7 +400,7 @@ int set_transport_str_udp(rtp_session * rtp_sess, char *buff)
     return 0;
 }
 
-int set_transport_str_tcp(rtp_session * rtp_sess, char *buff)
+static int set_transport_str_tcp(rtp_session * rtp_sess, char *buff)
 {
     uint8_t ilvds[2];
 
