@@ -35,7 +35,7 @@
  */
 int cc_parse_urilicense(char *uri, cc_perm_mask * mask)
 {
-    char *tkn, *permstr;
+    char *tkn, *permstr, *step;
     unsigned int i;
 
     memset(mask, 0, sizeof(*mask));
@@ -70,7 +70,9 @@ int cc_parse_urilicense(char *uri, cc_perm_mask * mask)
 
     if (!mask->spec_license)
         // Search for CC atributes
-        for (tkn = strtok(permstr, "-"); tkn; tkn = strtok(NULL, "-")) {
+        for (tkn = strtok_r(permstr, "-", &step);
+             tkn;
+             tkn = strtok_r(NULL, "-", &step)) {
             // while(tkn) {
             if (!strcasecmp(tkn, cc_by.urltkn))
                 mask->by = 1;
