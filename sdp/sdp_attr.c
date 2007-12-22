@@ -35,6 +35,10 @@ int sdp_set_attr(sdp_attr ** attr_list, char *a)
 
     new->name = a;
     new->value = strstr(a,":");
+    if (!new->value) {
+        free(new);
+        return 1;
+    }
     *new->value++ = '\0';
 
     for (i = attr_list; *i; i = &((*i)->next)); // search for the tail of queue

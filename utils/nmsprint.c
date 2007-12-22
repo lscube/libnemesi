@@ -147,14 +147,14 @@ int nms_status_printf_default(int cmd, const char *fmt, ...)
     case BUFFERS_STATUS:
         if (verbosity >= BUFFERS_STATUS_VERBOSITY) {
             va_start(args, fmt);
-            ret = vsprintf(buffers, fmt, args);
+            ret = vsnprintf(buffers, sizeof(buffers), fmt, args);
             va_end(args);
         }
         break;
     case ELAPSED_STATUS:
         if (verbosity >= ELAPSED_STATUS_VERBOSITY) {
             va_start(args, fmt);
-            ret = vsprintf(elapsed, fmt, args);
+            ret = vsnprintf(elapsed, sizeof(elapsed), fmt, args);
             va_end(args);
         }
         break;

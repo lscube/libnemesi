@@ -79,14 +79,14 @@ rtp_ssrc *rtp_next_active_ssrc(rtp_ssrc * ssrc)
 static int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t port)
 {
     char addr[128];        /* Unix domain is largest */
-    char port_str[256];
+    char port_str[16];
     struct sockaddr_storage rtcp_to_addr_s;
     nms_sockaddr rtcp_to_addr =
         { (struct sockaddr *) &rtcp_to_addr_s, sizeof(rtcp_to_addr_s) };
 
     if (port > 0)
-        // sprintf(port_str,"%d", ntohs(port));
-        sprintf(port_str, "%d", port);
+        // snprintf(port_str, sizeof(port_str),"%d", ntohs(port));
+        snprintf(port_str, sizeof(port_str), "%d", port);
     else
         return nms_printf(NMSML_ERR,
                   "RTCP: Cannot connect to port (%d)\n", port);
@@ -99,7 +99,7 @@ static int rtcp_to_connect(rtp_ssrc * stm_src, nms_addr * remoteaddr, in_port_t 
     } else
         nms_printf(NMSML_DBG2, "RTCP to host=%s\n", addr);
 
-    /*if (server_connect(addr, port_str, &(stm_src->rtp_sess->transport.RTCP.fd), UDP)) {
+    /*if (sock_connect(addr, port_str, &(stm_src->rtp_sess->transport.RTCP.fd), UDP)) {
         nms_printf(NMSML_WARN,
                "Cannot connect to remote RTCP destination %s:%s\n",
                addr, port_str);
