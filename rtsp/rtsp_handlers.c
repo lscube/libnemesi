@@ -237,7 +237,7 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
         return 0; /* received rtp interleaved data handled correctly */
     }
 
-    if (sscanf((rtsp_th->in_buffer).data, "%s ", ver) < 1) {
+    if (sscanf((rtsp_th->in_buffer).data, "%31s", ver) < 1) {
         nms_printf(NMSML_ERR,"Invalid RTSP message received\n");
         return 1;
     }

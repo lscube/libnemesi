@@ -111,7 +111,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
     // string tokenizers
     char *tkn, *prev_tkn;
 
-    if (sscanf(status_line, "%s %hu ", ver, &res_state) < 2) {
+    if (sscanf(status_line, "%31s %hu ", ver, &res_state) < 2) {
         nms_printf(NMSML_ERR,
                "invalid Status-Line in DESCRIBE Response\n");
         return -1;
