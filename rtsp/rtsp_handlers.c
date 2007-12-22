@@ -25,9 +25,9 @@
 
 int handle_setup_response(rtsp_thread * rtsp_th)
 {
-    char *step; /* strtok_r status */
-    char *tkn;        /* currently parsed token */
-    char *prev_tkn;        /* last parsed token */
+    char *step = NULL; /* strtok_r status */
+    char *tkn;         /* currently parsed token */
+    char *prev_tkn;    /* last parsed token */
 
     rtsp_session *rtsp_sess;
     rtsp_medium *rtsp_med;

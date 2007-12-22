@@ -289,17 +289,7 @@ rtsp_medium *rtsp_med_create(rtsp_thread *);
  * @{ 
  */
 int set_transport_str(rtp_session *, char **);
-int set_transport_str_udp(rtp_session *, char *);
-int set_transport_str_tcp(rtp_session *, char *);
-#ifdef HAVE_LIBSCTP
-int set_transport_str_sctp(rtp_session *, char *);
-#endif
 int get_transport_str(rtp_session *, char *);
-int get_transport_str_udp(rtp_session *, char *, char *);
-int get_transport_str_tcp(rtp_session *, char *, char *);
-#ifdef HAVE_LIBSCTP
-int get_transport_str_sctp(rtp_session *, char *, char *);
-#endif
 /**
  * @}
  */
