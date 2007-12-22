@@ -345,7 +345,7 @@ inline int rtsp_is_busy(rtsp_ctrl * rtsp_ctl)
 {
     return rtsp_ctl->busy;
 }
-
+#if 0
 /**
  * Support function for rtsp_open that connects to the given host and port and gives a new file descriptor
  * @param server string with the server address.
@@ -455,7 +455,7 @@ static int server_connect(char *host, char *port, int *sock, sock_type sock_type
 
     return 0;
 }
-
+#endif
 static int seturlname(rtsp_thread * rtsp_th, char *urlname)
 {
     char *server = NULL, *port = NULL, *path = NULL;
@@ -520,7 +520,8 @@ int rtsp_open(rtsp_ctrl * rtsp_ctl, char *urlname)
         goto quit_function;
 
     urltokenize(rtsp_th->urlname, &server, NULL, NULL);
-    if (server_connect
+#warning Finish port to netembryo
+    if (sock_connect
         (server, rtsp_th->server_port, &rtsp_th->transport.sock.fd, rtsp_th->transport.sock.socktype)) {
         rtsp_th->transport.sock.fd = -1;
         nms_printf(NMSML_ERR, "Cannot connect to the server\n");
