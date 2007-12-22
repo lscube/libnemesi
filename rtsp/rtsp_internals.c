@@ -109,7 +109,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
     char *reason_phrase;
     char *location = NULL;
     // string tokenizers
-    char *tkn, *prev_tkn;
+    char *tkn, *prev_tkn, *step;
 
     if (sscanf(status_line, "%31s %hu ", ver, &res_state) < 2) {
         nms_printf(NMSML_ERR,
@@ -129,13 +129,13 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
         switch (res_state) {
         case RTSP_FOUND:
             if ((prev_tkn =
-                 strtok(rtsp_th->in_buffer.data +
-                    strlen(status_line) + 1, "\n")) == NULL) {
+                 strtok_r(rtsp_th->in_buffer.data +
+                          strlen(status_line) + 1, "\n", &step)) == NULL) {
                 nms_printf(NMSML_ERR,
                        "Could not find \"Location\" so... were I'll redirect you?\n");
                 return -1;
             }
-            while (((tkn = strtok(NULL, "\n")) != NULL)
+            while (((tkn = strtok_r(NULL, "\n", &step)) != NULL)
                    && ((tkn - prev_tkn) > 1)) {
                 if (((tkn - prev_tkn) == 2)
                     && (*prev_tkn == '\r'))
