@@ -66,7 +66,7 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
     rtp_aac *priv = calloc(1, sizeof(rtp_aac));
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
-    char *value;
+    char value[1024];
     uint8_t buffer[1024];
     int i, v_len, len, err = RTP_ERRALLOC;
 
@@ -74,7 +74,8 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
         return RTP_ERRALLOC;
 
     for (i=0; i < attrs->size; i++){
-        if ((value = nms_get_attr_value(attrs->data[i], "config", &v_len))) {
+        if ((v_len = nms_get_attr_value(attrs->data[i], "config", value,
+                sizeof(value)))) {
             if (!(v_len % 2) && v_len > 0) {
                 if ((len = nms_hex_decode(buffer, value, sizeof(buffer))) < 0)
                     goto err_alloc;
@@ -84,7 +85,8 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
                 priv->conf_len += len;
             }
         }
-        if ((value = nms_get_attr_value(attrs->data[i], "mode", &v_len))) {
+        if ((v_len = nms_get_attr_value(attrs->data[i], "mode", value,
+                sizeof(value)))) {
             if (strcmp(value,"AAC-hbr")) {
                 nms_printf(NMSML_ERR, "Mode %s not supported\n",
                            value);
@@ -92,8 +94,8 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
                 goto err_alloc;
             }
         }
-        if ((value = nms_get_attr_value(attrs->data[i], "sizeLength",
-                &v_len))) {
+        if ((v_len = nms_get_attr_value(attrs->data[i], "sizeLength",
+                value, sizeof(value)))) {
             if ((priv->size_len = strtol(value, NULL, 0)) != 13) {
                 nms_printf(NMSML_ERR, "Size Length %d not supported\n",
                            priv->size_len);
@@ -101,8 +103,8 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
                 goto err_alloc;
             }
         }
-        if ((value = nms_get_attr_value(attrs->data[i], "indexLength",
-                &v_len))) {
+        if ((v_len = nms_get_attr_value(attrs->data[i], "indexLength",
+                value, sizeof(value)))) {
             if ((priv->index_len = strtol(value, NULL, 0)) != 3) {
                 nms_printf(NMSML_ERR, "Index Length %d not supported\n",
                            priv->index_len);
@@ -110,8 +112,8 @@ static int aac_init_parser(rtp_session * rtp_sess, unsigned pt)
                 goto err_alloc;
             }
         }
-        if ((value = nms_get_attr_value(attrs->data[i], "indexDeltaLength",
-                &v_len))) {
+        if ((v_len = nms_get_attr_value(attrs->data[i], "indexDeltaLength",
+                value, sizeof(value)))) {
             if ((priv->delta_len = strtol(value, NULL, 0)) != 3) {
                 nms_printf(NMSML_ERR, "Index Delta Length %d not supported\n",
                            priv->index_len);

@@ -53,7 +53,7 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
     rtp_h264 *priv = calloc(1, sizeof(rtp_h264));
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
-    char *value;
+    char value[1024];
     int i;
     int len;
 
@@ -61,12 +61,12 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
 
     for (i=0; i < attrs->size; i++) {
 
-        if ((value = nms_get_attr_value(attrs->data[i], "profile-level-id=",
-            &len))) {
+        if ((len = nms_get_attr_value(attrs->data[i], "profile-level-id",
+            value, sizeof(value)))) {
             if (len==6){ /*hex string*/}
         }
-        if ((value = nms_get_attr_value(attrs->data[i], "packetization-mode",
-            &len))) {
+        if ((len = nms_get_attr_value(attrs->data[i], "packetization-mode",
+            value, sizeof(value)))) {
             // We do not support anything else.
             if (len != 1 || atoi(value) >= 2) {
                 nms_printf(NMSML_ERR,
@@ -74,26 +74,27 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
                 return RTP_PARSE_ERROR;
             }
         }
-        if ((value = strstr(attrs->data[i], "sprop-parameter-sets="))) {
+        if ((len = nms_get_attr_value(attrs->data[i], "sprop-parameter-sets",
+            value, sizeof(value)))) {
         //shamelessly ripped from ffmpeg
-            uint32_t start_seq = ntohl(1);
+            uint8_t start_seq[4] = {0, 0, 0, 1};
+            char *v = value;
             priv->conf_len = 0;
             priv->conf = NULL;
-            value+=21;
-            while (*value) {
+            while (*v) {
                 char base64packet[1024];
                 uint8_t decoded_packet[1024];
                 unsigned packet_size;
                 char *dst = base64packet;
 
-                while (*value && *value != ','
+                while (*v && *v != ','
                        && (dst - base64packet) < sizeof(base64packet) - 1) {
-                    *dst++ = *value++;
+                    *dst++ = *v++;
                 }
                 *dst++ = '\0';
 
-                if (*value == ',')
-                    value++;
+                if (*v == ',')
+                    v++;
 
                 packet_size = nms_base64_decode(decoded_packet,
                                                 base64packet,
@@ -108,7 +109,7 @@ static int h264_init_parser(rtp_session * rtp_sess, unsigned pt)
                             free(priv->conf);
                         }
 
-                        memcpy(dest+priv->conf_len, &start_seq,
+                        memcpy(dest+priv->conf_len, start_seq,
                                sizeof(start_seq));
                         memcpy(dest + priv->conf_len +  sizeof(start_seq),
                                decoded_packet, packet_size);
@@ -203,7 +204,6 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
         priv->len = 0;
         break;
     case 24:    // STAP-A (aggregate, output as whole or split it?)
-        nms_printf (NMSML_WARN,"STAP-A - len: %u \n", len);
         #if 0
         {
             size_t frame_len;
@@ -259,9 +259,6 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                                             sizeof(start_seq));
                             nms_append_incr(priv->data, &priv->len, src,
                                             nal_size);
-                            nms_printf(NMSML_WARN,
-                                       "NAL: %d - size %d \n",
-                                       *src & 0x1f, nal_size);
                         }
                     } else {
                         nms_printf(NMSML_ERR,
@@ -279,7 +276,6 @@ static int h264_parse(rtp_ssrc * ssrc, rtp_frame * fr, rtp_buff * config)
                 } while (src_len > 2);  // because there could be rtp padding..
 
                 if(pass==0) {
-                    nms_printf (NMSML_WARN,"STAP-A - tot: %d \n", total_length);
                     if(nms_alloc_data(&priv->data, &priv->data_size,
                                       total_length + priv->len)) {
                         return RTP_ERRALLOC;

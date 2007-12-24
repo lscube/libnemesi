@@ -243,7 +243,7 @@ static int theora_init_parser(rtp_session * rtp_sess, unsigned pt)
 {
     rtp_theora *priv = calloc(1, sizeof(rtp_theora));
     rtp_pt_attrs *attrs = &rtp_sess->ptdefs[pt]->attrs;
-    char *value;
+    char value[65536];
     int i, err = -1;
     int len;
 
@@ -254,8 +254,8 @@ static int theora_init_parser(rtp_session * rtp_sess, unsigned pt)
 
 // parse the sdp to get the first configuration
     for (i=0; i < attrs->size; i++) {
-        if ((value = nms_get_attr_value(attrs->data[i], "configuration",
-             &len))) {
+        if ((len = nms_get_attr_value(attrs->data[i], "configuration",
+             value, sizeof(value)))) {
             err = unpack_config(priv, value, len);
         }
         // other ways are disregarded for now.

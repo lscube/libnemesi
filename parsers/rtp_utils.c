@@ -166,24 +166,24 @@ uint16_t nms_consume_BE2(uint8_t ** buff)
  * returns the pointer to the value and its size
  */
 
-char *nms_get_attr_value(char *attr, const char *param, int *v_len )
+int nms_get_attr_value(char *attr, const char *param, char *v, int v_len )
 {
     char *value, *tmp;
-    int trash;
-    if (!v_len)
-        v_len = &trash;
+    int len;
     if ((value = strstr(attr, param)) &&
         (*(value += strlen(param)) == '=')) {
             value++;
-            if ((tmp = strstr(value,";"))) {
-                *v_len = tmp - value;
-                value[*v_len] = '\0';
+            strncpy(v, value, v_len - 1);
+            v[v_len - 1] = '\0';
+            if ((tmp = strstr(v,";"))) {
+                len = tmp - v;
+                v[len] = '\0';
             } else {
-                *v_len = strlen(value);
+                len = strlen(v);
             }
-        return value;
+        return len;
     }
-    return NULL;
+    return 0;
 }
 
 /**
