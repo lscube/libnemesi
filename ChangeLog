@@ -1,6 +1,10 @@
 + libNemesi ChangeLog
 
-  28 Nov 2007; Luca Barbato <lu_zero@gentoo.org> libnemesi-0.6.4:
+28 Dec 2007; Luca Barbato <lu_zero@gentoo.org> libnemesi-0.6.4:
+  Second Release Candidate, lots of security fixes and some improvements.
+
+
+28 Nov 2007; Luca Barbato <lu_zero@gentoo.org> libnemesi-0.6.4:
   Release Candidate
 
 
