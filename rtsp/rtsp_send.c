@@ -51,13 +51,12 @@ int send_get_request(rtsp_thread * rtsp_th)
         PROG_DESCR, VERSION, VERSION_NAME);
     strcat(buf, RTSP_EL);
 
-    sprintf(rtsp_th->waiting_for, "%d", RTSP_GET_RESPONSE);
-
+    rtsp_th->wait_for.res = RTSP_GET_RESPONSE;
     nms_printf(NMSML_DBG2, "Sending DESCRIBE request: %s\n", buf);
 
     if (!nmst_write(&rtsp_th->transport, buf, strlen(buf), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send DESCRIBE request...\n");
-        rtsp_th->waiting_for[0] = '\0';
+        rtsp_th->wait_for.res = '\0';
         free(buf);
         return 1;
     }
@@ -104,12 +103,13 @@ int send_pause_request(rtsp_thread * rtsp_th, char *range)
 
     strncat(b, RTSP_EL, b_size - 1);
 
-    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PAUSE_RESPONSE,
-        rtsp_sess->Session_ID, rtsp_sess->CSeq);
+    rtsp_th->wait_for.res = RTSP_PAUSE_RESPONSE;
+    rtsp_th->wait_for.cseq = rtsp_sess->CSeq;
+    rtsp_th->wait_for.session_id = rtsp_sess->Session_ID;
 
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send PAUSE request...\n");
-        rtsp_th->waiting_for[0] = '\0';
+        rtsp_th->wait_for.res = '\0';
         free(b);
         return 1;
     }
@@ -182,14 +182,15 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
 
     strncat(b, RTSP_EL, b_size - 1);
 
-    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_PLAY_RESPONSE,
-        rtsp_sess->Session_ID, rtsp_sess->CSeq);
+    rtsp_th->wait_for.res = RTSP_PLAY_RESPONSE;
+    rtsp_th->wait_for.cseq = rtsp_sess->CSeq;
+    rtsp_th->wait_for.session_id = rtsp_sess->Session_ID;
 
     nms_printf(NMSML_DBG2, "Sending PLAY request: %s\n", b);
 
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send PLAY request...\n");
-        rtsp_th->waiting_for[0] = '\0';
+        rtsp_th->wait_for.res = '\0';
         free(b);
         return 1;
     }
@@ -422,20 +423,20 @@ int send_setup_request(rtsp_thread * rtsp_th)
         ++(rtsp_sess->CSeq));
     snprintf(b + strlen(b), b_size - strlen(b), "Transport: %s" RTSP_EL, options);
 
-    if (rtsp_sess->Session_ID)    //Caso di controllo aggregato: � gi� stato definito un numero per la sessione corrente.
+    if (rtsp_sess->Session_ID)
         snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
         rtsp_sess->Session_ID);
 
     strncat(b, RTSP_EL, b_size - 1);
 
-    sprintf(rtsp_th->waiting_for, "%d.%d", RTSP_SETUP_RESPONSE,
-        rtsp_sess->CSeq);
+    rtsp_th->wait_for.res = RTSP_SETUP_RESPONSE;
+    rtsp_th->wait_for.cseq = rtsp_sess->CSeq;
 
     nms_printf(NMSML_DBG2, "Sending SETUP request: %s\n", b);
 
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send SETUP request...\n");
-        rtsp_th->waiting_for[0] = '\0';
+        rtsp_th->wait_for.res = '\0';
         goto err_handle;
     }
 
@@ -484,12 +485,13 @@ int send_teardown_request(rtsp_thread * rtsp_th)
             rtsp_sess->Session_ID);
     strncat(b, RTSP_EL, b_size - 1);
 
-    sprintf(rtsp_th->waiting_for, "%d:%"SCNu64".%d", RTSP_CLOSE_RESPONSE,
-        rtsp_sess->Session_ID, rtsp_sess->CSeq);
+    rtsp_th->wait_for.res = RTSP_CLOSE_RESPONSE;
+    rtsp_th->wait_for.cseq = rtsp_sess->CSeq;
+    rtsp_th->wait_for.session_id = rtsp_sess->Session_ID;
 
     if (!nmst_write(&rtsp_th->transport, b, strlen(b), NULL)) {
         nms_printf(NMSML_ERR, "Cannot send TEARDOWN request...\n");
-        rtsp_th->waiting_for[0] = '\0';
+        rtsp_th->wait_for.res = '\0';
         free(b);
         return 1;
     }

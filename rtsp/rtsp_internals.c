@@ -39,9 +39,9 @@ int body_exists(char *in_buffer)
 
 int check_response(rtsp_thread * rtsp_th)
 {
-    int wait_res;
-    uint64_t wait_s_id;
-    int wait_cseq;
+    int wait_res = rtsp_th->wait_for.res;
+    int wait_cseq = rtsp_th->wait_for.cseq;
+    uint64_t wait_s_id = rtsp_th->wait_for.session_id;
     char *str_pos, *content;
     int CSeq;
     uint64_t Session_ID = 0;
@@ -52,8 +52,7 @@ int check_response(rtsp_thread * rtsp_th)
                "ERROR: CANNOT find end of line in server response.\n");
         return -1;
     } 
-    sscanf(rtsp_th->waiting_for, "%d", &wait_res);
-    /* cerco il numero di sequenza del pacchetto arrivato */
+
     if ((str_pos = strstrcase(content, "CSeq")) == NULL) {
         nms_printf(NMSML_ERR,
                "ERROR: CANNOT find CSeq number in server response.\n");
@@ -69,13 +68,10 @@ int check_response(rtsp_thread * rtsp_th)
             opcode = RTSP_GET_RESPONSE;
         break;
     case RTSP_SETUP_RESPONSE:
-        sscanf(rtsp_th->waiting_for, "%*d.%d", &wait_cseq);
         if (CSeq == wait_cseq)
             opcode = RTSP_SETUP_RESPONSE;
         break;
     default:
-        sscanf(rtsp_th->waiting_for, "%*d:%"SCNu64".%d", &wait_s_id,
-               &wait_cseq);
         if ((str_pos =
              strstrcase(content,
                 "Session:")) != NULL) {

@@ -26,7 +26,7 @@
 static void cleanup(rtsp_thread * rtsp_th)
 {
     remove_pkt(rtsp_th);
-    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
+    memset(&rtsp_th->wait_for, 0, sizeof(rtsp_th->wait_for));
 }
 
 int handle_setup_response(rtsp_thread * rtsp_th)

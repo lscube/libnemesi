@@ -39,7 +39,7 @@ void rtsp_clean(void *rtsp_thrd)
 #if 1                
     // We must read last teardown reply from server
     nms_printf(NMSML_DBG1, "Waiting for last Teardown response\n");
-    if ((*(rtsp_th->waiting_for)) && nmst_is_active(&rtsp_th->transport)) {
+    if (rtsp_th->wait_for.res && nmst_is_active(&rtsp_th->transport)) {
         if ((n = rtsp_recv(rtsp_th)) < 0)
             nms_printf(NMSML_WARN,
                    "No teardown response received\n");
@@ -73,7 +73,7 @@ static void clean_rtsp_th(rtsp_thread *rtsp_th)
     nmst_close(&rtsp_th->transport);
     nmst_init(&rtsp_th->transport);
     rtsp_th->status = INIT;
-    memset(rtsp_th->waiting_for, '\0', strlen(rtsp_th->waiting_for));
+    memset(&rtsp_th->wait_for, 0, sizeof(rtsp_th->wait_for));
     rtsp_th->urlname = NULL;
     rtsp_th->server_port = NULL;
     (rtsp_th->in_buffer).size = 0;

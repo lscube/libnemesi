@@ -146,6 +146,12 @@ struct rtsp_buffer {
     char *data;        /*!< Raw data. */
 };
 
+typedef struct {
+    int res;
+    int cseq;
+    uint64_t session_id;
+} nms_wait_for;
+
 /**
  * @brief Main structure for the RTSP module.
  *
@@ -172,7 +178,7 @@ typedef struct {
                                media stream:
                                Media On Demand or
                                Container. */
-    char waiting_for[64];    /*!< Expected response from server. */
+    nms_wait_for wait_for;    /*!< Expected response from server. */
     char *server_port;    /*!< Server listening port.
                  */
     char *urlname;        /*!< Requested URL */
