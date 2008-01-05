@@ -51,7 +51,7 @@ int check_response(rtsp_thread * rtsp_th)
         nms_printf(NMSML_ERR,
                "ERROR: CANNOT find end of line in server response.\n");
         return -1;
-    } 
+    }
 
     if ((str_pos = strstrcase(content, "CSeq")) == NULL) {
         nms_printf(NMSML_ERR,
@@ -64,7 +64,7 @@ int check_response(rtsp_thread * rtsp_th)
     sscanf(str_pos, "%d", &CSeq);
     switch (wait_res) {
     case RTSP_GET_RESPONSE:
-        if (CSeq == 1)    /* aspettavo la risposta alla DESCRIBE */
+        if (CSeq == 1)
             opcode = RTSP_GET_RESPONSE;
         break;
     case RTSP_SETUP_RESPONSE:
@@ -72,9 +72,7 @@ int check_response(rtsp_thread * rtsp_th)
             opcode = RTSP_SETUP_RESPONSE;
         break;
     default:
-        if ((str_pos =
-             strstrcase(content,
-                "Session:")) != NULL) {
+        if ((str_pos = strstrcase(content, "Session:")) != NULL) {
             str_pos += 8;
             while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
                 str_pos++;
@@ -82,7 +80,7 @@ int check_response(rtsp_thread * rtsp_th)
             if (Session_ID != wait_s_id) {
                 nms_printf(NMSML_ERR, "Unexpected SessionID\n");
                 break;
-                }
+            }
         }
         if (CSeq == wait_cseq)
             opcode = wait_res;
@@ -118,7 +116,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
 
     if (RTSP_IS_SUCCESS(res_state))
         return res_state;
-    else if (RTSP_IS_REDIRECT(res_state)) { // (res_state>=300) && (res_state<400)
+    else if (RTSP_IS_REDIRECT(res_state)) {
         nms_printf(NMSML_NORM,
                "WARNING: Redirection. reply was: %hu %s\n",
                res_state, reason_phrase);
@@ -128,18 +126,17 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
                  strtok_r(rtsp_th->in_buffer.data +
                           strlen(status_line) + 1, "\n", &step)) == NULL) {
                 nms_printf(NMSML_ERR,
-                       "Could not find \"Location\" so... were I'll redirect you?\n");
+                       "Could not find \"Location\" so..."
+                       " Where I'll redirect you?\n");
                 return -1;
             }
             while (((tkn = strtok_r(NULL, "\n", &step)) != NULL)
                    && ((tkn - prev_tkn) > 1)) {
-                if (((tkn - prev_tkn) == 2)
-                    && (*prev_tkn == '\r'))
+                if (((tkn - prev_tkn) == 2) && (*prev_tkn == '\r'))
                     break;
                 if (!strncasecmp(prev_tkn, "Location", 8)) {
                     prev_tkn += 8;
-                    while ((*(prev_tkn) == ' ')
-                           || (*(prev_tkn) == ':'))
+                    while ((*(prev_tkn) == ' ') || (*(prev_tkn) == ':'))
                         prev_tkn++;
                     location = strdup(prev_tkn);
                     // sscanf(prev_tkn,"%d",&location);
@@ -147,20 +144,15 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
                 prev_tkn = tkn;
             }
             if (location) {
-                nms_printf(NMSML_NORM, "Redirecting to %s\n",
-                       location);
-                // XXX:proving
+                nms_printf(NMSML_NORM, "Redirecting to %s\n", location);
                 rtsp_open((rtsp_ctrl*)rtsp_th, location);
-                ///// XXX: end proving
             } else
-                return -nms_printf(NMSML_ERR,
-                           "No location string\n");
-            // rtsp_th->status=INIT;
+                return -nms_printf(NMSML_ERR, "No location string\n");
         }
-    } else if (RTSP_IS_CLIENT_ERROR(res_state)) // (res_state>=400) && (res_state<500)
+    } else if (RTSP_IS_CLIENT_ERROR(res_state))
         nms_printf(NMSML_ERR, "Client error. Reply was: %hu %s\n",
                res_state, reason_phrase);
-    else if (RTSP_IS_SERVER_ERROR(res_state)) // res_state>=500
+    else if (RTSP_IS_SERVER_ERROR(res_state))
         nms_printf(NMSML_ERR, "Server error. Reply was: %hu %s\n",
                res_state, reason_phrase);
     return -1;
@@ -169,12 +161,12 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
 int full_msg_rcvd(rtsp_thread * rtsp_th)
 {
     struct rtsp_buffer *in_buffer = &rtsp_th->in_buffer;
-    char *back_n;        /* pointer to newline */
-    char *head_end;        /* pointer to header end */
-    size_t body_len;    
+    char *back_n;       /* pointer to newline */
+    char *head_end;     /* pointer to header end */
+    size_t body_len;
 
     // is there an interleaved RTP/RTCP packet?
-    if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) && 
+    if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) &&
         in_buffer->size > 4 && in_buffer->data[0] == '$') {
 
         if ((body_len = ntohs(*((uint16_t *) &(in_buffer->data[2]))) + 4)
@@ -184,7 +176,6 @@ int full_msg_rcvd(rtsp_thread * rtsp_th)
         } else {
             return 0;
         }
-
     }
 
     if ((head_end = strchr(in_buffer->data, '\n')) == NULL)
@@ -196,9 +187,10 @@ int full_msg_rcvd(rtsp_thread * rtsp_th)
         if (((head_end - back_n) == 2) && (*(back_n + 1) == '\r'))
             break;
     } while ((head_end - back_n) > 1);    /* here is the end of header */
-    while ((*(++head_end) == '\n') || (*head_end == '\r'));    /* seek for first 
-                                   valid char after
-                                   the empty line */
+
+    /* seek for first valid char after the empty line */
+    while ((*(++head_end) == '\n') || (*head_end == '\r'));
+
     if ((body_len = body_exists(in_buffer->data)) == 0) {
         in_buffer->first_pkt_size = head_end - in_buffer->data;
         return 1;    /* header received (no payload) */
@@ -223,24 +215,22 @@ void rtsp_unbusy(rtsp_thread * rtsp_th)
 
 int remove_pkt(rtsp_thread * rtsp_th)
 {
-
     char *buff = NULL;
-    size_t new_size;
+    size_t new_size = rtsp_th->in_buffer.size -
+                      rtsp_th->in_buffer.first_pkt_size;
 
-    if ((new_size = rtsp_th->in_buffer.size - rtsp_th->in_buffer.first_pkt_size)) {
-        if ((buff =
-             (char *) malloc(new_size)) ==
-            NULL)
+    if (new_size) {
+        if ((buff = malloc(new_size)) == NULL)
             return nms_printf(NMSML_FATAL,
-                      "remove_pkt: Cannot allocate memory! (%d bytes)\n", new_size);
+                              "remove_pkt: Cannot allocate memory!"
+                              " (%d bytes)\n", new_size);
 
-        memcpy(buff,
-               rtsp_th->in_buffer.data +
-               rtsp_th->in_buffer.first_pkt_size,
-               rtsp_th->in_buffer.size -
-               rtsp_th->in_buffer.first_pkt_size);
-    } else
-        buff = NULL;
+        memcpy(buff, rtsp_th->in_buffer.data +
+                     rtsp_th->in_buffer.first_pkt_size,
+                     rtsp_th->in_buffer.size -
+                     rtsp_th->in_buffer.first_pkt_size);
+    } else buff = NULL;
+
     free(rtsp_th->in_buffer.data);
     rtsp_th->in_buffer.data = buff;
     rtsp_th->in_buffer.size -= rtsp_th->in_buffer.first_pkt_size;
@@ -280,9 +270,10 @@ int rtsp_recv(rtsp_thread * rtsp_th)
         nms_printf(NMSML_ERR, "Could not read from RTSP socket\n");
         return n;
     }
-    if (rtsp_th->transport.sock.socktype == TCP || (rtsp_th->transport.sock.socktype == SCTP && m==0)) {
+    if (rtsp_th->transport.sock.socktype == TCP ||
+        (rtsp_th->transport.sock.socktype == SCTP && m==0)) {
         if ((rtsp_th->in_buffer.size) == 0) {
-            if ((rtsp_th->in_buffer.data = 
+            if ((rtsp_th->in_buffer.data =
                  (char *) calloc(1, n + 1)) == NULL)
                 return nms_printf(NMSML_FATAL,
                   "Cannot alloc memory space for received RTSP data\n");
@@ -324,7 +315,6 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 
 int set_rtsp_media(rtsp_thread * rtsp_th)
 {
-
     rtsp_session *curr_rtsp_s = rtsp_th->rtsp_queue;
     rtsp_medium *curr_rtsp_m = NULL;
     sdp_medium_info *sdp_m;
@@ -339,26 +329,21 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
             if (curr_rtsp_m == NULL) {
                 /* first medium */
                 if ((curr_rtsp_s->media_queue = curr_rtsp_m =
-                     rtsp_med_create(rtsp_th)) ==
-                    NULL)
+                     rtsp_med_create(rtsp_th)) == NULL)
                     return 1;
             } else if (rtsp_th->type == CONTAINER) {
                 /* media in the same session */
-                if ((curr_rtsp_m->next =
-                     rtsp_med_create(rtsp_th)) ==
-                    NULL)
+                if ((curr_rtsp_m->next = rtsp_med_create(rtsp_th)) == NULL)
                     return 1;
                 curr_rtsp_m->rtp_sess->next =
                     curr_rtsp_m->next->rtp_sess;
                 curr_rtsp_m = curr_rtsp_m->next;
             } else if (rtsp_th->type == M_ON_DEMAND) {
                 /* one medium for each session */
-                if ((curr_rtsp_s->next =
-                     rtsp_sess_dup(curr_rtsp_s)) == NULL)
+                if ((curr_rtsp_s->next = rtsp_sess_dup(curr_rtsp_s)) == NULL)
                     return 1;
                 curr_rtsp_s = curr_rtsp_s->next;
-                if ((curr_rtsp_s->media_queue =
-                     rtsp_med_create(rtsp_th)) ==
+                if ((curr_rtsp_s->media_queue = rtsp_med_create(rtsp_th)) ==
                     NULL)
                     return 1;
                 curr_rtsp_m->rtp_sess->next =
@@ -369,23 +354,20 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
 
             // setup rtp format list for current media
             for (tkn = sdp_m->fmts;
-                 *tkn && !(!(pt = strtoul(tkn, &ch, 10))
-                            && ch == tkn); tkn = ch) {
+                 *tkn && !(!(pt = strtoul(tkn, &ch, 10)) && ch == tkn);
+                 tkn = ch) {
                 switch (sdp_m->media_type) {
                 case 'A':
-                    if (rtp_announce_pt
-                        (curr_rtsp_m->rtp_sess, pt, AU))
+                    if (rtp_announce_pt(curr_rtsp_m->rtp_sess, pt, AU))
                         return 1;
                     break;
                 case 'V':
-                    if (rtp_announce_pt
-                        (curr_rtsp_m->rtp_sess, pt, VI))
+                    if (rtp_announce_pt(curr_rtsp_m->rtp_sess, pt, VI))
                         return 1;
                     break;
                 default:
                     // not recognized
-                    if (rtp_announce_pt
-                        (curr_rtsp_m->rtp_sess, pt, NA))
+                    if (rtp_announce_pt(curr_rtsp_m->rtp_sess, pt, NA))
                         return 1;
                     break;
                 }
@@ -395,7 +377,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                  sdp_attr = sdp_attr->next) {
                 if (!strncasecmp(sdp_attr->name, "control", 7)) {
                     tkn = sdp_attr->value;
-                    while ((*tkn == ' ') || (*tkn == ':'))    // skip spaces and colon
+                    while ((*tkn == ' ') || (*tkn == ':'))
                         tkn++;
                     curr_rtsp_m->filename = tkn;
                 } else
@@ -412,8 +394,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                         while (*tkn == ' ')
                             tkn++;
                         if (!(ch = strchr(tkn, '/'))) {
-                            nms_printf(NMSML_WARN,
-                                   "Invalid field rtpmap.\n");
+                            nms_printf(NMSML_WARN, "Invalid field rtpmap.\n");
                             break;
                         }
                         *ch = '\0';
@@ -477,7 +458,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                         return 1;
                     }
                     // check if everything is correct
-                    if (!(pt = strtoul(m_info.fmts, &ch, 10)) 
+                    if (!(pt = strtoul(m_info.fmts, &ch, 10))
                         && ch == m_info.fmts) {
                         nms_printf(NMSML_ERR,
                             "Could not determine pt value in a=med: string"
