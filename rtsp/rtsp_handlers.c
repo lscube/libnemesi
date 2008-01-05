@@ -23,6 +23,12 @@
 #include "rtspinternals.h"
 #include "utils.h"
 
+static void cleanup(rtsp_thread * rtsp_th)
+{
+    remove_pkt(rtsp_th);
+    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
+}
+
 int handle_setup_response(rtsp_thread * rtsp_th)
 {
     char *step = NULL; /* strtok_r status */
@@ -72,9 +78,7 @@ int handle_setup_response(rtsp_thread * rtsp_th)
         tkn = strtok_r(NULL, "\n", &step);
     if (tkn != NULL)
         tkn[strlen(tkn)] = '\n'; /* restore terminator */
-
-    remove_pkt(rtsp_th);
-    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
+    cleanup(rtsp_th);
     return 0;
 }
 
@@ -142,8 +146,7 @@ int handle_get_response(rtsp_thread * rtsp_th)
     // if ( set_rtsp_sessions(rtsp_th, content_length, content_base, tkn, description_format) ) {
     if (set_rtsp_sessions(rtsp_th, content_length, content_base, tkn))
         return 1;
-    remove_pkt(rtsp_th);
-    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
+    cleanup(rtsp_th);
     return 0;
 }
 
@@ -160,9 +163,7 @@ int handle_teardown_response(rtsp_thread * rtsp_th)
         return 1;
     }
 
-    remove_pkt(rtsp_th);
-    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
-
+    cleanup(rtsp_th);
     return 0;
 }
 
@@ -180,8 +181,7 @@ int handle_pause_response(rtsp_thread * rtsp_th)
         return 1;
     }
 
-    remove_pkt(rtsp_th);
-    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
+    cleanup(rtsp_th);
     return 0;
 }
 
@@ -198,8 +198,7 @@ int handle_play_response(rtsp_thread * rtsp_th)
         return 1;
     }
 
-    remove_pkt(rtsp_th);
-    memset(rtsp_th->waiting_for, 0, strlen(rtsp_th->waiting_for));
+    cleanup(rtsp_th);
     return 0;
 }
 
