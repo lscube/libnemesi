@@ -45,7 +45,8 @@ int send_get_request(rtsp_thread * rtsp_th)
     /* save the url string for future use in setup request. */
     sprintf(buf, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
         rtsp_th->urlname, RTSP_VER, 1);
-    strcat(buf, "Accept: application/sdp;" RTSP_EL);    /* application/x-rtsp-mh"RTSP_EL); */
+    strcat(buf, "Accept: application/sdp;" RTSP_EL);
+
     sprintf(buf + strlen(buf),
         "User-Agent: %s - %s -- Release %s (%s)" RTSP_EL, PROG_NAME,
         PROG_DESCR, VERSION, VERSION_NAME);
@@ -64,7 +65,6 @@ int send_get_request(rtsp_thread * rtsp_th)
     free(buf);
     return 0;
 }
-
 
 int send_pause_request(rtsp_thread * rtsp_th, char *range)
 {
@@ -254,7 +254,6 @@ int send_setup_request(rtsp_thread * rtsp_th)
     int sock_pair[2];
     unsigned int rnd;
 
-    // if ( get_curr_sess(NULL, &rtsp_sess, &rtsp_med))
     if (!(rtsp_sess = get_curr_sess(GCS_CUR_SESS))
         || !(rtsp_med = get_curr_sess(GCS_CUR_MED))) {
         nms_printf(NMSML_ERR,
@@ -279,7 +278,8 @@ int send_setup_request(rtsp_thread * rtsp_th)
         if (rtsp_th->force_rtp_port % 2) {
             rtsp_th->force_rtp_port++;
             nms_printf(NMSML_WARN,
-                   "First RTP port specified was odd number => corrected to %u\n",
+                   "First RTP port specified was odd number =>"
+                   " corrected to %u\n",
                    rtsp_th->force_rtp_port);
         }
         rnd = rtsp_th->force_rtp_port;
@@ -439,8 +439,6 @@ int send_setup_request(rtsp_thread * rtsp_th)
         rtsp_th->wait_for.res = '\0';
         goto err_handle;
     }
-
-
 
     free(b);
     free(options);
