@@ -1,5 +1,8 @@
 + libNemesi ChangeLog
 
+06 Jan 2008; Luca Barbato <lu_zero@gentoo.org> libnemesi-0.6.5:
+  Change Session_ID type, api/abi change.
+
 28 Dec 2007; Luca Barbato <lu_zero@gentoo.org> libnemesi-0.6.4:
   Second Release Candidate, lots of security fixes and some improvements.
 
