@@ -149,7 +149,7 @@ struct rtsp_buffer {
 typedef struct {
     int res;
     int cseq;
-    uint64_t session_id;
+    char *session_id;
 } nms_wait_for;
 
 /**

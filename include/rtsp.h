@@ -49,6 +49,8 @@
 #define RTSP_READY    0
 #define RTSP_BUSY    1
 
+#define RTSP_SESSION_ID_LEN 256
+
 typedef struct {
     int first_rtp_port;
     int prebuffer_size;
@@ -99,7 +101,7 @@ typedef struct rtsp_medium_s {
  * @see rtsp_medium
  * */
 typedef struct rtsp_session_s {
-    uint64_t Session_ID;    /*!< RTSP identifier. */
+    char Session_ID[RTSP_SESSION_ID_LEN];    /*!< RTSP identifier. */
     int CSeq;        /*!< Last sent RTSP packet 
                    sequence number */
     char *pathname;        /*!< RTSP session identifier.

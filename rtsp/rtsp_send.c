@@ -93,8 +93,8 @@ int send_pause_request(rtsp_thread * rtsp_th, char *range)
         snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
             rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 
-    if (rtsp_sess->Session_ID != 0)    /* must add session ID? */
-        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
+    if (rtsp_sess->Session_ID[0])    /* must add session ID? */
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %s" RTSP_EL,
             rtsp_sess->Session_ID);
     if (range && *range)
         snprintf(b + strlen(b), b_size - strlen(b), "Range: %s" RTSP_EL, range);
@@ -171,8 +171,8 @@ int send_play_request(rtsp_thread * rtsp_th, char *range)
         snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN,
             rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
 
-    if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
-        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
+    if (rtsp_sess->Session_ID[0])    /*must add session ID? */
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %s" RTSP_EL,
             rtsp_sess->Session_ID);
 
     if (range && *range)
@@ -423,8 +423,8 @@ int send_setup_request(rtsp_thread * rtsp_th)
         ++(rtsp_sess->CSeq));
     snprintf(b + strlen(b), b_size - strlen(b), "Transport: %s" RTSP_EL, options);
 
-    if (rtsp_sess->Session_ID)
-        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
+    if (rtsp_sess->Session_ID[0])
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %s" RTSP_EL,
         rtsp_sess->Session_ID);
 
     strncat(b, RTSP_EL, b_size - 1);
@@ -478,8 +478,8 @@ int send_teardown_request(rtsp_thread * rtsp_th)
 
     snprintf(b + strlen(b), b_size - strlen(b), "CSeq: %d" RTSP_EL,
              ++(rtsp_sess->CSeq));
-    if (rtsp_sess->Session_ID != 0)    /*must add session ID? */
-        snprintf(b + strlen(b), b_size - strlen(b), "Session: %"SCNu64 RTSP_EL,
+    if (rtsp_sess->Session_ID[0])    /*must add session ID? */
+        snprintf(b + strlen(b), b_size - strlen(b), "Session: %s" RTSP_EL,
             rtsp_sess->Session_ID);
     strncat(b, RTSP_EL, b_size - 1);
 

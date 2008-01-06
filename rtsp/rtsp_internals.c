@@ -41,10 +41,10 @@ int check_response(rtsp_thread * rtsp_th)
 {
     int wait_res = rtsp_th->wait_for.res;
     int wait_cseq = rtsp_th->wait_for.cseq;
-    uint64_t wait_s_id = rtsp_th->wait_for.session_id;
+    char *wait_s_id = rtsp_th->wait_for.session_id;
+    char Session_ID[256];
     char *str_pos, *content;
     int CSeq;
-    uint64_t Session_ID = 0;
     int opcode = 0;
 
     if ((content = strchr(rtsp_th->in_buffer.data, '\n')) == NULL) {
@@ -76,8 +76,8 @@ int check_response(rtsp_thread * rtsp_th)
             str_pos += 8;
             while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
                 str_pos++;
-            sscanf(str_pos, "%"SCNu64, &Session_ID);
-            if (Session_ID != wait_s_id) {
+            sscanf(str_pos, "%255s", Session_ID);
+            if (strcmp(Session_ID, wait_s_id)) {
                 nms_printf(NMSML_ERR, "Unexpected SessionID\n");
                 break;
             }

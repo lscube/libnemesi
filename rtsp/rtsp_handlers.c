@@ -68,8 +68,8 @@ int handle_setup_response(rtsp_thread * rtsp_th)
 
         if (!strncasecmp(prev_tkn, "Session", 7)) {
             prev_tkn += 7;
-            sscanf(prev_tkn, " : %"SCNu64" ; ",
-                   &(rtsp_sess->Session_ID));
+            sscanf(prev_tkn, " : %255s ; ", rtsp_sess->Session_ID);
+            fprintf(stderr,"Session \"%s\"\n",rtsp_sess->Session_ID);
         }
     }
     while ((tkn != NULL)

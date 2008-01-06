@@ -85,7 +85,7 @@ rtsp_session *rtsp_sess_dup(rtsp_session * curr_rtsp_s)
 
     memcpy(new_rtsp_s, curr_rtsp_s, sizeof(rtsp_session));
 
-    new_rtsp_s->Session_ID = 0;
+    new_rtsp_s->Session_ID[0] = '\0';
     new_rtsp_s->next = NULL;
 
     return new_rtsp_s;
@@ -117,7 +117,7 @@ rtsp_session *rtsp_sess_create(char *urlname, char *content_base)
             return NULL;
         rtsp_s->pathname += strlen(content_base);
     }
-    rtsp_s->Session_ID = 0;
+    rtsp_s->Session_ID[0] = '\0';
     rtsp_s->CSeq = 1;
     rtsp_s->media_queue = NULL;
     rtsp_s->next = NULL;
