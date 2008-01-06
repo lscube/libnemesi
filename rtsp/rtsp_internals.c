@@ -103,7 +103,7 @@ int check_status(char *status_line, rtsp_thread * rtsp_th)
     char *reason_phrase;
     char *location = NULL;
     // string tokenizers
-    char *tkn, *prev_tkn, *step;
+    char *tkn, *prev_tkn, *step = NULL;
 
     if (sscanf(status_line, "%31s %hu ", ver, &res_state) < 2) {
         nms_printf(NMSML_ERR,

@@ -123,8 +123,8 @@ int main(int argc, char **argv)
             if (!rtp_fill_buffer(ssrc, &fr, &conf)) {    // Parse the stream
 
                 if (outfd[fr.pt] ||    // Write it to a file
-                    sprintf(out, "%s.%d", base, fr.pt)
-                    && (outfd[fr.pt] = creat(out, 00644)) > 0) {
+                    (sprintf(out, "%s.%d", base, fr.pt)
+                    && (outfd[fr.pt] = creat(out, 00644)) > 0)) {
                     if (write(outfd[fr.pt], fr.data, fr.len) < fr.len)
                         return 1;
                 } else {
