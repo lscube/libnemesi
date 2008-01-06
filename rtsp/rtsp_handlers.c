@@ -89,7 +89,7 @@ int handle_get_response(rtsp_thread * rtsp_th)
                      * in order to check the end of RTSP header 
                      * and then the all the components of command line */
     int content_length;
-    char *content_base = NULL, *step;
+    char *content_base = NULL, *step = NULL;
 
     if ((prev_tkn = strtok_r(rtsp_th->in_buffer.data, "\n", &step)) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-DESCRIBE response\n");
@@ -152,7 +152,7 @@ int handle_get_response(rtsp_thread * rtsp_th)
 
 int handle_teardown_response(rtsp_thread * rtsp_th)
 {
-    char *prev_tkn, *step;
+    char *prev_tkn, *step = NULL;
 
     if ((prev_tkn = strtok_r(rtsp_th->in_buffer.data, "\n", &step)) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-TEARDOWN response\n");
@@ -170,7 +170,7 @@ int handle_teardown_response(rtsp_thread * rtsp_th)
 
 int handle_pause_response(rtsp_thread * rtsp_th)
 {
-    char *prev_tkn, *step;
+    char *prev_tkn, *step = NULL;
 
     if ((prev_tkn = strtok_r(rtsp_th->in_buffer.data, "\n", &step)) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-PAUSE response\n");
@@ -187,7 +187,7 @@ int handle_pause_response(rtsp_thread * rtsp_th)
 
 int handle_play_response(rtsp_thread * rtsp_th)
 {
-    char *prev_tkn, *step;
+    char *prev_tkn, *step = NULL;
 
     if ((prev_tkn = strtok_r(rtsp_th->in_buffer.data, "\n", &step)) == NULL) {
         nms_printf(NMSML_ERR, "Invalid RTSP-PLAY response\n");
