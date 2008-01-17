@@ -483,7 +483,6 @@ static int seturlname(rtsp_thread * rtsp_th, char *urlname)
 
     strcpy(rtsp_th->urlname, "rtsp://");
     strcat(rtsp_th->urlname, server);
-    strcat(rtsp_th->urlname, "/");
     strcat(rtsp_th->urlname, path);
 
     rtsp_th->server_port = strdup(port);

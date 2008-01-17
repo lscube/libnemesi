@@ -56,20 +56,19 @@ int RTSP_Url_init(RTSP_Url * url, char * urlname)
         path_len = 0;
     }
     else {
-        ++path_begin;
-        hostname_len = (size_t)(path_begin - hostname_begin - 1);
+        hostname_len = (size_t)(path_begin - hostname_begin);
         path_len = strlen(urlname) - ((size_t)(path_begin - urlname));
     }
 
     port_begin = strstr(hostname_begin, ":");
-    if ((port_begin == NULL) || ((port_begin > path_begin) && (path_begin != NULL))) {
+    if ((port_begin == NULL) || ((port_begin >= path_begin) && (path_begin != NULL))) {
         port_len = 0;
         port_begin = NULL;
     }
     else {
         ++port_begin;
         if (path_len)
-            port_len = (size_t)(path_begin - port_begin - 1);
+            port_len = (size_t)(path_begin - port_begin);
         else
             port_len = strlen(urlname) - ((size_t)(port_begin - urlname));
         hostname_len = (size_t)(port_begin - hostname_begin - 1);
