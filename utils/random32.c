@@ -23,12 +23,16 @@
 /* From RFC 1889 */
 
 #include <sys/time.h>
-#include <sys/utsname.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include <stdint.h>
 #include <time.h>
-#include <byteswap.h> //XXX check in configure
+
+#ifndef WIN32
+#       include <byteswap.h> //XXX check in configure
+#       include <sys/utsname.h>
+#       include <sys/types.h>
+#       include <unistd.h>
+#endif
+
 
 //shamelessly ripping avutils md5
 
@@ -177,6 +181,7 @@ static uint32_t md_32(char *string, int length)
     return hash[0]^hash[1]^hash[2]^hash[3];
 }
 
+#ifndef WIN32
 uint32_t random32(int type)
 {
     struct {
@@ -201,3 +206,10 @@ uint32_t random32(int type)
 
     return md_32((char *) &s, sizeof(s));
 }
+#else
+uint32_t random32(int type)
+{
+    char s[256];
+    return md_32(s, sizeof(s));
+}
+#endif
