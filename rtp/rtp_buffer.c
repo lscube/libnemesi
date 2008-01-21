@@ -55,6 +55,7 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
 {
     rtp_pkt *pkt;
     int err;
+    double ts_jump;
 
     /* If we did a seek, we must wait for seek reset and bufferpool clean up,
      * so wait until rtp_recv receives the first new packet and resets the bufferpool
@@ -72,8 +73,11 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     fr->pt = RTP_PKT_PT(pkt);
     fr->timestamp = RTP_PKT_TS(pkt);
 
-    if (fr->time_sec > 1000) {
-        fprintf(stderr, "Out of sync timestamp: %u - %u\n", fr->timestamp, stm_src->ssrc_stats.firstts);
+    ts_jump = ((double) (fr->timestamp - stm_src->ssrc_stats.lastts)) /
+        (double) stm_src->rtp_sess->ptdefs[fr->pt]->rate;
+
+    if (ts_jump > 10) {
+        fprintf(stderr, "Out of sync timestamp: %u - %u: %g\n", fr->timestamp, stm_src->ssrc_stats.lastts, ts_jump);
         rtp_rm_pkt(stm_src);
         return RTP_BUFF_EMPTY;
     }
@@ -86,10 +90,8 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     /*
      * The parser can set the timestamp on its own
      */
-    fr->time_sec =
-        ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
+    fr->time_sec = ((double) (fr->timestamp - stm_src->ssrc_stats.firstts)) /
         (double) stm_src->rtp_sess->ptdefs[fr->pt]->rate;
-
     return err;
 }
 

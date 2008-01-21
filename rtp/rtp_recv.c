@@ -238,6 +238,7 @@ int rtp_recv(rtp_session * rtp_sess)
             stm_src->ssrc_stats.probation = 0;
             stm_src->ssrc_stats.max_seq = RTP_PKT_SEQ(pkt);
             stm_src->ssrc_stats.firstts = RTP_PKT_TS(pkt);
+            stm_src->ssrc_stats.lastts = RTP_PKT_TS(pkt);
             stm_src->ssrc_stats.firsttv = now;
             stm_src->ssrc_stats.jitter = 0;
 
@@ -290,6 +291,7 @@ int rtp_recv(rtp_session * rtp_sess)
 
         (stm_src->ssrc_stats).jitter = 0;
         (stm_src->ssrc_stats).firstts = RTP_PKT_TS(pkt);
+        stm_src->ssrc_stats.lastts = RTP_PKT_TS(pkt);
         (stm_src->ssrc_stats).firsttv = now;
 
         rtp_update_seq(stm_src, RTP_PKT_SEQ(pkt));
