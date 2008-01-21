@@ -400,7 +400,7 @@ int rtp_transport_get(rtp_session *, int, void *, uint32_t);
  * RTP transport wrapper functions for rtp_transport_get
  */
 inline char *rtp_get_spec(rtp_session *);
-inline enum sock_types rtp_get_socktype(rtp_session *);
+inline sock_type rtp_get_socktype(rtp_session *);
 inline enum deliveries rtp_get_delivery(rtp_session *);
 inline int rtp_get_srcaddrstr(rtp_session *, char *, uint32_t);
 inline nms_addr *rtp_get_srcaddr(rtp_session *);
@@ -431,7 +431,7 @@ inline uint32_t rtp_get_ssrc(rtp_session *);
  * RTP transport wrapper functions for rtp_transport_set
  */
 inline int rtp_set_delivery(rtp_session *, enum deliveries);
-inline int rtp_set_socktype(rtp_session *, enum sock_types);
+inline int rtp_set_socktype(rtp_session *, sock_type);
 inline int rtp_set_srcaddrstr(rtp_session *, char *);
 inline int rtp_set_srcaddr(rtp_session *, nms_addr *);
 inline int rtp_set_dstaddrstr(rtp_session *, char *);

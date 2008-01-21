@@ -49,6 +49,7 @@
 #	define max(x,y) ((x) > (y) ? (x) : (y))
 #else
 #	include <winsock2.h>
+char * strtok_r(char * str, const char *delim, char **saveptr);
 #endif
 
 #include "comm.h"
