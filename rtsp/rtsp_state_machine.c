@@ -127,7 +127,7 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
         if (thread_isvalid(rtsp_th->rtp_th->rtcp_tid)) {
             nms_printf(NMSML_DBG1,
                    "Sending cancel signal to RTCP Thread (ID: %lu)\n",
-                   thrad_getuid(rtsp_th->rtp_th->rtcp_tid));
+                   thread_getuid(rtsp_th->rtp_th->rtcp_tid));
             if ( pthread_cancel(rtsp_th->rtp_th->rtcp_tid) )
                 nms_printf(NMSML_DBG2,
                        "Error while sending cancelation to RTCP Thread.\n");

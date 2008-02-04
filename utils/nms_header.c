@@ -54,5 +54,5 @@ void thread_invalidate(pthread_t * p)
 
 int thread_getuid(pthread_t p)
 {
-    return pthread_isvalid(p);
+    return thread_isvalid(p);
 }
