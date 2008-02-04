@@ -41,6 +41,7 @@
 #include <inttypes.h>
 #include <stdint.h>
 
+#include <pthread.h>
 
 #ifndef WIN32
 #	include <sys/types.h>
@@ -59,6 +60,10 @@ int urltokenize(char *, char **, char **, char **);
 char *strstrcase(char *, const char *);
 
 uint32_t random32(int);
+
+int thread_isvalid(pthread_t p);
+void thread_invalidate(pthread_t * p);
+int thread_getuid(pthread_t p);
 
 /**
  * @defgroup timeval Timeval arithmetic functions

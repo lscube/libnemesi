@@ -714,10 +714,11 @@ int rtsp_uninit(rtsp_ctrl * rtsp_ctl)
 
     /* THREAD CANCEL */
     nms_printf(NMSML_DBG1, "Sending cancel signal to all threads\n");
-    if (rtsp_ctl->rtsp_tid > 0) {
+    #warning pthread_t should be an opaque structure
+    if ( thread_isvalid(rtsp_ctl->rtsp_tid) ) {
         nms_printf(NMSML_DBG1,
                "Sending cancel signal to RTSP Thread (ID: %lu)\n",
-               rtsp_ctl->rtsp_tid);
+               thread_getuid(rtsp_ctl->rtsp_tid));
         if (pthread_cancel(rtsp_ctl->rtsp_tid) != 0)
             nms_printf(NMSML_DBG2,
                    "Error while sending cancelation to RTSP Thread.\n");
