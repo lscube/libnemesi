@@ -176,9 +176,7 @@ static void *rtp(void *args)
                     /* Waiting 20 msec for decoder ready */
                     nms_printf(NMSML_DBG1,
                            "Waiting for decoder ready!\n");
-                    ts.tv_sec = 0;
-                    ts.tv_nsec = 20 * (1000);
-                    nanosleep(&ts, NULL);
+                    usleep(20);
                 }
             }
     }
