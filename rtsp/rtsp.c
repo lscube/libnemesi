@@ -256,7 +256,7 @@ RTSP_Error rtsp_wait(rtsp_ctrl * rtsp_ctl)
  * @param rtsp_ctl The RTSP controller for which to get the RTP sessions queue
  * @return The RTP session queue
  */
-inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl)
+rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl)
 {
     return ((rtsp_thread *) rtsp_ctl)->rtp_th->rtp_sess_head;
 }
@@ -266,7 +266,7 @@ inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl)
  * @param rtsp_ctl The RTSP controller for which to get the RTP thread
  * @return The RTP thread
  */
-inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl)
+rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl)
 {
     return ((rtsp_thread *) rtsp_ctl)->rtp_th;
 }
@@ -341,7 +341,7 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
  * @param rtsp_ctl The controller for which to check the state
  * @return TRUE if its busy, FALSE if its ready
  */
-inline int rtsp_is_busy(rtsp_ctrl * rtsp_ctl)
+int rtsp_is_busy(rtsp_ctrl * rtsp_ctl)
 {
     return rtsp_ctl->busy;
 }

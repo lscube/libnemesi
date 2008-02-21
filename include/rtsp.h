@@ -172,7 +172,7 @@ extern RTSP_Error const RTSP_Reinitialized;
  * @{ */
 
 rtsp_ctrl *rtsp_init(nms_rtsp_hints *);
-inline int rtsp_is_busy(rtsp_ctrl *);
+int rtsp_is_busy(rtsp_ctrl *);
 
 RTSP_Error rtsp_wait(rtsp_ctrl *);
 int rtsp_close(rtsp_ctrl *);
@@ -188,8 +188,8 @@ int rtsp_uninit(rtsp_ctrl *);
 #define rtsp_status(ctrl) ctrl->status
 void rtsp_info_print(rtsp_ctrl *);
 
-inline rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl);
-inline rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl);
+rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl);
+rtp_session *rtsp_get_rtp_queue(rtsp_ctrl * rtsp_ctl);
 
 /**
  * @}
