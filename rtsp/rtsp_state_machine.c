@@ -123,10 +123,11 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
 #if 1                // TODO: fix last teardown response wait
     // check for active rtp/rtcp session
     if (sess->media_queue && sess->media_queue->rtp_sess) {
-        if (rtsp_th->rtp_th->rtcp_tid > 0) {
+        #warning pthreat_t should be an opaque structure
+        if (thread_isvalid(rtsp_th->rtp_th->rtcp_tid)) {
             nms_printf(NMSML_DBG1,
                    "Sending cancel signal to RTCP Thread (ID: %lu)\n",
-                   rtsp_th->rtp_th->rtcp_tid);
+                   thread_getuid(rtsp_th->rtp_th->rtcp_tid));
             if ( pthread_cancel(rtsp_th->rtp_th->rtcp_tid) )
                 nms_printf(NMSML_DBG2,
                        "Error while sending cancelation to RTCP Thread.\n");
@@ -138,12 +139,12 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
                     nms_printf(NMSML_DBG2,
                        "Warning! RTCP Thread joined, but  not canceled!\n");
             }
-            rtsp_th->rtp_th->rtcp_tid = 0;
+            thread_invalidate(&rtsp_th->rtp_th->rtcp_tid);
         }
-        if (rtsp_th->rtp_th->rtp_tid > 0) {
+        if (thread_isvalid(rtsp_th->rtp_th->rtp_tid)) {
             nms_printf(NMSML_DBG1,
                    "Sending cancel signal to RTP Thread (ID: %lu)\n",
-                   rtsp_th->rtp_th->rtp_tid);
+                   thread_getuid(rtsp_th->rtp_th->rtp_tid));
             if (pthread_cancel(rtsp_th->rtp_th->rtp_tid) != 0)
                 nms_printf(NMSML_DBG2,
                        "Error while sending cancelation to RTP Thread.\n");
@@ -155,7 +156,7 @@ int rtsp_reinit(rtsp_thread * rtsp_th)
                     nms_printf(NMSML_DBG2,
                        "Warning! RTP Thread joined, but not canceled.\n");
             }
-            rtsp_th->rtp_th->rtp_tid = 0;
+            thread_invalidate(&rtsp_th->rtp_th->rtp_tid);
         }
     }
 #endif

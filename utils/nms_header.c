@@ -25,9 +25,34 @@
 #include "version.h"
 #include "comm.h"
 
+#include <pthread.h>
+
 inline void nms_header(void)
 {
     nms_printf(NMSML_ALWAYS,
            "\n" NMSCLR_BLUE_BOLD "%s - %s -- release %s (%s)\n\n"
            NMSCLR_DEFAULT, PROG_NAME, PROG_DESCR, VERSION, VERSION_NAME);
+}
+
+int thread_isvalid(pthread_t p)
+{
+#ifdef WIN32
+     return p.p;
+#else
+     return p;
+#endif
+}
+
+void thread_invalidate(pthread_t * p)
+{
+#ifdef WIN32
+     p->p = 0;
+#else
+     *p = 0;
+#endif
+}
+
+int thread_getuid(pthread_t p)
+{
+    return thread_isvalid(p);
 }

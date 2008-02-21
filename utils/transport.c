@@ -263,7 +263,7 @@ int nmst_read(nms_transport * transport, void *buffer, size_t nbytes, void *prot
 {
     switch (transport->sock.socktype) {
     case TCP:
-        return read(transport->sock.fd, buffer, nbytes);
+        return recv(transport->sock.fd, buffer, nbytes, 0);
         break;
 #ifdef HAVE_LIBSCTP
     case SCTP:
@@ -287,7 +287,7 @@ int nmst_write(nms_transport * transport, void *buffer, size_t nbytes, void *pro
 #endif
     switch (transport->sock.socktype) {
     case TCP:
-        return write(transport->sock.fd, buffer, nbytes);
+        return send(transport->sock.fd, buffer, nbytes, 0);
         break;
 #ifdef HAVE_LIBSCTP
     case SCTP:
