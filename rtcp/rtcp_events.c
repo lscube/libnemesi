@@ -23,8 +23,8 @@
 #include "rtcp.h"
 #include "utils.h"
 
-
-/** @file rtcp_events.c
+/** 
+ * @file rtcp_events.c
  * This file contains the RTCP Layer events handling functions.
  * rtcp_events are the way the libNemesi uses to notify its
  * RTCP Layer that it has to do something on client side.
@@ -87,13 +87,11 @@ struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 
     case RTCP_RR:
     case RTCP_SDES:
-
         if (event->rtp_sess->ssrc_queue) {
             n = rtcp_send_rr(event->rtp_sess);
             event->rtp_sess->sess_stats.avg_rtcp_size =
-                (1. / 16.) * n +
-                (15. / 16.) *
-                (event->rtp_sess->sess_stats.avg_rtcp_size);
+                (1. / 16.) * n + (15. / 16.) *
+                    (event->rtp_sess->sess_stats.avg_rtcp_size);
         }
         event->rtp_sess->sess_stats.tp = now;
 
@@ -114,13 +112,10 @@ struct rtcp_event *rtcp_handle_event(struct rtcp_event *event)
 
         rtp_save = event->rtp_sess;
         event = rtcp_deschedule(event);
-        if ((event =
-             rtcp_schedule(event, rtp_save, rtp_save->sess_stats.tn,
-                   RTCP_RR)) == NULL)
+        if ((event = rtcp_schedule(event, rtp_save,
+                                   rtp_save->sess_stats.tn, RTCP_RR)) == NULL)
             return NULL;
-
         break;
-
     case RTCP_BYE:
         rtcp_send_bye(event->rtp_sess);
         break;
@@ -147,12 +142,11 @@ struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
     struct rtcp_event *pevent = head;
     struct rtcp_event *event = head;
 
-    if ((new_event =
-         (struct rtcp_event *) malloc(sizeof(struct rtcp_event))) ==
-        NULL) {
+    if ((new_event = malloc(sizeof(struct rtcp_event))) == NULL) {
         nms_printf(NMSML_FATAL, "Cannot allocate memory!\n");
         return NULL;
     }
+
     new_event->rtp_sess = rtp_sess;
     new_event->tv = tv;
     new_event->type = type;
@@ -165,10 +159,12 @@ struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
         pevent = event;
         event = event->next;
     }
+
     if (pevent == head) {
         new_event->next = head;
         return new_event;
     }
+
     pevent->next = new_event;
     new_event->next = event;
 
