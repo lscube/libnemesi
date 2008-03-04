@@ -160,7 +160,7 @@ struct rtcp_event *rtcp_schedule(struct rtcp_event *head,
         event = event->next;
     }
 
-    if (pevent == head) {
+    if (pevent == head && event != NULL) {
         new_event->next = head;
         return new_event;
     }
