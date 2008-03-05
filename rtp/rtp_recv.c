@@ -116,7 +116,7 @@ static void rtp_init_seq(rtp_ssrc * stm_src, uint16_t seq)
  * @param stm_src The source for which to update the sequence numbers informations
  * @param seq The sequence number to analyze
  */
-static void rtp_update_seq(rtp_ssrc * stm_src, uint16_t seq)
+void rtp_update_seq(rtp_ssrc * stm_src, uint16_t seq)
 {
     struct rtp_ssrc_stats *stats = &(stm_src->ssrc_stats);
     uint16_t udelta = seq - stats->max_seq;
