@@ -256,7 +256,6 @@ typedef int (*rtp_parser_uninit) (rtp_ssrc * stm_src, unsigned pt);
 typedef struct rtp_session_s {
     void * owner; //!< rtsp_thread owning this rtp session
     uint32_t local_ssrc;
-    rtp_transport transport;
     struct rtp_session_stats sess_stats;
     rtp_ssrc *ssrc_queue;                   //!< queue of all known SSRCs
     rtp_ssrc *active_ssrc_queue;            //!< queue of active SSRCs
@@ -272,6 +271,7 @@ typedef struct rtp_session_s {
     rtp_parser_uninit parsers_uninits[128];
     void *park;                             //!< private pointer used by the application (e.g. to hold decoder state variables)
     float fps;				    //!< current frame per second 
+    rtp_transport transport;
 } rtp_session;
 
 typedef struct {
