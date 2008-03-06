@@ -32,6 +32,10 @@
 #endif
 #endif
 
+#ifdef HAVE_LIBSCTP
+#include <netinet/sctp.h>
+#endif
+
 /**
  * Retrieves the address family and address itself from a sockaddr struct
  * @param sockaddr The sockaddr from which to retrieve the data

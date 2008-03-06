@@ -81,7 +81,9 @@ int rtcp_build_rr(rtp_session * rtp_sess, rtcp_pkt * pkt)
                    (expected - stm_src->ssrc_stats.received -
                     1), 0x7fffff);
             lost = max(lost, -(1 << 23));
-            rr->lost = ntohl24(lost);
+            rr->lost = ((lost&0xff) << 16)  |
+                        (lost&0xff00)       |
+                        ((lost&0xff0000)>>16);
 
             rr->last_seq =
                 htonl(stm_src->ssrc_stats.cycles +
