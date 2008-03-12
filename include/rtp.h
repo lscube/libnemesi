@@ -158,6 +158,8 @@ typedef struct {
 #define RTP_TRANSPORT_SET                0
 #define RTP_TRANSPORT_ERR                1
 
+enum deliveries { unicast, multicast };
+
 typedef struct {
     char *spec;
     uint32_t ssrc;
@@ -166,7 +168,7 @@ typedef struct {
     int append;
     int layers;
     int ttl;
-    enum deliveries { unicast, multicast } delivery;
+    enum deliveries delivery;
     nms_transport RTP;
     nms_transport RTCP;
 } rtp_transport;
