@@ -159,12 +159,13 @@ typedef struct {
 #define RTP_TRANSPORT_ERR                1
 
 enum deliveries { unicast, multicast };
+enum modes { play, record };
 
 typedef struct {
     char *spec;
     uint32_t ssrc;
     sock_type type;
-    enum modes { play, record } mode;
+    enum modes mode;
     int append;
     int layers;
     int ttl;
