@@ -336,9 +336,10 @@ static int mpa_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         rtp_parser_set_uninit(stm_src->rtp_sess, fr->pt,
                       mpa_uninit_parser);
         nms_printf(NMSML_DBG3, "done\n");
-    } else if (mpa_priv->data_size < pkt_len) {
+    } else if ((RTP_MPA_FRAG_OFFSET(pkt) + pkt_len) > mpa_priv->data_size) {
         nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");
-        if (!(mpa_priv->data = realloc(mpa_priv->data, pkt_len)))
+        mpa_priv->data_size += max(DEFAULT_MPA_DATA_FRAME, pkt_len);
+        if (!(mpa_priv->data = realloc(mpa_priv->data,  mpa_priv->data_size)))
             return RTP_ERRALLOC;
         nms_printf(NMSML_DBG3, "done\n");
     }
