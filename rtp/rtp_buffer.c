@@ -77,7 +77,8 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         (double) stm_src->rtp_sess->ptdefs[fr->pt]->rate;
 
     if (ts_jump > 10) {
-        fprintf(stderr, "Out of sync timestamp: %u - %u: %g\n", fr->timestamp, stm_src->ssrc_stats.lastts, ts_jump);
+        fprintf(stderr, "Out of sync timestamp: %u - %u: %g for Payload: %d\n", fr->timestamp, stm_src->ssrc_stats.lastts, ts_jump, fr->pt);
+        stm_src->ssrc_stats.lastts = fr->timestamp;
         rtp_rm_pkt(stm_src);
         return RTP_BUFF_EMPTY;
     }
