@@ -29,6 +29,13 @@
 #include "rtp.h"
 #include "sdp.h"
 
+static void usage(char *name)
+{
+    fprintf(stderr,
+            "\tUsage: %s [-f outputfile ] [-p rtp_port] [-t|-s] url\n",
+            name);
+}
+
 int main(int argc, char **argv)
 {
 
@@ -44,14 +51,12 @@ int main(int argc, char **argv)
 
     if (argc < 2) {
         fprintf(stderr, "\tPlease specify at least an url.\n");
-        fprintf(stderr,
-            "\tUsage: %s [-f outputfile ] [-p rtp_port] [-t url\n",
-            argv[0]);
+        usage(argv[0]);
         exit(1);
     }
 
 #ifndef WIN32
-    while ((opt = getopt(argc, argv, "df:p:v:")) != -1) {
+    while ((opt = getopt(argc, argv, "f:p:v:ts")) != -1) {
         switch (opt) {
 
             /*  Set output file  */
@@ -66,12 +71,20 @@ int main(int argc, char **argv)
         case 'v':
             nms_verbosity_set(atoi(optarg));
             break;
+            /* Force TCP interleaved */
+        case 't':
+            rtsp_hints.pref_rtsp_proto = TCP;
+            rtsp_hints.pref_rtp_proto = TCP;
+            break;
+            /* Force SCTP */
+        case 's':
+            rtsp_hints.pref_rtsp_proto = SCTP;
+            rtsp_hints.pref_rtp_proto = SCTP;
+            break;
             /* Unknown option  */
         case '?':
             fprintf(stderr, "\n  Unknown option `-%c'.\n", optopt);
-            fprintf(stderr,
-                "\tUsage: %s [-f outputfile ] [-d] url\n\n",
-                argv[0]);
+            usage(argv[0]);
 
             return 1;
         }
@@ -100,7 +113,7 @@ int main(int argc, char **argv)
         // die
         return 1;
     }
-       
+
     // you must call rtsp_wait after issuing any command
     reply = rtsp_wait(ctl);
     printf("OPEN: Received reply from server: %s\n", reply.message.reply_str);
