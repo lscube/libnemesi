@@ -20,7 +20,7 @@ AC_INIT([libnemesi], [nemesi_version], [https://live.polito.it/roundup/lscube])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(dist-bzip2 check-news)
+AM_INIT_AUTOMAKE(dist-bzip2 foreign)
 AC_PREFIX_DEFAULT("/usr")
 
 AC_CONFIG_HEADER([config.h])
