@@ -40,11 +40,6 @@ AC_ARG_ENABLE(examples,
 	enable_examples="yes")
 
 dnl Check for programs.
-m4_undefine([AC_PROG_CXX])
-m4_defun([AC_PROG_CXX],[])
-m4_undefine([AC_PROG_F77])
-m4_defun([AC_PROG_F77],[])
-
 AC_PROG_LIBTOOL
 LIBTOOL="$LIBTOOL --silent"
 AC_SUBST([LIBTOOL_DEPS])
