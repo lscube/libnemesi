@@ -34,6 +34,9 @@ AC_ARG_ENABLE(ipv6,
 AC_ARG_ENABLE(sctp,
 [  --enable-sctp            enable SCTP support [[default=autodetected]]],,
 	enable_sctp="yes")
+AC_ARG_ENABLE(examples,
+	AS_HELP_STRING([--disable-examples], [Don't build examples during make]),,
+	enable_examples="yes")
 
 dnl Check for programs.
 m4_undefine([AC_PROG_CXX])
@@ -110,6 +113,8 @@ else
 fi
 
 AC_SUBST(EXTRA_FLAGS)
+
+AM_CONDITIONAL(EXAMPLES, [test "$enable_examples" = "yes"])
 
 AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])
 if test "$enable_debug" = "yes"; then

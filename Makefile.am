@@ -6,8 +6,11 @@ SUBDIRS =	bufferpool \
 		sdp \
 		rtsp \
 		parsers \
-		. \
-		example
+		.
+
+if EXAMPLES
+SUBDIRS += example
+endif
 
 ACLOCAL_AMFLAGS = -I m4
 
