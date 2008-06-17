@@ -242,8 +242,8 @@ int rtsp_recv(rtsp_thread * rtsp_th)
 {
     int n = -1, m = 0;
     char buffer[RTSP_BUFFERSIZE];
-    nms_rtsp_interleaved *p;
 #ifdef HAVE_LIBSCTP
+    nms_rtsp_interleaved *p;
     struct sctp_sndrcvinfo sinfo;
 #endif
 

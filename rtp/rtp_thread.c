@@ -124,7 +124,7 @@ static void *rtp(void *args)
     rtp_session *rtp_sess_head = thread->rtp_sess_head;
     pthread_mutex_t *syn = &thread->syn;
     rtp_session *rtp_sess;
-    struct timespec ts;
+    /* struct timespec ts; */
     int maxfd = 0;
 
     fd_set readset;

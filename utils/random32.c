@@ -58,8 +58,6 @@ typedef struct AVMD5{
     uint32_t ABCD[4];
 } AVMD5;
 
-static const int av_md5_size= sizeof(AVMD5);
-
 static const uint8_t S[4][4] = {
     { 7, 12, 17, 22 },  /* Round 1 */
     { 5,  9, 14, 20 },  /* Round 2 */
