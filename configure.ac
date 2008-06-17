@@ -40,7 +40,8 @@ AC_ARG_ENABLE(examples,
 	enable_examples="yes")
 
 dnl Check for programs.
-AC_PROG_LIBTOOL
+LT_PREREQ([2.2.4])
+LT_INIT
 LIBTOOL="$LIBTOOL --silent"
 AC_SUBST([LIBTOOL_DEPS])
 
