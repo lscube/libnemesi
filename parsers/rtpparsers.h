@@ -39,7 +39,7 @@ typedef struct {
  * Depayloader class
  */
 typedef struct {
-    rtpparser_info *served;     //!< Depayloader info
+    const rtpparser_info *served;     //!< Depayloader info
     rtp_parser_init init;       //!< Optional initialization
     rtp_parser parse;           //!< rtp parse/depayload function
     rtp_parser_uninit uninit;   //!< Optional deinitialization

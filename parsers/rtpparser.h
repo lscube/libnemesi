@@ -31,7 +31,7 @@
  * <tt>rtp_parser_uninit *rtp_parsers_uninits</tt> array in rtp_session struct.
  * */
 
-#define RTP_PARSER(x) rtpparser rtp_parser_##x = { \
+#define RTP_PARSER(x) const rtpparser rtp_parser_##x = { \
     &x##_served, \
     NULL, \
     x##_parse, \
@@ -46,7 +46,7 @@
  * */
 
 #define RTP_PARSER_FULL(x) \
-    rtpparser rtp_parser_##x = {\
+    const rtpparser rtp_parser_##x = {\
         &x##_served, \
         x##_init_parser, \
         x##_parse, \

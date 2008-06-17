@@ -57,7 +57,7 @@ typedef struct {
 
 
 
-static rtpparser_info aac_served = {
+static const rtpparser_info aac_served = {
     -1,
     {"MPEG4-GENERIC", NULL}
 };

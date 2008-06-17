@@ -29,7 +29,7 @@
  * SPEEX depacketizer
  */
 
-static rtpparser_info speex_served = {
+static const rtpparser_info speex_served = {
     -1,
     {"speex", NULL}
 };

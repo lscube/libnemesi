@@ -44,7 +44,7 @@ typedef struct {
     int configured;
 } rtp_h264;
 
-static rtpparser_info h264_served = {
+static const rtpparser_info h264_served = {
     -1,
     {"H264", NULL}
 };

@@ -45,7 +45,7 @@ typedef struct {
     int conf_len;
 } rtp_theora;
 
-static rtpparser_info theora_served = {
+static const rtpparser_info theora_served = {
     -1,
     {"theora", NULL}
 };

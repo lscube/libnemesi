@@ -25,17 +25,17 @@
 
 #include "rtpparsers.h"
 
-extern rtpparser rtp_parser_mpa;
-extern rtpparser rtp_parser_mpv;
-extern rtpparser rtp_parser_h264;
-extern rtpparser rtp_parser_h263;
-extern rtpparser rtp_parser_speex;
-extern rtpparser rtp_parser_theora;
-extern rtpparser rtp_parser_vorbis;
-extern rtpparser rtp_parser_m4v;
-extern rtpparser rtp_parser_aac;
+extern const rtpparser rtp_parser_mpa;
+extern const rtpparser rtp_parser_mpv;
+extern const rtpparser rtp_parser_h264;
+extern const rtpparser rtp_parser_h263;
+extern const rtpparser rtp_parser_speex;
+extern const rtpparser rtp_parser_theora;
+extern const rtpparser rtp_parser_vorbis;
+extern const rtpparser rtp_parser_m4v;
+extern const rtpparser rtp_parser_aac;
 
-rtpparser *rtpparsers[] = {
+const rtpparser *const rtpparsers[] = {
     &rtp_parser_mpa,
     &rtp_parser_mpv,
     &rtp_parser_h264,

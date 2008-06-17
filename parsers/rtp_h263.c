@@ -41,7 +41,7 @@ typedef struct {
     unsigned long timestamp; //!< timestamp of progressive frame
 } rtp_h263;
 
-static rtpparser_info h263_served = {
+static const rtpparser_info h263_served = {
     -1,
     {"H263-1998", NULL}
 };

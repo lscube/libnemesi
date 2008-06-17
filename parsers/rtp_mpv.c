@@ -26,7 +26,7 @@
 
 #include "rtpparser.h"
 
-static rtpparser_info mpv_served = {
+static const rtpparser_info mpv_served = {
     32,
     {"MPV", NULL}
 };

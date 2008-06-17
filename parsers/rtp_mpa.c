@@ -27,7 +27,7 @@
 #include "rtpparser.h"
 #include "utils.h"
 
-static rtpparser_info mpa_served = {
+static const rtpparser_info mpa_served = {
     14,
     {"MPA", NULL}
 };

@@ -49,7 +49,7 @@ typedef struct {
     char *descr;
 } cc_perm;
 
-CC_EXTERN cc_perm cc_by
+CC_EXTERN const cc_perm cc_by
 #ifdef CC_GLOBAL_DATA
     = { "Attribution", "by",
     "The licensor permits others to copy, distribute, display, and perform the work. In return, licensees must give the original author credit."
@@ -57,7 +57,7 @@ CC_EXTERN cc_perm cc_by
 #endif                // CC_GOBAL_DATA
 ;
 
-CC_EXTERN cc_perm cc_nc
+CC_EXTERN const cc_perm cc_nc
 #ifdef CC_GLOBAL_DATA
     = { "NonCommercial", "nc",
     "The licensor permits others to copy, distribute, display, and perform the work. In return, licensees may not use the work for commercial purposes -- unless they get the licensor's permission."
@@ -65,7 +65,7 @@ CC_EXTERN cc_perm cc_nc
 #endif                // CC_GOBAL_DATA
 ;
 
-CC_EXTERN cc_perm cc_nd
+CC_EXTERN const cc_perm cc_nd
 #ifdef CC_GLOBAL_DATA
     = { "NoDerivative", "nd",
     "The licensor permits others to copy, distribute, display and perform only unaltered copies of the work -- not derivative works based on it."
@@ -73,7 +73,7 @@ CC_EXTERN cc_perm cc_nd
 #endif                // CC_GOBAL_DATA
 ;
 
-CC_EXTERN cc_perm cc_sa
+CC_EXTERN const cc_perm cc_sa
 #ifdef CC_GLOBAL_DATA
     = { "ShareAlike", "sa",
     "The licensor permits others to distribute derivative works only under a license identical to the one that governs the licensor's work."
@@ -100,7 +100,7 @@ typedef struct {
  */
 #define CC_PD 1
 
-CC_EXTERN cc_spec_license cc_spec_licenses[]
+CC_EXTERN const cc_spec_license cc_spec_licenses[]
 #ifdef CC_GLOBAL_DATA
     = {
     {"PubblicDomain", "publicdomain", "Public domain dedication", CC_PD},

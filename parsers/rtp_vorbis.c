@@ -45,7 +45,7 @@ typedef struct {
     int conf_len;
 } rtp_vorbis;
 
-static rtpparser_info vorbis_served = {
+static const rtpparser_info vorbis_served = {
     -1,
     {"vorbis", NULL}
 };

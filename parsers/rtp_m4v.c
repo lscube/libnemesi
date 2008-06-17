@@ -44,7 +44,7 @@ typedef struct {
     int configured;
 } rtp_m4v;
 
-static rtpparser_info m4v_served = {
+static const rtpparser_info m4v_served = {
     -1,
     {"MP4V-ES", NULL}
 };
