@@ -46,6 +46,8 @@ libnemesi_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 noinst_HEADERS = include/utils.h
 
+EXTRA_DIST = Doxyfile CodingStyle
+
 MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log libnemesi.pc
 MAINTAINER_DIRS = config
 
