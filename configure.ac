@@ -16,7 +16,7 @@ m4_define([nemesi_lt_age], [m4_eval(nemesi_binary_age - nemesi_interface_age)])
 AC_INIT(libnemesi, [nemesi_version], [https://live.polito.it/roundup/lscube])
 
 AC_CONFIG_AUX_DIR(config)
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
 AC_PREFIX_DEFAULT("/usr")
 
