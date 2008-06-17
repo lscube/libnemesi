@@ -45,8 +45,7 @@ pkgconfig_DATA = libnemesi.pc
 libnemesi_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 EXTRA_DIST = 	config \
-		include \
-		debian
+		include
 
 
 MAINTAINER_FILES = acinclude.m4 aclocal.m4 config.h.in* configure Makefile.in mkinstalldirs error.log libnemesi.pc
