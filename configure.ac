@@ -23,16 +23,16 @@ AC_PREFIX_DEFAULT("/usr")
 AM_CONFIG_HEADER(config.h)
 
 AC_ARG_ENABLE(debug,
-[  --enable-debug          enable gcc dubugging flags [[default=no]]],,
+	AS_HELP_STRING([--enable-debug], [enable gcc debugging flags (default=no)]),,
 	enable_debug="no")
 AC_ARG_ENABLE(errors,
-[  --enable-errors         make gcc warnings behave like errors: none, normal, pedantic [[default=none]]],,
+	AS_HELP_STRING([--enable-errors], [make gcc warnings behave like errors: nome, normal, pedantic (default=none)]),,
 	enable_errors="none")
 AC_ARG_ENABLE(ipv6,
-[  --enable-ipv6            enable IPv6 support [[default=autodetected]]],,
+	AS_HELP_STRING([--enable-ipv6], [enable IPv6 support (default=autodetect)]),,
 	enable_ipv6="yes")
 AC_ARG_ENABLE(sctp,
-[  --enable-sctp            enable SCTP support [[default=autodetected]]],,
+	AS_HELP_STRING([--enable-sctp], [enable SCTP support (default=autodetect)]),,
 	enable_sctp="yes")
 AC_ARG_ENABLE(examples,
 	AS_HELP_STRING([--disable-examples], [Don't build examples during make]),,
