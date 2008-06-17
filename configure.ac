@@ -1,3 +1,5 @@
+AC_PREREQ(2.62)
+
 dnl Process this file with autoconf to produce a configure script.
 
 m4_define([nemesi_major_version], [0])
