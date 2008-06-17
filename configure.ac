@@ -20,7 +20,7 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE(dist-bzip2 check-news)
 AC_PREFIX_DEFAULT("/usr")
 
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([config.h])
 
 AC_ARG_ENABLE(debug,
 	AS_HELP_STRING([--enable-debug], [enable gcc debugging flags (default=no)]),,
