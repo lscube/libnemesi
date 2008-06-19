@@ -112,6 +112,6 @@ int nms_verbosity_get(void);
 extern int (*nms_printf) (int level, const char *fmt, ...);
 extern int (*nms_statusprintf) (int cmd, const char *fmt, ...);
 
-inline void nms_header(void);
+void nms_header(void);
 
 #endif /* NEMESI_COMM_H */

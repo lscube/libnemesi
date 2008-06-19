@@ -203,7 +203,7 @@ void nms_append_data(uint8_t *dst, long offset, uint8_t *src, long len) {
     memcpy(dst + offset, src, len);
 }
 
-inline void nms_append_incr(uint8_t *dst, long *offset, uint8_t *src, long len) {
+void nms_append_incr(uint8_t *dst, long *offset, uint8_t *src, long len) {
     nms_append_data(dst, *offset, src, len);
     *offset += len;
 }
