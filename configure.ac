@@ -25,12 +25,6 @@ AC_PREFIX_DEFAULT("/usr")
 
 AC_CONFIG_HEADER([config.h])
 
-AC_ARG_ENABLE(debug,
-	AS_HELP_STRING([--enable-debug], [enable gcc debugging flags (default=no)]),,
-	enable_debug="no")
-AC_ARG_ENABLE(errors,
-	AS_HELP_STRING([--enable-errors], [make gcc warnings behave like errors: nome, normal, pedantic (default=none)]),,
-	enable_errors="none")
 AC_ARG_ENABLE(ipv6,
 	AS_HELP_STRING([--enable-ipv6], [enable IPv6 support (default=autodetect)]),,
 	enable_ipv6="yes")
@@ -115,27 +109,8 @@ AC_SUBST(EXTRA_FLAGS)
 
 AM_CONDITIONAL(EXAMPLES, [test "$enable_examples" = "yes"])
 
-AM_CONDITIONAL(NEMESI_DEBUG, [test "$enable_debug" = "yes"])
-if test "$enable_debug" = "yes"; then
-	CFLAGS="$CFLAGS -g -ggdb -Wall"
-	AC_DEFINE(ENABLE_DEBUG, 1,[Debug enabled])
-	debug_msg="
-   Debuging flags enabled: welcome developer!!!"
-else
-        CFLAGS="$CFLAGS -Wall"
-fi
-
-case "$enable_errors" in
-	pedantic)
-		CFLAGS="$CFLAGS -pedantic-errors -Werror"
-	;;
-	normal | yes)
-		CFLAGS="$CFLAGS -Werror"
-	;;
-	none | *)
-		CFLAGS="$CFLAGS"
-	;;
-esac
+LSC_ERRORS
+LSC_DEBUG
 
 dnl libtool nonsense
 LT_CURRENT=nemesi_lt_current
@@ -159,6 +134,7 @@ AC_CONFIG_FILES([Makefile
                  libnemesi.pc])
 AC_OUTPUT
 
+LSC_DEBUG_STATUS
 AC_MSG_NOTICE([config files successfully generated!
  
 libnemesi version is .............. : $VERSION
@@ -168,8 +144,6 @@ libnemesi Install prefix .......... : $prefix
 libnemesi has SCTP support ........ : $enable_sctp
 
 Byte order ..................... : this is a $BIGENDIAN machine
-
-$debug_msg
 
  'make' will now compile libnemesi and 'su -c make install' will install it.
  Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.
