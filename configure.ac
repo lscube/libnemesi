@@ -65,10 +65,7 @@ AC_C_INLINE
 AC_HEADER_TIME
 
 dnl Check for library functions.
-AC_FUNC_ALLOCA
 AC_FUNC_MEMCMP
-AC_FUNC_MMAP
-AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(select socket gettimeofday uname getcwd getwd strcspn strdup strtoul strerror strstr setenv nanosleep strdup)
 AC_CHECK_FUNC(getaddrinfo)
 AC_CHECK_LIBM
