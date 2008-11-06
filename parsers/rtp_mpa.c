@@ -333,8 +333,6 @@ static int mpa_parse(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
         mpa_priv->data_size = max(DEFAULT_MPA_DATA_FRAME, mpa.frm_len);
         if (!(mpa_priv->data = malloc(mpa_priv->data_size)))
             return RTP_ERRALLOC;
-        rtp_parser_set_uninit(stm_src->rtp_sess, fr->pt,
-                      mpa_uninit_parser);
         nms_printf(NMSML_DBG3, "done\n");
     } else if ((RTP_MPA_FRAG_OFFSET(pkt) + pkt_len) > mpa_priv->data_size) {
         nms_printf(NMSML_DBG3, "[rtp_mpa] reallocating data...");

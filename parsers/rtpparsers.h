@@ -53,8 +53,7 @@ typedef struct {
 void rtp_parsers_init(void);
 int rtp_parser_reg(rtp_session *, int16_t, char *);
 void rtp_parsers_new(rtp_parser * new_parsers,
-             rtp_parser_init * new_parsers_inits);
-void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
-                  rtp_parser_uninit parser_uninit);
+             rtp_parser_init * new_parsers_inits,
+             rtp_parser_uninit * new_parsers_uninits);
 
 #endif                /* RTPFRAMERS_H_ */

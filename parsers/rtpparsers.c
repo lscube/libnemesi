@@ -49,6 +49,7 @@ const rtpparser *const rtpparsers[] = {
 };
 
 static int rtp_def_parser(rtp_ssrc *, rtp_frame * fr, rtp_buff * config);
+static int parser_def_uninit(rtp_ssrc * stm_src, unsigned pt);
 
 static rtp_parser rtp_parsers[128] = {
     rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser,
@@ -85,7 +86,9 @@ static rtp_parser rtp_parsers[128] = {
     rtp_def_parser, rtp_def_parser, rtp_def_parser, rtp_def_parser
 };
 
-static rtp_parser_init rtp_parsers_inits[128];
+static rtp_parser_init rtp_parsers_inits[128] = {0, };
+
+static rtp_parser_uninit rtp_parsers_uninits[128] = { parser_def_uninit, };
 
 void rtp_parsers_init(void)
 {
@@ -98,6 +101,7 @@ void rtp_parsers_init(void)
         if (pt < 96 && pt != -1) {
             rtp_parsers[pt] = rtpparsers[i]->parse;
             rtp_parsers_inits[pt] = rtpparsers[i]->init;
+	    rtp_parsers_uninits[pt] = rtpparsers[i]->uninit;
         }
     }
 }
@@ -119,6 +123,7 @@ int rtp_parser_reg(rtp_session * rtp_sess, int16_t pt, char *mime)
                 rtp_sess->parsers[pt] = rtpparsers[i]->parse;
                 rtp_sess->parsers_inits[pt] =
                     rtpparsers[i]->init;
+	        rtp_sess->parsers_uninits[pt] = rtpparsers[i]->uninit;
                 return RTP_OK;
             }
         }
@@ -127,18 +132,16 @@ int rtp_parser_reg(rtp_session * rtp_sess, int16_t pt, char *mime)
     return RTP_OK;
 }
 
+static int parser_def_uninit(rtp_ssrc * stm_src, unsigned pt);
+
 void rtp_parsers_new(rtp_parser * new_parsers,
-             rtp_parser_init * new_parsers_inits)
+             rtp_parser_init * new_parsers_inits,
+             rtp_parser_uninit * new_parsers_uninits)
 {
     memcpy(new_parsers, rtp_parsers, sizeof(rtp_parsers));
     memcpy(new_parsers_inits, rtp_parsers_inits,
            sizeof(rtp_parsers_inits));
-}
-
-inline void rtp_parser_set_uninit(rtp_session * rtp_sess, unsigned pt,
-                  rtp_parser_uninit parser_uninit)
-{
-    rtp_sess->parsers_uninits[pt] = parser_uninit;
+    memcpy(new_parsers_uninits, rtp_parsers_uninits, sizeof(rtp_parsers_uninits));
 }
 
 #define DEFAULT_PRSR_DATA_FRAME 65535
@@ -147,6 +150,20 @@ typedef struct {
     uint8_t *data;
     uint32_t data_size;
 } rtp_def_parser_s;
+
+static int parser_def_uninit(rtp_ssrc * stm_src, unsigned pt)
+{
+    rtp_def_parser_s *priv = stm_src->privs[pt];
+
+    if (priv) {
+        nms_printf(NMSML_DBG2,
+               "freeing private resources...\n");
+        free(priv->data);
+        free(priv);
+    }
+
+    return 0;
+}
 
 static int rtp_def_parser(rtp_ssrc * stm_src, rtp_frame * fr,
               rtp_buff * config)

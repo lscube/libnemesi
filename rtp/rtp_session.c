@@ -101,7 +101,7 @@ rtp_session *rtp_session_init(nms_sockaddr * local, nms_sockaddr * peer)
 
     // RP Payload types definitions:
     rtpptdefs_new(rtp_sess->ptdefs);
-    rtp_parsers_new(rtp_sess->parsers, rtp_sess->parsers_inits);
+    rtp_parsers_new(rtp_sess->parsers, rtp_sess->parsers_inits, rtp_sess->parsers_uninits);
 
     return rtp_sess;
 }
