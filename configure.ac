@@ -53,7 +53,8 @@ dnl Check for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
-AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h)
+AC_CHECK_HEADERS(sys/time.h unistd.h strings.h errno.h fcntl.h limits.h malloc.h byteswap.h)
+
 
 dnl Check for typedefs, structures, and compiler characteristics.
 AC_C_CONST
