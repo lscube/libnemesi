@@ -1,4 +1,4 @@
-AC_PREREQ(2.62)
+AC_PREREQ(2.61)
 
 dnl Process this file with autoconf to produce a configure script.
 
@@ -36,8 +36,7 @@ AC_ARG_ENABLE(examples,
 	enable_examples="yes")
 
 dnl Check for programs.
-LT_PREREQ([2.2.4])
-LT_INIT
+AC_PROG_LIBTOOL
 LIBTOOL="$LIBTOOL --silent"
 AC_SUBST([LIBTOOL_DEPS])
 
