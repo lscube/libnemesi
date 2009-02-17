@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "rtspinternals.h"
@@ -228,7 +228,7 @@ quit_function:
  * Waits for the main loop to handle the last given command, this should be called after issuing a command
  * to the rtsp main loop.
  * @param rtsp_ctl The control structure for which to wait.
- * @return The last response received from the server if the server is still alive. 
+ * @return The last response received from the server if the server is still alive.
  *          RTSP_Ready If the library has just been initialized
  *          RTSP_Reinitialized If the library has been reinitialized (connection error, server went down, etc)
  */
@@ -272,7 +272,7 @@ rtp_thread *rtsp_get_rtp_th(rtsp_ctrl * rtsp_ctl)
 }
 
 /**
- * Prints the informations about the given RTSP controller: 
+ * Prints the informations about the given RTSP controller:
  * Session informations, medium informations.
  * @param rtsp_ctl The controller for which to print the informations
  */
@@ -537,7 +537,7 @@ int rtsp_open(rtsp_ctrl * rtsp_ctl, char *urlname)
         goto quit_function;
 
     got_error = 0;
-   
+
 quit_function:
     if (got_error)
         rtsp_ctl->busy = 0;
@@ -570,7 +570,7 @@ int rtsp_pause(rtsp_ctrl * rtsp_ctl)
     }
 
     get_curr_sess(GCS_INIT, rtsp_th);
-    if (send_pause_request(rtsp_th, rtsp_ctl->comm->arg)) 
+    if (send_pause_request(rtsp_th, rtsp_ctl->comm->arg))
         goto quit_function;
 
     got_error = 0;

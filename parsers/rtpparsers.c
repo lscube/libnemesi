@@ -106,6 +106,21 @@ void rtp_parsers_init(void)
     }
 }
 
+int rtp_parser_check(char *mime)
+{
+    int i, j;
+    
+    for (i = 0; rtpparsers[i]; i++) {
+        for (j = 0; rtpparsers[i]->served->mime[j]; j++) {
+            if (!strcasecmp(rtpparsers[i]->served->mime[j], mime)) {
+                return RTP_OK;
+            }
+        }
+    }
+
+    return RTP_ERROR;
+}
+
 int rtp_parser_reg(rtp_session * rtp_sess, int16_t pt, char *mime)
 {
     int i, j;
@@ -123,13 +138,13 @@ int rtp_parser_reg(rtp_session * rtp_sess, int16_t pt, char *mime)
                 rtp_sess->parsers[pt] = rtpparsers[i]->parse;
                 rtp_sess->parsers_inits[pt] =
                     rtpparsers[i]->init;
-	        rtp_sess->parsers_uninits[pt] = rtpparsers[i]->uninit;
+	            rtp_sess->parsers_uninits[pt] = rtpparsers[i]->uninit;
                 return RTP_OK;
             }
         }
     }
 
-    return RTP_OK;
+    return RTP_ERROR;
 }
 
 static int parser_def_uninit(rtp_ssrc * stm_src, unsigned pt);

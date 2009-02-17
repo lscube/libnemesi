@@ -161,6 +161,7 @@ sdp_medium_info *sdp_media_setup(char **descr, int descr_len);
 int sdp_set_attr(sdp_attr ** attr_list, char *a);
 void sdp_session_destroy(sdp_session_info *);
 void sdp_media_destroy(sdp_medium_info *);
+void sdp_medium_destroy(sdp_medium_info *);
 int sdp_parse_m_descr(sdp_medium_info *, char *);
 
 typedef struct {

@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,11 +17,12 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "rtspinternals.h"
 #include "utils.h"
+#include "parsers/rtpparsers.h"
 
 int body_exists(char *in_buffer)
 {
@@ -317,13 +318,61 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
 {
     rtsp_session *curr_rtsp_s = rtsp_th->rtsp_queue;
     rtsp_medium *curr_rtsp_m = NULL;
-    sdp_medium_info *sdp_m;
+    sdp_medium_info *sdp_m, *sdp_m_prev;
     sdp_attr *sdp_attr;
     char *tkn, *ch;
     uint8_t pt;
+    int error=0;
 
     switch (rtsp_th->descr_fmt) {
     case DESCRIPTION_SDP_FORMAT:
+        //erasing unknown media
+        sdp_m = curr_rtsp_s->info->media_info_queue;
+        sdp_m_prev = NULL;
+        while (sdp_m) {
+            error = 0;
+            for (sdp_attr = sdp_m->attr_list; sdp_attr;
+                    sdp_attr = sdp_attr->next) {
+                if (!strncasecmp(sdp_attr->name, "rtpmap", 6)) {
+                    tkn = sdp_attr->value;
+                    while ((*tkn == ' ') || (*tkn == ':'))
+                        tkn++;
+                    strtoul(tkn, &tkn, 10);
+                    while (*tkn == ' ')
+                        tkn++;
+                    if (!(ch = strchr(tkn, '/'))) {
+                        nms_printf(NMSML_WARN, "Invalid field rtpmap.\n");
+                        error++;
+                    }
+                    *ch = '\0';
+                    if (rtp_parser_check(tkn)) {
+                        nms_printf(NMSML_WARN, "Ignoring unsupported media"
+                                   "type: %s.\n", tkn);
+                        error++;
+                    }
+                    *ch = '/';
+                }
+            }
+            if (error) {
+                if (!sdp_m_prev) {
+                    curr_rtsp_s->info->media_info_queue = sdp_m->next;
+                    sdp_medium_destroy(sdp_m);
+                    sdp_m = curr_rtsp_s->info->media_info_queue;
+                } else {
+                    sdp_m_prev->next = sdp_m->next;
+                    sdp_medium_destroy(sdp_m);
+                    sdp_m = sdp_m_prev->next;
+                }
+            } else {
+                sdp_m_prev = sdp_m;
+                sdp_m = sdp_m->next;
+            }
+        }
+        if (!curr_rtsp_s->info->media_info_queue) {
+            nms_printf(NMSML_ERR, "No known medium found.\n");
+            return 1;
+        }
+
         for (sdp_m = curr_rtsp_s->info->media_info_queue; sdp_m;
              sdp_m = sdp_m->next) {
             if (curr_rtsp_m == NULL) {
@@ -380,9 +429,7 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
                     while ((*tkn == ' ') || (*tkn == ':'))
                         tkn++;
                     curr_rtsp_m->filename = tkn;
-                } else
-                    if (!strncasecmp(sdp_attr->name, "rtpmap", 6))
-                {
+                } else if (!strncasecmp(sdp_attr->name, "rtpmap", 6)) {
                     /* We assume the string in the format:
                      * rtpmap:PaloadType EncodingName/ClockRate[/Channels] */
                     tkn = sdp_attr->value;
@@ -512,6 +559,5 @@ int set_rtsp_media(rtsp_thread * rtsp_th)
         return 1;
         break;
     }
-
     return 0;
 }
