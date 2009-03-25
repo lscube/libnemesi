@@ -11,6 +11,7 @@ librtsp_la_SOURCES =	rtsp.c \
                         rtsp_sessions.c \
                         rtsp_state_machine.c \
                         rtsp_transport.c \
+                        rtsp_errors.c \
 			$(top_srcdir)/include/rtspinternals.h
 
 INCLUDES = -I$(libnmsincludedir) -I$(top_srcdir)

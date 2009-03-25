@@ -21,6 +21,7 @@ libinclude_HEADERS = 	include/bufferpool.h\
 			include/rtpptdefs.h\
 			include/cc.h\
 			include/rtsp.h\
+			include/rtsp_errors.h\
 			include/comm.h\
 			include/sdp.h\
 			include/version.h\

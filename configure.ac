@@ -3,8 +3,8 @@ AC_PREREQ(2.61)
 dnl Process this file with autoconf to produce a configure script.
 
 m4_define([nemesi_major_version], [0])
-m4_define([nemesi_minor_version], [6])
-m4_define([nemesi_micro_version], [5])
+m4_define([nemesi_minor_version], [7])
+m4_define([nemesi_micro_version], [0])
 m4_define([nemesi_interface_age], [0])
 m4_define([nemesi_binary_age],
           [m4_eval(100 * nemesi_minor_version + nemesi_micro_version)])
@@ -84,7 +84,7 @@ else
 fi
 
 
-PKG_CHECK_MODULES(LIBNETEMBRYO,[libnetembryo >= 0.0.8])
+PKG_CHECK_MODULES(LIBNETEMBRYO,[libnetembryo >= 0.1.0])
 CFLAGS="$CFLAGS $LIBNETEMBRYO_CFLAGS"
 LIBS="$LIBS $LIBM $LIBNETEMBRYO_LIBS"
 
@@ -133,7 +133,7 @@ AC_OUTPUT
 
 LSC_DEBUG_STATUS
 AC_MSG_NOTICE([config files successfully generated!
- 
+
 libnemesi version is .............. : $VERSION
 
 libnemesi Install prefix .......... : $prefix
