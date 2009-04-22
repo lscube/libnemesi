@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #include "version.h"
 #include "bufferpool.h"
+#include <netembryo/wsocket-internal.h>
 
 /** @file rtsp.c
  * This file contains the interface functions to the rtsp packets and requests handling of the library

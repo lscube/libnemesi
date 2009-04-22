@@ -25,6 +25,7 @@
 #include "version.h"
 #include "transport.h"
 #include "cc.h"
+#include <netembryo/wsocket-internal.h>
 
 static inline int allocate_buffer(char ** b, char * content_base,
                                      size_t urlname_len) {
