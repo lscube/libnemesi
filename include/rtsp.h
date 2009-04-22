@@ -32,7 +32,7 @@
 #include "transport.h"
 #include "rtp.h"
 #include "sdp.h"
-#include <netembryo/rtsp_errors.h>
+#include "rtsp_errors.h"
 
 /*! Default RTSP port (default setting from rfc) if not explicitly specified. */
 #define RTSP_DEFAULT_PORT 554
