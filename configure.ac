@@ -25,12 +25,6 @@ AC_PREFIX_DEFAULT("/usr")
 
 AC_CONFIG_HEADER([config.h])
 
-AC_ARG_ENABLE(ipv6,
-	AS_HELP_STRING([--enable-ipv6], [enable IPv6 support (default=autodetect)]),,
-	enable_ipv6="yes")
-AC_ARG_ENABLE(sctp,
-	AS_HELP_STRING([--enable-sctp], [enable SCTP support (default=autodetect)]),,
-	enable_sctp="yes")
 AC_ARG_ENABLE(examples,
 	AS_HELP_STRING([--disable-examples], [Don't build examples during make]),,
 	enable_examples="yes")
@@ -76,31 +70,17 @@ AC_CHECK_TYPES(struct sockaddr_storage,
             ,
             [#include <sys/socket.h>])
 
-dnl Check for IPv6 support
-if test "$enable_ipv6" = "yes"; then
-	AC_CHECK_TYPE(struct sockaddr_in6, AC_DEFINE([IPV6], 1, [Define IPv6 support]), , [#include <netinet/in.h>])
-else
-	AC_MSG_WARN([IPv6 disabled: check skipped.])
-fi
 
+LSC_CHECK_IPV6
+LSC_CHECK_SCTP
+LIBS="$LIBS $SCTP_LIBS"
 
-PKG_CHECK_MODULES(LIBNETEMBRYO,[libnetembryo >= 0.1.1])
-CFLAGS="$CFLAGS $LIBNETEMBRYO_CFLAGS"
-LIBS="$LIBS $LIBM $LIBNETEMBRYO_LIBS"
+AS_IF([test "x$have_sctp" = "xyes"],
+  [LIBNETEMBRYO_REQUIRES="libnetembryo-sctp >= 0.1.1"],
+  [LIBNETEMBRYO_REQUIRES="libnetembryo >= 0.1.1"])
 
-dnl Check for SCTP support
-if test "$enable_sctp" = "yes"; then
-    if test "${LIBNETEMBRYO_LIBS//sctp}" = "${LIBNETEMBRYO_LIBS}"; then
-        AC_MSG_WARN([sctp required but netembryo does not support it, rebuild netembryo first.])
-    fi
-        AC_CHECK_TYPE(struct sctp_sndrcvinfo, [
-         AC_CHECK_LIB(sctp,sctp_recvmsg)],
-         [enable_sctp=no,
-         AC_MSG_WARN([SCTP disabled: headers not found])],
-         [#include <netinet/sctp.h>])
-else
-    AC_MSG_WARN([SCTP disabled: check skipped.])
-fi
+PKG_CHECK_MODULES(LIBNETEMBRYO,[$LIBNETEMBRYO_REQUIRES])
+AC_SUBST(LIBNETEMBRYO_REQUIRES)
 
 AC_SUBST(EXTRA_FLAGS)
 
