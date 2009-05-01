@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     nms_rtsp_hints rtsp_hints = { -1 };
     time_t now, before;
     RTSP_Error reply;
-    
+
 
     if (argc < 2) {
         fprintf(stderr, "\tPlease specify at least an url.\n");
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     rtsp_wait(ctl);
 
     fprintf(stderr, "\nDumping...");
-    before = time(NULL);    
+    before = time(NULL);
 
     rtp_th = rtsp_get_rtp_th(ctl);
     while (!rtp_fill_buffers(rtp_th))    // Till there is something to parse
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
 
             if (reply.message.reply_code != 200)
                 break;
-        } 
+        }
     }
 
     fprintf(stderr, " Complete\n");

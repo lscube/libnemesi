@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 /** @file rtcp_utils.c
@@ -32,7 +32,7 @@
 #define COMPENSATION 1.21828    /* e - 1.5 */
 
 /**
- * Calculates an interval between rtcp reports 
+ * Calculates an interval between rtcp reports
  * @param members Number of members active in the session
  * @param senders Number of senders active in the session
  * @param rtcp_bw ?

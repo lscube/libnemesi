@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "rtspinternals.h"
@@ -408,7 +408,7 @@ static int set_transport_str_tcp(rtp_session * rtp_sess, char *buff)
 
     if ( rtp_get_interleaved(rtp_sess, ilvds) == RTP_TRANSPORT_SET)
         sprintf(buff+strlen(buff), "interleaved=%u-%u;", ilvds[0], ilvds[1]);
-    
+
     return 0;
 }
 

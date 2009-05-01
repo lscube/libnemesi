@@ -25,7 +25,7 @@ dnl License when using or distributing such scripts, even though portions
 dnl of the text of the Macro appear in them. The GNU General Public
 dnl License (GPL) does govern all other use of the material that
 dnl constitutes the Autoconf Macro.
-dnl 
+dnl
 dnl This special exception to the GPL applies to versions of the
 dnl Autoconf Macro released by this project. When you make and
 dnl distribute a modified version of the Autoconf Macro, you may extend
@@ -204,7 +204,7 @@ AC_DEFUN([CC_FLAG_VISIBILITY], [
 	cc_cv_flag_visibility='yes',
 	cc_cv_flag_visibility='no')
      CFLAGS="$cc_flag_visibility_save_CFLAGS"])
-  
+
   AS_IF([test "x$cc_cv_flag_visibility" = "xyes"],
     [AC_DEFINE([SUPPORT_FLAG_VISIBILITY], 1,
        [Define this if the compiler supports the -fvisibility flag])

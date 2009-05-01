@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 
@@ -43,7 +43,7 @@ int rtp_fill_buffers(rtp_thread * rtp_th)
 }
 
 /**
- *  fills the frame with depacketized data (full frame or sample group) and 
+ *  fills the frame with depacketized data (full frame or sample group) and
  *  provides optional extradata if available. The structs MUST be empty and
  *  the data delivered MUST not be freed.
  *  @param stm_src an active ssrc
@@ -88,7 +88,7 @@ int rtp_fill_buffer(rtp_ssrc * stm_src, rtp_frame * fr, rtp_buff * config)
     fr->fps = stm_src->rtp_sess->fps;
     stm_src->ssrc_stats.lastts = fr->timestamp;
 
-    while ((err = stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config)) 
+    while ((err = stm_src->rtp_sess->parsers[fr->pt] (stm_src, fr, config))
             == EAGAIN);
     /*
      * The parser can set the timestamp on its own
@@ -194,7 +194,7 @@ rtp_pkt *rtp_get_n_pkt(rtp_ssrc * stm_src, unsigned int *len, unsigned int pkt_n
 /** Returns a pointer to next packet in the bufferpool for given playout buffer.
  * WARNING: the pointer returned is the memory space of the slot inside buffer
  * pool:
- * Once the packet is decoded it must be removed from rtp queue using @see 
+ * Once the packet is decoded it must be removed from rtp queue using @see
  * rtp_rm_pkt.
  * WARNING: returned pointer looks at a memory space not locked by mutex.
  * This because

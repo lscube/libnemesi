@@ -1,9 +1,9 @@
-/* * 
+/* *
  * * This file is part of NetEmbryo
  *
  * Copyright (C) 2009 by LScube team <team@lscube.org>
  * See AUTHORS for more details
- * 
+ *
  * NetEmbryo is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with NetEmbryo; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #ifndef _NETEMBRYO_RTSP_ERRORS_H_
@@ -25,7 +25,7 @@
 
 #define RTSP_MAX_REPLY_MESSAGE_LEN 256
 
-/** 
+/**
  * RTSP Error Notification data and functions
  * @defgroup rtsp_error RTSP Error Notification
  * @{

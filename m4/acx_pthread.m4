@@ -45,7 +45,7 @@ dnl @category InstalledPackages
 dnl @author Steven G. Johnson <stevenj@alum.mit.edu>
 dnl @version 2005-06-15
 dnl @license GPLWithACException
-dnl 
+dnl
 dnl Checks for GCC shared/pthread inconsistency based on work by
 dnl Marcin Owsiany <marcin@owsiany.pl>
 
@@ -227,7 +227,7 @@ if test "x$acx_pthread_ok" = xyes; then
    # architectures and systems. The problem is that in certain
    # configurations, when -shared is specified, GCC "forgets" to
    # internally use various flags which are still necessary.
-   
+
    # First, check whether caller wants us to skip -shared checks
    # this is useful
    AC_MSG_CHECKING([whether to check for GCC pthread/shared inconsistencies])
@@ -269,13 +269,13 @@ if test "x$acx_pthread_ok" = xyes; then
          pthread_attr_init(0); pthread_cleanup_push(0, 0);
          pthread_create(0,0,0,0); pthread_cleanup_pop(0); ],
          [ok=yes])
-      
+
       if test "x$ok" = xyes; then
          AC_MSG_RESULT([yes])
       else
          AC_MSG_RESULT([no])
       fi
-   
+
       #
       # Linux gcc on some architectures such as mips/mipsel forgets
       # about -lpthread
@@ -288,7 +288,7 @@ if test "x$acx_pthread_ok" = xyes; then
             pthread_attr_init(0); pthread_cleanup_push(0, 0);
             pthread_create(0,0,0,0); pthread_cleanup_pop(0); ],
             [ok=yes])
-   
+
          if test "x$ok" = xyes; then
             AC_MSG_RESULT([yes])
             PTHREAD_LIBS="-lpthread $PTHREAD_LIBS"
@@ -307,7 +307,7 @@ if test "x$acx_pthread_ok" = xyes; then
               pthread_attr_init(0); pthread_cleanup_push(0, 0);
               pthread_create(0,0,0,0); pthread_cleanup_pop(0); ],
              [ok=yes])
-   
+
          if test "x$ok" = xyes; then
             AC_MSG_RESULT([yes])
             PTHREAD_LIBS="-lc_r $PTHREAD_LIBS"

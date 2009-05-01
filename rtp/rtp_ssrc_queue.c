@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 /** @file rtp_ssrc_queue.c
@@ -150,7 +150,7 @@ int rtp_ssrc_init(rtp_session * rtp_sess, rtp_ssrc ** stm_src, uint32_t ssrc,
 
     if (rtp_sess->transport.type != UDP) {
         /*It is not needed to check addresses because data is received
-        as interleaved or multistream from RTSP socket */    
+        as interleaved or multistream from RTSP socket */
         return 0;
     }
 

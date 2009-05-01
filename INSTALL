@@ -35,7 +35,7 @@ softwares:
 - autotools (automake >= 1.9, autoconf >= 2.61) [4]
 
 The sources reside at git://live.polito.it/var/git/libnemesi.git you can fetch
-them by issuing 
+them by issuing
 
 $ git clone git://live.polito.it/var/git/libnemesi.git
 

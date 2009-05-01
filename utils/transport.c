@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "transport.h"
@@ -151,7 +151,7 @@ static int sock_cmp_port(const struct sockaddr *sa1, const struct sockaddr *sa2)
  * \param addr2 second sockaddr struct
  * \param addr1_len length of second sockaddr struct
  * \return 0 if the two structires are egual, otherwise an error reflecting the
- * first difference encountered. 
+ * first difference encountered.
  */
 int sockaddr_cmp(struct sockaddr *addr1, socklen_t addr1_len, struct sockaddr *addr2, socklen_t addr2_len)
 {
@@ -299,7 +299,7 @@ int nmst_write(nms_transport * transport, void *buffer, size_t nbytes, void *pro
             protodata = &sinfo;
             memset(protodata, 0, sizeof(struct sctp_sndrcvinfo));
         }
-        return sctp_send(transport->sock.fd, buffer, nbytes, 
+        return sctp_send(transport->sock.fd, buffer, nbytes,
             (struct sctp_sndrcvinfo *) protodata, MSG_EOR);
         break;
 #endif

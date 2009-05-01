@@ -61,7 +61,7 @@ int nms_base64_decode(uint8_t * out, const char *in, int out_length)
             if (dst - out < out_length) {
                 *dst++ = v >> (6 - 2 * (i & 3));
             }
-        } 
+        }
     }
 
     return (dst - out);
@@ -124,14 +124,14 @@ uint64_t nms_consume_BE(uint8_t ** buff, uint8_t n_bytes)
     while (left)
         v |= *((uint8_t*)(*buff)++) << ((--left)*8);
 
-    return v;    
+    return v;
 }
 
 uint32_t nms_consume_BE4(uint8_t ** buff)
 {
     uint32_t v = 0;
     uint8_t * buff_p = *buff;
-   
+
     v = (buff_p[3])|(buff_p[2] << 8)|(buff_p[1] << 16)|(buff_p[0] << 24);
     *buff += 4;
 
@@ -142,7 +142,7 @@ uint32_t nms_consume_BE3(uint8_t ** buff)
 {
     uint32_t v = 0;
     uint8_t * buff_p = *buff;
-   
+
     v = (buff_p[2])|(buff_p[1] << 8)|(buff_p[0] << 16);
     *buff += 3;
 
@@ -154,7 +154,7 @@ uint16_t nms_consume_BE2(uint8_t ** buff)
 {
     uint16_t v = 0;
     uint8_t * buff_p = *buff;
-   
+
     v = (buff_p[1])|(buff_p[0] << 8);
     *buff += 2;
 

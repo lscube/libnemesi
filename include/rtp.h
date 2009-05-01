@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 /**
@@ -92,7 +92,7 @@ typedef struct {
     uint32_t pt:7;
 #else
     uint32_t pt:7;        //!< payload type
-    uint32_t mark:1;      //!< marker flag 
+    uint32_t mark:1;      //!< marker flag
 #endif
     uint32_t seq:16;      //!< sequence number
     uint32_t time;        //!< timestamp
@@ -175,22 +175,22 @@ typedef struct {
 } rtp_transport;
 
 struct rtp_ssrc_stats {
-    uint16_t max_seq;         //!< highest seq number seen 
-    uint32_t cycles;          //!< shifted count of seq number cycles 
-    uint32_t base_seq;        //!< base seq number 
-    uint32_t bad_seq;         //!< last 'bad' seq number + 1 
-    uint32_t probation;       //!< sequ. pkts till source is valid 
-    uint32_t received;        //!< RTP pkts received 
-    uint32_t expected_prior;  //!< pkt expected at last interval 
-    uint32_t received_prior;  //!< pkt received al last interval 
-    uint32_t transit;         //!< relative trans time for prev pkt 
-    double jitter;          //!< extimated jitter 
-    struct timeval lastrtp; //!< last RTP pkt reception time 
-    struct timeval lastsr;  //!< last RTCP SR pkt reception time 
-    uint32_t ntplastsr[2];    //!< last RTCP SR pkt NTP reception time 
+    uint16_t max_seq;         //!< highest seq number seen
+    uint32_t cycles;          //!< shifted count of seq number cycles
+    uint32_t base_seq;        //!< base seq number
+    uint32_t bad_seq;         //!< last 'bad' seq number + 1
+    uint32_t probation;       //!< sequ. pkts till source is valid
+    uint32_t received;        //!< RTP pkts received
+    uint32_t expected_prior;  //!< pkt expected at last interval
+    uint32_t received_prior;  //!< pkt received al last interval
+    uint32_t transit;         //!< relative trans time for prev pkt
+    double jitter;          //!< extimated jitter
+    struct timeval lastrtp; //!< last RTP pkt reception time
+    struct timeval lastsr;  //!< last RTCP SR pkt reception time
+    uint32_t ntplastsr[2];    //!< last RTCP SR pkt NTP reception time
     uint32_t firstts;         //!< first pkt timestamp
     uint32_t lastts;          //!< last pkt timestamp
-    struct timeval firsttv; //!< first pkt timeval 
+    struct timeval firsttv; //!< first pkt timeval
 };
 
 struct rtp_ssrc_descr {
@@ -246,7 +246,7 @@ struct rtp_conflict {
     struct rtp_conflict *next;
 };
 
-/** 
+/**
  * the <tt>rtp_parser_init</tt> function is called at rtp thread start
  * (in <tt>rtp_thread_create</tt>) for all the parsers registered for announced
  * payload types (present in the <tt>announced_fmts</tt> list)
@@ -273,7 +273,7 @@ typedef struct rtp_session_s {
     rtp_parser parsers[128];
     rtp_parser_uninit parsers_uninits[128];
     void *park;                             //!< private pointer used by the application (e.g. to hold decoder state variables)
-    float fps;				    //!< current frame per second 
+    float fps;				    //!< current frame per second
     rtp_transport transport;
 } rtp_session;
 

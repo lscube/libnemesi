@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 /** @file rtp_payload_type.c
@@ -337,7 +337,7 @@ void rtp_pt_attrs_init(rtp_pt_attrs * attrs)
  *              must be already registered at the given ID)
  * @param attr the name of the attribute to add
  *
- * @return RTP_OK on succes, RTP_ERROR if the id is out of range, 
+ * @return RTP_OK on succes, RTP_ERROR if the id is out of range,
  *         -1 if failed to allocate the attribute.
  */
 int rtp_pt_attr_add(rtp_pt * defs[], uint8_t value, char *attr)
@@ -370,7 +370,7 @@ int rtp_pt_attr_add(rtp_pt * defs[], uint8_t value, char *attr)
  *                 to look up the given ID.
  * @param pt The id to look up
  *
- * @return The requested payload type informations or NULL 
+ * @return The requested payload type informations or NULL
  *         if no payload type is registered at the given ID.
  */
 rtp_pt * rtp_get_pt_info(rtp_session * rtp_sess, unsigned pt)

@@ -48,7 +48,7 @@ typedef struct {
     long data_size; //!< allocated bytes for data
     unsigned long timestamp; //!< timestamp of progressive frame
     uint8_t *conf;  //!< extradata
-    long conf_len;  //!< extradata length 
+    long conf_len;  //!< extradata length
     int size_len;   //!< Number of bits in the AU header for fragment size
     int index_len;  //!< Number of bits in the AU header for the index
     int delta_len;  //!< Number of bits in the AU header for the delta index

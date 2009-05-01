@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "utils.h"
@@ -54,7 +54,7 @@ static int convert_addr_str(const char *address, nms_addr * retaddr)
 }
 
 #if 0
-/** 
+/**
  * static function that checks if string is a valid IPv4 or IPv6 address
  * @return 0 on OK, 1 if string is not valid address.
  */
@@ -330,7 +330,7 @@ int rtp_transport_get(rtp_session * rtp_sess, int par, void *value, uint32_t len
             rtp_sess->transport.RTCP.sock.remote_port))
             ret = RTP_TRANSPORT_SET;
         break;
-    
+
     case RTP_TRANSPORT_ILVDRTP:
         *(uint8_t *) value = rtp_sess->transport.RTP.u.tcp.ilvd;
         ret = RTP_TRANSPORT_SET;

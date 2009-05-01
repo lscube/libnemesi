@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "rtspinternals.h"
@@ -86,7 +86,7 @@ int handle_get_response(rtsp_thread * rtsp_th)
 {
     char *tkn;      /* contains an RTSP description line */
     char *prev_tkn; /* addresses first the previous token
-                     * in order to check the end of RTSP header 
+                     * in order to check the end of RTSP header
                      * and then the all the components of command line */
     int content_length;
     char *content_base = NULL, *step = NULL;
@@ -117,7 +117,7 @@ int handle_get_response(rtsp_thread * rtsp_th)
             if (!strncasecmp(prev_tkn, "application/sdp", 15))
                 rtsp_th->descr_fmt = DESCRIPTION_SDP_FORMAT;
             // description_format=DESCRIPTION_SDP_FORMAT;
-            /* 
+            /*
                else if ( !strncasecmp(prev_tkn, "application/x-rtsp-mh", 21) )
                description_format=DESCRIPTION_MH_FORMAT;
              */
@@ -215,7 +215,7 @@ int handle_rtsp_pkt(rtsp_thread * rtsp_th)
     char ver[32];
     int opcode;
 
-    if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved) 
+    if ((rtsp_th->transport.sock.socktype == TCP && rtsp_th->interleaved)
         && rtsp_th->in_buffer.data[0] == '$') {
         nms_rtsp_interleaved *p;
         const uint8_t m = (rtsp_th->in_buffer.data[1]);

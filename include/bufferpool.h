@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,24 +17,24 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
-/*! \file bufferpool.h 
+/*! \file bufferpool.h
  * \brief Header for \b bufferpool library.
  * */
 
 /*! \defgroup bufferpool Bufferpool Library
- * 
+ *
  * \brief Memory handling.
  *
- * \b bufferpool consists in functions to manipulate statically allocated 
+ * \b bufferpool consists in functions to manipulate statically allocated
  * fixed size slots of memory.
  *
  * It also contains the high level functions to manage the playout buffer and
  * the RTP packets queue.
  *
- * This is used so that between receiving and decoding an RTP packet you can 
+ * This is used so that between receiving and decoding an RTP packet you can
  * have just a single copy to memory.
  *
  * @{ */
@@ -73,8 +73,8 @@
  * Never use it directly.
  * */
 typedef struct {
-    char x[BP_SLOT_SIZE];    /*!< Memory used to hold the packets 
-                                     received from the network, 
+    char x[BP_SLOT_SIZE];    /*!< Memory used to hold the packets
+                                     received from the network,
                                      NEVER ACCESS IT DIRECTLY! */
 } bp_slot;
 
@@ -99,22 +99,22 @@ typedef struct {
  * \see podel
  * */
 typedef struct playout_buff_t {
-    bp_slot **bufferpool;        /*!< Pointer to memory space allocated for 
-                                         Bufferpool and defined elsewhere. 
+    bp_slot **bufferpool;        /*!< Pointer to memory space allocated for
+                                         Bufferpool and defined elsewhere.
                                          \see bpinit */
     poitem pobuff[BP_MAX_SIZE]; /*!< Array that will keep the sorted
                                          list of slots containing arrived
                                          packets. */
     pthread_mutex_t po_mutex;   /*!< Mutex variable used for access control
-                                         to shared structures of playout 
+                                         to shared structures of playout
                                          buffer. */
-    /* pthread_cond_t cond_empty; *//*!< Conditional variable used for 
+    /* pthread_cond_t cond_empty; *//*!< Conditional variable used for
                                             signaling in case of playout buffer
                                             empty */
     int pocount;            /*!< List members count. */
     int pohead;            /*!< List head. */
     int potail;            /*!< List tail. */
-    uint32_t cycles;            /*!< Counts how many times the RTP 
+    uint32_t cycles;            /*!< Counts how many times the RTP
                                          \c timestamp rolls over */
                                          // shawill: probably to be moved.
 } playout_buff;

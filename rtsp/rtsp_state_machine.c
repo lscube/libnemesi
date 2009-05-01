@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 #include "rtspinternals.h"
@@ -36,7 +36,7 @@ void rtsp_clean(void *rtsp_thrd)
     char optstr[256];
 #endif                // USE_UIPRINTF
 
-#if 1                
+#if 1
     // We must read last teardown reply from server
     nms_printf(NMSML_DBG1, "Waiting for last Teardown response\n");
     if (rtsp_th->wait_for.res && nmst_is_active(&rtsp_th->transport)) {
@@ -63,7 +63,7 @@ void rtsp_clean(void *rtsp_thrd)
 
 
 static void clean_rtsp_th(rtsp_thread *rtsp_th)
-{    
+{
     nms_rtsp_interleaved *p;
 
     free(rtsp_th->server_port);
@@ -248,7 +248,7 @@ void *rtsp(void *rtsp_thrd)
                             /*nms_printf(NMSML_ERR, "\nError!\n");*/
                             rtsp_reinit(rtsp_th);
                         }
-                } 
+                }
             }
 
         for (p = rtsp_th->interleaved; p; p = p->next) {
@@ -313,14 +313,14 @@ int init_state(rtsp_thread * rtsp_th, short event)
          */
         get_curr_sess(GCS_INIT, rtsp_th);
         if (send_setup_request(rtsp_th))    // {
-            // rtsp_reinit(rtsp_th);        
+            // rtsp_reinit(rtsp_th);
             return 1;
         // }
         break;
 
     case RTSP_SETUP_RESPONSE:
         if (handle_setup_response(rtsp_th))    // {
-            // rtsp_reinit(rtsp_th);        
+            // rtsp_reinit(rtsp_th);
             return 1;
         // }
         // if (get_curr_sess(rtsp_th, NULL, NULL)) {

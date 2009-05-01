@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 /** @file rtp_thread.c
@@ -234,7 +234,7 @@ int rtp_thread_create(rtp_thread * rtp_th)
         return nms_printf(NMSML_FATAL,
                   "Cannot set RTP Thread attributes (detach state)\n");
 
-    if ((err = pthread_create(&rtp_th->rtp_tid, 
+    if ((err = pthread_create(&rtp_th->rtp_tid,
                               &rtp_attr, &rtp, (void *) rtp_th)) > 0)
         return nms_printf(NMSML_FATAL, "%s\n", strerror(err));
 

@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 /**
@@ -53,11 +53,11 @@
  *
  * @brief Real Time Streaming Protocol (RTSP) implementation - rfc 2326.
  *
- * The RTSP module requests the media streams and handles the service 
- * handshake. Once this phase is complete it behaves like a <em>remote 
+ * The RTSP module requests the media streams and handles the service
+ * handshake. Once this phase is complete it behaves like a <em>remote
  * controller</em> for the requested multimedia stream.
  *
- * @{ 
+ * @{
  */
 
 //RTSP commands tokens
@@ -112,7 +112,7 @@
 #endif
 
 typedef struct nms_rtsp_interleaved_s {
-    int rtp_fd; //!< output rtp local socket 
+    int rtp_fd; //!< output rtp local socket
     int rtcp_fd; //!< output rtcp local socket
     union {
         struct {
@@ -165,7 +165,7 @@ typedef struct {
  *
  * @note The \c type field shows the kind of media stream active, depending
  * on it RTSP has different behaviours.
- * 
+ *
  * @see rtsp_session
  * @see buffer
  **/
@@ -197,12 +197,12 @@ typedef struct {
     // |- int init_rtsp(void);
     // \- struct rtsp_ctrl *init_rtsp(void);
 
-/** 
+/**
  * RTSP State Machine, dispatches incoming events to the
  * corrent handler.
  *
  * @defgroup RTSP_state_machine RTSP State Machine
- * @{ 
+ * @{
  */
 extern int (*state_machine[STATES_NUM]) (rtsp_thread *, short);
 
@@ -219,12 +219,12 @@ int recording_state(rtsp_thread *, short);
  * @}
  */
 
-/** 
+/**
  * RTSP Response Handlers, they are used by the RTSP state machine
  * to handle incoming responses.
  *
  * @defgroup RTSP_handlers RTSP Response Handlers
- * @{ 
+ * @{
  */
 int handle_rtsp_pkt(rtsp_thread *);
 int handle_get_response(rtsp_thread *);
@@ -236,12 +236,12 @@ int handle_teardown_response(rtsp_thread *);
  * @}
  */
 
-/** 
+/**
  * RTSP Requests Senders, they are used by the RTSP public interface
  * to create and send the RTSP requests through the network
  *
  * @defgroup RTSP_send RTSP Requests Senders
- * @{ 
+ * @{
  */
 int send_get_request(rtsp_thread *);
 int send_pause_request(rtsp_thread *, char *);
@@ -253,12 +253,12 @@ int send_teardown_request(rtsp_thread *);
  */
 
 
-/** 
+/**
  * RTSP Packets Handling, mainly called by the main loop to receive
  * RTSP packets and by handlers to parse them.
  *
  * @defgroup RTSP_internals RTSP Packets Handling
- * @{ 
+ * @{
  */
 int full_msg_rcvd(rtsp_thread *);
 int rtsp_recv(rtsp_thread *);
@@ -271,11 +271,11 @@ int set_rtsp_media(rtsp_thread *);
  * @}
  */
 
-/** 
+/**
  * RTSP Session Management
  *
  * @defgroup RTSP_sessions RTSP Sessions Management
- * @{ 
+ * @{
  */
 #define GCS_INIT 0
 #define GCS_NXT_SESS 1
@@ -293,11 +293,11 @@ rtsp_medium *rtsp_med_create(rtsp_thread *);
  * @}
  */
 
-/** 
+/**
  * RTSP Transport Options
  *
  * @defgroup RTSP_transport RTSP Transport
- * @{ 
+ * @{
  */
 int set_transport_str(rtp_session *, char **);
 int get_transport_str(rtp_session *, char *);

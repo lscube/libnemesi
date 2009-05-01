@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 
@@ -58,7 +58,7 @@ typedef struct sdp_attr_s {
     char *value;    /*!< Attribute value */
 
     /** Next element of attributes list.
-     * \c NULL if the current element is the 
+     * \c NULL if the current element is the
      * last. */
     struct sdp_attr_s *next;
 } sdp_attr;
@@ -70,7 +70,7 @@ typedef struct sdp_attr_s {
                 "Crypto Key"
 /*!
  * \brief Medium imformations.
- * 
+ *
  * Each field has a non-NULL value if it's present the equivalent field in the
  * description body.
  *

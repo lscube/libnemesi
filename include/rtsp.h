@@ -1,9 +1,9 @@
-/* * 
+/* *
  * This file is part of libnemesi
  *
  * Copyright (C) 2007 by LScube team <team@streaming.polito.it>
  * See AUTHORS for more details
- * 
+ *
  * libnemesi is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnemesi; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *  
+ *
  * */
 
 /** @file rtsp.h
@@ -64,9 +64,9 @@ typedef struct {
  * This struct is an item in a single-linked list that identifies all the media
  * that belong to a RTSP session. Through the \c rtp_sess pointer is possible
  * to get the RTP session of the described medium.
- 
+
  * @note The methods SETUP e TEARDOWN are defined on a ``per medium'' scope,
- * they have to be sent for each medium and you must wait for a reply from 
+ * they have to be sent for each medium and you must wait for a reply from
  * the server for each of them.
  *
  * @see Medium_info
@@ -102,13 +102,13 @@ typedef struct rtsp_medium_s {
  * */
 typedef struct rtsp_session_s {
     char Session_ID[RTSP_SESSION_ID_LEN];    /*!< RTSP identifier. */
-    int CSeq;        /*!< Last sent RTSP packet 
+    int CSeq;        /*!< Last sent RTSP packet
                    sequence number */
     char *pathname;        /*!< RTSP session identifier.
                    Used for the ``per session''
                    methods (PLAY, PAUSE, RECORD) */
     char *content_base;    /*!< Not \c NULL if a Content-Base field
-                   is found in the response to the DESCRIBE 
+                   is found in the response to the DESCRIBE
                    method. In this case the field
                    <tt>\ref pathname</tt> and all the
                    <tt>\ref rtsp_medium</tt> of the session
@@ -165,8 +165,8 @@ extern RTSP_Error const RTSP_Reinitialized;
  *
  * @brief RTSP controller and management public interface
  *
- * The RTSP module requests the media streams and handles the service 
- * handshake. Once this phase is complete it behaves like a <em>remote 
+ * The RTSP module requests the media streams and handles the service
+ * handshake. Once this phase is complete it behaves like a <em>remote
  * controller</em> for the requested multimedia stream.
  *
  * @{ */
