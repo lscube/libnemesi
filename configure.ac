@@ -121,7 +121,7 @@ libnemesi version is .............. : $VERSION
 
 libnemesi Install prefix .......... : $prefix
 
-libnemesi has SCTP support ........ : $enable_sctp
+libnemesi has SCTP support ........ : $have_sctp
 
 Byte order ..................... : this is a $BIGENDIAN machine
 
