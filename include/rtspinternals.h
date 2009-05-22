@@ -39,7 +39,7 @@
 #include <netdb.h>
 #endif
 
-#ifdef HAVE_LIBSCTP
+#ifdef HAVE_SCTP
 #include <netinet/sctp.h>
 #define MAX_SCTP_STREAMS 15
 #endif
