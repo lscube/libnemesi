@@ -1,19 +1,43 @@
 AC_PREREQ(2.61)
 
 dnl Process this file with autoconf to produce a configure script.
+dnl
+dnl immediately before every release do:
+dnl ===================================
+dnl if (the interface is totally unchanged from previous release)
+dnl    *_lt_revision ++;
+dnl else { /* interfaces have been added, removed or changed */
+dnl    *_lt_revision = 0;
+dnl    *_lt_current ++;
+dnl    if (any interfaces have been _added_ since last release)
+dnl       *_lt_age ++;
+dnl    if (any interfaces have been _removed_ or _incompatibly changed_)
+dnl       *_lt_age = 0;
+dnl }
+dnl
+dnl If you want to know more about what you are doing, here are some details:
+dnl  * *_lt_current is the current API version
+dnl  * *_lt_revision is an internal revision number which is increased when
+dnl    the API itself did not change
+dnl  * *_lt_age is the number of previous API versions still supported by
+dnl    this library
+dnl  * libtool has its own numbering scheme, because local library numbering
+dnl    schemes are platform dependent
+dnl  * in Linux, the library will be named
+dnl    libname.so.(*_lt_current - *_lt_age).*_lt_age.*_lt_revision
 
 m4_define([nemesi_major_version], [0])
-m4_define([nemesi_minor_version], [7])
-m4_define([nemesi_micro_version], [0])
+m4_define([nemesi_minor_version], [1])
+m4_define([nemesi_micro_version], [1])
 m4_define([nemesi_interface_age], [0])
 m4_define([nemesi_binary_age],
           [m4_eval(100 * nemesi_minor_version + nemesi_micro_version)])
 m4_define([nemesi_version],
           [nemesi_major_version.nemesi_minor_version.nemesi_micro_version])
-m4_define([nemesi_lt_current],
-          [m4_eval(100 * nemesi_minor_version + nemesi_micro_version - nemesi_interface_age)])
-m4_define([nemesi_lt_revision], [nemesi_interface_age])
-m4_define([nemesi_lt_age], [m4_eval(nemesi_binary_age - nemesi_interface_age)])
+
+m4_define([nemesi_lt_revision], [0])
+m4_define([nemesi_lt_current], [1])
+m4_define([nemesi_lt_age],     [0])
 
 AC_INIT([libnemesi], [nemesi_version], [https://live.polito.it/roundup/lscube])
 
