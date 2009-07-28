@@ -77,7 +77,6 @@ libnemesi_la_SOURCES = \
 			\
 			src/utils/utils.h \
 			src/utils/urltokenize.c \
-			src/utils/strstrcase.c \
 			src/utils/random32.c \
 			src/utils/timeval.c \
 			src/utils/nmsprint.c \

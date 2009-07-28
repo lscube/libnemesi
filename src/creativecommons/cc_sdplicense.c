@@ -20,6 +20,9 @@
  *
  * */
 
+#include "config.h"
+#include <strings.h>
+
 #include "nemesi/cc.h"
 #include "utils/utils.h"
 

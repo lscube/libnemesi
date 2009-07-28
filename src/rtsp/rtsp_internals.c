@@ -20,6 +20,9 @@
  *
  * */
 
+#include "config.h"
+#include <string.h>
+
 #include "rtspinternals.h"
 #include "utils/utils.h"
 #include "parsers/rtpparsers.h"
@@ -29,7 +32,7 @@ int body_exists(char *in_buffer)
     int body_len = 0;
     char *con_len;
 
-    if ((con_len = strstrcase(in_buffer, "Content-Length")) != NULL) {
+    if ((con_len = strcasestr(in_buffer, "Content-Length")) != NULL) {
         con_len += 14;
         while ((*(con_len) == ' ') || (*(con_len) == ':'))
             con_len++;
@@ -54,7 +57,7 @@ int check_response(rtsp_thread * rtsp_th)
         return -1;
     }
 
-    if ((str_pos = strstrcase(content, "CSeq")) == NULL) {
+    if ((str_pos = strcasestr(content, "CSeq")) == NULL) {
         nms_printf(NMSML_ERR,
                "ERROR: CANNOT find CSeq number in server response.\n");
         return -1;
@@ -73,7 +76,7 @@ int check_response(rtsp_thread * rtsp_th)
             opcode = RTSP_SETUP_RESPONSE;
         break;
     default:
-        if ((str_pos = strstrcase(content, "Session:")) != NULL) {
+        if ((str_pos = strcasestr(content, "Session:")) != NULL) {
             str_pos += 8;
             while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
                 str_pos++;

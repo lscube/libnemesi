@@ -57,8 +57,6 @@ char * strtok_r(char * str, const char *delim, char **saveptr);
 
 int urltokenize(char *, char **, char **, char **);
 
-char *strstrcase(char *, const char *);
-
 uint32_t random32(int);
 
 int thread_isvalid(pthread_t p);

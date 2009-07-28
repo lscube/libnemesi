@@ -28,7 +28,7 @@ static int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tk
     char str[256];
     uint16_t stream;
     do {
-        if ((tkna = strstrcase(tknb, "server_streams"))) {
+        if ((tkna = strcasestr(tknb, "server_streams"))) {
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
             for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-');
                  tknb++);
@@ -68,7 +68,7 @@ static int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tk
 
             continue;
         }
-        if ((tkna = strstrcase(tknb, "ssrc"))) {
+        if ((tkna = strcasestr(tknb, "ssrc"))) {
             uint32_t ssrc;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
@@ -98,7 +98,7 @@ static int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tkn
     int value;
     uint8_t ilvd;
     do {
-        if ((tkna = strstrcase(tknb, "interleaved"))) {
+        if ((tkna = strcasestr(tknb, "interleaved"))) {
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
             for (tknb = tkna++; (*tknb == ' ') || (*tknb != '-');
                  tknb++);
@@ -140,7 +140,7 @@ static int get_transport_str_tcp(rtp_session * rtp_sess, char * tkna, char * tkn
 
             continue;
         }
-        if ((tkna = strstrcase(tknb, "ssrc"))) {
+        if ((tkna = strcasestr(tknb, "ssrc"))) {
             uint32_t ssrc;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
@@ -168,8 +168,8 @@ static int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tkn
     char str[256];
     in_port_t port;
     do {
-        if ((tkna = strstrcase(tknb, "server_port"))
-            || ((tkna = strstrcase(tknb, "port"))
+        if ((tkna = strcasestr(tknb, "server_port"))
+            || ((tkna = strcasestr(tknb, "port"))
             && !strncmp(tknb, "port", 4))) {
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
@@ -203,7 +203,7 @@ static int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tkn
 
             continue;
         }
-        if ((tkna = strstrcase(tknb, "source"))) {
+        if ((tkna = strcasestr(tknb, "source"))) {
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
@@ -224,7 +224,7 @@ static int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tkn
             }
             continue;
         }
-        if ((tkna = strstrcase(tknb, "destination"))) {
+        if ((tkna = strcasestr(tknb, "destination"))) {
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
 
             for (tknb = tkna++; (*tknb != '\0') && (*tknb != '\r')
@@ -245,7 +245,7 @@ static int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tkn
             }
             continue;
         }
-        if ((tkna = strstrcase(tknb, "ssrc"))) {
+        if ((tkna = strcasestr(tknb, "ssrc"))) {
             uint32_t ssrc;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
@@ -265,7 +265,7 @@ static int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tkn
 
             continue;
         }
-        if ((tkna = strstrcase(tknb, "ttl"))) {
+        if ((tkna = strcasestr(tknb, "ttl"))) {
             int ttl;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
@@ -285,7 +285,7 @@ static int get_transport_str_udp(rtp_session * rtp_sess, char * tkna, char * tkn
 
             continue;
         }
-        if ((tkna = strstrcase(tknb, "layers"))) {
+        if ((tkna = strcasestr(tknb, "layers"))) {
             int layers;
 
             for (; (*tkna == ' ') || (*tkna != '='); tkna++);
@@ -320,13 +320,13 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
     memset(str, 0, sizeof(str));
 
-    if (strstrcase(buff, RTP_AVP_TCP))
+    if (strcasestr(buff, RTP_AVP_TCP))
         rtp_sess->transport.type = TCP;
 #ifdef HAVE_SCTP
-    else if (strstrcase(buff, RTP_AVP_SCTP))
+    else if (strcasestr(buff, RTP_AVP_SCTP))
         rtp_sess->transport.type = SCTP;
 #endif
-    else if (strstrcase(buff, RTP_AVP_UDP))
+    else if (strcasestr(buff, RTP_AVP_UDP))
         rtp_sess->transport.type = UDP;
     else
         return n;
