@@ -25,6 +25,8 @@
 
 #include "nemesi/comm.h"
 
+static const char *const nms_cc_licenses[][2] = CC_LICENSE;
+
 /*! \brief Set the correct field in License definition.
  *
  * The sdp_l string is in the form, coming from an sdp description,
@@ -34,22 +36,41 @@
  */
 int cc_set_sdplicense(cc_license * cc, char *sdp_l)
 {
-    char *cclicenses[][2] = CC_LICENSE;
     unsigned int i;
 
-    // shawill: sizeof(cclicenses)/sizeof(*cclicenses) == number of couples name-description present
-    for (i = 0; i < sizeof(cclicenses) / sizeof(*cclicenses); i++) {
+    // shawill: sizeof(nms_cc_licenses)/sizeof(*nms_cc_licenses) == number of couples name-description present
+    for (i = 0; i < sizeof(nms_cc_licenses) / sizeof(*nms_cc_licenses); i++) {
         if (!strncasecmp
-            (sdp_l, cclicenses[i][CC_ATTR_NAME],
-             strlen(cclicenses[i][CC_ATTR_NAME]))) {
+            (sdp_l, nms_cc_licenses[i][CC_ATTR_NAME],
+             strlen(nms_cc_licenses[i][CC_ATTR_NAME]))) {
             // XXX: we do not duplicate the string!!! Do we have to do that?
             /* set the correct field using cc_license struct like an array of strings
              * skipping the sdp param and setting the pointer after the colon */
             ((char **) cc)[i] =
-                sdp_l + strlen(cclicenses[i][CC_ATTR_NAME]) + 1;
+                sdp_l + strlen(nms_cc_licenses[i][CC_ATTR_NAME]) + 1;
             return 0;
         }
     }
 
     return 1;
+}
+
+int issdplicense(char *sdp_a)
+{
+    unsigned int i;
+
+    // shawill: sizeof(nms_cc_licenses)/sizeof(*nms_cc_licenses) == number of couples name-description present
+    for (i = 0; i < sizeof(nms_cc_licenses) / sizeof(*nms_cc_licenses); i++) {
+        if (!strncasecmp
+            (sdp_a, nms_cc_licenses[i][CC_ATTR_NAME],
+             strlen(nms_cc_licenses[i][CC_ATTR_NAME]))) {
+            nms_printf(NMSML_DBG1,
+                   "found valid cc field in SDP description (%s - %s)\n",
+                   nms_cc_licenses[i][CC_ATTR_NAME],
+                   nms_cc_licenses[i][CC_ATTR_DESCR]);
+            return 1;
+        }
+    }
+
+    return 0;
 }

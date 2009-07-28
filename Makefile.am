@@ -27,9 +27,8 @@ libnemesi_la_SOURCES = \
 			src/bufferpool/bpget.c \
 			src/bufferpool/bprmv.c \
 			\
-			src/creativecommons/issdplicense.c \
 			src/creativecommons/cc_newlicense.c \
-			src/creativecommons/cc_set_sdplicense.c \
+			src/creativecommons/cc_sdplicense.c \
 			src/creativecommons/cc_parse_urilicense.c \
 			src/creativecommons/cc_perm_chk.c \
 			src/creativecommons/cc_printmask.c \
