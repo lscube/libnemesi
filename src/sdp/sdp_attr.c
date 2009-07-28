@@ -20,7 +20,9 @@
  *
  * */
 
+#include "config.h"
 #include <stdlib.h>
+#include <strings.h>
 
 #include "nemesi/sdp.h"
 #include "nemesi/comm.h"
