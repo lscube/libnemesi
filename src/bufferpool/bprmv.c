@@ -20,7 +20,7 @@
  *
  * */
 
-#include "nemesi/bufferpool.h"
+#include "bufferpool/bufferpool.h"
 
 /*!
  * \brief Rimuove uno slot dalla coda del Buffer di Plaout di Rete.

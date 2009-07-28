@@ -24,7 +24,7 @@
 #include "utils/utils.h"
 #include <fcntl.h>
 #include "nemesi/version.h"
-#include "nemesi/bufferpool.h"
+#include "bufferpool/bufferpool.h"
 #include <netembryo/wsocket-internal.h>
 
 /** @file rtsp.c

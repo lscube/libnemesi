@@ -5,8 +5,7 @@ lib_LTLIBRARIES = libnemesi.la
 INCLUDES = -I$(srcdir)/src
 
 libincludedir = $(includedir)/nemesi
-libinclude_HEADERS = 	src/nemesi/bufferpool.h \
-			src/nemesi/rtpptdefs.h \
+libinclude_HEADERS = 	src/nemesi/rtpptdefs.h \
 			src/nemesi/cc.h \
 			src/nemesi/rtsp.h \
 			src/nemesi/rtsp_errors.h \
@@ -18,6 +17,7 @@ libinclude_HEADERS = 	src/nemesi/bufferpool.h \
 			src/nemesi/transport.h
 
 libnemesi_la_SOURCES = \
+			src/bufferpool/bufferpool.h \
 			src/bufferpool/poadd.c \
 			src/bufferpool/poinit.c \
 			src/bufferpool/podel.c \

@@ -21,7 +21,7 @@
  * */
 
 #include "nemesi/rtp.h"
-#include "nemesi/bufferpool.h"
+#include "bufferpool/bufferpool.h"
 #include "nemesi/rtsp.h"
 #include "parsers/rtpparsers.h"
 #include "utils/utils.h"

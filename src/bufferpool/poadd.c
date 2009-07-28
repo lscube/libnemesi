@@ -21,7 +21,7 @@
  * */
 
 #include "nemesi/rtp.h"
-#include "nemesi/bufferpool.h"
+#include "bufferpool/bufferpool.h"
 
 #define po_get_pkg(index) ((rtp_pkt *) (*(po->bufferpool) + index))
 #define SEQ_MAX_JUMP 0xF000

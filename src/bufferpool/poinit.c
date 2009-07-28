@@ -20,7 +20,7 @@
  *
  * */
 
-#include "nemesi/bufferpool.h"
+#include "bufferpool/bufferpool.h"
 
 /*!
  * \brief Inizializza il Buffer di Playout.

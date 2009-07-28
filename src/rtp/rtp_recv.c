@@ -26,7 +26,7 @@
 
 #include "nemesi/rtp.h"
 #include "nemesi/rtpptdefs.h"
-#include "nemesi/bufferpool.h"
+#include "bufferpool/bufferpool.h"
 
 /**
  * Checks if the RTP header is valid for the given packet
