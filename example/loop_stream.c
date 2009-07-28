@@ -27,9 +27,9 @@
 #include <fcntl.h>
 #include <time.h>
 
-#include "rtsp.h"
-#include "rtp.h"
-#include "sdp.h"
+#include "nemesi/rtsp.h"
+#include "nemesi/rtp.h"
+#include "nemesi/sdp.h"
 
 
 int main(int argc, char **argv)

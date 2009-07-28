@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rtsp.h"
-#include "rtp.h"
-#include "sdp.h"
+#include "nemesi/rtsp.h"
+#include "nemesi/rtp.h"
+#include "nemesi/sdp.h"
 
 static void usage(char *name)
 {

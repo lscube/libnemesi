@@ -20,7 +20,10 @@ AC_INIT([libnemesi], [nemesi_version], [https://live.polito.it/roundup/lscube])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(dist-bzip2 no-dist-gzip foreign)
+AM_INIT_AUTOMAKE([dist-bzip2 no-dist-gzip foreign subdir-objects])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+AM_MAINTAINER_MODE
+
 AC_PREFIX_DEFAULT("/usr")
 
 AC_CONFIG_HEADER([config.h])
@@ -102,15 +105,6 @@ AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
 AC_CONFIG_FILES([Makefile
-                 bufferpool/Makefile
-                 creativecommons/Makefile
-                 rtp/Makefile
-                 parsers/Makefile
-                 rtcp/Makefile
-                 sdp/Makefile
-                 rtsp/Makefile
-                 utils/Makefile
-                 example/Makefile
                  libnemesi.pc])
 AC_OUTPUT
 
