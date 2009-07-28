@@ -20,10 +20,38 @@
  *
  * */
 
-//! This define will make global initialization in cc.h header
-#define CC_GLOBAL_DATA
 #include "nemesi/cc.h"
 #include "utils/utils.h"
+
+const cc_perm cc_by = {
+    "Attribution", "by",
+    "The licensor permits others to copy, distribute, display, and perform the work. "
+    "In return, licensees must give the original author credit."
+};
+
+const cc_perm cc_nc = {
+    "NonCommercial", "nc",
+    "The licensor permits others to copy, distribute, display, and perform the work. "
+    "In return, licensees may not use the work for commercial purposes -- "
+    "unless they get the licensor's permission."
+};
+
+const cc_perm cc_nd = {
+    "NoDerivative", "nd",
+    "The licensor permits others to copy, distribute, display and perform only "
+    "unaltered copies of the work -- not derivative works based on it."
+};
+
+const cc_perm cc_sa = {
+    "ShareAlike", "sa",
+    "The licensor permits others to distribute derivative works only under a "
+    "license identical to the one that governs the licensor's work."
+};
+
+const cc_spec_license cc_spec_licenses[] = {
+    {"PubblicDomain", "publicdomain", "Public domain dedication", CC_PD},
+    {0, 0, 0, 0} /*end */
+};
 
 /*! \brief Parses Licenes URI and fills cc_perms data structure.
  *
