@@ -60,6 +60,13 @@ dnl Force usage of POSIX.1-2001 (clock_gettime)
 dnl Force usage of _XOPEN_SOURCE (strdup)
 CPPFLAGS="${CPPFLAGS} -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=600"
 
+dnl Enable some further OS-specific extensions that AC_USE_SYSTEM_EXTENSIONS
+dnl does not enable at least up to autoconf 2.64.
+AC_CANONICAL_HOST
+AS_CASE([$host_os],
+	[darwin*], [CPPFLAGS="${CPPFLAGS} -D_DARWIN_C_SOURCE"],
+	[freebsd[[78]]*], [CPPFLAGS="${CPPFLAGS} -D__BSD_VISIBLE=1"])
+
 AC_CONFIG_HEADER([config.h])
 
 AC_ARG_ENABLE(examples,
