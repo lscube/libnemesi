@@ -22,6 +22,8 @@
 
 /* From RFC 1889 */
 
+#include <config.h>
+
 #include <sys/time.h>
 #include <stdint.h>
 #include <time.h>

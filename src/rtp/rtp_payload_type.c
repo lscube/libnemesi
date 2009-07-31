@@ -24,6 +24,8 @@
  * This file contains the functions to manage payload types informations
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
