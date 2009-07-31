@@ -1,5 +1,15 @@
 ACLOCAL_AMFLAGS = -I m4
 
+dist_doc_DATA = AUTHORS ChangeLog README TODO CodingStyle
+
+if CHANGELOG_REGEN
+ChangeLog:
+	$(AM_V_GEN)GIT_DIR="${srcdir}/.git" git log --pretty > $@
+
+# Always regenerate!
+.PHONY: ChangeLog
+endif
+
 lib_LTLIBRARIES = libnemesi.la
 
 INCLUDES = -I$(srcdir)/src
