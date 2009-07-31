@@ -1,0 +1,10 @@
+libdir=@abs_top_builddir@/.libs
+includedir=@abs_top_srcdir@
+
+Name: libnemesi
+Description: rtp/rtsp client library
+Version: @VERSION@
+Requires.private: @LIBNETEMBRYO_REQUIRES@
+Libs: -L${libdir} -lnemesi
+Libs.private: @PTHREAD_LIBS@
+Cflags: -I${includedir}

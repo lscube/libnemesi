@@ -6,6 +6,7 @@ includedir=@includedir@
 Name: libnemesi
 Description: rtp/rtsp client library
 Version: @VERSION@
-Libs: -L${libdir} -lnemesi @PTHREAD_LIBS@
-Cflags: -I${includedir}/nemesi @PTHREAD_CFLAGS@ @EXTRA_FLAGS@
-
+Requires.private: @LIBNETEMBRYO_REQUIRES@
+Libs: -L${libdir} -lnemesi
+Libs.private: @PTHREAD_LIBS@
+Cflags: -I${includedir} @EXTRA_FLAGS@

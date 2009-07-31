@@ -122,7 +122,8 @@ AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
 AC_CONFIG_FILES([Makefile
-                 libnemesi.pc])
+                 pkgconfig/libnemesi.pc
+		 pkgconfig/libnemesi-uninstalled.pc])
 AC_OUTPUT
 
 LSC_DEBUG_STATUS

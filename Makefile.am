@@ -110,7 +110,7 @@ example_loop_stream_LDADD = libnemesi.la
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libnemesi.pc
+pkgconfig_DATA = pkgconfig/libnemesi.pc
 
 libnemesi_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 

@@ -19,7 +19,6 @@ example/dump_info
 example/dump_stream
 example/loop_stream
 libnemesi.pc
-libnemesi.pc.in
 libtool
 m4/libtool.m4
 m4/ltoptions.m4
