@@ -27,7 +27,7 @@ dnl  * in Linux, the library will be named
 dnl    libname.so.(*_lt_current - *_lt_age).*_lt_age.*_lt_revision
 
 m4_define([nemesi_major_version], [0])
-m4_define([nemesi_minor_version], [2])
+m4_define([nemesi_minor_version], [7])
 m4_define([nemesi_micro_version], [0])
 m4_define([nemesi_interface_age], [0])
 m4_define([nemesi_binary_age],
