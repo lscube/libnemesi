@@ -287,8 +287,8 @@ void rtsp_info_print(rtsp_ctrl * rtsp_ctl)
     // struct attr *attr;
     sdp_attr *attr;
 
-    char *sdes[ /*13 */ ] = { SDP_SESSION_FIELDS };
-    char *mdes[ /*5 */ ] = { SDP_MEDIA_FIELDS };
+    static const char *const sdes[ /*13 */ ] = { SDP_SESSION_FIELDS };
+    static const char *const mdes[ /*5 */ ] = { SDP_MEDIA_FIELDS };
 
     sess = rtsp_th->rtsp_queue;
 
