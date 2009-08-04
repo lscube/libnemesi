@@ -244,8 +244,8 @@ int handle_teardown_response(rtsp_thread *);
  * @{
  */
 int send_get_request(rtsp_thread *);
-int send_pause_request(rtsp_thread *, char *);
-int send_play_request(rtsp_thread *, char *);
+int send_pause_request(rtsp_thread *, const char *);
+int send_play_request(rtsp_thread *, const char *);
 int send_setup_request(rtsp_thread *);
 int send_teardown_request(rtsp_thread *);
 /**

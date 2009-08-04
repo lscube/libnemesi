@@ -67,7 +67,7 @@ int send_get_request(rtsp_thread * rtsp_th)
     return 0;
 }
 
-int send_pause_request(rtsp_thread * rtsp_th, char *range)
+int send_pause_request(rtsp_thread * rtsp_th, const char *range)
 {
     char *b = NULL;
     int b_size;
@@ -119,7 +119,7 @@ int send_pause_request(rtsp_thread * rtsp_th, char *range)
     return 0;
 }
 
-int send_play_request(rtsp_thread * rtsp_th, char *range)
+int send_play_request(rtsp_thread * rtsp_th, const char *range)
 {
     char *b = NULL;
     int b_size;
