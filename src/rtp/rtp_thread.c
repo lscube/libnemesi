@@ -25,6 +25,10 @@
  * create and run a new RTP Thread.
  */
 
+#include "config.h"
+
+#include <unistd.h>
+
 #include "nemesi/rtp.h"
 #include "nemesi/comm.h"
 #include "bufferpool/bufferpool.h"

@@ -20,6 +20,10 @@
  *
  * */
 
+#include "config.h"
+
+#include <string.h>
+
 #include "nemesi/transport.h"
 #include "nemesi/comm.h"
 
