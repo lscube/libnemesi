@@ -32,7 +32,7 @@ typedef struct {
     /// -1 terminated list of served static payload numbers (MUST be <96)
     int16_t static_pt;
     /// NULL terminated list of encoding names (usually the media subtype)"
-    char *mime[];
+    const char *mime[];
 } rtpparser_info;
 
 /**
