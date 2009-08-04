@@ -32,7 +32,9 @@ AC_DEFUN([LSC_DEBUG], [
   dnl Only enable the best of the two
   CC_CHECK_CFLAGS_APPEND([-Wformat=2 -Wformat], [break;])
   dnl The new style is likely going to be the only supported one in the future
-  CC_CHECK_CFLAGS_APPEND([-Werror=implicit -Werror-implicit-declaration],
+  CC_CHECK_CFLAGS_APPEND([-Werror=implicit ]dnl
+                         [-Werror=implicit-function-declaration ]dnl
+                         [-Werror-implicit-function-declaration],
                          [break;])
   dnl Make sure that there are no random return values
   CC_CHECK_CFLAGS_APPEND([-Werror=return-type -Wreturn-type], [break;])
