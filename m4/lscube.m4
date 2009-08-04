@@ -28,7 +28,7 @@ AC_DEFUN([LSC_DEBUG], [
   AC_REQUIRE([LSC_MUDFLAP])
 
   dnl Check for warning flags, always
-  CC_CHECK_CFLAGS_APPEND([-Wall -Wwrite-strings])
+  CC_CHECK_CFLAGS_APPEND([-Wall -Wwrite-strings -fdiagnostics-show-option])
   dnl Only enable the best of the two
   CC_CHECK_CFLAGS_APPEND([-Wformat=2 -Wformat], [break;])
   dnl The new style is likely going to be the only supported one in the future
