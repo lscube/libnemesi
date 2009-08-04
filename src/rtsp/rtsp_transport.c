@@ -23,7 +23,7 @@
 #include "rtspinternals.h"
 #include "utils/utils.h"
 
-#if HAVE_SCTP
+#if ENABLE_SCTP
 static int get_transport_str_sctp(rtp_session * rtp_sess, char * tkna, char * tknb, char ** tokptr) {
     char str[256];
     uint16_t stream;
@@ -322,7 +322,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 
     if (strcasestr(buff, RTP_AVP_TCP))
         rtp_sess->transport.type = TCP;
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
     else if (strcasestr(buff, RTP_AVP_SCTP))
         rtp_sess->transport.type = SCTP;
 #endif
@@ -342,7 +342,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
         n = get_transport_str_tcp(rtp_sess, tkna, tknb, &tokptr);
         break;
     case SCTP:
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
         n = get_transport_str_sctp(rtp_sess, tkna, tknb, &tokptr);
 #endif
         break;
@@ -354,7 +354,7 @@ int get_transport_str(rtp_session * rtp_sess, char *buff)
 }
 
 
-#if HAVE_SCTP
+#if ENABLE_SCTP
 static int set_transport_str_sctp(rtp_session * rtp_sess, char *buff)
 {
     uint16_t streams[2];
@@ -432,7 +432,7 @@ int set_transport_str(rtp_session * rtp_sess, char **str)
         set_transport_str_tcp(rtp_sess, buff);
         break;
     case SCTP:
-#ifndef HAVE_SCTP
+#ifndef ENABLE_SCTP
         return nms_printf(NMSML_FATAL,
             "set_transport_str: SCTP support not compiled in!\n");
 #else

@@ -203,7 +203,7 @@ void *rtsp(void *rtsp_thrd)
     int n, max_fd;
     nms_rtsp_interleaved *p;
     char buffer[RTSP_BUFFERSIZE];
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
     struct sctp_sndrcvinfo sinfo;
 #endif
 
@@ -264,7 +264,7 @@ void *rtsp(void *rtsp_thrd)
                            "Sent RTCP packet on channel %u.\n",
                            buffer[1]);
                     break;
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
                 case SCTP:
                     n = recv(p->rtcp_fd, buffer, RTSP_BUFFERSIZE, 0);
                     memset(&sinfo, 0, sizeof(sinfo));

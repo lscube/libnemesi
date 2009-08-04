@@ -36,7 +36,7 @@
 #endif
 #endif
 
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
 #include <netinet/sctp.h>
 #endif
 
@@ -273,7 +273,7 @@ int nmst_read(nms_transport * transport, void *buffer, size_t nbytes, void *prot
     case TCP:
         return recv(transport->sock.fd, buffer, nbytes, 0);
         break;
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
     case SCTP:
         if (!protodata) {
             return -1;
@@ -290,14 +290,14 @@ int nmst_read(nms_transport * transport, void *buffer, size_t nbytes, void *prot
 
 int nmst_write(nms_transport * transport, void *buffer, size_t nbytes, void *protodata)
 {
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
     struct sctp_sndrcvinfo sinfo;
 #endif
     switch (transport->sock.socktype) {
     case TCP:
         return send(transport->sock.fd, buffer, nbytes, 0);
         break;
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
     case SCTP:
         if (!protodata) {
             protodata = &sinfo;

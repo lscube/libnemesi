@@ -140,7 +140,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
         case TCP:
             rtsp_th->transport.sock.socktype = TCP;
             break;
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
         case SCTP:
             rtsp_th->transport.sock.socktype = SCTP;
             break;
@@ -160,7 +160,7 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
             else
                 RET_ERR(NMSML_ERR, "RTP/RTSP protocols combination not supported!\n");
             break;
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
         case SCTP:
             if (rtsp_th->transport.sock.socktype == SCTP)
                 rtsp_th->default_rtp_proto = SCTP;
@@ -360,7 +360,7 @@ static int server_connect(char *host, char *port, int *sock, sock_type sock_type
     int n, connect_new;
     struct addrinfo *res, *ressave;
     struct addrinfo hints;
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
     struct sctp_initmsg initparams;
     struct sctp_event_subscribe subscribe;
 #endif
@@ -376,7 +376,7 @@ static int server_connect(char *host, char *port, int *sock, sock_type sock_type
 
     switch (sock_type) {
     case SCTP:
-#ifndef HAVE_SCTP
+#ifndef ENABLE_SCTP
         return nms_printf(NMSML_ERR,
                   "%s: SCTP protocol not compiled in\n",
                   PROG_NAME);
@@ -406,7 +406,7 @@ static int server_connect(char *host, char *port, int *sock, sock_type sock_type
     connect_new = (*sock < 0);
 
     do {
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
         if (sock_type == SCTP)
             res->ai_protocol = IPPROTO_SCTP;
 #endif // TODO: remove this code when SCTP will be supported from getaddrinfo()
@@ -416,7 +416,7 @@ static int server_connect(char *host, char *port, int *sock, sock_type sock_type
                 res->ai_protocol)) < 0)
             continue;
 
-#ifdef HAVE_SCTP
+#ifdef ENABLE_SCTP
         if (sock_type == SCTP) {
             // Enable the propagation of packets headers
             memset(&subscribe, 0, sizeof(subscribe));
