@@ -100,8 +100,8 @@ AC_DEFUN([LSC_SYSTEM_EXTENSIONS], [
   AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])
   AC_REQUIRE([AC_CANONICAL_HOST])
 
-  dnl Force usage of POSIX.1-2001 (clock_gettime)
-  CPPFLAGS="${CPPFLAGS} -D_POSIX_C_SOURCE=200112L"
+  dnl Force usage of POSIX.1-2001, and X/Open Interfaces
+  CPPFLAGS="${CPPFLAGS} -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=600"
 
   dnl Enable some further OS-specific extensions that AC_USE_SYSTEM_EXTENSIONS
   dnl does not enable at least up to autoconf 2.64.
