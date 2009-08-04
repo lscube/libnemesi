@@ -169,7 +169,7 @@ static int xiphrtp_to_mkv(rtp_vorbis *vorb, uint8_t **value, int *size)
             return RTP_PARSE_ERROR;
         }
         conf = malloc(len + len/255 + 64);
-        for (i=0; i < count && size > 0 && offset < len; i++) {
+        for (i=0; i < count && *size > 0 && offset < len; i++) {
             val = get_v(value, size);
             offset += nms_xiphlacing(conf + offset, val);
         }
