@@ -176,7 +176,7 @@ int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
             len += pad / 4;
             while (pad--)
                 *((char *) item++) = 0;
-            pkt->common.len = htons(len);
+            pkt->common.len = htons(len-1);
             return len;
         }
 
@@ -203,7 +203,7 @@ int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
         while (pad--)
             // *(((char *)item)++)=0;
             *((char *) item++) = 0;
-        pkt->common.len = htons(len);
+        pkt->common.len = htons(len-1);
         return len;
     }
 
@@ -222,7 +222,7 @@ int rtcp_build_sdes(rtp_session * rtp_sess, rtcp_pkt * pkt, int left)
     while (pad--)
         // *(((char *)item)++)=0;
         *((char *) item++) = 0;
-    pkt->common.len = htons(len);
+    pkt->common.len = htons(len-1);
 
     return len;
 }
