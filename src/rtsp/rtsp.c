@@ -80,6 +80,8 @@ rtsp_ctrl *rtsp_init(nms_rtsp_hints * hints)
         return NULL;
 #endif
 #endif
+    // stupid workaround
+    srand(time(NULL));
 
 #ifdef WIN32
     if ( WSAStartup(0x0202, &wsaData) ) {
