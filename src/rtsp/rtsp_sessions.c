@@ -186,3 +186,16 @@ int set_rtsp_sessions(rtsp_thread * rtsp_th, int content_length,
 }
 
 
+int get_session_str(char *session_id, const char *source_pos)
+{
+    size_t session_id_length;
+    while (*source_pos == ' ' || *source_pos == ':') {
+        ++source_pos;
+    }
+    session_id_length = strcspn(source_pos," \t\r\n;");
+    if (session_id_length == 0 || session_id_length >= RTSP_SESSION_ID_LEN)
+        return -1;
+    snprintf(session_id, session_id_length + 1, "%s", source_pos);
+
+    return 0;
+}

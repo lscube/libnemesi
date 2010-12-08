@@ -46,7 +46,7 @@ int check_response(rtsp_thread * rtsp_th)
     int wait_res = rtsp_th->wait_for.res;
     int wait_cseq = rtsp_th->wait_for.cseq;
     char *wait_s_id = rtsp_th->wait_for.session_id;
-    char Session_ID[256];
+    char Session_ID[RTSP_SESSION_ID_LEN];
     char *str_pos, *content;
     int CSeq;
     int opcode = 0;
@@ -76,11 +76,12 @@ int check_response(rtsp_thread * rtsp_th)
             opcode = RTSP_SETUP_RESPONSE;
         break;
     default:
-        if ((str_pos = strcasestr(content, "Session:")) != NULL) {
-            str_pos += 8;
-            while ((*(str_pos) == ' ') || (*(str_pos) == ':'))
-                str_pos++;
-            sscanf(str_pos, "%255s", Session_ID);
+        if ((str_pos = strcasestr(content, "Session")) != NULL) {
+            str_pos += 7;
+            if (get_session_str(Session_ID, str_pos)) {
+                nms_printf(NMSML_ERR, "ERROR: CANNOT get SessionID\n");
+                break;
+            }
             if (strcmp(Session_ID, wait_s_id)) {
                 nms_printf(NMSML_ERR, "Unexpected SessionID\n");
                 break;

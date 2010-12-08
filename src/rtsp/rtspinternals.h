@@ -289,6 +289,7 @@ int set_rtsp_sessions(rtsp_thread *, int, char *, char *);
 rtsp_session *rtsp_sess_dup(rtsp_session *);
 rtsp_session *rtsp_sess_create(char *, char *);
 rtsp_medium *rtsp_med_create(rtsp_thread *);
+int get_session_str(char *, const char *);
 /**
  * @}
  */

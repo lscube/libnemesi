@@ -37,6 +37,21 @@ static inline int allocate_buffer(char ** b, char * content_base,
     return len;
 }
 
+static int snprintf_uri(char *str, size_t size,
+                        const char *content_base, const char *pathname)
+{
+    if (!pathname || *pathname == 0 || *pathname == '*') {
+        snprintf(str, size, content_base);
+    } else if (!content_base || *content_base == 0 ||
+               strstr(pathname,"://") != NULL) {
+        snprintf(str, size, pathname);
+    } else {
+        snprintf(str, size, "%s/%s", content_base, pathname);
+    }
+
+    return 0;
+}
+
 int send_get_request(rtsp_thread * rtsp_th)
 {
     char *buf = malloc(strlen(rtsp_th->urlname)+256); //XXX use vla
@@ -46,7 +61,7 @@ int send_get_request(rtsp_thread * rtsp_th)
     /* save the url string for future use in setup request. */
     sprintf(buf, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, GET_TKN,
         rtsp_th->urlname, RTSP_VER, 1);
-    strcat(buf, "Accept: application/sdp;" RTSP_EL);
+    strcat(buf, "Accept: application/sdp" RTSP_EL);
 
     sprintf(buf + strlen(buf),
         "User-Agent: %s - %s -- Release %s (%s)" RTSP_EL, PROG_NAME,
@@ -81,18 +96,11 @@ int send_pause_request(rtsp_thread * rtsp_th, const char *range)
         return 1;
     }
 
-    if (rtsp_sess->content_base != NULL)
-        if (*(rtsp_sess->pathname) != 0)
-            snprintf(b, b_size, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
-                PAUSE_TKN, rtsp_sess->content_base, rtsp_sess->pathname,
-                RTSP_VER, ++(rtsp_sess->CSeq));
-        else
-            snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
-                PAUSE_TKN, rtsp_sess->content_base, RTSP_VER,
-                ++(rtsp_sess->CSeq));
-    else
-        snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PAUSE_TKN,
-            rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+    snprintf(b, b_size, PAUSE_TKN " ");
+    snprintf_uri(b + strlen(b), b_size - strlen(b), rtsp_sess->content_base,
+                 rtsp_sess->pathname);
+    snprintf(b + strlen(b), b_size - strlen(b), " %s" RTSP_EL "CSeq: %d" RTSP_EL,
+             RTSP_VER, ++(rtsp_sess->CSeq));
 
     if (rtsp_sess->Session_ID[0])    /* must add session ID? */
         snprintf(b + strlen(b), b_size - strlen(b), "Session: %s" RTSP_EL,
@@ -158,19 +166,11 @@ int send_play_request(rtsp_thread * rtsp_th, const char *range)
     }
     // end of CC part
 
-    if (rtsp_sess->content_base != NULL)
-        if ((*(rtsp_sess->pathname) != 0) && (*rtsp_sess->pathname != '*'))
-            snprintf(b, b_size, "%s %s/%s %s" RTSP_EL "CSeq: %d" RTSP_EL,
-                PLAY_TKN, rtsp_sess->content_base,
-                rtsp_sess->pathname, RTSP_VER,
-                ++(rtsp_sess->CSeq));
-        else
-            snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL,
-                PLAY_TKN, rtsp_sess->content_base, RTSP_VER,
-                ++(rtsp_sess->CSeq));
-    else
-        snprintf(b, b_size, "%s %s %s" RTSP_EL "CSeq: %d" RTSP_EL, PLAY_TKN,
-            rtsp_sess->pathname, RTSP_VER, ++(rtsp_sess->CSeq));
+    snprintf(b, b_size, PLAY_TKN " ");
+    snprintf_uri(b + strlen(b), b_size - strlen(b), rtsp_sess->content_base,
+                 rtsp_sess->pathname);
+    snprintf(b + strlen(b), b_size - strlen(b), " %s" RTSP_EL "CSeq: %d" RTSP_EL,
+             RTSP_VER, ++(rtsp_sess->CSeq));
 
     if (rtsp_sess->Session_ID[0])    /*must add session ID? */
         snprintf(b + strlen(b), b_size - strlen(b), "Session: %s" RTSP_EL,
@@ -414,12 +414,11 @@ int send_setup_request(rtsp_thread * rtsp_th)
         goto err_handle;
     }
 
-    if (rtsp_sess->content_base != NULL)
-        snprintf(b, b_size, "%s %s/%s %s" RTSP_EL, SETUP_TKN,
-            rtsp_sess->content_base, rtsp_med->filename, RTSP_VER);
-    else
-        snprintf(b, b_size, "%s %s %s" RTSP_EL, SETUP_TKN, rtsp_med->filename,
-            RTSP_VER);
+    snprintf(b, b_size, SETUP_TKN " ");
+    snprintf_uri(b + strlen(b), b_size - strlen(b), rtsp_sess->content_base,
+                 rtsp_med->filename);
+    strncat(b, " " RTSP_VER RTSP_EL, b_size - 1);
+
     snprintf(b + strlen(b), b_size - strlen(b), "CSeq: %d" RTSP_EL,
         ++(rtsp_sess->CSeq));
     snprintf(b + strlen(b), b_size - strlen(b), "Transport: %s" RTSP_EL, options);
